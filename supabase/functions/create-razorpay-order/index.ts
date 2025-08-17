@@ -112,11 +112,13 @@ Deno.serve(async (req) => {
     // Initialize Supabase client
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // Generate unique order number with timestamp and user_id to prevent duplicates
+    // Generate unique order number with multiple randomness layers to prevent duplicates
     const timestamp = Date.now();
+    const microseconds = performance.now().toString().replace('.', '');
     const userSuffix = customerInfo.user_id ? customerInfo.user_id.substring(0, 8) : 'guest';
-    const randomSuffix = Math.floor(Math.random() * 10000);
-    const orderNumber = receipt || `Aijim-${timestamp}-${userSuffix}-${randomSuffix}`;
+    const randomSuffix = Math.floor(Math.random() * 99999) + 10000; // 5 digit random
+    const uniqueId = Math.random().toString(36).substring(2, 8); // 6 char random string
+    const orderNumber = `Aijim-${timestamp}-${microseconds}-${userSuffix}-${randomSuffix}-${uniqueId}`;
     
     const orderData = {
       order_number: orderNumber,

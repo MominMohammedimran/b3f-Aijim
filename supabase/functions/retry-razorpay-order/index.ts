@@ -57,7 +57,11 @@ Deno.serve(async (req) => {
     console.log("Found order:", order.order_number);
 
     // Create unique receipt for retry to avoid Razorpay duplicate issues
-    const retryReceipt = `${order.order_number}-retry-${Date.now()}`;
+    const timestamp = Date.now();
+    const microseconds = performance.now().toString().replace('.', '');
+    const randomSuffix = Math.floor(Math.random() * 99999) + 10000;
+    const uniqueId = Math.random().toString(36).substring(2, 8);
+    const retryReceipt = `${order.order_number}-retry-${timestamp}-${microseconds}-${randomSuffix}-${uniqueId}`;
     
     const razorpayOrder = await razorpay.orders.create({
       amount: numericAmount,
