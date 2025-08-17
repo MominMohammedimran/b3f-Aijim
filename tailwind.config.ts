@@ -19,6 +19,7 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
+        // Existing fonts
         bebas: ['Bebas Neue', 'cursive'],
         ubuntu: ['Ubuntu', 'sans-serif'],
         satoshi: ['Satoshi', 'sans-serif'],
@@ -32,6 +33,17 @@ const config: Config = {
         poppins: ['Poppins', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
         playfair: ['Playfair Display', 'serif'],
+        // Additional fonts for user selection
+        roboto: ['Roboto', 'sans-serif'],
+        opensans: ['Open Sans', 'sans-serif'],
+        lato: ['Lato', 'sans-serif'],
+        raleway: ['Raleway', 'sans-serif'],
+        nunito: ['Nunito', 'sans-serif'],
+        source: ['Source Sans Pro', 'sans-serif'],
+        karla: ['Karla', 'sans-serif'],
+        dmsans: ['DM Sans', 'sans-serif'],
+        worksans: ['Work Sans', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'], // Default sans-serif
       },
       fontWeight: {
         'extra-bold': '800',

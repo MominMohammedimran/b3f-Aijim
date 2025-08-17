@@ -41,6 +41,11 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
       });
 
       if (error) throw error;
+      
+      if (!razorpayOrder?.success) {
+        throw new Error(razorpayOrder?.error || 'Failed to create order');
+      }
+      
       return razorpayOrder;
     } catch (error) {
       console.error('Error creating Razorpay order:', error);
@@ -66,7 +71,7 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
     }
 
     const options = {
-      key: "rzp_live_2Mc4YyXZYcwqy8",
+      key: razorpayOrder.key_id || "rzp_live_2Mc4YyXZYcwqy8",
       amount: razorpayOrder.amount,
       currency: razorpayOrder.currency,
       name: "Aijim",
