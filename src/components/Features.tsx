@@ -1,68 +1,69 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Zap, Shield, Rocket, Heart, Users, Star } from "lucide-react";
+import { Zap, Shield, Rocket, Users, BarChart3, Heart } from "lucide-react";
 
 const features = [
   {
     icon: Zap,
     title: "Lightning Fast",
-    description: "Experience blazing fast performance with our optimized infrastructure and cutting-edge technology."
+    description: "Optimized performance that scales with your business needs and user demands."
   },
   {
     icon: Shield,
-    title: "Secure & Reliable",
-    description: "Enterprise-grade security with 99.9% uptime guarantee. Your data is safe with us."
+    title: "Secure by Default",
+    description: "Enterprise-grade security with end-to-end encryption and compliance standards."
   },
   {
     icon: Rocket,
-    title: "Easy to Use",
-    description: "Get started in minutes with our intuitive interface and comprehensive documentation."
-  },
-  {
-    icon: Heart,
-    title: "Made with Love",
-    description: "Crafted with attention to detail and passion for creating exceptional user experiences."
+    title: "Easy Deployment",
+    description: "Deploy with one click and watch your applications go live in seconds."
   },
   {
     icon: Users,
     title: "Team Collaboration",
-    description: "Work together seamlessly with powerful collaboration tools and real-time updates."
+    description: "Work together seamlessly with real-time collaboration and sharing tools."
   },
   {
-    icon: Star,
-    title: "Premium Support",
-    description: "Get help when you need it with our 24/7 customer support and extensive knowledge base."
+    icon: BarChart3,
+    title: "Advanced Analytics",
+    description: "Get deep insights into your application performance and user behavior."
+  },
+  {
+    icon: Heart,
+    title: "Built with Love",
+    description: "Crafted with attention to detail and designed for an amazing user experience."
   }
 ];
 
-const Features = () => {
+export const Features = () => {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-background">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-24 bg-background">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
-            Why Choose Us?
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+            Everything You Need
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Discover the features that make our platform the perfect choice for your next project.
+            Powerful features designed to help you build, launch, and grow your projects effortlessly.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <Card 
-              key={index} 
-              className="group hover:shadow-elegant transition-smooth hover:-translate-y-1 border-border/50 hover:border-primary/20"
+              key={feature.title} 
+              className="bg-gradient-card border-primary/10 shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105 group"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
-              <CardHeader className="text-center pb-4">
-                <div className="mx-auto w-16 h-16 bg-hero-gradient rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-smooth shadow-glow">
-                  <feature.icon className="h-8 w-8 text-white" />
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <feature.icon className="h-6 w-6 text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl font-semibold text-foreground">
+                <CardTitle className="text-xl font-semibold">
                   {feature.title}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-muted-foreground leading-relaxed">
+              <CardContent>
+                <CardDescription className="text-base leading-relaxed">
                   {feature.description}
                 </CardDescription>
               </CardContent>
@@ -73,5 +74,3 @@ const Features = () => {
     </section>
   );
 };
-
-export default Features;

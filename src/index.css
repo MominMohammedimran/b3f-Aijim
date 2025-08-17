@@ -1,72 +1,16 @@
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800;900&family=Bebas+Neue&family=Ubuntu:wght@300;400;500;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 222.2 84% 4.9%;           /* Dark background */
+    --foreground: 210 40% 98%;              /* Light text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 250 95% 55%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
-
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-
-    --accent: 270 95% 75%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 250 95% 55%;
-
-    --radius: 0.75rem;
-
-    /* Custom design tokens */
-    --hero-gradient: linear-gradient(135deg, hsl(250 95% 55%), hsl(270 95% 75%));
-    --subtle-gradient: linear-gradient(to bottom, hsl(0 0% 100%), hsl(240 5% 98%));
-    --glow-shadow: 0 0 40px hsl(250 95% 55% / 0.2);
-    --elegant-shadow: 0 10px 30px -10px hsl(240 6% 10% / 0.1);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
+    --card: 222.2 84% 4.9%;                 /* Dark cards */
     --card-foreground: 210 40% 98%;
 
     --popover: 222.2 84% 4.9%;
@@ -84,29 +28,307 @@ All colors MUST be HSL.
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
-
+ 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border-color;
+  }
+  body {
+    @apply bg-black text-white;
+    text-transform: uppercase;
+  }
+/* Headings */
+/* Global styles for all key elements */
+p,
+span,
+h1, h2, h3, h4, h5, h6,a,
+button {
+  font-family: 'Neue Montreal', 'Space Grotesk','ubuntu' 'sans-serif';
+  text-transform: uppercase;
+  line-height:1.5em;
+  letter-spacing: 0.04em;
+}
+
+
+
+
+  /* Force dark backgrounds */
+  html {
+    background-color: #000000 !important;
+  }
+  
+  #root {
+    background-color: #000000 !important;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  /* Flip Card Styles */
+  .flip-card-container {
+    perspective: 1000px;
+    width: 100%;
+    height: auto;
+  }
+
+  .flip-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+
+  .flip-card-container:hover .flip-card {
+    transform: rotateY(180deg);
+  }
+
+  .flip-card-front,
+  .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 0.375rem;
+    overflow: hidden;
+  }
+
+  .flip-card-back {
+    top:2;
+    transform: rotateY(180deg);
   }
 }
+
+
+/* Custom classes */
+.container-custom {
+  @apply w-full px-3 sm:px-4 mx-auto;
+  max-width: 1280px;
+}
+
+.navigation-active {
+  @apply text-green-400 bg-green-900/30 rounded-lg font-medium;
+}
+
+/* Responsive typography */
+@responsive {
+  .text-xs-mobile {
+    font-size: 0.35rem;
+    line-height: 1.2rem;
+  }
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive padding for mobile devices */
+@media (max-width: 640px) {
+  .container-custom {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 3D Flip Card Styles */
+.flip-card-container {
+  perspective: 1000px;
+  width: 100%;
+  height: auto;
+}
+
+.flip-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-in-out;
+}
+
+.flip-card-container:hover .flip-card {
+  transform: rotateY(180deg) scale(1.05) rotateZ(0deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  gap:2px;
+  backface-visibility: hidden;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+
+.flip-card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateY(180deg);
+}
+
+.flip-card-container:hover .flip-card-front,
+.flip-card-container:hover .flip-card-back {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Ensure all pages have dark background */
+.page-container,
+.layout-container,
+main {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* 3D Transforms and Perspective */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.rotateY-8 {
+  transform: rotateY(8deg);
+}
+
+.rotateY-12 {
+  transform: rotateY(12deg);
+}
+
+.rotateX-3 {
+  transform: rotateX(3deg);
+}
+
+.rotateX-5 {
+  transform: rotateX(5deg);
+}
+
+.hover\:rotateY-8:hover {
+  transform: rotateY(8deg);
+}
+
+.hover\:rotateY-12:hover {
+  transform: rotateY(12deg);
+}
+
+.hover\:rotateX-3:hover {
+  transform: rotateX(3deg);
+}
+
+.hover\:rotateX-5:hover {
+  transform: rotateX(5deg);
+}
+
+.hover\:scale-110:hover {
+  transform: scale(1.1);
+}
+
+.hover\:translateY-1:hover {
+  transform: translateY(0.25rem);
+}
+
+.group:hover .group-hover\:rotateY-8 {
+  transform: rotateY(8deg);
+}
+
+.group:hover .group-hover\:rotateY-12 {
+  transform: rotateY(12deg);
+}
+
+.group:hover .group-hover\:rotateX-3 {
+  transform: rotateX(3deg);
+}
+
+.group:hover .group-hover\:rotateX-5 {
+  transform: rotateX(5deg);
+}
+
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+.group:hover .group-hover\:translateY-1 {
+  transform: translateY(0.25rem);
+}
+
+.group:hover .group-hover\:text-blue-400 {
+  color: rgb(96 165 250);
+}
+
+.group:hover .group-hover\:text-yellow-400 {
+  color: rgb(250 204 21);
+}
+
+.group:hover .group-hover\:text-gray-300 {
+  color: rgb(209 213 219);
+}
+
+.group:hover .group-hover\:bg-green-400 {
+  background-color: rgb(74 222 128);
+}
+
+

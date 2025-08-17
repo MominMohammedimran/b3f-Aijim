@@ -1,0 +1,32 @@
+
+import React from 'react';
+import AdminLayout from '@/components/admin/AdminLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+const AdminPayments = () => {
+  return (
+    <AdminLayout title="Payments">
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Payments Management</h2>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Database Setup Required</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-8">
+              <p className="text-gray-600 mb-4">
+                Payments management functionality will be available once the database tables are set up.
+              </p>
+              <p className="text-sm text-gray-500">
+                You'll need to create the payments and orders tables in your Supabase database.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default AdminPayments;
