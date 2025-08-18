@@ -96,7 +96,7 @@ const location = useLocation();
   const createOrderInDatabase = async (paymentMethod: string, paymentStatus: string = 'pending') => {
     try {
       const orderData = {
-        order_number: `Aijim-${Date.now()}-${userProfile?.id?.substring(0, 8) || 'guest'}-${Math.floor(Math.random() * 10000)}`,
+        order_number:`Aijim-${(userProfile?.id || 'iji').substring(0, 3)}${Math.floor(100000 + Math.random() * 900000)}`,
         user_id: userProfile?.id,
         items: cartItems,
         total: finalTotal,

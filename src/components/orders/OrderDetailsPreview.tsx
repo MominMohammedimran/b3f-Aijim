@@ -107,7 +107,7 @@ useEffect(() => {
       case 'cancelled':
       return status.charAt(0).toUpperCase() + status.slice(1);
     default:
-      return 'Unknown';
+      return 'Pending';
   }
 };
 const getPaymentStatusText = (status: string) => {
@@ -263,7 +263,7 @@ const getPaymentStatusText = (status: string) => {
         <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-3 mb-6">
           <div className="p-4 grid items-center border-b border-gray-800">
             <span className="font-bold text-lg   text-blue-900 mb-1  text-center">
-              Payment Status :<span className="w-full px-2 py-0   text-center ">
+              Payment Status :<span className="w-full    text-center ">
              "{getPaymentStatusText(order.payment_status)}"
             </span>
             </span>
@@ -286,11 +286,11 @@ const getPaymentStatusText = (status: string) => {
           </div>
 
           {order.payment_status === 'paid' && (
-            <div className="p-4  grid items-center border-b border-gray-800">
-              <span className="font-bold text-green-900 text-lg text-center">Order Status :
-                 <p className="text-white  underline ">
-                {getOrderStatusText(order.status)}
-              </p>
+            <div className="p-4 grid items-center border-b w-full  border-gray-800">
+              <span className="font-bold text-lg w-full     text-green-800 mb-1 text-center ">Order Status :
+                 <span className=" w-full   text-center ">
+                 &nbsp;"{getOrderStatusText(order.status)}"
+              </span>
               </span>
              
               

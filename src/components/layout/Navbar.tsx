@@ -289,7 +289,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
       <span>Home</span>
     </Link>
 
-    <Link to="/products" className={`flex flex-col items-center text-xs sm:text-sm ${
+    <Link to="/products"   className={`flex flex-col items-center text-xs sm:text-sm ${
       isActive('/products') ? 'text-white font-medium' : 'text-[#6B7280] font-bold'
     }`}>
       <Package size={18} className={isActive('/products') ? 'text-white font-bold' : 'text-[#6B7280] font-bold'} />

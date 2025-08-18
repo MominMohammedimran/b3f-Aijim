@@ -46,7 +46,7 @@ export default function PaymentRelatedIssue() {
   const [showForm, setShowForm] = useState(false);
 const generatePaymentIssueId = () => {
   const randomPart = Math.random().toString(36).substring(2, 10);
-  return `aijim-paymentIssue-${randomPart}`;
+  return `aijim-payIssu-${randomPart}`;
 };
 
   useEffect(() => {
@@ -165,7 +165,7 @@ const generatePaymentIssueId = () => {
       setShowForm(false);
     }
   };
-
+console.log(existingIssues)
   return (
     <Layout>
       <div className="min-h-screen bg-background text-foreground pt-15">
@@ -273,24 +273,23 @@ const generatePaymentIssueId = () => {
               </p>
             </div>
 
-            {issue.admin_response && (
-              <div className="mt-4 p-4 bg-green-900 rounded-lg border border-green-600">
-                <h4 className="font-medium text-green-300 mb-2">
-                  Admin Response:
-                  <p className="text-green-200">{issue.admin_response}</p>
-                </h4>
-
-                {issue.admin_uploaded_image && (
-                  <div className="mt-3">
-                    <img
-                      src={issue.admin_uploaded_image}
-                      alt="Admin response"
-                      className="w-[150px] h-[100px] rounded border max-h-64 object-contain"
-                    />
-                  </div>
-                )}
-              </div>
-            )}
+             {issue.admin_response && (
+                      <div className="mt-4 p-4 bg-gray-700 rounded-lg border border-green-600">
+                        <h4 className="font-medium text-yellow-500 mb-2">Admin Response:
+                            <p className="bg-black text-white  p-2">{issue.admin_response}</p>
+                        </h4>
+                      
+                        {issue.admin_uploaded_image && (
+                          <div className="mt-3">
+                            <img 
+                              src={issue.admin_uploaded_image} 
+                              alt="Admin response" 
+                              className="w-[150px] h-[100px] max-h-65 object-contain"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
                {issue.updated_at && (
                 <div>
                   <p className="text-sm font-medium text-yellow-300">
@@ -323,7 +322,7 @@ const generatePaymentIssueId = () => {
                               <Input 
                                 value={orderId} 
                                 disabled 
-                                className="text-white  border border-gray-200 cursor-not-allowed" 
+                                className="bg-background  text-foreground cursor-not-allowed" 
                               />
                             </div>
               

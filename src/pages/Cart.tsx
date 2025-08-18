@@ -217,8 +217,16 @@ const Cart = () => {
       className="flex flex-col items-center bg-gray-50 p-1 w-40 shadow-sm "
     >
       <div className="flex justify-between w-full mb-1">
-        <span className="bg-gray-800 text-white w-full py-1 text-center text-center text-xs font-semibold ">
+        <span className="bg-gray-800 flex justify-around p-2 text-white w-full py-1 text-center text-center text-xs font-semibold ">
           Size : {sizeItem.size}
+            <button
+                onClick={() => removeFromCart(item.size)}
+               
+                className="text-white font-bold px-1 bg-red-500 mr-1  hover:text-red-400"
+                title="Unselect"
+              >
+                X
+              </button>
         </span>
        
       </div>

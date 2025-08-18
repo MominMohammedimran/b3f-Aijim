@@ -43,7 +43,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
     <>
       {/* viewer */}
       <div
-  className="relative w-full h-[54vh] overflow-hidden bg-black shadow-lg flex items-center justify-center"
+  className="relative w-full h-[54vh] sm:h-[65vh] overflow-hidden bg-black shadow-lg flex items-center justify-center"
   onTouchStart={onTouchStart}
   onTouchEnd={onTouchEnd}
 >

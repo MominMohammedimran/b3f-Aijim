@@ -38,28 +38,28 @@ const Footer = () => {
           <div className="space-y-2 leading-relaxed  md:leading-relaxed tracking-wide">
             <h4 className="text-lg font-semibold text-white  mb-4">Quick Links</h4>
             <div className="grid grid-cols-2 gap-2">
-               <a href="/privacy-policy" className="text-sm font-medium sm:text-m md:text-m lg:text-m  flex items-center hover:text-yellow-400 transition-colors">
+               <a href="/privacy-policy" className="text-sm font-normal sm:text-m md:text-m lg:text-m  flex items-center hover:text-yellow-400 transition-colors">
             <FileLock size={16} className="mr-2 group-hover:text-blue-400" />
-            <span>Privacy Policy</span>
+            <span className="text-m font-medium ">Privacy Policy</span>
            </a>
-        <a href="/terms-conditions" className="text-sm font-medium sm:text-m md:text-m lg:text-m flex items-center  tracking-wide hover:text-yellow-400 transition-colors">
+        <a href="/terms-conditions" className="text-sm font-normal  sm:text-m md:text-m lg:text-m flex items-center  tracking-wide hover:text-yellow-400 transition-colors">
               <FileText size={16} className="mr-2 group-hover:text-blue-400" />
 
-              <span>Terms Service</span>
+              <span className="text-m font-medium " >Terms Service</span>
           </a>
-              <Link to="/cancellation-refund" className="text-gray-200  font-medium text-sm sm:text-m md:text-m lg:text-m  hover:text-yellow-400 transition-colors  flex items-center group">
+              <Link to="/cancellation-refund" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200  font-medium text-sm sm:text-m md:text-m lg:text-m  hover:text-yellow-400 transition-colors  flex items-center group">
                 <RefreshCcw size={14} className="mr-2 text-m group-hover:text-blue-400" />
                 Refund Policy
               </Link>
-              <Link to="/shipping-delivery" className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors flex items-center group">
+              <Link to="/shipping-delivery" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors flex items-center group">
                 <Truck size={14} className="mr-2 group-hover:text-blue-400" />
                 Shipping Info
               </Link>
-              <Link to="/about-us" className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors  flex items-center group">
+              <Link to="/about-us" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors  flex items-center group">
                 <UsersRound size={14} className="mr-2  group-hover:text-blue-400" />
                 About Us
               </Link>
-              <Link to="/contact-us" className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors  flex items-center group ">
+              <Link to="/contact-us"  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors  flex items-center group ">
                 <AtSign size={14} className="mr-2 group-hover:text-blue-400" />
                 Contact Us
               </Link>

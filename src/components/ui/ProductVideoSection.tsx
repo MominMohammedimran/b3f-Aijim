@@ -16,21 +16,11 @@ const videos = [
 
 const ProductVideoSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Pause all videos except current
-  useEffect(() => {
-    videoRefs.current.forEach((video, index) => {
-      if (!video) return;
-      if (index === currentIndex) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-        video.currentTime = 0;
-      }
-    });
-  }, [currentIndex]);
+
 
   // Detect scroll and update currentIndex
   const handleScroll = () => {
@@ -52,17 +42,17 @@ const ProductVideoSection: React.FC = () => {
         onScroll={handleScroll}
       >
         <div className="flex gap-4 w-max pr-4">
-          {videos.map((video, index) => (
+          {videos.map((video) => (
             <div
               key={video.id}
             className="w-full max-w-[230px] aspect-[3/6] bg-gray-900 overflow-hidden shadow-lg relative"
   >
               <video
-                ref={(el) => (videoRefs.current[index] = el)}
+             
                 src={video.src}
                 muted
-                autoPlay={index === currentIndex}
-                loop={false}
+                autoPlay
+                loop
                 playsInline
                 preload="metadata"
                 className="w-full h-full object-cover aspect-video"

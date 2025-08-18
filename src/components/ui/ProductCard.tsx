@@ -47,7 +47,7 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
             )}
           </div>
           <div className="p-2 pl-3 pr-3  bg-[#111] border-x border-b border-gray-800">
-            <h3 className="text-white font-semibold text-sm leading-snug">
+            <h3 className="text-white font-bold text-sm leading-tight">
               {product.name}
             </h3>
             <div className="flex items-center gap-2 text-sm mt-1">
@@ -56,7 +56,7 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
                   ₹{product.originalPrice}
                 </span>
               )}
-              <span className="text-white font-bold">₹{product.price}</span>
+              <span className="text-white font-medium">₹{product.price}</span>
               <span
                 className={`ml-auto text-[10px] px-2 py-0.5 rounded ${
                   inStock

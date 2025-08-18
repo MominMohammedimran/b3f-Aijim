@@ -15,7 +15,7 @@ export default function OrderRelatedIssue() {
   const orderId = params.get('orderId') || '';
   const generateOrderIssueId = () => {
   const randomPart = Math.random().toString(36).substring(2, 10);
-  return `aijim-orderIssue-${randomPart}`;
+  return `aijim-orderIss-${randomPart}`;
 };
 
   const [formData, setFormData] = useState({
@@ -264,9 +264,9 @@ export default function OrderRelatedIssue() {
                     </div>
 
                     {issue.admin_response && (
-                      <div className="mt-4 p-4 bg-green-900 rounded-lg border border-green-600">
-                        <h4 className="font-medium text-green-300 mb-2">Admin Response:
-                            <p className="text-green-200">{issue.admin_response}</p>
+                      <div className="mt-4 p-4 bg-gray-700 rounded-lg border border-green-600">
+                        <h4 className="font-medium text-yellow-500 mb-2">Admin Response:
+                            <p className="bg-black text-white  p-2">{issue.admin_response}</p>
                         </h4>
                       
                         {issue.admin_uploaded_image && (
@@ -274,7 +274,7 @@ export default function OrderRelatedIssue() {
                             <img 
                               src={issue.admin_uploaded_image} 
                               alt="Admin response" 
-                              className="w-[150px] h-[100px] rounded border max-h-64 object-contain"
+                              className="w-[150px] h-[100px] max-h-65 object-contain"
                             />
                           </div>
                         )}

@@ -7,15 +7,15 @@ import { ArrowLeft } from 'lucide-react';
 const PrivacyPolicy = () => {
   return (
     <Layout>
-      <div className="container-custom mt-10">
+      <div className="container-custom  mt-10">
         <div className="flex items-center pt-10 mb-6">
-          <Link to="/" className="mr-2">
-            <ArrowLeft size={20} className="text-blue-600 hover:text-blue-800" />
+          <Link to="/" className="mr-2 font-bold">
+            <ArrowLeft size={20} className="text-gray-100 hover:text-blue-800" />
           </Link>
           <h1 className="text-2xl font-bold">Privacy Policy</h1>
         </div>
         
-        <div className="bg-gray-800 text-white rounded-lg shadow-sm p-6">
+        <div className="bg-gray-800 text-white shadow-sm p-6">
           <div className="prose max-w-none">
             <p>Last Updated: June 27, 2025</p>
             

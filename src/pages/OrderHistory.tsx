@@ -136,7 +136,7 @@ const OrderHistory = () => {
         })
       .eq('id', orderId);
       if (error) throw error;
-      setOrders(prev => prev.filter(o => o.id !== orderId));
+   
       toast.success('Order cancelled');
     } catch (err) {
       console.error(err);
@@ -241,12 +241,10 @@ if (loading) {
                         <div className="flex  flex p-2 w-full justify-between   items-center gap-3 mb-2">
                           <div className="  w-full p-2 ">
                             <div className='flex w-full justify-between'>
-                                   <h4 className="font-bold  text-xl text-gray-200 mb-2">Id : {order.order_number}</h4>
-                                   { (order.status==="cancelled")&&( 
-                                    <h4 className="text-center font-medium text-sm px-2  bg-red-500 text-white mb-3 mt-1">Cancelled</h4>
-                                       
-                                   )}
+                                   <h4 className="font-bold  text-xl text-gray-200 mb-2">{order.order_number}</h4>
+                                  
                                             </div>
+                                           
                        <div className="space-y-2">
                         {order.items.map((item: any, idx: number) => (
                           <div key={idx} className="flex items-start gap-4 h-[50x] p-2 bg-gray-900">
@@ -298,9 +296,17 @@ if (loading) {
                             day: 'numeric'
                           })}
                         </p>
-
+                           { (order.status==="cancelled" )&&( 
+                                    <h4 className="text-center font-medium text-lg w-1/2 bg-red-500 text-white m-auto mb-3 mt-1 ">Cancelled</h4>
+                                       
+                                   )}
+                                      { (order.status==="delivered" )&&( 
+                                    <h4 className="text-center font-medium text-lg w-1/2 bg-green-500 text-white m-auto mb-3 mt-1 ">Delivered</h4>
+                                       
+                                   )}
 
                         <div className="flex gap-2 ">
+                          
                      {/* Order Details Button */}
                               <Link to={`/order-preview/${order.order_number}`} className="flex-1">
                               <Button className="bg-blue-600 hover:bg-blue-700 hover:text-white text-white w-full py-2 rounded-none font-medium">

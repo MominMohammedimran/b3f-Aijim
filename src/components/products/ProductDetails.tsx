@@ -109,15 +109,15 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
       </div>
 
       {/* Name + Price */}
-      <div className="flex flex-col mt-1 mb-2 sm:flex-row justify-between items-start sm:items-center gap-2">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white">{product.name}</h2>
+      <div className="flex flex-col mt-1 mb-2 sm:gap-5 justify-between items-start sm:items-start gap-2">
+        <h2 className="text-2xl sm:text-3xl sm:text-left font-bold text-white">{product.name}</h2>
       <div className="flex items-center font-semibold gap-3">
   {product.originalPrice && product.originalPrice > product.price && (
     <span className="text-m font-bold text-gray-400 line-through">
       ₹{product.originalPrice}
     </span>
   )}
-  <span className="text-2xl font-satoshi font-bold  text-gray-200">
+  <span className="text-2xl font-satoshi font-bold  text-gray-100">
     ₹{product.price}
   </span>
   {discountPercent > 0 && (
@@ -188,15 +188,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
           >
             {/* Size & Remove */}
             <div className="flex justify-between py-1 items-center mb-1">
-              <span className="font-medium w-full text-center bg-black text-white py-1">Size : {sel.size}</span>
-              {/*<button
+              <span className="font-medium flex  justify-between p-2  w-full text-center bg-black text-white py-1">Size :
+                 {sel.size}
+                   <button
                 onClick={() => toggleSize(sel.size)}
                 disabled={isRemoving}
-                className="text-white font-bold px-2 bg-red-500 mr-1  hover:text-red-400"
+                className="text-white font-bold px-1 bg-red-500 mr-1  hover:text-red-400"
                 title="Unselect"
               >
                 X
-              </button>*/}
+              </button>
+              </span>
+            
             </div>
 
             {/* Quantity Controls */}
@@ -221,11 +224,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
             {/* Cart Info & Delete */}
             <div className="flex justify-between  py-2 items-center">
               {inCartQty && (
-                <span className="font-extrabold text-black   px-2 mr-1">
+                <span className="font-extrabold w-full bg-black text-white  text-center px-2 mr-1">
                   In Cart : {inCartQty}
                 </span>
               )}
-              {inCartQty && (
+              {/*inCartQty && (
                 <button
                   className="text-gray-100 bg-red-500 px-1 py-1 hover:text-gray-200 mr-1 "
                   title="Remove from cart"
@@ -234,7 +237,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
                 >
                   {isRemoving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 size={14} />}
                 </button>
-              )}
+              )*/}
             </div>
           </div>
         );

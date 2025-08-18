@@ -81,15 +81,25 @@
 /* Global styles for all key elements */
 p,
 span,
-h1, h2, h3, h4, h5, h6,a,
+a,
 button {
-  font-family: 'Neue Montreal', 'Space Grotesk','ubuntu' 'sans-serif';
-  text-transform: uppercase;
-  line-height:1.5em;
-  letter-spacing: 0.04em;
+  font-family:'Poppins','Neue Montreal', 'roboto', 'sans-serif';
+  text-transform: none;
+  font-weight: 800;
+  font-style:italic;
+  line-height:1.7em;
+  letter-spacing: 0.08em;
 }
 
+h1, h2, h3, h4, h5, h6
+{
+    font-family:'Nunito','Neue Montreal', 'roboto', 'sans-serif';
+  text-transform: uppercase;
+  font-style: italic;
+  line-height:1.5em;
+  letter-spacing: 0.04em;
 
+}
 
 
   /* Force dark backgrounds */

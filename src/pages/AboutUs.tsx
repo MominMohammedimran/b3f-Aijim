@@ -15,9 +15,9 @@ const AboutUs = () => {
       <div className="container-custom pt-2 pb-24 mt-10">
         <div className="flex items-center mb-4 pt-10">
                   <Link to="/" className="mr-2">
-                    <ArrowLeft size={24} className="back-arrow" />
+                    <ArrowLeft size={24} className="back-arrow font-bold" />
                   </Link>
-                  <h1 className="text-2xl font-bold text-green-600">Back</h1>
+                  <h1 className="text-2xl font-bold text-gray-100">Back</h1>
                 </div>
         
         <div className="max-w-4xl mx-auto">

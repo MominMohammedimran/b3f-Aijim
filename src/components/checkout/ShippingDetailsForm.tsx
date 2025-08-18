@@ -244,7 +244,7 @@ only
         */}
       </div>
 
-      <Button type="submit" disabled={isLoading} className="w-full font-bold text-lg">
+      <Button type="submit" disabled={isLoading} className="w-full font-bold rounded-none text-lg">
         {isLoading ? 'Saving...' : 'Continue to Payment'}
       </Button>
     </form>

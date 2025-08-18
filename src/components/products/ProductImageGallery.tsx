@@ -37,7 +37,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images, produ
         {displayImages.length > 1 && (
           <button
             onClick={goToPrevious}
-            className="absolute top-1/2 left-1 -translate-y-1/2 bg-white/70 hover:bg-white p-1 sm:p-2 rounded-full shadow"
+            className="absolute top-1/2 left-1 -translate-y-1/2 bg-white/70 sm:visible hover:bg-white p-1 sm:p-2 rounded-full shadow"
             aria-label="Previous image"
           >
             <ChevronLeft size={25} />

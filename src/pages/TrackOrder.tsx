@@ -134,9 +134,9 @@ const getCurrentLocation = (orderStatus: string) => {
 
         <div className="bg-gray-800 text-white  shadow-md p-6 space-y-4">
           <div className="flex items-start gap-3">
-            <Clock className="h-5 w-5 text-gray-200 mt-0.5" />
+            <Clock className="h-5 w-5 text-gray-200 font-bold mt-0.5" />
             <div>
-              <p className="text-sm text-gray-200">Estimated Delivery</p>
+              <p className="text-sm font-medium text-gray-200">Estimated Delivery</p>
               <p className="font-medium text-gray-200">{getEstimatedDeliveryMessage(orderStatus)}</p>
             </div>
           </div>
@@ -159,7 +159,7 @@ const getCurrentLocation = (orderStatus: string) => {
         />
 
         {tracking.status !== 'cancelled' && (
-          <div className="bg-gray-800 rounded-lg shadow-md p-6">
+          <div className="bg-gray-800  shadow-md p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Truck className="h-5 w-5" />
               Delivery Information
@@ -169,14 +169,14 @@ const getCurrentLocation = (orderStatus: string) => {
                 <div className="flex items-start gap-3">
                   <MapPin className="h-5 w-5 text-gray-200 mt-0.5" />
                   <div>
-                    <p className="text-medium text-red-500">Current Location</p>
+                    <p className="text-bold text-lg text-yellow-400">Current Location</p>
                     <p className="text-sm text-gray-200">{getCurrentLocation(orderStatus)}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-gray-200 mt-0.5" />
                   <div>
-                    <p className="text-medium text-red-500">Estimated Delivery</p>
+                    <p className="text-bold text-lg text-yellow-400">Estimated Delivery</p>
                     <p className="text-sm  text-gray-200">{getEstimatedDeliveryMessage(orderStatus)}</p>
                   </div>
                 </div>
@@ -185,14 +185,14 @@ const getCurrentLocation = (orderStatus: string) => {
                 <div className="flex items-start gap-3">
                   <Package className="h-5 w-5 text-gray-200 mt-0.5" />
                   <div>
-                    <p className="text-medium text-red-500">Tracking ID</p>
+                    <p className="text-bold text-lg text-yellow-400">Tracking ID</p>
                     <p className="text-sm  text-gray-200">{tracking.order_number || 'Not yet assigned'}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-gray-200 mt-0.5" />
                   <div>
-                    <p className="text-medium text-red-500">Order Date</p>
+                    <p className="text-bold text-lg text-yellow-400">Order Date</p>
                     <p className="text-sm text-gray-200">
                       {new Date(tracking.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',

@@ -43,7 +43,7 @@ export default function OrderTrackingStatus({ currentStatus, estimatedDelivery, 
       : 0;
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4 bg-gray-900 rounded-lg shadow-md">
+    <div className="w-full max-w-3xl mx-auto p-4 bg-gray-900 shadow-md">
       <h2 className="text-xl font-bold text-white mb-6 text-center">
         {isReturnFlow ? "Return & Refund Status" : "Order Status"}
       </h2>
@@ -71,7 +71,7 @@ export default function OrderTrackingStatus({ currentStatus, estimatedDelivery, 
               >
                 <step.icon size={20} />
               </div>
-              <span className="mt-2 text-[10px] font-normal text-center text-white">{step.label}</span>
+              <span className="mt-2 text-xs font-bold  text-center text-blue-500">{step.label}</span>
             </div>
           );
         })}
