@@ -268,10 +268,37 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
         />
       </div>
 
+      {/* Delivery & Return Section */}
+      <div className="p-4 rounded-lg bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-700 mt-4">
+        <h3 className="text-lg font-semibold text-yellow-300 mb-3">Delivery & Returns</h3>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <input 
+              type="text" 
+              placeholder="Enter your pincode" 
+              className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            />
+            <button className="px-4 py-2 bg-yellow-500 text-black font-semibold rounded hover:bg-yellow-400 transition-colors">
+              Check
+            </button>
+          </div>
+          <div className="text-sm text-gray-300">
+            <p>• Free delivery on orders above ₹499</p>
+            <p>• Easy 7-day returns & exchanges</p>
+            <p>• Cash on delivery available</p>
+          </div>
+          <div className="border-t border-gray-600 pt-3">
+            <a href="/return-policy" className="text-yellow-400 hover:text-yellow-300 underline text-sm">
+              View Return Policy →
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Description */}
-   <div className="p-3 rounded-lg bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-700">
-  {renderDescription(product.description)}
-</div>
+      <div className="p-3 rounded-lg bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-700 mt-4">
+        {renderDescription(product.description)}
+      </div>
 
 
 

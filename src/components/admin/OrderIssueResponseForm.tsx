@@ -138,8 +138,12 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
           <div>
             <CardTitle className="text-lg">Order Issue #{issue.order_number}</CardTitle>
             <p className="text-sm text-gray-300 mt-1">
-              Submitted by {issue.user_name} ({issue.user_email}) on {new Date(issue.created_at).toLocaleDateString()}
+              Submitted by {issue.user_name} ({issue.user_email})
             </p>
+            <div className="flex flex-col text-xs text-gray-400 mt-1">
+              <span>Created: {new Date(issue.created_at).toLocaleDateString()} at {new Date(issue.created_at).toLocaleTimeString()}</span>
+              <span>Updated: {new Date(issue.updated_at).toLocaleDateString()} at {new Date(issue.updated_at).toLocaleTimeString()}</span>
+            </div>
           </div>
           <Badge variant={status === 'resolved' ? 'default' : status === 'pending' ? 'secondary' : 'destructive'}>
             {status}
@@ -175,6 +179,30 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
                 <p className="text-sm font-medium text-yellow-300 mb-2">Description</p>
                 <p className="text-sm text-gray-200 bg-gray-800 p-3  border">{issue.description}</p>
               </div>
+
+              {(issue as any).screenshot_url && (
+                <div>
+                  <p className="text-sm font-medium text-yellow-300 mb-2">User Screenshot</p>
+                  <img 
+                    src={(issue as any).screenshot_url} 
+                    alt="User screenshot" 
+                    className="max-w-full h-auto rounded border shadow-sm max-h-64 object-contain cursor-pointer hover:shadow-lg" 
+                    onClick={() => window.open((issue as any).screenshot_url, '_blank')}
+                  />
+                </div>
+              )}
+
+              {adminImageUrl && (
+                <div>
+                  <p className="text-sm font-medium text-yellow-300 mb-2">Admin Uploaded Image</p>
+                  <img 
+                    src={adminImageUrl} 
+                    alt="Admin uploaded image" 
+                    className="max-w-full h-auto rounded border shadow-sm max-h-64 object-contain cursor-pointer hover:shadow-lg" 
+                    onClick={() => window.open(adminImageUrl, '_blank')}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -223,7 +251,12 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
                           id={`order-admin-file-upload-${issue.id}`}
                           type="file"
                           accept="image/*"
-                          onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setUploadFile(file);
+                            }
+                          }}
                           className="sr-only"
                         />
                       </label>

@@ -144,8 +144,12 @@ const handleSubmit = async (e: React.FormEvent) => {
           <div>
             <CardTitle className="text-lg">Payment Issue #{issue.order_number}</CardTitle>
             <p className="text-sm text-gray-300 mt-1">
-              Submitted by {issue.user_name} ({issue.user_email}) on {new Date(issue.created_at).toLocaleDateString()}
+              Submitted by {issue.user_name} ({issue.user_email})
             </p>
+            <div className="flex flex-col text-xs text-gray-400 mt-1">
+              <span>Created: {new Date(issue.created_at || '').toLocaleDateString()} at {new Date(issue.created_at || '').toLocaleTimeString()}</span>
+              <span>Updated: {new Date(issue.updated_at || '').toLocaleDateString()} at {new Date(issue.updated_at || '').toLocaleTimeString()}</span>
+            </div>
           </div>
           <Badge variant={status === 'resolved' ? 'default' : status === 'pending' ? 'secondary' : 'destructive'}>
             {status}
@@ -186,7 +190,20 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <img 
                     src={issue.screenshot_url} 
                     alt="User screenshot" 
-                    className="max-w-full h-auto rounded border shadow-sm max-h-64 object-contain" 
+                    className="max-w-full h-auto rounded border shadow-sm max-h-64 object-contain cursor-pointer hover:shadow-lg" 
+                    onClick={() => window.open(issue.screenshot_url, '_blank')}
+                  />
+                </div>
+              )}
+
+              {adminImageUrl && (
+                <div>
+                  <p className="text-sm font-medium text-yellow-300 mb-2">Admin Uploaded Image</p>
+                  <img 
+                    src={adminImageUrl} 
+                    alt="Admin uploaded image" 
+                    className="max-w-full h-auto rounded border shadow-sm max-h-64 object-contain cursor-pointer hover:shadow-lg" 
+                    onClick={() => window.open(adminImageUrl, '_blank')}
                   />
                 </div>
               )}

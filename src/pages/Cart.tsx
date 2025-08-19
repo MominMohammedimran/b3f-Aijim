@@ -220,7 +220,7 @@ const Cart = () => {
         <span className="bg-gray-800 flex justify-around p-2 text-white w-full py-1 text-center text-center text-xs font-semibold ">
           Size : {sizeItem.size}
             <button
-                onClick={() => removeFromCart(item.size)}
+                onClick={() => removeSizeFromCart(item.product_id, sizeItem.size)}
                
                 className="text-white font-bold px-1 bg-red-500 mr-1  hover:text-red-400"
                 title="Unselect"
