@@ -101,16 +101,26 @@ const checkPincode = () => {
       </div>
     );
 
-    function renderDescription(desc: string) {
+function renderDescription(desc: string) {
+  if (!desc) return null;
+  
   return desc.split('\n').map((line, i) => {
+    if (!line.trim()) return <br key={i} />;
+    
     const [heading, ...rest] = line.split(':');
+    const hasContent = rest.length > 0 && rest.join(':').trim();
+    
     return (
-      <p key={i} className="text-xs sm:text-base leading-relaxed mb-1">
-        <span className="font-geist font-bold text-white">{heading.trim()}</span>
-        {rest.length > 0 && (
-          <span className="text-gray-300 font-neue-montreal text-justify tracking-wide  lowercase">: {rest.join(':').trim()}</span>
+      <div key={i} className="mb-4 p-3 bg-gradient-to-r from-gray-900/50 to-gray-800/30 rounded-lg border border-gray-600">
+        <h4 className="font-bold text-lg text-yellow-300 mb-2 font-serif tracking-wide">
+          {heading.trim()}
+        </h4>
+        {hasContent && (
+          <p className="text-gray-200 font-sans text-sm leading-relaxed tracking-wide">
+            {rest.join(':').trim()}
+          </p>
         )}
-      </p>
+      </div>
     );
   });
 }

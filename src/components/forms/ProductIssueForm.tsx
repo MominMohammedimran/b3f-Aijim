@@ -59,13 +59,12 @@ const ProductIssueForm: React.FC<ProductIssueFormProps> = ({ orderNumber, onSubm
 
       if (error) throw error;
 
-      const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+      // Return the public URL directly instead of signed URL
+      const { data: { publicUrl } } = supabase.storage
         .from('paymentproofs')
-        .createSignedUrl(filePath, 365 * 24 * 60 * 60);
+        .getPublicUrl(filePath);
 
-      if (signedUrlError) throw signedUrlError;
-
-      return signedUrlData.signedUrl;
+      return publicUrl;
     } catch (error) {
       console.error('Upload error:', error);
       toast({

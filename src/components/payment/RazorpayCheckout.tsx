@@ -107,8 +107,8 @@ console.log(appliedCoupon,appliedPoints)
         shipping_address: shippingAddress,
         delivery_fee: deliveryFee,
         payment_details:"",
-     coupon_code:appliedCoupon.code||"",
-        reward_points_used: appliedPoints.points||0,
+         coupon_code: appliedCoupon?.code || "",
+         reward_points_used: appliedPoints?.points || 0,
         created_at: new Date().toISOString(),
       };
 

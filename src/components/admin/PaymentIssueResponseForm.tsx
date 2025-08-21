@@ -59,17 +59,12 @@ export default function PaymentIssueResponseForm({ issue, onUpdate }: PaymentIss
       return adminImageUrl; // fallback to previous URL if upload fails
     }
 
-    // Get signed URL valid for 1 hour
-    const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+    // Return the public URL directly instead of signed URL
+    const { data: { publicUrl } } = supabase.storage
       .from('paymentproofs')
-      .createSignedUrl(filePath, 3600);
+      .getPublicUrl(filePath);
 
-    if (signedUrlError) {
-      console.error('Signed URL error:', signedUrlError);
-      return adminImageUrl;
-    }
-
-    return signedUrlData.signedUrl;
+    return publicUrl;
   } catch (error) {
     console.error('Upload error:', error);
     return adminImageUrl;

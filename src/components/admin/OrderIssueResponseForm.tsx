@@ -59,17 +59,12 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
         return adminImageUrl;
       }
 
-      const { data: signedData, error: signedError } = await supabase.storage
+      // Return the public URL directly instead of signed URL
+      const { data: { publicUrl } } = supabase.storage
         .from('paymentproofs')
-        .createSignedUrl(data.path, 365 * 24 * 60 * 60);
+        .getPublicUrl(data.path);
 
-      if (signedError) {
-        console.error('Signed URL error:', signedError);
-        toast({ title: "URL Error", description: signedError.message });
-        return adminImageUrl;
-      }
-
-      return signedData.signedUrl;
+      return publicUrl;
     } catch (error) {
       console.error('Upload error:', error);
       toast({ title: "Upload Failed", description: "Failed to upload image" });
@@ -243,12 +238,12 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
                     <Upload className="mx-auto h-12 w-12 text-gray-400" />
                     <div className="flex text-sm text-gray-600">
                       <label
-                        htmlFor={`order-admin-file-upload-${issue.id}`}
+                        htmlFor={`order-admin-file-upload-${issue.id}-${Date.now()}`}
                         className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500"
                       >
                         <span>Upload a file</span>
                         <input
-                          id={`order-admin-file-upload-${issue.id}`}
+                          id={`order-admin-file-upload-${issue.id}-${Date.now()}`}
                           type="file"
                           accept="image/*"
                           onChange={(e) => {

@@ -45,6 +45,10 @@ const config: Config = {
         worksans: ['Work Sans', 'sans-serif'],
         crimson: ['Crimson Text', 'serif'],
         lora: ['Lora', 'serif'],
+        'source-sans': ['Source Sans 3', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+        'playfair': ['Playfair Display', 'serif'],
+        'merriweather': ['Merriweather', 'serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'], // Default sans-serif
       },
       fontWeight: {
