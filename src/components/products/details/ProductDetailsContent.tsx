@@ -4,6 +4,7 @@ import { Product } from '@/lib/types';
 import ProductImage from '../ProductImage';
 import ProductDetails from '../ProductDetails';
 import ProductReviewSection from '../ProductReviewSection';
+import RelatedProducts from '../RelatedProducts';
 
 interface ProductDetailsContentProps {
   product: Product;
@@ -28,6 +29,7 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }
       
       {/* Reviews Section */}
       <ProductReviewSection productId={product.id} />
+     
     </div>
   );
 };

@@ -44,7 +44,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
                   key={i}
                   className="text-[72px] font-extrabold bg-clip-text text-transparent g-wider"
                   style={{
-                    fontFamily: "'Unbounded', 'Space Grotesk', sans-serif",
+                    
                    backgroundImage:
   "linear-gradient(90deg, #cfcfcf, #ffffff, #c0c0c0, #e6e6e6, #a9a9a9)",
 // silver

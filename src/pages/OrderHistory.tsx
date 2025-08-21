@@ -164,7 +164,7 @@ const getOrderStatusText = (status: string) => {
       case 'cancelled':
       return status.charAt(0).toUpperCase() + status.slice(1);
     default:
-      return 'Unknown';
+      return 'Pending';
   }
 };
 const getPaymentStatusText = (status: string) => {
@@ -177,7 +177,7 @@ const getPaymentStatusText = (status: string) => {
     case 'refund successfull':
       return status.charAt(0).toUpperCase() + status.slice(1);
     default:
-      return 'Unknown';
+      return 'pending';
   }
 };
 
@@ -209,7 +209,7 @@ if (loading) {
       <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
       
       <div className="min-h-screen bg-black pt-20">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4">
           <div className="mb-4">
             <h1 className="text-4xl font-bold text-gray-100 mb-2">Your Orders</h1>
             <p className="text-gray-100">Track and manage all your orders in one place</p>
@@ -238,12 +238,26 @@ if (loading) {
                     {/* Order Header */}
                     <div className="flex flex-col  lg:items-center lg:justify-between ">
                       <div className="  lg:mb-0">
-                        <div className="flex  flex p-2 w-full justify-between   items-center gap-3 mb-2">
-                          <div className="  w-full p-2 ">
-                            <div className='flex w-full justify-between'>
-                                   <h4 className="font-bold  text-xl text-gray-200 mb-2">{order.order_number}</h4>
-                                  
-                                            </div>
+                        <div className="flex  flex p-2 pl-0 pr-0 w-full justify-between   items-center gap-3 mb-2">
+                          <div className="  w-full p-0 ">
+                           
+                            <div className="w-full flex  justify-between  items-center mb-3 mt-1">
+  {/* Order Number */}
+  <h4 className="font-bold text-xl text-gray-200">{order.order_number}</h4>
+
+  {/* Status Badge */}
+  {order.status === "cancelled" && (
+    <span className="  bg-red-500 text-white text-xs font-medium px-2 py-1.5  shadow">
+      Cancelled
+    </span>
+  )}
+  {order.status === "delivered" && (
+    <span className="  bg-green-500 text-black  text-xs font-medium px-2 py-1.5  item-center z-10 shadow">
+      Delivered
+    </span>
+  )}
+</div>
+
                                            
                        <div className="space-y-2">
                         {order.items.map((item: any, idx: number) => (
@@ -296,14 +310,7 @@ if (loading) {
                             day: 'numeric'
                           })}
                         </p>
-                           { (order.status==="cancelled" )&&( 
-                                    <h4 className="text-center font-medium text-lg w-1/2 bg-red-500 text-white m-auto mb-3 mt-1 ">Cancelled</h4>
-                                       
-                                   )}
-                                      { (order.status==="delivered" )&&( 
-                                    <h4 className="text-center font-medium text-lg w-1/2 bg-green-500 text-white m-auto mb-3 mt-1 ">Delivered</h4>
-                                       
-                                   )}
+                          
 
                         <div className="flex gap-2 ">
                           

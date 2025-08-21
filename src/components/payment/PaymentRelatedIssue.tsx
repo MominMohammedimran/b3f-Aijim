@@ -175,7 +175,7 @@ console.log(existingIssues)
                    <div className="flex items-center mb-4 pt-8 animate-fade-in">
                     <Link to={`/order-preview/${orderId}`} className="mr-2 flex items-center gap-[20px]">
                       <ArrowLeft size={24} className="back-arrow" />
-                      <h1 className="text-2xl text-yellow-400 font-bold">Back to Orders</h1>
+                      <h1 className="text-2xl text-white font-bold">Back to Orders</h1>
                     </Link>
                     
                   </div>

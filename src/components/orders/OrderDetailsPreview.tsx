@@ -120,7 +120,7 @@ const getPaymentStatusText = (status: string) => {
     case 'refund successfull':
       return status.charAt(0).toUpperCase() + status.slice(1);
     default:
-      return 'Unknown';
+      return 'pending';
   }
 };
 
@@ -147,7 +147,7 @@ const getPaymentStatusText = (status: string) => {
          <div className="flex items-center mb-4 pt-8 animate-fade-in">
                   <Link to="/orders" className="mr-2 flex items-center gap-[20px]">
                     <ArrowLeft size={24} className="back-arrow" />
-                    <h1 className="text-2xl text-yellow-400 font-bold">Back to Orders</h1>
+                    <h1 className="text-2xl text-white font-bold">Back to Orders</h1>
                   </Link>
                   
                 </div>
@@ -157,10 +157,10 @@ const getPaymentStatusText = (status: string) => {
           <div>
             <div className="flex p-2 justify-between border-b border-gray-100 items-center gap-3 ">
               <h3 className="text-xl font-bold text-gray-100">
-                #{order.order_number}
+                {order.order_number}
               </h3>
               <div className="text-right pt-5">
-                <div className="text-2xl font-bold text-gray-200">
+                <div className="text-xl font-bold text-gray-200">
                   {formatPrice(order.total)}
                 </div>
                 <div className="text-sm text-gray-300">
@@ -263,7 +263,7 @@ const getPaymentStatusText = (status: string) => {
         <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-3 mb-6">
           <div className="p-4 grid items-center border-b border-gray-800">
             <span className="font-bold text-lg   text-blue-900 mb-1  text-center">
-              Payment Status :<span className="w-full    text-center ">
+              Payment Status :<span className="w-full font-bold   text-center ">
              "{getPaymentStatusText(order.payment_status)}"
             </span>
             </span>
@@ -271,7 +271,7 @@ const getPaymentStatusText = (status: string) => {
               #Note : {order.payment_method || 'N/A'} 
             </p>
            
-            {!['refunded', 'cancelled'].includes(order.payment_status) && (
+            {!['cancelled','paid'].includes(order.payment_status) && (
                      <div className="flex gap-2">
                      <Button
                  onClick={() => handleRetryPayment(order)}
@@ -288,7 +288,7 @@ const getPaymentStatusText = (status: string) => {
           {order.payment_status === 'paid' && (
             <div className="p-4 grid items-center border-b w-full  border-gray-800">
               <span className="font-bold text-lg w-full     text-green-800 mb-1 text-center ">Order Status :
-                 <span className=" w-full   text-center ">
+                 <span className=" w-full  font-bold text-center ">
                  &nbsp;"{getOrderStatusText(order.status)}"
               </span>
               </span>

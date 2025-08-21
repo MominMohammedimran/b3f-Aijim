@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Loader2, Share, XCircle, Trash2 ,ShoppingCart} from 'lucide-react';
+
+import {Link} from 'react-router-dom';
 import { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -62,6 +64,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
     setSelectedSizes((prev) =>
       prev.map((s) => (s.size === size ? { ...s, quantity: q } : s))
     );
+    
 
   const removeSizeFromCartOnly = async (size: string) => {
     setRemovingSize(size);
@@ -73,6 +76,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
     }
     setRemovingSize(null);
   };
+  const [pincode, setPincode] = useState("");
+const [pincodeAvailable, setPincodeAvailable] = useState<boolean | null>(null);
+const [pincodeMessage, setPincodeMessage] = useState(false);
+
+const serviceablePincodes = ["515402", "100006", "500001", "600045"];
+
+const checkPincode = () => {
+  setPincodeMessage(true);
+  if (serviceablePincodes.includes(pincode)) {
+    setPincodeAvailable(true);
+  } else {
+    setPincodeAvailable(false);
+  }
+};
+
 
   const totalPrice = selectedSizes.reduce((sum, s) => sum + s.quantity * product.price, 0);
 
@@ -269,34 +287,57 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
       </div>
 
       {/* Delivery & Return Section */}
-      <div className="p-4 rounded-lg bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-700 mt-4">
-        <h3 className="text-lg font-semibold text-yellow-300 mb-3">Delivery & Returns</h3>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <input 
-              type="text" 
-              placeholder="Enter your pincode" 
-              className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-            />
-            <button className="px-4 py-2 bg-yellow-500 text-black font-semibold rounded hover:bg-yellow-400 transition-colors">
-              Check
-            </button>
-          </div>
-          <div className="text-sm text-gray-300">
-            <p>• Free delivery on orders above ₹499</p>
-            <p>• Easy 7-day returns & exchanges</p>
-            <p>• Cash on delivery available</p>
-          </div>
-          <div className="border-t border-gray-600 pt-3">
-            <a href="/return-policy" className="text-yellow-400 hover:text-yellow-300 underline text-sm">
-              View Return Policy →
-            </a>
-          </div>
-        </div>
+    {/* Delivery & Return Section */}
+<div className="p-4 w-full bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-600 mt-4">
+  <h3 className="text-lg font-semibold text-yellow-300 mb-3">Delivery & Returns</h3>
+  <div className="space-y-3">
+    <div className="flex items-center gap-2">
+      <input
+        type="text"
+        maxLength={6} // restrict to 6 digits
+        pattern="[0-9]*"
+        inputMode="numeric"
+        placeholder="pincode"
+        value={pincode}
+        onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))} // allow only digits
+        className="flex-1 px-3 py-1 w-full bg-gray-700 border border-gray-600  text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+      />
+      <button
+        onClick={checkPincode}
+        className="px-4 py-1 bg-yellow-500 text-black font-semibold  hover:bg-yellow-400 transition-colors"
+      >
+        Check
+      </button>
+    </div>
+
+    {pincodeMessage && (
+      <div className="text-sm mt-2 font-medium">
+        {pincodeAvailable ? (
+          <p className="text-green-400">✅ Delivery & Return available to {pincode}</p>
+        ) : (
+          <p className="text-red-400">❌ Delivery & Return not available to {pincode}</p>
+        )}
       </div>
+    )}
+
+    <div className="text-sm text-gray-300 mt-3">
+      <p>• Easy 7-day returns</p>
+      <p>• No cash on delivery </p>
+    </div>
+    <div className="border-t border-gray-600 pt-3">
+      <Link
+        to="/cancellation-refund"
+        className="text-yellow-400 hover:text-yellow-300 underline text-sm"
+      >
+        View Return Policy →
+      </Link>
+    </div>
+  </div>
+</div>
+
 
       {/* Description */}
-      <div className="p-3 rounded-lg bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-700 mt-4">
+      <div className="p-3  bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-700 mt-4">
         {renderDescription(product.description)}
       </div>
 

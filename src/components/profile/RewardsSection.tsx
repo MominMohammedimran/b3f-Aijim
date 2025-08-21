@@ -11,7 +11,7 @@ const RewardsSection = () => {
   const [rewardPoints, setRewardPoints] = useState(0);
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const[rewardPointsused,setRewardPointsused]=useState(0);
+  const [rewardPointsUsed, setRewardPointsUsed] = useState(0);
 
   useEffect(() => {
     const fetchAndSyncRewards = async () => {
@@ -26,29 +26,29 @@ const RewardsSection = () => {
           .order('created_at', { ascending: false });
 
         if (ordersError) throw ordersError;
-        const pointsdecrease=orderData.reduce((sum, order) => {
-          return sum + (order.reward_points_used||0);
-        }, 0);
-        
-        const earnedPoints = orderData.reduce((sum, order) => {
-          return sum + (order.reward_points_earned || 0)-(order.reward_points_used||0);
-        }, 0);
+
+        const used = orderData.reduce((sum, order) => sum + (order.reward_points_used || 0), 0);
+        const earned = orderData.reduce(
+          (sum, order) => sum + (order.reward_points_earned || 0) - (order.reward_points_used || 0),
+          0
+        );
 
         const currentPoints = userProfile.reward_points || 0;
-        const updatedTotal = earnedPoints > 0 ? earnedPoints : currentPoints;
+        const updatedTotal = earned > 0 ? earned : currentPoints;
 
-        if (earnedPoints > 0 && currentPoints !== updatedTotal) {
+        if (earned > 0 && currentPoints !== updatedTotal) {
           await supabase
             .from('profiles')
             .update({ reward_points: updatedTotal })
             .eq('id', userProfile.id);
         }
-       setRewardPointsused(pointsdecrease);
+
+        setRewardPointsUsed(used);
         setRewardPoints(updatedTotal);
         setOrders(orderData);
       } catch (err) {
         console.error('Reward points error:', err);
-        setRewardPoints(userProfile?.reward_points || 0); // fallback
+        setRewardPoints(userProfile?.reward_points || 0);
       } finally {
         setLoading(false);
       }
@@ -58,7 +58,7 @@ const RewardsSection = () => {
   }, [currentUser, userProfile]);
 
   const nextRewardLevel = Math.ceil((rewardPoints + 100) / 100) * 100;
-  const progress = (rewardPoints % 100) / 100 * 100;
+  const progress = ((rewardPoints % 100) / 100) * 100;
 
   const handleEarnPoints = () => {
     toast.info('Complete purchases to earn reward points!');
@@ -73,105 +73,96 @@ const RewardsSection = () => {
   };
 
   return (
-    <div className="space-y-6 p-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">My Reward Points</h2>
+    <div className="space-y-4 p-6 pl-0 pr-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-2xl">
+      {/* Header */}
+      <div className="flex p-4 justify-between items-center">
+        <h2 className="text-2xl font-extrabold bg-gradient-to-r from-yellow-400 to-green-400 bg-clip-text text-transparent">
+        Rewards
+        </h2>
         <button
           onClick={handleEarnPoints}
-          className="text-blue-400 hover:text-blue-300 text-sm flex items-center"
+          className="text-sm text-yellow-400 hover:text-yellow-300 flex items-center transition"
         >
           How to earn more <ArrowRight size={14} className="ml-1" />
         </button>
       </div>
 
-      <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-xl p-6 shadow-md">
+      {/* Reward Card */}
+      <div className=" p-3 border border-gray-700 shadow-lg ">
         <div className="flex justify-between items-center">
           <div>
             <p className="text-sm text-gray-300">Available Points</p>
             <div className="flex items-center space-x-2">
-              <Award className="text-yellow-400" />
-              <span className="text-3xl font-bold text-white">{rewardPoints}</span>
+              <Award className="text-yellow-400 drop-shadow-glow" />
+              <span className="text-4xl font-bold text-white">{rewardPoints}</span>
             </div>
           </div>
           <div className="text-right">
             <p className="text-sm text-gray-300">Next Reward at</p>
-            <p className="text-xl font-semibold text-blue-400">{nextRewardLevel} pts</p>
+            <p className="text-2xl font-semibold text-gray-200">{nextRewardLevel} pts</p>
           </div>
         </div>
 
-        <div className="mt-4">
+        {/* Progress */}
+        <div className="mt-6">
           <div className="flex justify-between text-xs text-gray-300 mb-1">
             <span>Current</span>
             <span>Next Reward</span>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-2 bg-gray-700" />
         </div>
 
-        <div className="mt-4 bg-gray-800 p-3 ">
-          <p className="text-sm text-gray-300 mb-1">💰 Use your reward points as money!</p>
-          <p className="text-xs text-gray-400">Every point = ₹1. Minimum 70 points required to redeem.</p>
-        </div>{rewardPointsused >= 0 && (
-  <div className="space-y-3">
-    {orders.map((order) => (
-      <Card key={order.id} className="bg-gray-800 border rounded-none border-gray-700">
-        <CardContent className="p-2">
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="text-sm font-semibold text-white mb-2">
-                Reward Points Used : {rewardPointsused}
-              </h3>
-             
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    ))}
-  </div>
-)}
+        {/* Info */}
+        <div className="mt-6 bg-gray-900/60 p-2  border border-gray-700">
+          <p className="text-sm text-yellow-300 mb-1">💰 Use points as cash! at checkout.</p>
+          <p className="text-xs text-gray-300">1 Point = ₹1. Minimum 70 points required.</p>
+        </div>
 
-                
-    
-        <div className="grid grid-cols-2 gap-2  mt-4">
+        {/* Actions 
+        <div className="grid grid-cols-2 gap-3 mt-6">
           <button
             onClick={handleEarnPoints}
-            className="flex items-center justify-center space-x-2 py-2 bg-blue-600 text-white pl-2 hover:bg-blue-700"
+            className="flex items-center justify-center space-x-2 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90"
           >
             <ShoppingBag size={18} />
             <span>Earn Points</span>
           </button>
           <button
             onClick={handleUsePoints}
-            className={`flex items-center justify-center space-x-2 py-2 pl-2 ${
+            className={`flex items-center justify-center space-x-2 py-2 rounded-lg font-semibold transition ${
               rewardPoints >= 80
-                ? 'bg-green-600 hover:bg-green-700 text-white'
-                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:opacity-90'
+                : 'bg-gray-700 text-gray-400 cursor-not-allowed'
             }`}
           >
             <Gift size={18} />
             <span>Use Points</span>
           </button>
-        </div>
+        </div>*/}
+
       </div>
 
-      <div>
-        <h3 className="text-lg font-semibold text-white mb-2">Orders & Earned Points</h3>
-        <div className="space-y-3">
+      {/* Orders */}
+      <div className="p-4">
+        <h3 className="text-xl font-semibold text-white mb-3"> Orders & Rewards</h3>
+        <div className="space-y-4">
           {orders.map((order) => (
-            <Card key={order.id} className="bg-gray-800 border border-gray-700">
+            <Card
+              key={order.id}
+              className="rounded-none bg-gradient-to-r from-gray-800/70 to-gray-900/70 border border-gray-700 shadow hover:shadow-green-400/10 transition"
+            >
               <CardContent className="p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-white text-sm font-semibold">Order #{order.order_number}</p>
-                    <p className="text-sm text-gray-400">₹{order.total}</p>
+                    <p className="text-white font-medium">{order.order_number}</p>
+                    <p className="text-sm text-gray-300">₹{order.total}</p>
                   </div>
                   <div className="text-right space-y-1">
                     <p className="text-sm text-yellow-400 font-medium">
-                      +{order.reward_points_earned || 0} pts earned
+                      + &nbsp;{order.reward_points_earned || 0} pts
                     </p>
                     {order.reward_points_used > 0 && (
-                      <p className="text-xs text-green-400">
-                        Used: {order.reward_points_used} pts
-                      </p>
+                      <p className="text-xs text-red-300">-&nbsp; {order.reward_points_used} pts </p>
                     )}
                   </div>
                 </div>

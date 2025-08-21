@@ -21,33 +21,33 @@ const AboutUs = () => {
                 </div>
         
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-4">About Us</h1>
+           <div className="bg-gray-900 text-white  shadow-sm p-5">
+             <h1 className="text-3xl md:text-4xl font-bold text-center mb-2">About Us</h1>
           
-          <div className="bg-gray-800 text-white  shadow-sm p-6 pb-0">
-            <h2 className="text-2xl font-semibold underline mb-4">Our Story</h2>
-            <p className="mb-1">
+        
+            <h2 className="text-2xl font-semibold underline mb-2 mt-3">Our Story</h2>
+            <p className="mb-1 text-sm">
               Founded in 2025, our company was born out of a passion for creating custom apparel and 
               products that help individuals and businesses express their unique identity.
-            </p>
-            <p>
+            
               We believe that everyone deserves the opportunity to wear and use products that truly 
               represent who they are. That's why we've built an easy-to-use platform that puts the 
               power of design in your hands.
             </p>
           </div>
           
-          <div className="bg-gray-800 text-white shadow-sm p-6 pb-0">
+          <div className="bg-gray-900 text-white shadow-sm p-5">
             <h2 className="text-2xl font-semibold underline mb-4">Our Mission</h2>
-            <p>
+            <p className='text-sm'>
               Our mission is to provide high-quality customizable products with exceptional 
               customer service. We strive to make the design process simple and enjoyable, 
               while delivering products that exceed our customers' expectations.
             </p>
           </div>
           
-          <div className="bg-gray-800 text-white  shadow-sm p-6">
+          <div className="bg-gray-900 text-white  shadow-sm p-5">
             <h2 className="text-2xl font-semibold underline  mb-4">Contact Us</h2>
-            <p className="mb-4">
+            <p className="mb-4 text-sm">
               We'd love to hear from you! Whether you have questions about our products, 
               need help with an order, or want to discuss a business opportunity, we're here to help.
             </p>

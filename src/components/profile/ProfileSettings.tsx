@@ -100,12 +100,11 @@ console.log(userProfile,formData)
   }
 
   return (
-    <div className="w-full mx-auto">
+    <div className="w-full ">
       <Card>
-        <CardHeader>
-</CardHeader>
-        <CardContent className="p-2 border-gray-800">
-          <form onSubmit={handleSubmit} className="space-y-2">
+
+        <CardContent className="p-2  border-gray-800">
+          <form onSubmit={handleSubmit} className="space-y-0">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="first_name">First Name</Label>

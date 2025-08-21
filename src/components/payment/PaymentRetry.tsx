@@ -117,29 +117,66 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
       setLoading(false);
     }
   };
-console.log(data)
+console.log(data.items[0].image)
   return (
-    <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
-      <div className="text-center mb-6">
-        <h2 className="text-xl font-bold">Retry Payment</h2>
-        <p className="text-gray-600 mt-2">
-          Order <span className="font-semibold">#{orderNumber}</span>
-        </p>
-        <img src={data.image}/>
+    <div className="w-80 bg-gray-900 shadow-lg p-2">
+    <div className="text-center mb-2">
 
-        <p className="text-lg font-semibold text-green-600 mt-1">
-          ₹{amount.toFixed(2)}
-        </p>
+
+  {/* Loop through order items */}
+  <div className="space-y-4 ">
+    {data.items.map((item, idx) => (
+      <div 
+        key={idx} 
+        className="flex items-center gap-4 p-3 bg-gray-800  shadow-sm"
+      >
+        <img 
+          src={item.image} 
+          alt={item.name} 
+          className="w-20 h-20 object-cover rounded-md border"
+        />
+        <div className="flex-1 text-left">
+          <p className="font-semibold text-gray-100">{item.name}</p>
+          {item.sizes.map((s, i) => (
+            <p key={i} className="text-sm text-gray-100">
+              Size : <span className="font-medium">{s.size}</span> × {s.quantity} Qty 
+            </p>
+          ))}
+          <p className="text-gray-100 font-semibold ">₹{item.price}</p>
+        </div>
       </div>
+    ))}
+  </div>
+
+  {/* Coupon & Reward Points */}
+  <div className="mt-1  text-sm text-left p-3  shadow-sm">
+    
+      <p className="text-yellow-400 text-sm  font-medium">
+        Coupon Applied : <span className="">{data.coupon_code}</span>
+      </p>
+  
+
+      <p className="text-yellow-400 text-sm font-medium">
+        Reward Points Used : {data.reward_points_used}
+      </p>
+    
+  </div>
+
+  {/* Final Total */}
+  <p className="text-lg font-bold text-green-400 mt-1">
+    Total: ₹{data.total.toFixed(2)}
+  </p>
+</div>
+
 
       {loading ? (
-        <div className="flex items-center justify-center py-6">
+        <div className="flex items-center justify-center py-4">
           <Loader2 className="h-6 w-6 animate-spin" />
         </div>
       ) : (
         <button
           onClick={handlePayment}
-          className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800 transition"
+          className="w-full bg-white text-black mb-4 py-2  font-semibold hover:bg-gray-200 transition"
         >
           Pay with Razorpay
         </button>

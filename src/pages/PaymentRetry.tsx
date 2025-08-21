@@ -122,10 +122,10 @@ const PaymentRetryPage = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-black pt-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Retry Payment</h1>
-            <p className="text-gray-40 text-xl font-bold">Order #{order.order_number}</p>
+        <div className="container mx-auto px-1">
+          <div className="text-center mb-4">
+            <h1 className="text-3xl font-bold mb-1">Retry Payment</h1>
+            <p className="text-gray-40 text-xl font-medium">Order #{order.order_number}</p>
           </div>
           
           <div className="flex justify-center">

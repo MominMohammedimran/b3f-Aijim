@@ -15,7 +15,7 @@ const CancellationRefund = () => {
           <h1 className="text-2xl font-bold">Cancellation and Refund Policy</h1>
         </div>
         
-        <div className="bg-gray-800 text-white rounded-lg shadow-sm p-6">
+        <div className="bg-gray-900 text-white rounded-lg shadow-sm p-5">
           <div className="prose max-w-none">
             <p>Last Updated: June 27, 2025</p>
             
@@ -98,7 +98,7 @@ const CancellationRefund = () => {
             </p>
             */}
             <h2 className="text-xl font-bold underline mt-6 mb-4">Contact Us</h2>
-            <p>
+            <p className='text-sm'>
               If you have questions about our Cancellation and Refund Policy, please contact us at:
             </p>
             <p className="mt-2">
