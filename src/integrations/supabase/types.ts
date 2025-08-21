@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -381,7 +381,7 @@ export type Database = {
       }
       orders: {
         Row: {
-          coupon_code: string | null
+          coupon_code: Json | null
           created_at: string | null
           delivery_fee: number | null
           discount_applied: number | null
@@ -405,7 +405,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          coupon_code?: string | null
+          coupon_code?: Json | null
           created_at?: string | null
           delivery_fee?: number | null
           discount_applied?: number | null
@@ -429,7 +429,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          coupon_code?: string | null
+          coupon_code?: Json | null
           created_at?: string | null
           delivery_fee?: number | null
           discount_applied?: number | null
@@ -841,22 +841,22 @@ export type Database = {
       get_admin_settings: {
         Args: Record<PropertyKey, never>
         Returns: {
-          site_name: string
-          site_description: string
+          business_address: string
           contact_email: string
           contact_phone: string
-          business_address: string
           delivery_fee: number
           min_order_amount: number
+          site_description: string
+          site_name: string
         }[]
       }
       get_admin_user_by_email: {
         Args: { user_email: string }
         Returns: {
-          id: string
           email: string
-          role: string
+          id: string
           permissions: Json
+          role: string
         }[]
       }
       is_admin: {
@@ -865,13 +865,13 @@ export type Database = {
       }
       update_admin_settings: {
         Args: {
-          p_site_name: string
-          p_site_description: string
+          p_business_address: string
           p_contact_email: string
           p_contact_phone: string
-          p_business_address: string
           p_delivery_fee: number
           p_min_order_amount: number
+          p_site_description: string
+          p_site_name: string
         }
         Returns: undefined
       }
@@ -880,16 +880,16 @@ export type Database = {
         Returns: boolean
       }
       update_user_reward_points: {
-        Args: { user_id: string; points_to_add: number }
+        Args: { points_to_add: number; user_id: string }
         Returns: undefined
       }
       validate_coupon: {
-        Args: { coupon_code_input: string; cart_total: number }
+        Args: { cart_total: number; coupon_code_input: string }
         Returns: {
-          valid: boolean
+          coupon_id: string
           discount_amount: number
           message: string
-          coupon_id: string
+          valid: boolean
         }[]
       }
     }
