@@ -103,7 +103,7 @@ const seo = useSEO('/');
   }, [selectedCategory]);
 
   const handleProductClick = (product: Product) => {
-    navigate(`/product/details/${product.id}`);
+    navigate(`/product/details/${product.code}`);
   };
 
   return (

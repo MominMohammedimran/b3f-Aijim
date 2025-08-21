@@ -10,22 +10,22 @@ import WishlistButton from './WishlistButton';
 import RelatedProducts from './RelatedProducts';
 
 const ProductDetailsPage = () => {
-  const { productId } = useParams<{ productId: string }>();
+  const { productCode } = useParams<{ productCode: string }>();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   
   useEffect(() => {
-    if (!productId) return;
+    if (!productCode) return;
     
     // Always load product from mock data for now
-    const foundProduct = products.find((p) => p.id === productId);
+    const foundProduct = products.find((p) => p.code === productCode);
     
     if (foundProduct) {
       setProduct(foundProduct);
     } else {
       // Provide a default product if none found
       const defaultProduct = {
-        id: productId || "default-product",
+        id: productCode || "default-product",
         code: "SAMPLE-001",
         name: "Sample Product",
         description: "This is a sample product description.",
@@ -41,7 +41,7 @@ const ProductDetailsPage = () => {
       
       setProduct(defaultProduct);
     }
-  }, [productId, navigate]);
+  }, [productCode, navigate]);
 
   return (
     <Layout>
@@ -61,7 +61,7 @@ const ProductDetailsPage = () => {
           </div>
         )}
    
-        {product && <RelatedProducts product={product} onProductClick={(product) => navigate(`/product/details/${product.id}`)} />}
+        {product && <RelatedProducts product={product} onProductClick={(product) => navigate(`/product/details/${product.code}`)} />}
       </div>
     </Layout>
   );

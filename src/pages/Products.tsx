@@ -138,7 +138,7 @@ const Products = () => {
               <ProductCard
                 key={p.id}
                 product={p}
-                onClick={() => navigate(`/product/details/${p.id}`)}
+                onClick={() => navigate(`/product/details/${p.code}`)}
                 className="w-[155px] sm:w-[195px] md:w-[210px] flex-shrink-0"
               />
             ))}
@@ -176,7 +176,7 @@ const Products = () => {
                     <ProductCard
                       key={p.id}
                       product={p}
-                      onClick={() => navigate(`/product/details/${p.id}`)}
+                      onClick={() => navigate(`/product/details/${p.code}`)}
                       className="w-[175px]   sm:w-[195px] md:w-[210px] "
                     />
                   ))}
