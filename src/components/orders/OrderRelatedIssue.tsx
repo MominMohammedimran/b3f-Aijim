@@ -209,57 +209,31 @@ export default function OrderRelatedIssue() {
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium text-yellow-300">
+                <p className="text-sm font-medium text-yellow-300">
                   Name :{" "}
                   <span className="font-semibold text-gray-100 leading-relaxed">
                     {issue.user_name}
                   </span>
                 </p>
-                <p className="text-xs font-medium text-yellow-300">
+                <p className="text-sm font-medium text-yellow-300">
                   Email :{" "}
                   <span className="font-semibold text-gray-100 leading-relaxed">
                     {issue.user_email}
                   </span>
                 </p>
-                 <p className="text-xs font-medium text-yellow-300">
+                 <p className="text-sm font-medium text-yellow-300">
                   Number :{" "}
                   <span className="font-semibold text-gray-100 leading-relaxed">
                     {issue.phone_number}
                   </span>
                 </p>
               </div>
-                      <div>
-                        <p className="text-sm font-medium text-yellow-300 ">Created At : {" "}
-                           <span className="font-semibold text-gray-100 "> 
-                            {new Date(issue.created_at).toLocaleDateString('en-GB', {
-                             day: '2-digit',
-                             month: 'short',
-                           year: 'numeric'
-                           }).replace(/ /g, '/')}</span>
-                        </p>
-                        </div>
-                     {issue.updated_at && (
-                       <div>
-                         <p className="text-sm font-medium text-yellow-300">Updated At :{" "}
-                          <span className="font-semibold text-gray-100">
-                             {new Date(issue.updated_at).toLocaleDateString('en-GB', {
-                                day: '2-digit',
-                                month: 'short',
-                                    year: 'numeric'
-                              }).replace(/ /g, '/')}
-                                </span>
-
-                         </p>
-                     </div>                        
-                       )}
-
-
 
                     </div>
                     
                     
                     <div>
-                      <p className="text-sm font-medium text-yellow-300">Description :</p>
+                      <p className="text-sm font-bold text-yellow-300">Description :</p>
                       <p className="text-gray-100 bg-gray-700 p-3 rounded border border-gray-600">{issue.description}</p>
                     </div>
 
@@ -280,6 +254,43 @@ export default function OrderRelatedIssue() {
                         )}
                       </div>
                     )}
+                     {issue.updated_at && (
+                
+                <div>
+                  <div>
+                <p className="text-sm font-medium text-yellow-300">
+                  Created At :{" "}
+                  <span className="font-semibold text-gray-100">
+                   {new Date(issue.created_at).toLocaleString("en-IN", {
+                       year: "numeric",
+                       month: "2-digit",
+                        day: "2-digit",
+                       hour: "2-digit",
+                       minute: "2-digit",
+                      second: "2-digit",
+                         hour12: true
+                        })}
+                  </span>
+                 
+                </p>
+              </div>
+                  <p className="text-sm font-medium text-yellow-300">
+                    Updated At :{" "}
+                    <span className="font-semibold text-gray-100">
+                       {new Date(issue.updated_at).toLocaleString("en-IN", {
+                        year: "numeric",
+                          month: "2-digit",
+                         day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                          hour12: true
+                           })}]
+
+                    </span>
+                  </p>
+                </div>
+              )}
                   </div>
                 </CardContent>
               </Card>

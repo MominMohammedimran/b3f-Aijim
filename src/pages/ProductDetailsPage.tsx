@@ -17,7 +17,7 @@ const seo = useSEO('/product/details/:productId');
     if (!productId) return;
 
     // Always load product from mock data for now
-    const foundProduct = products.find((p) => p.id === productId);
+    const foundProduct = products.find((p) => p.code=== productId);
 
     if (foundProduct) {
       setProduct(foundProduct);
@@ -68,8 +68,8 @@ const seo = useSEO('/product/details/:productId');
         {product ? (
           <ProductDetailsContent product={product} />
         ) : (
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <p className="text-gray-500">Product details are not available.</p>
+          <div className="bg-gray-900 shadow-sm p-8 text-center">
+            <p className="text-gray-200">Product details are not available.</p>
           </div>
         )}
       </div>

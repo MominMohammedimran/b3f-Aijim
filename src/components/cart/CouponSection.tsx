@@ -85,7 +85,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     type="text"
     value={appliedCoupon.code}
     readOnly
-    className="flex-1  shadow-sm tracking-[1px] rounded-none bg-red-500 text-white font-semibold"
+    className="flex-1  shadow-sm tracking-[1px] rounded-none bg-black border border-gray-300 text-white font-semibold"
   />
 ) : (
   <Input
@@ -93,7 +93,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     placeholder="Enter coupon code"
     value={couponCode}
     onChange={(e) => setCouponCode(e.target.value)}
-    className="flex-1  tracking-[1px] shadow-sm"
+    className="flex-1  tracking-[1px] shadow-sm rounded-none "
     disabled={loading}
   />
 )}
@@ -101,7 +101,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         {appliedCoupon ? (
           <Button 
             onClick={removeCoupon}
-            className="bg-red-600  tracking-[1px] rounded-none text-white hover:bg-red-700 font-inter font-bold uppercase px-6"
+            className="bg-black border border-gray-300  tracking-[1px] rounded-none text-white hover:bg-red-700 font-inter font-bold uppercase px-6"
           >
             REMOVE
           </Button>
@@ -109,7 +109,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
           <Button 
             onClick={applyCoupon}
             disabled={loading}
-            className="bg-black tracking-[1px] text-white rounded-none hover:bg-gray-900 font-inter font-bold uppercase px-6"
+            className="bg-black border border-gray-300 tracking-[1px] text-white rounded-none hover:bg-gray-900 font-inter font-bold uppercase px-6"
           >
             {loading ? 'APPLYING...' : 'APPLY'}
           </Button>
@@ -118,7 +118,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
 
       {/* Messages */}
       {message && (
-        <div className={`text-sm mb-3 ${messageType === 'success' ? 'text-green-500 font-semibold tracking-[1px] ' : 'text-red-500 font-semibold tracking-[1px]'}`}>
+        <div className={`text-sm mb-3 ${messageType === 'success' ? 'text-green-500 font-semibold tracking-[1px] ' : 'text-red-300 font-semibold tracking-[1px]'}`}>
           {message}
         </div>
       )}
@@ -127,8 +127,8 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       {appliedCoupon && (
         <div className="space-y-2">
          
-          <div className="text-m text-yellow-400 font-bold tracking-[1px]">
-            Active coupon : <span className="font-bold underline tracking-[1px] "> {appliedCoupon.code} </span>
+          <div className="text-m text-gray-200 font-bold tracking-[1px]">
+            Active coupon : <span className="font-bold text-yellow-300 underline tracking-[1px] "> {appliedCoupon.code} </span>
           </div>
         </div>
       )}

@@ -39,6 +39,7 @@ const Products = () => {
           image: p.image || '',
           images: p.images || [],
           sizes,
+          code:p.code,
           description: p.description || '',
           tags: Array.isArray(p.tags) ? p.tags : [],
           inStock: totalStock > 0,

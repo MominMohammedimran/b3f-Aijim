@@ -101,26 +101,16 @@ const checkPincode = () => {
       </div>
     );
 
-function renderDescription(desc: string) {
-  if (!desc) return null;
-  
+    function renderDescription(desc: string) {
   return desc.split('\n').map((line, i) => {
-    if (!line.trim()) return <br key={i} />;
-    
     const [heading, ...rest] = line.split(':');
-    const hasContent = rest.length > 0 && rest.join(':').trim();
-    
     return (
-      <div key={i} className="mb-4 p-3 bg-gradient-to-r from-gray-900/50 to-gray-800/30 rounded-lg border border-gray-600">
-        <h4 className="font-bold text-lg text-yellow-300 mb-2 font-serif tracking-wide">
-          {heading.trim()}
-        </h4>
-        {hasContent && (
-          <p className="text-gray-200 font-sans text-sm leading-relaxed tracking-wide">
-            {rest.join(':').trim()}
-          </p>
+      <p key={i} className="text-xs sm:text-base leading-relaxed mb-1">
+        <span className="font-geist font-bold text-white">{heading.trim()}</span>
+        {rest.length > 0 && (
+          <span className="text-gray-300 font-neue-montreal text-justify tracking-wide  lowercase">: {rest.join(':').trim()}</span>
         )}
-      </div>
+      </p>
     );
   });
 }
@@ -201,7 +191,7 @@ function renderDescription(desc: string) {
   <div className="pt-4 border-t border-gray-700">
     <h4 className="text-sm font-semibold mb-3">Selected Sizes</h4>
 
-    <div className="flex gap-3 overflow-x-auto pb-2 scroll-smooth no-scrollbar">
+    <div className="flex gap-2 overflow-x-auto  scroll-smooth no-scrollbar">
       {selectedSizes.map((sel) => {
         const maxStock = productVariants.find((v) => v.size === sel.size)?.stock ?? 0;
         const cartItem = cartItems.find((c) => c.product_id === product.id);
@@ -212,12 +202,13 @@ function renderDescription(desc: string) {
         return (
           <div
             key={sel.size}
-            className="min-w-[110px] bg-white p-1 text-gray-900 border border-blue-400  text-xs  flex-shrink-0"
+            className="min-w-[110px] bg-white p-1 pb-0 text-gray-900 border border-blue-400  text-xs  flex-shrink-0"
           >
             {/* Size & Remove */}
             <div className="flex justify-between py-1 items-center mb-1">
-              <span className="font-medium flex  justify-between p-2  w-full text-center bg-black text-white py-1">Size :
-                 {sel.size}
+              <span className="font-medium flex  justify-between p-2  w-full text-center bg-black text-white py-1">
+                Size :
+                 {' '} {sel.size}
                    <button
                 onClick={() => toggleSize(sel.size)}
                 disabled={isRemoving}
@@ -279,7 +270,7 @@ function renderDescription(desc: string) {
          {totalPrice> 0 && (
              <div className="flex justify-evenly mt-5 ">
             <span className="text-2xl  items-center text-white  font-SpaceGrotesk font-semibold">
-              Total price &nbsp;: &nbsp; <span className='text-yellow-400 underline'> ₹{totalPrice}</span>
+              Total price &nbsp;: &nbsp; <span className='text-yellow-400  underline'> ₹{totalPrice}</span>
             </span>
              </div>
 
@@ -288,7 +279,7 @@ function renderDescription(desc: string) {
        
  
       {/* Actions */}
-      <div className="sticky bottom-6 mb-2 z-40 mt-2">
+      <div className="sticky bottom-6 mb-2 rounded--none z-40 mt-2">
         <ProductActionButtons
           product={product}
           selectedSizes={selectedSizes.map((s) => s.size)}

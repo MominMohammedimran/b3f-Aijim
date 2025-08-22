@@ -58,7 +58,7 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
               )}
               <span className="text-white font-medium">₹{product.price}</span>
               <span
-                className={`ml-auto text-[10px] px-2 py-0.5 rounded ${
+                className={`ml-auto text-[10px] px-1 py-0.5 rounded ${
                   inStock
                     ? 'bg-white text-black font-bold'
                     : 'bg-red-600 font-bold text-white'

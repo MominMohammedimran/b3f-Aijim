@@ -84,6 +84,7 @@ export interface Database {
           product_id: string
           quantity: number
           size: string | null
+          code:string
           updated_at: string
           user_id: string
         }
@@ -96,6 +97,7 @@ export interface Database {
           price: number
           product_id: string
           quantity?: number
+          code:string
           size?: string | null
           updated_at?: string
           user_id: string
@@ -109,6 +111,7 @@ export interface Database {
           price?: number
           product_id?: string
           quantity?: number
+          code:string
           size?: string | null
           updated_at?: string
           user_id?: string

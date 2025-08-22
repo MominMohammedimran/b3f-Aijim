@@ -200,7 +200,7 @@ useEffect(() => {
                     <img
                       src={item.image || '/placeholder.svg'}
                       alt={item.name}
-                      onClick={() => redirect({ id: item.product_id, pd_name: item.name })}
+                      onClick={() => redirect({ id: item.code, pd_name: item.name })}
                       className={`h-16 w-16 object-cover rounded border shadow-sm transition-transform duration-200 hover:scale-125
                         ${!item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'}`}
                     />

@@ -16,6 +16,7 @@ interface DbCartItem {
   color?: string;
   created_at: string;
   updated_at: string;
+  code?:string;
   // Old structure
   size?: string;
   quantity?: number;
@@ -72,6 +73,7 @@ export const useCartDatabase = () => {
         price: item.price,
         sizes: item.sizes || [{ size: item.size || 'M', quantity: item.quantity || 1 }],
         image: item.image || '',
+        code:item.code||"",
         color: item.color || undefined,
         metadata: item.metadata || undefined,
       })) || [];
@@ -120,6 +122,7 @@ export const useCartDatabase = () => {
         price: item.price,
         image: item.image,
         color: item.color,
+        code:item.code,
         user_id: currentUser.id,
         ...(useNewStructure ? {
           sizes: item.sizes as any, // Cast to Json type

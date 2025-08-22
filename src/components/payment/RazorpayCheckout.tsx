@@ -96,7 +96,7 @@ console.log(appliedCoupon,appliedPoints)
   const createOrderInDatabase = async (paymentMethod: string, paymentStatus: string = 'pending') => {
     try {
       const orderData = {
-        order_number:`Aijim-${(userProfile?.id || 'iji').substring(0, 3)}${Math.floor(100000 + Math.random() * 900000)}`,
+        order_number:`Aijim-${(userProfile.email || 'iji').substring(0, 3)}-${Math.floor( Math.random() )}`,
         user_id: userProfile?.id,
         items: cartItems,
         total: finalTotal,
@@ -107,8 +107,8 @@ console.log(appliedCoupon,appliedPoints)
         shipping_address: shippingAddress,
         delivery_fee: deliveryFee,
         payment_details:"",
-         coupon_code: appliedCoupon?.code || "",
-         reward_points_used: appliedPoints?.points || 0,
+     coupon_code:appliedCoupon.code||"",
+        reward_points_used: appliedPoints.points||0,
         created_at: new Date().toISOString(),
       };
 
@@ -395,7 +395,7 @@ await makePayment(
                   {item.name}
                 </p>
                 <p className="text-xs text-gray-200 font-bold">
-                  Size: {s.size} • Qty : {s.quantity}
+                  Size : {s.size} • Qty : {s.quantity}
                 </p>
               </div>
               <span className="text-sm font-bold text-white">

@@ -165,7 +165,7 @@ const generatePaymentIssueId = () => {
       setShowForm(false);
     }
   };
-console.log(existingIssues)
+
   return (
     <Layout>
       <div className="min-h-screen bg-background text-foreground pt-15">
@@ -224,45 +224,31 @@ console.log(existingIssues)
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium text-yellow-300">
+                <p className="text-sm font-medium text-yellow-300">
                   Name :{" "}
                   <span className="font-semibold text-gray-100 leading-relaxed lowercase">
                     {issue.user_name}
                   </span>
                 </p>
-                <p className="text-xs font-medium text-yellow-300">
+                <p className="text-sm font-medium text-yellow-300">
                   Email :{" "}
                   <span className="font-semibold text-gray-100 leading-relaxed lowercase">
                     {issue.user_email}
                   </span>
                 </p>
-                 <p className="text-xs font-medium text-yellow-300">
+                 <p className="text-sm font-medium text-yellow-300">
                   Number :{" "}
                   <span className="font-semibold text-gray-100  leading-relaxed">
                     {issue.phone_number}
                   </span>
                 </p>
               </div>
-              <div>
-                <p className="text-sm font-medium text-yellow-300">
-                  Created At :{" "}
-                  <span className="font-semibold text-gray-100">
-                    {new Date(issue.created_at)
-                      .toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })
-                      .replace(/ /g, "/")}
-                  </span>
-                 
-                </p>
-              </div>
+              
             
             </div>
-            <div className="  w-full flex">
+            <div className="  w-full flex items-center">
               <p className="text-sm font-medium text-yellow-300">image uploaded :</p>
-               <img className='w-[50%]  h-full m-auto' src={issue.screenshot_url}/>
+               <img className='w-[50%]  h-[150px] m-auto' src={issue.screenshot_url}/>
 
             </div>
 
@@ -291,17 +277,38 @@ console.log(existingIssues)
                       </div>
                     )}
                {issue.updated_at && (
+                
                 <div>
+                  <div>
+                <p className="text-sm font-medium text-yellow-300">
+                  Created At :{" "}
+                  <span className="font-semibold text-gray-100">
+                   {new Date(issue.created_at).toLocaleString("en-IN", {
+                       year: "numeric",
+                       month: "2-digit",
+                        day: "2-digit",
+                       hour: "2-digit",
+                       minute: "2-digit",
+                      second: "2-digit",
+                         hour12: true
+                        })}
+                  </span>
+                 
+                </p>
+              </div>
                   <p className="text-sm font-medium text-yellow-300">
                     Updated At :{" "}
                     <span className="font-semibold text-gray-100">
-                      {new Date(issue.updated_at)
-                        .toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })
-                        .replace(/ /g, "/")}
+                       {new Date(issue.updated_at).toLocaleString("en-IN", {
+                        year: "numeric",
+                          month: "2-digit",
+                         day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                          hour12: true
+                           })}]
+
                     </span>
                   </p>
                 </div>

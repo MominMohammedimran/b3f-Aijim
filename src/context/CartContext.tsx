@@ -23,6 +23,7 @@ export interface CartItem {
   price: number;
   sizes: SizeQuantity[];
   color?: string;
+  code?:string;
   metadata?: any;
 }
 
@@ -90,6 +91,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
               name: item.name,
               image: item.image,
               price: item.price,
+              code:item.code,
               sizes: parsedSizes,
               metadata: item.metadata,
             };
@@ -97,6 +99,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         : [];
 
       setCartItems(transformedCartItems);
+     
     } catch (error) {
       console.error('Error fetching cart items:', error);
       toast.error('Failed to load cart items');
@@ -183,6 +186,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
             image: item.image,
             price: item.price,
             sizes: item.sizes as any,
+            code:item.code,
             metadata: item.metadata,
           });
 
@@ -193,6 +197,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
           {
             id: item.product_id,
             product_id: item.product_id,
+            code:item.code,
             name: item.name,
             image: item.image,
             price: item.price,

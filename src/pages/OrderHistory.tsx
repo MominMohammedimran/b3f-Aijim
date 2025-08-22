@@ -55,6 +55,7 @@ const OrderHistory = () => {
                 productId: item.productId,
                 name: item.name || '',
                 image: item.image,
+                code:item.code||'',
                 price: item.price || 0,
                 sizes: Array.isArray(item.sizes) ? item.sizes : [],
                 color: item.color,
@@ -136,8 +137,11 @@ const OrderHistory = () => {
         })
       .eq('id', orderId);
       if (error) throw error;
-   
+      
       toast.success('Order cancelled');
+      window.location.reload(); 
+   
+    
     } catch (err) {
       console.error(err);
       toast.error('Failed to cancel order');
@@ -182,7 +186,7 @@ const getPaymentStatusText = (status: string) => {
 };
 
 
-
+console.log(orders)
 
 
 if (loading) {
@@ -216,14 +220,14 @@ if (loading) {
           </div>
 
           {orders.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
+            <div className="bg-gray-900 shadow-xl p-12 text-center">
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">No orders yet</h3>
-              <p className="text-gray-600 mb-6">Start shopping to see your orders here</p>
+              <h3 className="text-2xl font-semibold text-gray-200 mb-2">No orders yet</h3>
+              <p className="text-gray-200 mb-6">Start shopping to see your orders here</p>
               <Link to="/">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium">
                   Start Shopping
@@ -231,7 +235,7 @@ if (loading) {
               </Link>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className=" grid md:grid-cols-2 lg:grid-cols-3 gap-5 ">
               {orders.map(order => (
                 <div key={order.id} className="bg-black border   shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden">
                   <div className="p-2">
@@ -264,7 +268,7 @@ if (loading) {
                           <div key={idx} className="flex items-start gap-4 h-[50x] p-2 bg-gray-900">
                             <img
                               src={item.image || '/placeholder.svg'}
-                              onClick={() => redirect({ id: item.product_id, pd_name: item.name })}
+                              onClick={() => redirect({ id: item.code, pd_name: item.name })}
                               className={`h-20 w-20 object-cover border shadow-sm transition-all duration-200 hover:scale-105 ${
                                 !item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'
                               }`}
@@ -276,7 +280,7 @@ if (loading) {
                                 <div className="grid  text-gray-800 gap-1">
                                   {item.sizes.map((s: any, i: number) => (
                                     <span key={i} className="flex flex-wrap text-white text-lg py-1  text-sm font-medium ">
-                                      Size {s.size} |  Qty - {s.quantity} 
+                                      Size - {s.size} |  Qty - {s.quantity} 
                                       
                                     </span>
                                  
@@ -286,7 +290,7 @@ if (loading) {
                                
                               ) : (
                                 <span className="bg-white px-2 py-1 rounded-md text-xs font-medium border">
-                                  Size {item.size} × {item.quantity} Qty
+                                  Size - {item.size} × Qty - {item.quantity} 
                                     <div className="font-bold text-gray-200">
                                 {formatPrice(
                                   Array.isArray(item.sizes)

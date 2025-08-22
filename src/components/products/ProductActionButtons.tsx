@@ -52,6 +52,7 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
         price: product.price,
         sizes: sizesArray,
         image: product.image,
+        code:product.code,
         metadata: {},
       };
 

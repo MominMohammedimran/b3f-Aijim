@@ -68,7 +68,7 @@ const AppRoutes = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/payment-retry/:productId" element={<PaymentRetry/>}/>
-        <Route path="/product/details/:productCode" element={< ProductDetailsPage />} />
+        <Route path="/product/details/:productId" element={< ProductDetailsPage />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:id" element={<ProductsPage />} />
         <Route path="/products/:category" element={<ProductsPage />} />

@@ -58,6 +58,7 @@ const Cart = () => {
   };
 
   const redirect = (product: { id: string, pd_name: string }) => {
+  
     if (!currentUser) {
       navigate('/signin?redirectTo=/cart');
       return;
@@ -93,8 +94,8 @@ const Cart = () => {
   const pointsDiscount = appliedPoints?.discount || 0;
   const totalDiscount = couponDiscount + pointsDiscount;
   const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
-
-  if (loading) {
+ 
+   if (loading) {
   return (
     <Layout>
         <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
@@ -165,7 +166,7 @@ const Cart = () => {
                       <img
                         src={item.image || '/placeholder.svg'}
                         alt={item.name}
-                        onClick={() => redirect({ id: item.product_id, pd_name: item.name })}
+                        onClick={() => redirect({ id: item.code, pd_name: item.name })}
                         className={`h-24 w-24 object-cover rounded border shadow-sm transition-transform duration-200 hover:scale-125
                            ${!item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'}`}
                         onError={(e) => {
@@ -206,7 +207,7 @@ const Cart = () => {
     name: item.name,
     price: item.price,
     image: item.image || '/placeholder.svg',
-    code: '',
+    code:item.code,
     description: '',
     category: '',
   };
@@ -214,7 +215,7 @@ const Cart = () => {
   return (
     <div
       key={sizeItem.size}
-      className="flex flex-col items-center bg-gray-50 p-1 w-40 shadow-sm "
+      className="flex flex-col items-center bg-gray-50 p-1 w-30 shadow-sm "
     >
       <div className="flex justify-between w-full mb-1">
         <span className="bg-gray-800 flex justify-around p-2 text-white w-full py-1 text-center text-center text-xs font-semibold ">

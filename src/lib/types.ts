@@ -42,8 +42,8 @@ export interface Order {
   order_status?: string;
   reward_points?: number;
   reward_points_earned?: number;
-  reward_points_used?: number;
-  coupon_code?: string;
+  reward_points_used?: any;
+  coupon_code?: any;
   status_note?:string;
 }
 
@@ -67,6 +67,7 @@ export interface CartItem {
   image?: string;
   price: number;
   sizes: SizeQuantity[];
+  code?:string;
   color?: string;
   metadata?: any;
 }

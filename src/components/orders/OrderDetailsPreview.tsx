@@ -142,7 +142,7 @@ const getPaymentStatusText = (status: string) => {
 
     <div
       key={order.id}
-      className="bg-black  mt-12 shadow-lg p-2 hover:shadow-xl transition-shadow duration-200 overflow-hidden"
+      className="bg-black grid lg:grid-cols-2 mt-12 shadow-lg p-2 hover:shadow-xl transition-shadow duration-200 overflow-hidden"
     >
          <div className="flex items-center mb-4 pt-8 animate-fade-in">
                   <Link to="/orders" className="mr-2 flex items-center gap-[20px]">
@@ -153,13 +153,13 @@ const getPaymentStatusText = (status: string) => {
                 </div>
       <div className="p-2 border border-gray-200">
         {/* Order Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
+        <div className="flex flex-col md:justify-evenly mb-6">
           <div>
             <div className="flex p-2 justify-between border-b border-gray-100 items-center gap-3 ">
-              <h3 className="text-xl font-bold text-gray-100">
+              <h3 className="text-xl font-bold md:text-2xl text-gray-100">
                 {order.order_number}
               </h3>
-              <div className="text-right pt-5">
+              <div className="text-right md:text-2xl pt-5">
                 <div className="text-xl font-bold text-gray-200">
                   {formatPrice(order.total)}
                 </div>
@@ -207,7 +207,7 @@ const getPaymentStatusText = (status: string) => {
               <img
                 src={item.image || '/placeholder.svg'}
                 onClick={() =>
-                  redirect({ id: item.product_id, pd_name: item.name })
+                  redirect({ id: item.code, pd_name: item.name })
                 }
                 className={`h-20 w-20 object-cover border shadow-sm hover:scale-105 ${
                   !item.name.toLowerCase().includes('custom printed')
@@ -224,7 +224,7 @@ const getPaymentStatusText = (status: string) => {
                       key={i}
                       className="text-white text-sm font-medium"
                     >
-                      <p className= "gap-20 ">Size {s.size} |  Qty - {s.quantity} 
+                      <p className= "gap-20 ">Size - {s.size} |  Qty - {s.quantity} 
                          <span>
                           &nbsp; {formatPrice(s.quantity * item.price)}
                         </span>
@@ -261,7 +261,7 @@ const getPaymentStatusText = (status: string) => {
 
         {/* Status & Rewards */}
         <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-3 mb-6">
-          <div className="p-4 grid items-center border-b border-gray-800">
+          <div className="p-4 grid items-center border-b md:border-r border-gray-800">
             <span className="font-bold text-lg   text-blue-900 mb-1  text-center">
               Payment Status :<span className="w-full font-bold   text-center ">
              "{getPaymentStatusText(order.payment_status)}"
@@ -285,8 +285,8 @@ const getPaymentStatusText = (status: string) => {
 
           </div>
 
-          {order.payment_status === 'paid' && (
-            <div className="p-4 grid items-center border-b w-full  border-gray-800">
+      
+            <div className="p-4 grid items-center border-b w-full md:border-r border-gray-800">
               <span className="font-bold text-lg w-full     text-green-800 mb-1 text-center ">Order Status :
                  <span className=" w-full  font-bold text-center ">
                  &nbsp;"{getOrderStatusText(order.status)}"
@@ -300,9 +300,9 @@ const getPaymentStatusText = (status: string) => {
               
               
             </div>
-          )}
+         
 
-          <div className="p-4  grid items-center border-b border-gray-800 ">
+          <div className="p-4  grid items-center border-b  border-gray-800 ">
             <span className="font-bold text-lg text-purple-900 text-center ">Rewards Section</span>
              <div className='bg-purple-900 w-full m-auto  mt-1 pt-2 pb-2 '> 
             <p className="text-sm font-medium text-center text-white">
@@ -324,7 +324,7 @@ const getPaymentStatusText = (status: string) => {
       
 
         {/* Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-[10px]">
+        <div className="grid grid-cols-1  gap-[10px]">
         
           <div className=" flex gap-4">
               {order.status !== 'delivered' && (
@@ -340,7 +340,7 @@ const getPaymentStatusText = (status: string) => {
 
           <Link
             to={`/order-related-issue?orderId=${order.order_number}`}
-            className="w-full "
+            className="w-full flex-cols-1 "
           >
             <Button className="bg-red-600 rounded-none  hover:bg-red-700 text-white w-full ">
               Order Issue?
