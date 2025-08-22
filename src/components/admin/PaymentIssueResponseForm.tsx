@@ -35,7 +35,7 @@ interface PaymentIssueResponseFormProps {
 export default function PaymentIssueResponseForm({ issue, onUpdate }: PaymentIssueResponseFormProps) {
   const [adminResponse, setAdminResponse] = useState(issue.admin_response || '');
   const [adminImageUrl, setAdminImageUrl] = useState(issue.admin_uploaded_image || '');
-  const [status, setStatus] = useState(issue.status);
+  const [status, setStatus] = useState(issue.status || 'pending');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -94,9 +94,9 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     // Update the issue in the array
     const updatedIssues = paymentIssues.map((issueItem: any) => {
-      if (issueItem.id === issue.id) {
+      if (issueItem && issueItem.id === issue.id) {
         return {
-          ...issueItem,
+          ...(typeof issueItem === 'object' && issueItem !== null ? issueItem : {}),
           admin_response: adminResponse,
           admin_uploaded_image: finalImageUrl,
           status: status,
@@ -105,6 +105,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       }
       return issueItem;
     });
+
+    // Update local state to reflect the changes immediately
+    setAdminImageUrl(finalImageUrl);
 
     // Update the order row with new payment issues array
     const { error } = await supabase
@@ -236,7 +239,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-yellow-40 mb-2">Admin Image Upload (Optional)</label>
+                <label className="block text-sm font-medium text-yellow-400 mb-2">Admin Image Upload (Optional)</label>
                 <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                   <div className="space-y-1 text-center">
                     <Upload className="mx-auto h-12 w-12 text-gray-400" />
