@@ -93,43 +93,6 @@ console.log(appliedCoupon,appliedPoints)
     }
   };
 
-  const createOrderInDatabase = async (paymentMethod: string, paymentStatus: string = 'pending') => {
-    try {
-      const orderData = {
-        order_number:`Aijim-${(userProfile.email || 'iji').substring(0, 3)}-${Math.floor( Math.random() )}`,
-        user_id: userProfile?.id,
-        items: cartItems,
-        total: finalTotal,
-        status: 'pending',
-        upi_input:"upi",
-        payment_method: paymentMethod,
-        payment_status: paymentStatus,
-        shipping_address: shippingAddress,
-        delivery_fee: deliveryFee,
-        payment_details:"",
-     coupon_code:appliedCoupon.code||"",
-        reward_points_used: appliedPoints.points||0,
-        created_at: new Date().toISOString(),
-      };
-
-      const { data, error } = await supabase
-        .from('orders')
-        .insert(orderData)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Database error:', error);
-        throw error;
-      }
-
-      console.log('Order created in database:', data);
-      return data;
-    } catch (error) {
-      console.error('Error creating order in database:', error);
-      throw error;
-    }
-  };
 
   const sendOrderConfirmationEmailHandler = async (orderData: any, paymentMethod: string) => {
     try {
@@ -223,14 +186,11 @@ console.log(appliedCoupon,appliedPoints)
         throw new Error('Invalid payment amount');
       }
 
-      // Create order in database first
-      const orderData = await createOrderInDatabase('razorpay', 'pending');
-
-        // Prepare payment data for Supabase edge function
+      // Prepare payment data for Supabase edge function
       const paymentData = {
         amount: Math.round(finalTotal * 100), // Convert to paise for Razorpay and ensure integer
         currency: 'INR',
-        receipt: orderData.order_number,
+        receipt: `Aijim-${Math.random().toString(36).substring(2, 8)}`,
         cartItems: cartItems,
         shippingAddress: shippingAddress,
         customerInfo: {
@@ -238,7 +198,10 @@ console.log(appliedCoupon,appliedPoints)
           email: shippingAddress?.email || userProfile?.email || '',
           contact: shippingAddress?.phone || userProfile?.phone || '',
           user_id: currentUser?.id
-        }
+        },
+        coupon_code: appliedCoupon || null,
+        reward_points_used: appliedPoints || null,
+        delivery_fee: deliveryFee
       };
 
       console.log('Payment data prepared:', paymentData);
@@ -307,28 +270,6 @@ await makePayment(
   paymentData.customerInfo.contact,
   async (paymentId, orderId, signature) => {
     console.log('Payment successful:', { paymentId, orderId, signature });
-    
-    // Update order status to paid in database
-    await supabase
-      .from('orders')
-      .update({ 
-        payment_status: 'paid',
-        status: 'confirmed',
-        payment_details: JSON.stringify({ paymentId, orderId, signature })
-      })
-      .eq('id', orderData.id);
-    
-    // Send order confirmation email
-    await sendOrderConfirmationEmailHandler({
-      ...orderData,
-      orderNumber: orderResponse.receipt || orderData.order_number,
-      paymentId,
-      orderId,
-      signature
-    }, 'Razorpay');
-    
-    // Send admin notification
-    await sendAdminOrderNotification(orderData);
     
     toast.success('Payment completed successfully!');
     onSuccess?.();

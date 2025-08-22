@@ -154,6 +154,7 @@ export const useCartDatabase = () => {
           .from('carts')
           .update({ 
             sizes: mergedSizes as any, // Cast to Json type
+            code: item.code,
             updated_at: new Date().toISOString()
           })
           .eq('id', existingItems.id);
@@ -165,7 +166,7 @@ export const useCartDatabase = () => {
         const { error: updateError } = await supabase
           .from('carts')
           .update({ 
-            quantity: newQuantity,
+            code: item.code,
             updated_at: new Date().toISOString()
           })
           .eq('id', existingItems.id);
@@ -255,6 +256,7 @@ export const useCartDatabase = () => {
           .from('carts')
           .update({ 
             sizes: newSizes as any, // Cast to Json type
+            code: item.code,
             updated_at: new Date().toISOString() 
           })
           .eq('id', productId)
@@ -266,7 +268,7 @@ export const useCartDatabase = () => {
         const { error } = await supabase
           .from('carts')
           .update({ 
-            quantity,
+            code: item.code,
             updated_at: new Date().toISOString() 
           })
           .eq('id', productId)

@@ -162,6 +162,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
           .from('carts')
           .update({
             sizes: mergedSizes as any,
+            code: item.code,
             updated_at: new Date().toISOString()
           })
           .eq('id', existingCartItem.id)
@@ -273,6 +274,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         .from('carts')
         .update({
           sizes: updatedSizes as any,
+          code: cartItem.code,
           updated_at: new Date().toISOString()
         })
         .eq('product_id', itemId)
@@ -314,6 +316,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         .from('carts')
         .update({
           sizes: updatedSizes as any,
+          code: cartItem.code,
           updated_at: new Date().toISOString()
         })
         .eq('product_id', itemId)
