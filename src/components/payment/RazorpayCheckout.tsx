@@ -268,12 +268,25 @@ await makePayment(
   paymentData.customerInfo.name,
   paymentData.customerInfo.email,
   paymentData.customerInfo.contact,
-  async (paymentId, orderId, signature) => {
-    console.log('Payment successful:', { paymentId, orderId, signature });
-    
-    toast.success('Payment completed successfully!');
-    onSuccess?.();
-  },
+    async (paymentId, orderId, signature) => {
+      console.log('Payment successful:', { paymentId, orderId, signature });
+      
+      // Update inventory immediately when payment is successful
+      try {
+        const { updateInventoryFromOrder } = await import('@/hooks/useProductInventory');
+        await updateInventoryFromOrder({
+          id: orderResponse.order_id,
+          items: cartItems
+        });
+        console.log('✅ Inventory updated successfully after payment');
+      } catch (inventoryError) {
+        console.error('❌ Failed to update inventory:', inventoryError);
+        // Don't fail the payment process if inventory update fails
+      }
+      
+      toast.success('Payment completed successfully!');
+      onSuccess?.();
+    },
   () => {
     console.log('Payment was cancelled by user');
     toast.error('Payment was cancelled');
