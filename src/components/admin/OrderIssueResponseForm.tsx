@@ -20,6 +20,7 @@ interface OrderIssue {
   description: string;
   status: string;
   admin_response?: string;
+  admin_uploaded_image?: string;
   created_at: string;
   updated_at: string;
 }
@@ -33,7 +34,7 @@ interface OrderIssueResponseFormProps {
 
 export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueResponseFormProps) {
   const [adminResponse, setAdminResponse] = useState(issue.admin_response || '');
-  const [adminImageUrl, setAdminImageUrl] = useState((issue as any).admin_uploaded_image || '');
+  const [adminImageUrl, setAdminImageUrl] = useState(issue.admin_uploaded_image || '');
   const [status, setStatus] = useState(issue.status);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadFile, setUploadFile] = useState<File | null>(null);

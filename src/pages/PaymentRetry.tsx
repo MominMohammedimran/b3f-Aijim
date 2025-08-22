@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import PaymentRetry from '../components/payment/PaymentRetry';
+import { updateInventoryFromOrder } from '@/hooks/useProductInventory';
 
 const PaymentRetryPage = () => {
   const { productId } = useParams();
@@ -71,6 +72,11 @@ const PaymentRetryPage = () => {
 
       if (error) {
         console.error('Error updating order status:', error);
+      }
+
+      // Update product inventory
+      if (order) {
+        await updateInventoryFromOrder(order);
       }
 
       toast.success('Payment completed successfully!');
