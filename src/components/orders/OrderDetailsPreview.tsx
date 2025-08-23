@@ -309,13 +309,13 @@ console.log(order)
             <p className="text-sm font-medium text-center text-white">
               Reward Points used :{' '}
               <span className="font-medium  underline">
-                {order.reward_points_used || 0}
+                {(order.reward_points_used as any)?.points || 0}
               </span>
             </p>
             <p className="text-sm text-white font-medium text-center">
               Coupon used :{' '}
               <span className=" font-medium underline">
-                {order.coupon_code || 'None'}
+                {(order.coupon_code as any)?.code || 'None'}
               </span>
             </p>
             </div>

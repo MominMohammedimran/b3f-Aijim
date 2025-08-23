@@ -199,8 +199,14 @@ console.log(appliedCoupon,appliedPoints)
           contact: shippingAddress?.phone || userProfile?.phone || '',
           user_id: currentUser?.id
         },
-        coupon_code: appliedCoupon.code|| null,
-        reward_points_used: appliedPoints.points || null,
+        coupon_code: appliedCoupon ? {
+          code: appliedCoupon.code,
+          discount_amount: appliedCoupon.discount || 0
+        } : null,
+        reward_points_used: appliedPoints ? {
+          points: appliedPoints.points,
+          value_used: appliedPoints.discount || appliedPoints.points
+        } : null,
         delivery_fee: deliveryFee
       };
 

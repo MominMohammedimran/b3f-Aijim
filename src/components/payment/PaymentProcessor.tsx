@@ -65,7 +65,7 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
           onSuccess={handlePaymentSuccess}
           onError={onFailure}
           OrderId={orderData.id}
-          RewardPoints={orderData.reward_points_used || 0}
+          RewardPoints={orderData.reward_points_used?.points || 0}
           onRemoveSize={() => {}}
           onRemoveItem={() => {}}
         />

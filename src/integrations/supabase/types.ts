@@ -397,7 +397,7 @@ export type Database = {
           payment_method: string | null
           payment_status: string | null
           reward_points_earned: number | null
-          reward_points_used: number | null
+          reward_points_used: Json | null
           shipping_address: Json | null
           status: string | null
           status_note: string | null
@@ -421,7 +421,7 @@ export type Database = {
           payment_method?: string | null
           payment_status?: string | null
           reward_points_earned?: number | null
-          reward_points_used?: number | null
+          reward_points_used?: Json | null
           shipping_address?: Json | null
           status?: string | null
           status_note?: string | null
@@ -445,7 +445,7 @@ export type Database = {
           payment_method?: string | null
           payment_status?: string | null
           reward_points_earned?: number | null
-          reward_points_used?: number | null
+          reward_points_used?: Json | null
           shipping_address?: Json | null
           status?: string | null
           status_note?: string | null

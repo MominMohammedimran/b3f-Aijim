@@ -89,7 +89,7 @@ const RewardsSection = () => {
           created_at: order.created_at,
           date: order.created_at,
           payment_status: order.payment_status,
-          reward_points_used: order.reward_points_used || 0,
+          reward_points_used: (order.reward_points_used as any)?.points || 0,
           reward_points_earned: order.reward_points_earned || 0
         };
       }) || [];
@@ -162,7 +162,7 @@ const RewardsSection = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {orders.reduce((sum, order) => sum + (order.reward_points_used || 0), 0)}
+                {orders.reduce((sum, order) => sum + ((order.reward_points_used as any)?.points || 0), 0)}
               </div>
               <p className="text-xs text-orange-100">
                 Points redeemed
@@ -240,11 +240,10 @@ const RewardsSection = () => {
                             +{order.reward_points_earned} points earned
                           </span>
                         )}
-                        {(order.reward_points_used || 0) > 0 && (
-                          <span className="text-blue-600 flex items-center gap-1">
-                            <Gift className="h-4 w-4" />
-                            -{order.reward_points_used} points used
-                          </span>
+                        {((order.reward_points_used as any)?.points || 0) > 0 && (
+                          <div className="text-xs text-red-400 mt-1">
+                            -{(order.reward_points_used as any)?.points || 0} points used
+                          </div>
                         )}
                       </div>
                     </div>

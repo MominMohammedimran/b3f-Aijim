@@ -74,34 +74,21 @@ const OrderHistory = () => {
           return {
             id: order.id,
             orderNumber: order.order_number,
-            order_number: order.order_number,
             userId: order.user_id,
-            user_id: order.user_id,
-            userEmail: order.user_email || '',
-            user_email: order.user_email || '',
             items: parsedItems,
             total: order.total,
-            reward_points: order.reward_points || 0,
-            reward_points_used:order.reward_points_used||0,
-            status: orderStatus,
-            paymentMethod: order.payment_method || 'unknown',
-            payment_method: order.payment_method || 'unknown',
-            shippingAddress: order.shipping_address,
-            shipping_address: order.shipping_address,
-            deliveryFee: order.delivery_fee,
-            delivery_fee: order.delivery_fee,
+            status: orderStatus as Order['status'],
+            paymentMethod: order.payment_method || 'razorpay',
+            shippingAddress: order.shipping_address || {},
+            deliveryFee: order.delivery_fee || 0,
             createdAt: order.created_at,
-            created_at: order.created_at,
-            updatedAt: order.updated_at,
-            updated_at: order.updated_at,
             date: order.created_at,
-            cancellationReason: order.cancellation_reason || null,
-            cancellation_reason: order.cancellation_reason || null,
-            payment_details: order.payment_details || null,
-            payment_status: order.payment_status || 'pending',
-            order_status: order.order_status || order.status || 'pending',
-            coupon_code: order.coupon_code || null,
-            status_note:order.status_note||"N/A"
+          reward_points_used: (order.reward_points_used as any)?.points || 0,
+          order_number: order.order_number,
+          user_id: order.user_id,
+          payment_method: order.payment_method || 'razorpay',
+          shipping_address: order.shipping_address || {},
+          created_at: order.created_at,
           };
         });
 
@@ -147,10 +134,6 @@ const OrderHistory = () => {
       toast.error('Failed to cancel order');
     }
   };
-
-
-
-
 
 const getOrderStatusText = (status: string) => {
   switch (status) {

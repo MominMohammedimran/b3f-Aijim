@@ -42,7 +42,7 @@ serve(async (req: Request) => {
       shippingAddress,
       paymentMethod = "Razorpay",
       deliveryFee = 0,
-      appliedCoupon,
+      couponCode,
       rewardPointsUsed = 0
     } = requestBody;
 
@@ -147,13 +147,13 @@ serve(async (req: Request) => {
           <!-- Order Summary -->
           <table style="width:100%;border-collapse:collapse;background:#000;color:#fff;margin-bottom:20px;">
             <!-- Coupon Row -->
-            ${appliedCoupon ? `
+            ${couponCode ? `
             <tr style="background:#111;color:#fff;">
               <td colspan="2" style="padding:10px;font-weight:bold;">
                 Coupon Applied
               </td>
               <td style="padding:10px;font-weight:bold;color:#4ade80;">
-                ${appliedCoupon}
+                ${couponCode}
               </td>
             </tr>
             ` : ''}

@@ -43,7 +43,7 @@ serve(async (req: Request) => {
       emailType = "status_update",
       paymentMethod = "razorpay",
       deliveryFee,
-      appliedCoupon,
+      couponCode,
       rewardPointsUsed,
       discountApplied
     } = requestBody;
@@ -145,7 +145,7 @@ serve(async (req: Request) => {
       Coupon Applied 
     </td>
      <td colspan="2" style="padding:10px;font-weight:bold;">
-      ${appliedCoupon||"not applied"}
+      ${couponCode||"not applied"}
     </td>
   </tr>
 

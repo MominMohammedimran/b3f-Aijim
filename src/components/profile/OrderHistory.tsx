@@ -75,7 +75,7 @@ const OrderHistory = () => {
           payment_details: order.payment_details,
           payment_status: order.payment_status,
           reward_points_earned: order.reward_points_earned || 0,
-          reward_points_used: order.reward_points_used || 0,
+          reward_points_used: (order.reward_points_used as any)?.points || 0,
         };
       }) || [];
 

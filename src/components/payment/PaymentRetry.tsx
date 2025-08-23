@@ -152,12 +152,12 @@ console.log(data.items[0].image)
   <div className="mt-1  text-sm text-left p-3  shadow-sm">
     
       <p className="text-yellow-400 text-sm  font-medium">
-        Coupon Applied : <span className="">{data.coupon_code}</span>
+        Coupon Applied : <span className="">{data.coupon_code?.code || 'None'}</span>
       </p>
   
 
       <p className="text-yellow-400 text-sm font-medium">
-        Reward Points Used : {data.reward_points_used}
+        Reward Points Used : {data.reward_points_used?.points || 0}
       </p>
     
   </div>

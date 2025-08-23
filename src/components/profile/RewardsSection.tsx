@@ -161,8 +161,8 @@ const RewardsSection = () => {
                     <p className="text-sm text-yellow-400 font-medium">
                       + &nbsp;{order.reward_points_earned || 0} pts
                     </p>
-                    {order.reward_points_used > 0 && (
-                      <p className="text-xs text-red-300">-&nbsp; {order.reward_points_used} pts </p>
+                    {(order.reward_points_used?.points || 0) > 0 && (
+                      <p className="text-xs text-red-300">-&nbsp; {order.reward_points_used?.points || 0} pts </p>
                     )}
                   </div>
                 </div>

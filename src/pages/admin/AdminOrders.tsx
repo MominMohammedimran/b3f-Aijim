@@ -26,8 +26,8 @@ interface Order {
   shipping_address: any;
   payment_method: string;
   payment_status?: string;
-    coupon_code?: string;
-    reward_points_used?: number;
+    coupon_code?: {code: string, discount_amount: number};
+    reward_points_used?: {points: number, value_used: number};
   reward_points_earned?: number;
    delivery_fee?: number;
 }
@@ -72,8 +72,8 @@ const AdminOrders: React.FC = () => {
           payment_method: order.payment_method,
           payment_status: order.payment_status,
           reward_points_earned: order.reward_points_earned || 0,
-          coupon_code:order.coupon_code||"",
-          reward_points_used:order.reward_points_used||0,
+          coupon_code:order.coupon_code?.code||"",
+          reward_points_used:order.reward_points_used?.points||0,
           delivery_fee:order.delivery_fee||0,
           
         }));
@@ -126,8 +126,8 @@ const AdminOrders: React.FC = () => {
                 country: shipping?.country || ''
               },
               paymentMethod: updatedOrder.payment_method,
-              couponCode:updatedOrder.coupon_code,
-              rewardPointsUsed:updatedOrder.reward_points_used,
+              couponCode:updatedOrder.coupon_code?.code||"",
+              rewardPointsUsed:updatedOrder.reward_points_used?.points||0,
               deliveryFee:updatedOrder.delivery_fee,
             });
             console.log('Status update email sent successfully',updatedOrder);

@@ -72,7 +72,7 @@ const AdminOrders = () => {
           created_at: order.created_at,
           date: order.created_at,
           payment_status: order.payment_status,
-          reward_points_used: order.reward_points_used || 0,
+          reward_points_used: (order.reward_points_used as any)?.points || 0,
           reward_points_earned: order.reward_points_earned || 0
         };
       }) || [];
@@ -197,7 +197,7 @@ const AdminOrders = () => {
                   </div>
                   <div>
                     <p className="text-gray-600">Points Used</p>
-                    <p className="font-medium">{order.reward_points_used || 0} points</p>
+                    <p className="font-medium">{order.reward_points_used?.points || 0} points</p>
                   </div>
                   <div>
                     <p className="text-gray-600">Points Earned</p>
