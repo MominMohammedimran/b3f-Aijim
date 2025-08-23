@@ -125,6 +125,7 @@ const getPaymentStatusText = (status: string) => {
 };
 
 
+console.log(order)
 
 
   if (!order) {

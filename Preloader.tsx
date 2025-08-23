@@ -15,6 +15,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
     return () => clearTimeout(exitTimeout);
   }, [onComplete]);
 
+  
   return (
     <AnimatePresence>
       {!zoomOut && (

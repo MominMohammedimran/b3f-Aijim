@@ -199,8 +199,8 @@ console.log(appliedCoupon,appliedPoints)
           contact: shippingAddress?.phone || userProfile?.phone || '',
           user_id: currentUser?.id
         },
-        coupon_code: appliedCoupon || null,
-        reward_points_used: appliedPoints || null,
+        coupon_code: appliedCoupon.code|| null,
+        reward_points_used: appliedPoints.points || null,
         delivery_fee: deliveryFee
       };
 
