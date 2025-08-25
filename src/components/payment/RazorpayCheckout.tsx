@@ -186,19 +186,35 @@ console.log(appliedCoupon,appliedPoints)
         throw new Error('Invalid payment amount');
       }
 
-      // Prepare payment data for Supabase edge function
-      const paymentData = {
-        amount: Math.round(finalTotal * 100), // Convert to paise for Razorpay and ensure integer
-        currency: 'INR',
-        receipt: `Aijim-${Math.random().toString(36).substring(2, 8)}`,
-        cartItems: cartItems,
-        shippingAddress: shippingAddress,
-        customerInfo: {
-          name: shippingAddress?.fullName || userProfile?.display_name || 'Customer',
-          email: shippingAddress?.email || userProfile?.email || '',
-          contact: shippingAddress?.phone || userProfile?.phone || '',
-          user_id: currentUser?.id
-        },
+      // First, create order in database
+      const orderItems = cartItems.map(item => ({
+        id: item.id,
+        product_id: item.product_id || item.id,
+        name: item.name,
+        image: item.image,
+        code: item.code,
+        price: item.price,
+        sizes: item.sizes,
+        color: item.color,
+        metadata: item.metadata
+      }));
+
+      // Generate unique order number
+      const timestamp = Date.now();
+      const randomSuffix = Math.floor(Math.random() * 99999) + 10000;
+      const orderNumber = `Aijim-${timestamp}-${randomSuffix}`;
+
+      const orderData = {
+        order_number: orderNumber,
+        user_id: currentUser?.id || '00000000-0000-0000-0000-000000000000',
+        total: finalTotal,
+        status: 'pending',
+        payment_status: 'pending',
+        items: orderItems,
+        payment_method: 'razorpay',
+        delivery_fee: deliveryFee,
+        shipping_address: shippingAddress,
+        user_email: shippingAddress?.email || userProfile?.email,
         coupon_code: appliedCoupon ? {
           code: appliedCoupon.code,
           discount_amount: appliedCoupon.discount || 0
@@ -207,34 +223,43 @@ console.log(appliedCoupon,appliedPoints)
           points: appliedPoints.points,
           value_used: appliedPoints.discount || appliedPoints.points
         } : null,
-        delivery_fee: deliveryFee
+        reward_points_earned: Math.floor(finalTotal / 10),
+        discount_applied: couponDiscount + pointsDiscount
       };
 
-      console.log('Payment data prepared:', paymentData);
+      console.log('Creating order in database:', orderData);
 
-      // Call Supabase edge function with extended order data
-      const extendedPaymentData = {
-        ...paymentData,
-        orderItems: cartItems.map(item => ({
-          id: item.id,
-          product_id: item.product_id || item.id,
-          name: item.name,
-          image: item.image,
-          code: item.code,
-          price: item.price,
-          sizes: item.sizes,
-          color: item.color,
-          metadata: item.metadata
-        })),
-        totalAmount: finalTotal,
-        deliveryFee: deliveryFee,
-        couponDiscount: couponDiscount,
-        pointsDiscount: pointsDiscount,
-        rewardPointsEarned: Math.floor(finalTotal / 10) // 1 point per ₹10 spent
+      const { data: createdOrder, error: dbError } = await supabase
+        .from('orders')
+        .insert(orderData)
+        .select()
+        .single();
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error('Failed to create order');
+      }
+
+      console.log('Order created successfully:', createdOrder.id);
+
+      // Prepare payment data for Razorpay
+      const paymentData = {
+        amount: Math.round(finalTotal * 100), // Convert to paise for Razorpay
+        currency: 'INR',
+        receipt: orderNumber,
+        orderItems: orderItems,
+        customerInfo: {
+          name: shippingAddress?.fullName || userProfile?.display_name || 'Customer',
+          email: shippingAddress?.email || userProfile?.email || '',
+          contact: shippingAddress?.phone || userProfile?.phone || '',
+          user_id: currentUser?.id
+        }
       };
+
+      console.log('Calling Razorpay order creation:', paymentData);
 
       const { data: orderResponse, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
-        body: extendedPaymentData
+        body: paymentData
       });
 
       console.log('Supabase function response:', { orderResponse, orderError });
@@ -286,40 +311,61 @@ console.log(appliedCoupon,appliedPoints)
       console.log('Razorpay options:', razorpayOptions);
       
       // Use the enhanced payment method with proper configuration
-      const { apiKey } = getRazorpayConfig();
-     // Remove: const { apiKey } = getRazorpayConfig();
-await makePayment(
-  finalTotal, // Pass the actual amount
-  orderResponse.order_id,
-  paymentData.customerInfo.name,
-  paymentData.customerInfo.email,
-  paymentData.customerInfo.contact,
-    async (paymentId, orderId, signature) => {
-      console.log('Payment successful:', { paymentId, orderId, signature });
-      
-      // Update inventory immediately when payment is successful
-      try {
-        const { updateInventoryFromOrder } = await import('@/hooks/useProductInventory');
-        await updateInventoryFromOrder({
-          id: orderResponse.order_id,
-          items: cartItems
-        });
-        console.log('✅ Inventory updated successfully after payment');
-      } catch (inventoryError) {
-        console.error('❌ Failed to update inventory:', inventoryError);
-        // Don't fail the payment process if inventory update fails
-      }
-      
-      toast.success('Payment completed successfully!');
-      onSuccess?.();
-    },
-  () => {
-    console.log('Payment was cancelled by user');
-    toast.error('Payment was cancelled');
-    onError?.();
-  },
-  orderResponse.key_id // ✅ use key from backend response
-);
+      await makePayment(
+        finalTotal, // Pass the actual amount
+        orderResponse.order_id,
+        paymentData.customerInfo.name,
+        paymentData.customerInfo.email,
+        paymentData.customerInfo.contact,
+        async (paymentId, orderId, signature) => {
+          console.log('Payment successful:', { paymentId, orderId, signature });
+          
+          // Update order with payment details
+          try {
+            await supabase
+              .from('orders')
+              .update({
+                payment_status: 'paid',
+                status: 'confirmed',
+                payment_details: JSON.stringify({
+                  razorpay_payment_id: paymentId,
+                  razorpay_order_id: orderId,
+                  razorpay_signature: signature,
+                  amount: finalTotal * 100,
+                  currency: 'INR'
+                }),
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', createdOrder.id);
+
+            console.log('✅ Order payment status updated successfully');
+          } catch (updateError) {
+            console.error('❌ Failed to update order payment status:', updateError);
+          }
+          
+          // Update inventory immediately when payment is successful
+          try {
+            const { updateInventoryFromOrder } = await import('@/hooks/useProductInventory');
+            await updateInventoryFromOrder({
+              id: createdOrder.id,
+              items: cartItems
+            });
+            console.log('✅ Inventory updated successfully after payment');
+          } catch (inventoryError) {
+            console.error('❌ Failed to update inventory:', inventoryError);
+            // Don't fail the payment process if inventory update fails
+          }
+          
+          toast.success('Payment completed successfully!');
+          onSuccess?.();
+        },
+        () => {
+          console.log('Payment was cancelled by user');
+          toast.error('Payment was cancelled');
+          onError?.();
+        },
+        orderResponse.key_id // ✅ use key from backend response
+      );
 
 
       
