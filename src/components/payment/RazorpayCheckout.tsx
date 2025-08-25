@@ -212,9 +212,29 @@ console.log(appliedCoupon,appliedPoints)
 
       console.log('Payment data prepared:', paymentData);
 
-      // Call Supabase edge function
+      // Call Supabase edge function with extended order data
+      const extendedPaymentData = {
+        ...paymentData,
+        orderItems: cartItems.map(item => ({
+          id: item.id,
+          product_id: item.product_id || item.id,
+          name: item.name,
+          image: item.image,
+          code: item.code,
+          price: item.price,
+          sizes: item.sizes,
+          color: item.color,
+          metadata: item.metadata
+        })),
+        totalAmount: finalTotal,
+        deliveryFee: deliveryFee,
+        couponDiscount: couponDiscount,
+        pointsDiscount: pointsDiscount,
+        rewardPointsEarned: Math.floor(finalTotal / 10) // 1 point per ₹10 spent
+      };
+
       const { data: orderResponse, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
-        body: paymentData
+        body: extendedPaymentData
       });
 
       console.log('Supabase function response:', { orderResponse, orderError });

@@ -27,11 +27,19 @@ const RewardsSection = () => {
 
         if (ordersError) throw ordersError;
 
-        const used = orderData.reduce((sum, order) => sum + (order.reward_points_used || 0), 0);
-        const earned = orderData.reduce(
-          (sum, order) => sum + (order.reward_points_earned || 0) - (order.reward_points_used || 0),
-          0
-        );
+        const used = orderData.reduce((sum, order) => {
+          const pointsUsed = typeof order.reward_points_used === 'object' && order.reward_points_used 
+            ? (order.reward_points_used as any).points || 0 
+            : (order.reward_points_used as number) || 0;
+          return sum + pointsUsed;
+        }, 0);
+        
+        const earned = orderData.reduce((sum, order) => {
+          const pointsUsed = typeof order.reward_points_used === 'object' && order.reward_points_used 
+            ? (order.reward_points_used as any).points || 0 
+            : (order.reward_points_used as number) || 0;
+          return sum + (order.reward_points_earned || 0) - pointsUsed;
+        }, 0);
 
         const currentPoints = userProfile.reward_points || 0;
         const updatedTotal = earned > 0 ? earned : currentPoints;

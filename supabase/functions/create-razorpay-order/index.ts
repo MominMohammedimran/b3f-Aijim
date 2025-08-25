@@ -10,6 +10,7 @@ interface RequestBody {
   currency: string;
   receipt: string;
   cartItems: any[];
+  orderItems: any[];
   shippingAddress: any;
   customerInfo: {
     name: string;
@@ -17,6 +18,19 @@ interface RequestBody {
     contact: string;
     user_id?: string;
   };
+  coupon_code?: {
+    code: string;
+    discount_amount: number;
+  };
+  reward_points_used?: {
+    points: number;
+    value_used: number;
+  };
+  delivery_fee: number;
+  totalAmount: number;
+  couponDiscount: number;
+  pointsDiscount: number;
+  rewardPointsEarned: number;
 }
 
 Deno.serve(async (req) => {
@@ -31,7 +45,22 @@ Deno.serve(async (req) => {
     const requestBody: RequestBody = await req.json();
     console.log('Request body received:', requestBody);
 
-    const { amount, currency, receipt, cartItems, shippingAddress, customerInfo } = requestBody;
+    const { 
+      amount, 
+      currency, 
+      receipt, 
+      cartItems, 
+      orderItems,
+      shippingAddress, 
+      customerInfo,
+      coupon_code,
+      reward_points_used,
+      delivery_fee,
+      totalAmount,
+      couponDiscount,
+      pointsDiscount,
+      rewardPointsEarned
+    } = requestBody;
 
     // Validate required fields
     if (!amount || !currency || !receipt || !customerInfo) {
@@ -123,13 +152,24 @@ Deno.serve(async (req) => {
     const orderData = {
       order_number: orderNumber,
       user_id: customerInfo.user_id || '00000000-0000-0000-0000-000000000000', // Default user for guest orders
-      total: amount / 100,
+      total: totalAmount,
       status: 'pending',
-      items: cartItems,
+      payment_status: 'pending',
+      items: orderItems || cartItems,
       payment_method: 'razorpay',
-      delivery_fee: 0,
+      delivery_fee: delivery_fee,
       shipping_address: shippingAddress,
       user_email: customerInfo.email,
+      coupon_code: coupon_code ? {
+        code: coupon_code.code,
+        discount_amount: coupon_code.discount_amount
+      } : null,
+      reward_points_used: reward_points_used ? {
+        points: reward_points_used.points,
+        value_used: reward_points_used.value_used
+      } : null,
+      reward_points_earned: rewardPointsEarned,
+      discount_applied: couponDiscount + pointsDiscount,
       payment_details: JSON.stringify({
         razorpay_order_id: razorpayOrder.id,
         amount: amount,

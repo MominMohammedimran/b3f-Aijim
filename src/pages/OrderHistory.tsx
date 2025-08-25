@@ -36,6 +36,19 @@ const OrderHistory = () => {
       if (!currentUser) return;
       try {
         setLoading(true);
+        
+        // First, clean up expired pending orders (older than 24 hours)
+        const twentyFourHoursAgo = new Date();
+        twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+        
+        await supabase
+          .from('orders')
+          .delete()
+          .eq('user_id', currentUser.id)
+          .eq('payment_status', 'pending')
+          .lt('created_at', twentyFourHoursAgo.toISOString());
+
+        // Then fetch remaining orders
         const { data, error } = await supabase
           .from('orders')
           .select('*')
