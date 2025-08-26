@@ -100,6 +100,7 @@ const OrderHistory = () => {
           order_number: order.order_number,
           user_id: order.user_id,
           payment_method: order.payment_method || 'razorpay',
+          payment_status:order.payment_status||'pending',
           shipping_address: order.shipping_address || {},
           created_at: order.created_at,
           };
@@ -251,6 +252,11 @@ if (loading) {
       Cancelled
     </span>
   )}
+  {order.payment_status === "pending" && (
+    <span className="  bg-red-500 text-white text-xs font-medium px-2 py-1.5  shadow">
+      Not Paid
+    </span>
+  )}
   {order.status === "delivered" && (
     <span className="  bg-green-500 text-black  text-xs font-medium px-2 py-1.5  item-center z-10 shadow">
       Delivered
@@ -259,56 +265,74 @@ if (loading) {
 </div>
 
                                            
-                       <div className="space-y-2">
-                        {order.items.map((item: any, idx: number) => (
-                          <div key={idx} className="flex items-start gap-4 h-[50x] p-2 bg-gray-900">
-                            <img
-                              src={item.image || '/placeholder.svg'}
-                              onClick={() => redirect({ id: item.code, pd_name: item.name })}
-                              className={`h-20 w-20 object-cover border shadow-sm transition-all duration-200 hover:scale-105 ${
-                                !item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'
-                              }`}
-                              alt={item.name}
-                            />
-                            <div className="flex-1">
-                              <h5 className="font-medium text-lg text-yellow-400 mb-1">{item.name}</h5>
-                              {Array.isArray(item.sizes) ? (
-                                <div className="grid  text-gray-800 gap-1">
-                                  {item.sizes.map((s: any, i: number) => (
-                                    <span key={i} className="flex flex-wrap text-white text-lg py-1  text-sm font-medium ">
-                                      Size - {s.size} |  Qty - {s.quantity} 
-                                      
-                                    </span>
-                                 
-                                  ))}
-                                  
-                                </div>
-                               
-                              ) : (
-                                <span className="bg-white px-2 py-1 rounded-md text-xs font-medium border">
-                                  Size - {item.size} × Qty - {item.quantity} 
-                                    <div className="font-bold text-gray-200">
-                                {formatPrice(
-                                  Array.isArray(item.sizes)
-                                    ? item.sizes.reduce((sum: number, s: any) => sum + s.quantity * item.price, 0)
-                                    : item.quantity * item.price
-                                )}
-                              </div>
-                                </span>
-                                
-                              )}
-                            </div>
-                         
-                          </div>
-                        ))}
-                      </div>
+                      <div className="space-y-4">
+  {order.items.map((item: any, idx: number) => (
+    <div
+      key={idx}
+      className="flex items-start gap-4 p-4 bg-gray-800/90 rounded-xl shadow-md border border-gray-700 hover:shadow-lg hover:bg-gray-800 transition"
+    >
+      {/* Product Image */}
+      <img
+        src={item.image || '/placeholder.svg'}
+        onClick={() => redirect({ id: item.code, pd_name: item.name })}
+        className={`h-20 w-20 object-cover border border-gray-600 shadow-sm transition-transform duration-200 hover:scale-105 ${
+          !item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'
+        }`}
+        alt={item.name}
+      />
+
+      {/* Product Details */}
+      <div className="flex-1">
+        <h5 className="font-semibold text-lg text-yellow-300 mb-2">{item.name}</h5>
+
+        {Array.isArray(item.sizes) ? (
+          <div className="space-y-1">
+            {item.sizes.map((s: any, i: number) => (
+              <div
+                key={i}
+                className="flex justify-between items-center text-sm text-gray-200 bg-gray-700/60 px-3 py-1 "
+              >
+                <span>Size: <span className="font-medium text-white">{s.size}</span></span>
+                <span>Qty: <span className="font-medium text-white">{s.quantity}</span></span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex justify-between items-center bg-gray-700/60 px-3 py-1  text-sm text-gray-200">
+            <span>Size: <span className="font-medium text-white">{item.size}</span></span>
+            <span>Qty: <span className="font-medium text-white">{item.quantity}</span></span>
+          </div>
+        )}
+
+        {/* Price */}
+        <div className="mt-2 text-right font-bold text-green-400 text-lg">
+          {formatPrice(
+            Array.isArray(item.sizes)
+              ? item.sizes.reduce((sum: number, s: any) => sum + s.quantity * item.price, 0)
+              : item.quantity * item.price
+          )}
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+
+
+
                        <p className="text-gray-200 font-medium text-center text-xs p-1 mb-2">
-                          Placed on {new Date(order.createdAt).toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
+                         Placed on{" "}
+{new Date(order.createdAt).toLocaleString("en-US", {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true,
+})}
+
                         </p>
                           
 
@@ -345,6 +369,26 @@ if (loading) {
                               </Button>
                                )}
                         </div>
+
+
+                      {order.payment_status === "pending" && (
+                          <p className="text-sm text-white text-center font-medium mt-2">
+                            ⚠️ This order will be deleted if payment is not completed by{" "}
+                            {new Date(new Date(order.createdAt).getTime() + 24 * 60 * 60 * 1000).toLocaleString("en-US", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                           day: "numeric",
+                           hour: "numeric",
+                           minute: "numeric",
+                           hour12: true,
+                              })}
+                            </p>    
+                         )}
+
+
+                      
+                      
 
 
                           

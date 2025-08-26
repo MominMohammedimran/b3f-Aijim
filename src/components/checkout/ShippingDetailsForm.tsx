@@ -188,7 +188,7 @@ console.log(formData)
           value={formData.state}
           onChange={handleChange}
           required
-          className="w-full border p-2 font-semibold bg-white text-gray-800"
+          className="w-full border p-2 font-bold bg-white text-gray-800"
         >
           <option value="" disabled>-- Select State --</option>
           {indianStates.map((state) => (

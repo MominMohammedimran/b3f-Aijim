@@ -112,7 +112,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
             <div className="flex justify-between items-center">
               <div className="text-green-800 tracking-[1px] font-semibold">
                 <div className="font-semibold text-sm">Points Applied</div>
-                <div className="text-xs">Using {appliedPoints.points} points for ₹{appliedPoints.discount} discount</div>
+                <div className="text-xs font-semibold">Using {appliedPoints.points} points for ₹{appliedPoints.discount} discount</div>
               </div>
               <Button
                 variant="outline"
