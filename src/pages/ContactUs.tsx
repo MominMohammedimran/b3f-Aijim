@@ -19,7 +19,7 @@ const ContactUs = () => {
       <div className="container mx-auto px-4 mt-10 py-12">
         <div className="max-w-2xl mx-auto bg-gray-800 text-white  p-6  shadow-md border">
           <h1 className="text-3xl font-bold text-center mb-6 text-white">
-            📬 Contact Us
+            Contact Us
           </h1>
           <p className="text-center text-white mb-8">
             We'd love to hear from you. Fill out the form below and our team will respond shortly.
