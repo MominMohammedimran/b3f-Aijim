@@ -887,7 +887,13 @@ export type Database = {
         Returns: undefined
       }
       validate_coupon: {
-        Args: { cart_total: number; coupon_code_input: string }
+        Args:
+          | { cart_total: number; coupon_code_input: string }
+          | {
+              cart_total: number
+              coupon_code_input: string
+              user_id_input?: string
+            }
         Returns: {
           coupon_id: string
           discount_amount: number
