@@ -12,6 +12,7 @@ import ProductQuantitySelector from './ProductQuantitySelector';
 import ProductActionButtons from './ProductActionButtons';
 import ShareModal from './ShareModal';
 import LiveViewingCounter from './LiveViewingCounter';
+import AvailableCoupons from './AvailableCoupons';
 
 interface SizeWithQuantity {
   size: string;
@@ -336,6 +337,8 @@ const checkPincode = () => {
   </div>
 </div>
 
+      {/* Available Coupons */}
+      <AvailableCoupons productPrice={product.price} />
 
       {/* Description */}
       <div className="p-3  bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-700 mt-4">
