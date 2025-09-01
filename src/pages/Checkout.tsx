@@ -13,6 +13,8 @@ import { useDeliverySettings } from '@/hooks/useDeliverySettings';
 import SEOHelmet from '@/components/seo/SEOHelmet';
 import useSEO from '@/hooks/useSEO';
 import { formatPrice } from '@/lib/utils';
+import CouponSection from '@/components/cart/CouponSection';
+import RewardPointsSection from '@/components/cart/RewardPointsSection';
 type FormData = {
   firstName: string;
   lastName: string;
@@ -39,35 +41,22 @@ const seo = useSEO('/checkout');
     zipCode: '',
     country: 'India',
   });
- // Reward points state
-
   const [isLoading, setIsLoading] = useState(false);
   const { currentUser } = useAuth();
   const { currentLocation } = useLocationContext();
   const { cartItems, totalPrice } = useCart();
   const { settings: deliverySettings, loading: settingsLoading } = useDeliverySettings();
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
- const location = useLocation();
-const passedCoupon = location.state?.appliedCoupon;
-const passedPoints =location.state?.appliedPoints;
-const [appliedCoupon, setAppliedCoupon] = useState<{
-  code: string;
-  discount: number;
-} | null>(passedCoupon || null);
+  // Coupon and reward points state
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discount: number;
+  } | null>(null);
+  
   const [appliedPoints, setAppliedPoints] = useState<{
     points: number;
     discount: number;
-  } | null>(passedPoints ||null);
-useEffect(() => {
-  const savedCoupon = localStorage.getItem('appliedCoupon');
-  const savedPoints=localStorage.getItem('appliedPoints');
-  if (savedCoupon) {
-    setAppliedCoupon(JSON.parse(savedCoupon));
-  }
-  if(savedPoints){
-    setAppliedPoints(JSON.parse(savedPoints));
-  }
-}, []);
+  } | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -114,6 +103,24 @@ useEffect(() => {
 
     loadProfile();
   }, [currentUser, cartItems, navigate, currentLocation]);
+
+  // Handle coupon application
+  const handleCouponApplied = (discount: number, code: string) => {
+    setAppliedCoupon({ code, discount });
+  };
+
+  const handleCouponRemoved = () => {
+    setAppliedCoupon(null);
+  };
+
+  // Handle reward points application
+  const handlePointsApplied = (points: number, discount: number) => {
+    setAppliedPoints({ points, discount });
+  };
+
+  const handlePointsRemoved = () => {
+    setAppliedPoints(null);
+  };
 
   const redirect = (product: { id: string, pd_name: string }) => {
     if (!currentUser) {
@@ -189,8 +196,25 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
+          {/* Coupon and Reward Points Section + Order Summary */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Coupon Section */}
+            <CouponSection 
+              cartTotal={totalPrice}
+              onCouponApplied={handleCouponApplied}
+              onCouponRemoved={handleCouponRemoved}
+              appliedCoupon={appliedCoupon || undefined}
+            />
+
+            {/* Reward Points Section */}
+            <RewardPointsSection
+              cartTotal={totalPrice - (appliedCoupon?.discount || 0)}
+              onPointsApplied={handlePointsApplied}
+              onPointsRemoved={handlePointsRemoved}
+              appliedPoints={appliedPoints || undefined}
+            />
+
+            {/* Order Summary */}
             <div className="bg-gray-800 p-4  border">
               <h3 className="font-medium text-center text-2xl mb-5">Order Summary</h3>
 
@@ -250,10 +274,6 @@ useEffect(() => {
                                </div>
                              </div>
                            </div>
-
-
-
-
             </div>
           </div>
         </div>

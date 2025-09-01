@@ -10,27 +10,11 @@ import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '@/lib/utils';
 import { useDeliverySettings } from '@/hooks/useDeliverySettings';
 import ProductActionButtons from '@/components/products/ProductActionButtons';
-import CouponSection from '@/components/cart/CouponSection';
-import RewardPointsSection from '@/components/cart/RewardPointsSection';
 
 const Cart = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   
-  // Coupon state
-  const [appliedCoupon, setAppliedCoupon] = React.useState<{
-    code: string;
-    discount: number;
-  } | null>(null);
-  
-  // Reward points state
-  const [appliedPoints, setAppliedPoints] = React.useState<{
-    points: number;
-    discount: number;
-  } | null>(null);
-  
-  localStorage.setItem('appliedCoupon', JSON.stringify(appliedCoupon));
-  localStorage.setItem('appliedPoints', JSON.stringify(appliedPoints));
 
   const seo = useSEO('/cart');
 
@@ -48,12 +32,7 @@ const Cart = () => {
       navigate('/signin?redirectTo=/checkout');
       return;
     }
-   navigate('/checkout', {
-  state: {
-    appliedCoupon,
-    appliedPoints,
-  }
-});
+   navigate('/checkout');
 
   };
 
@@ -71,29 +50,7 @@ const Cart = () => {
   const { settings: deliverySettings, loading: settingsLoading } = useDeliverySettings();
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
 
-  // Handle coupon application
-  const handleCouponApplied = (discount: number, code: string) => {
-    setAppliedCoupon({ code, discount });
-  };
-
-  const handleCouponRemoved = () => {
-    setAppliedCoupon(null);
-  };
-
-  // Handle reward points application
-  const handlePointsApplied = (points: number, discount: number) => {
-    setAppliedPoints({ points, discount });
-  };
-
-  const handlePointsRemoved = () => {
-    setAppliedPoints(null);
-  };
-
-  // Calculate prices with coupon and reward points
-  const couponDiscount = appliedCoupon?.discount || 0;
-  const pointsDiscount = appliedPoints?.discount || 0;
-  const totalDiscount = couponDiscount + pointsDiscount;
-  const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
+  const finalTotal = totalPrice + deliveryFee;
  
    if (loading) {
   return (
@@ -258,22 +215,8 @@ const Cart = () => {
             </div>
           </div>
 
-          {/* Coupon and Reward Points Section */}
+          {/* Order Summary */}
           <div className="lg:col-span-1">
-            <CouponSection 
-              cartTotal={totalPrice}
-              onCouponApplied={handleCouponApplied}
-              onCouponRemoved={handleCouponRemoved}
-              appliedCoupon={appliedCoupon || undefined}
-            />
-
-            <RewardPointsSection
-              cartTotal={totalPrice - couponDiscount}
-              onPointsApplied={handlePointsApplied}
-              onPointsRemoved={handlePointsRemoved}
-              appliedPoints={appliedPoints || undefined}
-            />
-
             {/* Order Summary */}
             <div className="bg-gray-800 p-6 shadow border sticky top-4">
               <h2 className="text-xl font-semibold text-center mb-4 text-white">Order Summary</h2>
@@ -282,18 +225,6 @@ const Cart = () => {
                   <span>Subtotal</span>
                   <span className='font-bold'>{formatPrice(totalPrice)}</span>
                 </div>
-                {appliedCoupon && (
-                  <div className="flex justify-between text-green-400 font-bold">
-                    <span>Coupon Discount</span>
-                    <span className='font-bold'>-{formatPrice(couponDiscount)}</span>
-                  </div>
-                )}
-                {appliedPoints && (
-                  <div className="flex justify-between text-blue-400 font-bold">
-                    <span>Points Discount</span>
-                    <span className='font-bold'>-{formatPrice(pointsDiscount)}</span>
-                  </div>
-                )}
                 <div className="flex justify-between">
                   <span>Shipping</span>
                   <span>{deliveryFee === 0 ? <span className="line-through font-bold text-gray-300">Free Delivery</span> : `₹${deliveryFee}`}</span>
