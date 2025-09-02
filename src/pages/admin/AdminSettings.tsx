@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import AdminLayout from '../../components/admin/AdminLayout';
 import ModernAdminLayout from '../../components/admin/ModernAdminLayout';
+import CouponManagement from '../../components/admin/CouponManagement';
 interface Settings {
   site_name: string;
   site_description: string;
@@ -222,6 +223,11 @@ const AdminSettings = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Coupon Management Section */}
+            <div className="md:col-span-2">
+              <CouponManagement />
+            </div>
           </div>
         )}
       </div>

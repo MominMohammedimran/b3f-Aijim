@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
 
 interface CouponSectionProps {
   cartTotal: number;
@@ -25,6 +26,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
   const [loading, setLoading] = useState(false);
+  const { currentUser } = useAuth();
 
   const applyCoupon = async () => {
     if (!couponCode.trim()) {
@@ -38,7 +40,8 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       const { data, error } = await supabase
         .rpc('validate_coupon', {
           coupon_code_input: couponCode.toUpperCase(),
-          cart_total: cartTotal
+          cart_total: cartTotal,
+          user_id_input: currentUser?.id || null
         });
 
       if (error) throw error;
