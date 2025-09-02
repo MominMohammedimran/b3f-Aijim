@@ -40,8 +40,8 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
           <Label
             key={address.id}
             htmlFor={`address-${address.id}`}
-            className={`border p-3 rounded-md cursor-pointer block hover:bg-gray-50 ${
-              selectedAddressId === address.id && !useNewAddress ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+            className={`border p-3 rounded-none cursor-pointer block hover:bg-gray-800 text-white ${
+              selectedAddressId === address.id && !useNewAddress ? 'border-blue-500 bg-gray-800 text-yellow-500' : 'border-gray-200'
             }`}
           >
             <div className="flex items-center space-x-2">
@@ -53,10 +53,10 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                     <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Default</span>
                   )}
                 </div>
-                <div className="text-sm text-gray-600 mt-1">
+                <div className="text-sm text-gray-400 mt-1">
                   {address.street}, {address.city}, {address.state} {address.zipcode}
                 </div>
-                <div className="text-sm text-gray-600">{address.phone}</div>
+                <div className="text-sm text-gray-400">{address.phone}</div>
               </div>
             </div>
           </Label>
@@ -65,15 +65,15 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
         {/* New Address Option */}
         <Label
           htmlFor="address-new"
-          className={`border p-3 rounded-md cursor-pointer block hover:bg-gray-50 ${
-            useNewAddress ? 'border-blue-500 bg-blue-50' : 'border-gray-200'
+          className={`border p-3 rounded-none cursor-pointer block hover:bg-gray-600 ${
+            useNewAddress ? 'border-blue-500 bg-gray-800 text-white ' : 'border-gray-200'
           }`}
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="new" id="address-new" />
             <div>
               <div className="font-medium">Use a new address</div>
-              <div className="text-sm text-gray-600 mt-1">Add a new shipping address</div>
+              <div className="text-sm text-gray-400 mt-1">Add a new shipping address</div>
             </div>
           </div>
         </Label>

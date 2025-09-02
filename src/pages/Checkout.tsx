@@ -323,7 +323,7 @@ const seo = useSEO('/checkout');
                         <div className="flex flex-wrap gap-2 mt-1">
                           {item.sizes.map((s: any, i: number) => (
                             <div key={i} className="bg-white border px-1 py-1 font-bold  text-xs text-gray-700">
-                              Size : {s.size} × {s.quantity} [Qty]
+                              Size - {s.size} | Qty - {s.quantity} 
                             </div>
                           ))}
                         </div>

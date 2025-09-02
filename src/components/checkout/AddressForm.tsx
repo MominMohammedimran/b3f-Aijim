@@ -98,7 +98,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
             onChange={(e) => handleChange('firstName', e.target.value)}
             placeholder="First Name"
             required
-            className="font-semibold text-gray-800"
+            className="font-semibold text-gray-100"
           />
         </div>
         <div>
@@ -109,7 +109,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
             onChange={(e) => handleChange('lastName', e.target.value)}
             placeholder="Last Name"
             required
-            className="font-semibold text-gray-800"
+            className="font-semibold text-gray-100"
           />
         </div>
       </div>
@@ -125,10 +125,10 @@ const AddressForm: React.FC<AddressFormProps> = ({
           pattern="[0-9]{10}"
           maxLength={10}
           required
-          className="font-semibold text-gray-800"
+          className="font-semibold text-gray-100"
         />
-        <p className="text-sm lowercase font-semibold text-yellow-400 tracking-[1px] mt-1 leading-snug">
-          Enter a valid <span className="font-semibold text-sm tracking-[1px] text-white">10-digit mobile number</span> to receive OTP & Calls for verification and delivery updates.
+        <p className="text-[11px] lowercase font-semibold text-yellow-400 tracking-[1px] mt-1 leading-snug">
+          Enter a valid <span className=" font-semibold tracking-[1px] text-white">10-digit mobile number</span> to receive OTP & Calls for verification and delivery updates.
         </p>
       </div>
 
@@ -141,9 +141,9 @@ const AddressForm: React.FC<AddressFormProps> = ({
           placeholder="Full Address"
           minLength={10}
           required
-          className="font-semibold text-gray-800"
+          className="font-semibold text-gray-100"
         />
-        <p className="text-sm tracking-[1px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
+        <p className="text-[11px] tracking-[1px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
           Please enter a correct and complete address to ensure smooth and timely delivery.
         </p>
       </div>
@@ -156,14 +156,14 @@ const AddressForm: React.FC<AddressFormProps> = ({
           onChange={(e) => handleChange('city', e.target.value)}
           placeholder="City"
           required
-          className="font-semibold text-gray-800"
+          className="font-semibold text-gray-100 "
         />
       </div>
 
       <div>
         <Label htmlFor="state" className="text-sm font-semibold">State *</Label>
         <Select value={formData.state} onValueChange={(value) => handleChange('state', value)}>
-          <SelectTrigger className="font-bold bg-white text-gray-800">
+          <SelectTrigger className=" text-sm font-bold  text-gray-100">
             <SelectValue placeholder="-- Select State --" />
           </SelectTrigger>
           <SelectContent>
@@ -188,7 +188,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
           required
           className="font-semibold text-gray-800"
         />
-        <p className="text-sm lowercase tracking-[1px] font-semibold text-yellow-400 mt-1">Enter a valid 6-digit Indian PIN code</p>
+        <p className="text-[11px] lowercase tracking-[1px] font-semibold text-yellow-400 mt-1">Enter a valid 6-digit Indian PIN code</p>
       </div>
 
       <div>
@@ -199,7 +199,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
           readOnly
           className="font-semibold bg-gray-100 text-gray-800"
         />
-        <p className="text-sm lowercase font-semibold text-yellow-400 mt-1 leading-snug">
+        <p className="text-[11px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
           Currently deliver available <span className="font-semibold text-white">India</span> only
         </p>
       </div>

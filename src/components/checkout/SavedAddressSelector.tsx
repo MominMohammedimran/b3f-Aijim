@@ -83,8 +83,8 @@ const SavedAddressSelector: React.FC<SavedAddressSelectorProps> = ({
           key={address.id} 
           className={`cursor-pointer transition-colors ${
             selectedAddress?.id === address.id 
-              ? 'border-blue-500 bg-blue-50' 
-              : 'hover:bg-gray-50'
+              ? 'border-blue-500 bg-gray--800' 
+              : 'hover:bg-gray-800 text-white'
           }`}
           onClick={() => onSelect(address)}
         >
