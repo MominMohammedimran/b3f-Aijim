@@ -6,8 +6,10 @@ import Layout from '../components/layout/Layout';
 import { toast } from 'sonner';
 import { supabase } from '../integrations/supabase/client';
 import { useAuth } from '../context/AuthContext';
-import ShippingDetailsForm from '../components/checkout/ShippingDetailsForm';
 import { useLocation as useLocationContext } from '../context/LocationContext';
+import { useAddresses } from '@/hooks/useAddresses';
+import SavedAddresses from '@/components/checkout/SavedAddresses';
+import AddressForm from '@/components/checkout/AddressForm';
 import { useCart } from '../context/CartContext';
 import { useDeliverySettings } from '@/hooks/useDeliverySettings';
 import SEOHelmet from '@/components/seo/SEOHelmet';
@@ -15,6 +17,7 @@ import useSEO from '@/hooks/useSEO';
 import { formatPrice } from '@/lib/utils';
 import CouponSection from '@/components/cart/CouponSection';
 import RewardPointsSection from '@/components/cart/RewardPointsSection';
+import { Button } from '@/components/ui/button';
 type FormData = {
   firstName: string;
   lastName: string;
@@ -25,11 +28,18 @@ type FormData = {
   state: string;
   zipCode: string;
   country: string;
+  saveAddress: boolean;
 };
 
 const Checkout = () => {
   const navigate = useNavigate();
 const seo = useSEO('/checkout');
+  const { currentUser } = useAuth();
+  const { currentLocation } = useLocationContext();
+  const { cartItems, totalPrice } = useCart();
+  const { settings: deliverySettings, loading: settingsLoading } = useDeliverySettings();
+  const deliveryFee = deliverySettings?.delivery_fee ?? 100;
+  
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -40,13 +50,14 @@ const seo = useSEO('/checkout');
     state: '',
     zipCode: '',
     country: 'India',
+    saveAddress: false,
   });
+  
+  // Address management state
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [useNewAddress, setUseNewAddress] = useState(false);
+  const { addresses, defaultAddress, loading: addressesLoading } = useAddresses(currentUser?.id);
   const [isLoading, setIsLoading] = useState(false);
-  const { currentUser } = useAuth();
-  const { currentLocation } = useLocationContext();
-  const { cartItems, totalPrice } = useCart();
-  const { settings: deliverySettings, loading: settingsLoading } = useDeliverySettings();
-  const deliveryFee = deliverySettings?.delivery_fee ?? 100;
   // Coupon and reward points state
   const [appliedCoupon, setAppliedCoupon] = useState<{
     code: string;
@@ -86,7 +97,7 @@ const seo = useSEO('/checkout');
             firstName: data.first_name || '',
             lastName: data.last_name || '',
             email: data.email || currentUser.email || '',
-            phone: data.phone || '', // Use 'phone' instead of 'phone_number'
+            phone: data.phone || '',
           }));
         }
 
@@ -94,6 +105,22 @@ const seo = useSEO('/checkout');
           setFormData(prev => ({
             ...prev,
             city: currentLocation.name,
+          }));
+        }
+
+        // Set default address if available
+        if (defaultAddress && !useNewAddress) {
+          setSelectedAddressId(defaultAddress.id);
+          setFormData(prev => ({
+            ...prev,
+            firstName: defaultAddress.first_name,
+            lastName: defaultAddress.last_name,
+            phone: defaultAddress.phone || '',
+            address: defaultAddress.street,
+            city: defaultAddress.city,
+            state: defaultAddress.state,
+            zipCode: defaultAddress.zipcode,
+            country: defaultAddress.country,
           }));
         }
       } catch (err) {
@@ -120,6 +147,43 @@ const seo = useSEO('/checkout');
 
   const handlePointsRemoved = () => {
     setAppliedPoints(null);
+  };
+
+  // Address selection handlers
+  const handleAddressSelect = (addressId: string) => {
+    const address = addresses.find(addr => addr.id === addressId);
+    if (address) {
+      setSelectedAddressId(addressId);
+      setUseNewAddress(false);
+      setFormData(prev => ({
+        ...prev,
+        firstName: address.first_name,
+        lastName: address.last_name,
+        phone: address.phone || '',
+        address: address.street,
+        city: address.city,
+        state: address.state,
+        zipCode: address.zipcode,
+        country: address.country,
+      }));
+    }
+  };
+
+  const handleUseNewAddress = () => {
+    setSelectedAddressId(null);
+    setUseNewAddress(true);
+    // Clear form data for new address
+    setFormData(prev => ({
+      ...prev,
+      firstName: '',
+      lastName: '',
+      phone: '',
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: 'India',
+    }));
   };
 
   const redirect = (product: { id: string, pd_name: string }) => {
@@ -186,13 +250,27 @@ const seo = useSEO('/checkout');
           <div className="lg:col-span-2">
             <div className="bg-gray-900 shadow-sm p-4 sm:p-6">
               <h2 className="text-lg sm:text-2xl font-semibold text-center mb-4">Shipping Details</h2>
-                
-              <ShippingDetailsForm
-                formData={formData}
-                setFormData={setFormData}
-                onSubmit={handleFormSubmit}
-                isLoading={isLoading}
-              />
+              
+              {/* Saved Addresses */}
+              {!addressesLoading && addresses.length > 0 && (
+                <SavedAddresses
+                  addresses={addresses}
+                  selectedAddressId={selectedAddressId}
+                  onAddressSelect={handleAddressSelect}
+                  onUseNewAddress={handleUseNewAddress}
+                  useNewAddress={useNewAddress}
+                />
+              )}
+              
+              {/* Address Form - Show when using new address or no saved addresses */}
+              {(useNewAddress || addresses.length === 0 || addressesLoading) && (
+                <AddressForm
+                  formData={formData}
+                  setFormData={setFormData}
+                  onSubmit={handleFormSubmit}
+                  isLoading={isLoading}
+                />
+              )}
             </div>
           </div>
 
@@ -213,6 +291,17 @@ const seo = useSEO('/checkout');
               onPointsRemoved={handlePointsRemoved}
               appliedPoints={appliedPoints || undefined}
             />
+
+            {/* Continue to Payment Button */}
+            {selectedAddressId && !useNewAddress && (
+              <Button 
+                onClick={() => handleFormSubmit(formData)} 
+                disabled={isLoading}
+                className="w-full font-bold rounded-none text-lg"
+              >
+                {isLoading ? 'Processing...' : 'Continue to Payment'}
+              </Button>
+            )}
 
             {/* Order Summary */}
             <div className="bg-gray-800 p-4  border">

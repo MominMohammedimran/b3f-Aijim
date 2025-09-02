@@ -345,9 +345,6 @@ const checkPincode = () => {
         {renderDescription(product.description)}
       </div>
 
-
-
-
       {/* Share Modal */}
       <ShareModal
         isOpen={showShareModal}
