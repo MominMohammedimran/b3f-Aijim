@@ -58,6 +58,7 @@ const seo = useSEO('/checkout');
   const [useNewAddress, setUseNewAddress] = useState(false);
   const { addresses, defaultAddress, loading: addressesLoading } = useAddresses(currentUser?.id);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAddressSaved, setIsAddressSaved] = useState(false);
   // Coupon and reward points state
   const [appliedCoupon, setAppliedCoupon] = useState<{
     code: string;
@@ -155,6 +156,7 @@ const seo = useSEO('/checkout');
     if (address) {
       setSelectedAddressId(addressId);
       setUseNewAddress(false);
+      setIsAddressSaved(true); // Address is ready for payment
       setFormData(prev => ({
         ...prev,
         firstName: address.first_name,
@@ -169,9 +171,14 @@ const seo = useSEO('/checkout');
     }
   };
 
+  const handleAddressSaved = () => {
+    setIsAddressSaved(true);
+  };
+
   const handleUseNewAddress = () => {
     setSelectedAddressId(null);
     setUseNewAddress(true);
+    setIsAddressSaved(false);
     // Clear form data for new address
     setFormData(prev => ({
       ...prev,
@@ -269,6 +276,7 @@ const seo = useSEO('/checkout');
                   setFormData={setFormData}
                   onSubmit={handleFormSubmit}
                   isLoading={isLoading}
+                  onAddressSaved={handleAddressSaved}
                 />
               )}
             </div>
@@ -292,8 +300,8 @@ const seo = useSEO('/checkout');
               appliedPoints={appliedPoints || undefined}
             />
 
-            {/* Continue to Payment Button - Show for both saved and new addresses */}
-            {(selectedAddressId || useNewAddress) && (
+            {/* Continue to Payment Button - Show only when address is ready */}
+            {isAddressSaved && (
               <Button 
                 onClick={() => handleFormSubmit(formData)} 
                 disabled={isLoading}

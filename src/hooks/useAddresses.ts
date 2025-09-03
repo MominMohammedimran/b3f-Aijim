@@ -58,10 +58,10 @@ export const useAddresses = (userId?: string) => {
           first_name: addr.first_name || addr.name?.split(' ')[0] || '',
           last_name: addr.last_name || addr.name?.split(' ').slice(1).join(' ') || '',
           name: addr.name,
-          street: addr.street,
+          street: addr.address, // Database field is 'address', interface expects 'street'
           city: addr.city,
           state: addr.state,
-          zipcode: addr.zipcode,
+          zipcode: addr.zip_code, // Database field is 'zip_code', interface expects 'zipcode'
           country: addr.country || 'India',
           phone: addr.phone,
           is_default: addr.is_default || false,

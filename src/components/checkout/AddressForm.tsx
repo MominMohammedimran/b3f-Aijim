@@ -25,6 +25,7 @@ interface AddressFormProps {
   setFormData: React.Dispatch<React.SetStateAction<AddressFormData>>;
   onSubmit: (values: AddressFormData) => void;
   isLoading: boolean;
+  onAddressSaved?: () => void;
 }
 
 // List of Indian states
@@ -44,6 +45,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
   setFormData,
   onSubmit,
   isLoading,
+  onAddressSaved,
 }) => {
   const { currentUser } = useAuth();
   const [saving, setSaving] = useState(false);
@@ -76,15 +78,17 @@ const AddressForm: React.FC<AddressFormProps> = ({
 
         if (error) throw error;
         toast.success('Address saved successfully!');
+        onAddressSaved?.();
       } catch (error: any) {
         console.error('Error saving address:', error);
         toast.error('Failed to save address');
       } finally {
         setSaving(false);
       }
+    } else {
+      // Just notify that form is complete if not saving
+      onAddressSaved?.();
     }
-    
-    onSubmit(formData);
   };
 
   return (
@@ -222,7 +226,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         disabled={isLoading || saving} 
         className="w-full font-bold rounded-none text-lg"
       >
-        {isLoading || saving ? 'Processing...' : 'Save Address & Continue'}
+        {isLoading || saving ? 'Saving...' : 'Save Address'}
       </Button>
     </form>
   );
