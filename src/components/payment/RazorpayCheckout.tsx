@@ -226,7 +226,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
           points: appliedPoints.points,
           value_used: appliedPoints.discount || appliedPoints.points
         } : null,
-        reward_points_earned: Math.floor(finalTotal / 10),
+        reward_points_earned: Math.floor(finalTotal / 100),
         discount_applied: couponDiscount + pointsDiscount
       };
 
