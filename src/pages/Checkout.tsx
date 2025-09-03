@@ -292,8 +292,8 @@ const seo = useSEO('/checkout');
               appliedPoints={appliedPoints || undefined}
             />
 
-            {/* Continue to Payment Button */}
-            {selectedAddressId && !useNewAddress && (
+            {/* Continue to Payment Button - Show for both saved and new addresses */}
+            {(selectedAddressId || useNewAddress) && (
               <Button 
                 onClick={() => handleFormSubmit(formData)} 
                 disabled={isLoading}

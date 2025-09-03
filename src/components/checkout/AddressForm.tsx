@@ -222,7 +222,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         disabled={isLoading || saving} 
         className="w-full font-bold rounded-none text-lg"
       >
-        {isLoading || saving ? 'Processing...' : 'Continue to Payment'}
+        {isLoading || saving ? 'Processing...' : 'Save Address & Continue'}
       </Button>
     </form>
   );
