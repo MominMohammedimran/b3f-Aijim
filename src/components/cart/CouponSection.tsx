@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
@@ -27,6 +27,14 @@ const CouponSection: React.FC<CouponSectionProps> = ({
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
+
+  // Clear messages when appliedCoupon changes
+  useEffect(() => {
+    if (appliedCoupon) {
+      setMessage('');
+      setMessageType('');
+    }
+  }, [appliedCoupon]);
 
   const applyCoupon = async () => {
     if (!couponCode.trim()) {
@@ -119,8 +127,8 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         )}
       </div>
 
-      {/* Messages */}
-      {message && (
+      {/* Messages - only show when no coupon is applied */}
+      {message && !appliedCoupon && (
         <div className={`text-sm mb-3 ${messageType === 'success' ? 'text-green-500 font-semibold tracking-[1px] ' : 'text-red-300 font-semibold tracking-[1px]'}`}>
           {message}
         </div>
