@@ -89,10 +89,35 @@ export const useAddresses = (userId?: string) => {
     fetchAddresses();
   }, [userId]);
 
+  const deleteAddress = async (addressId: string) => {
+    try {
+      const { error } = await supabase
+        .from('addresses')
+        .delete()
+        .eq('id', addressId)
+        .eq('user_id', userId);
+
+      if (error) {
+        console.error('Error deleting address:', error);
+        toast.error('Failed to delete address');
+        return false;
+      }
+
+      toast.success('Address deleted successfully');
+      fetchAddresses(); // Refresh the list
+      return true;
+    } catch (error) {
+      console.error('Error deleting address:', error);
+      toast.error('Failed to delete address');
+      return false;
+    }
+  };
+
   return {
     addresses,
     defaultAddress,
     loading,
-    refetch: fetchAddresses
+    refetch: fetchAddresses,
+    deleteAddress
   };
 };

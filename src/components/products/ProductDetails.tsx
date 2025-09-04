@@ -10,6 +10,7 @@ import { useCart } from '@/context/CartContext';
 import { useProductInventory } from '@/hooks/useProductInventory';
 import ProductQuantitySelector from './ProductQuantitySelector';
 import ProductActionButtons from './ProductActionButtons';
+import ProductPlaceOrder from './ProductPlaceOrder';
 import ShareModal from './ShareModal';
 import LiveViewingCounter from './LiveViewingCounter';
 import AvailableCoupons from './AvailableCoupons';
@@ -286,6 +287,16 @@ const checkPincode = () => {
           selectedSizes={selectedSizes.map((s) => s.size)}
           quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
         />
+        
+        {/* Place Order Button */}
+        <div className="mt-3">
+          <ProductPlaceOrder
+            product={product}
+            selectedSizes={selectedSizes.map((s) => s.size)}
+            variant="secondary"
+            className="w-full"
+          />
+        </div>
       </div>
 
       {/* Delivery & Return Section */}

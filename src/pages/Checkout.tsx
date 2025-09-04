@@ -56,7 +56,7 @@ const seo = useSEO('/checkout');
   // Address management state
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [useNewAddress, setUseNewAddress] = useState(false);
-  const { addresses, defaultAddress, loading: addressesLoading } = useAddresses(currentUser?.id);
+  const { addresses, defaultAddress, loading: addressesLoading, deleteAddress } = useAddresses(currentUser?.id);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   // Coupon and reward points state
@@ -193,6 +193,35 @@ const seo = useSEO('/checkout');
     }));
   };
 
+  const handleDeleteAddress = async (addressId: string) => {
+    const success = await deleteAddress(addressId);
+    if (success && selectedAddressId === addressId) {
+      // If deleted address was selected, reset selection
+      setSelectedAddressId(null);
+      setIsAddressSaved(false);
+    }
+    return success;
+  };
+
+  const handleEditAddress = (address: any) => {
+    // Pre-fill form with address data for editing
+    setFormData({
+      firstName: address.first_name,
+      lastName: address.last_name,
+      email: formData.email, // Keep current email
+      phone: address.phone || '',
+      address: address.street,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zipcode,
+      country: address.country,
+      saveAddress: false, // User can choose to save as new or update
+    });
+    setUseNewAddress(true);
+    setSelectedAddressId(null);
+    setIsAddressSaved(false);
+  };
+
   const redirect = (product: { id: string, pd_name: string }) => {
     if (!currentUser) {
       navigate('/signin?redirectTo=/checkout');
@@ -266,6 +295,8 @@ const seo = useSEO('/checkout');
                   onAddressSelect={handleAddressSelect}
                   onUseNewAddress={handleUseNewAddress}
                   useNewAddress={useNewAddress}
+                  onDeleteAddress={handleDeleteAddress}
+                  onEditAddress={handleEditAddress}
                 />
               )}
               
