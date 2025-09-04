@@ -59,6 +59,7 @@ const seo = useSEO('/checkout');
   const { addresses, defaultAddress, loading: addressesLoading, deleteAddress } = useAddresses(currentUser?.id);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddressSaved, setIsAddressSaved] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<any>(null);
   // Coupon and reward points state
   const [appliedCoupon, setAppliedCoupon] = useState<{
     code: string;
@@ -179,6 +180,7 @@ const seo = useSEO('/checkout');
     setSelectedAddressId(null);
     setUseNewAddress(true);
     setIsAddressSaved(false);
+    setEditingAddress(null); // Clear editing mode
     // Clear form data for new address
     setFormData(prev => ({
       ...prev,
@@ -217,6 +219,7 @@ const seo = useSEO('/checkout');
       country: address.country,
       saveAddress: false, // User can choose to save as new or update
     });
+    setEditingAddress(address); // Track which address is being edited
     setUseNewAddress(true);
     setSelectedAddressId(null);
     setIsAddressSaved(false);
@@ -308,6 +311,13 @@ const seo = useSEO('/checkout');
                   onSubmit={handleFormSubmit}
                   isLoading={isLoading}
                   onAddressSaved={handleAddressSaved}
+                  editingAddress={editingAddress}
+                  onAddressUpdated={(updatedAddress) => {
+                    setEditingAddress(null);
+                    setUseNewAddress(false);
+                    setSelectedAddressId(updatedAddress.id);
+                    setIsAddressSaved(true);
+                  }}
                 />
               )}
             </div>
@@ -331,16 +341,6 @@ const seo = useSEO('/checkout');
               appliedPoints={appliedPoints || undefined}
             />
 
-            {/* Continue to Payment Button - Show only when address is ready */}
-            {isAddressSaved && (
-              <Button 
-                onClick={() => handleFormSubmit(formData)} 
-                disabled={isLoading}
-                className="w-full font-bold rounded-none text-lg"
-              >
-                {isLoading ? 'Processing...' : 'Continue to Payment'}
-              </Button>
-            )}
 
             {/* Order Summary */}
             <div className="bg-gray-800 p-4  border">
@@ -400,8 +400,19 @@ const seo = useSEO('/checkout');
                                  <span>Total</span>
                                  <span className="underline font-bold">{formatPrice(finalTotal)}</span>
                                </div>
-                             </div>
-                           </div>
+                              </div>
+                            </div>
+
+            {/* Continue to Payment Button - Moved to bottom of order summary */}
+            {isAddressSaved && (
+              <Button 
+                onClick={() => handleFormSubmit(formData)} 
+                disabled={isLoading}
+                className="w-full font-bold rounded-none text-lg mt-4"
+              >
+                {isLoading ? 'Processing...' : 'Continue to Payment'}
+              </Button>
+            )}
             </div>
           </div>
         </div>

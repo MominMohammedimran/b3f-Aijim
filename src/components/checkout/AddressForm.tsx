@@ -26,6 +26,8 @@ interface AddressFormProps {
   onSubmit: (values: AddressFormData) => void;
   isLoading: boolean;
   onAddressSaved?: () => void;
+  editingAddress?: any;
+  onAddressUpdated?: (address: any) => void;
 }
 
 // List of Indian states
@@ -46,6 +48,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
   onSubmit,
   isLoading,
   onAddressSaved,
+  editingAddress,
+  onAddressUpdated,
 }) => {
   const { currentUser } = useAuth();
   const [saving, setSaving] = useState(false);
@@ -57,10 +61,39 @@ const AddressForm: React.FC<AddressFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Save address to database if checkbox is checked
-    if (formData.saveAddress && currentUser) {
-      setSaving(true);
-      try {
+    setSaving(true);
+    try {
+      // If editing an existing address, update it
+      if (editingAddress && currentUser) {
+        const { error } = await supabase
+          .from('addresses')
+          .update({
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            zip_code: formData.zipCode,
+            country: formData.country,
+          })
+          .eq('id', editingAddress.id);
+
+        if (error) throw error;
+        toast.success('Address updated successfully!');
+        onAddressUpdated?.({ 
+          ...editingAddress,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          phone: formData.phone,
+          street: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zipcode: formData.zipCode,
+          country: formData.country,
+        });
+      } else if (formData.saveAddress && currentUser) {
+        // Save new address if checkbox is checked
         const { error } = await supabase
           .from('addresses')
           .insert({
@@ -79,15 +112,15 @@ const AddressForm: React.FC<AddressFormProps> = ({
         if (error) throw error;
         toast.success('Address saved successfully!');
         onAddressSaved?.();
-      } catch (error: any) {
-        console.error('Error saving address:', error);
-        toast.error('Failed to save address');
-      } finally {
-        setSaving(false);
+      } else {
+        // Just notify that form is complete if not saving
+        onAddressSaved?.();
       }
-    } else {
-      // Just notify that form is complete if not saving
-      onAddressSaved?.();
+    } catch (error: any) {
+      console.error('Error saving/updating address:', error);
+      toast.error(editingAddress ? 'Failed to update address' : 'Failed to save address');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -208,7 +241,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         </p>
       </div>
 
-      {currentUser && (
+      {currentUser && !editingAddress && (
         <div className="flex items-center space-x-2">
           <Checkbox
             id="saveAddress"
@@ -226,7 +259,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
         disabled={isLoading || saving} 
         className="w-full font-bold rounded-none text-lg"
       >
-        {isLoading || saving ? 'Saving...' : 'Save Address'}
+        {isLoading || saving ? 'Saving...' : editingAddress ? 'Update Address' : 'Save Address'}
       </Button>
     </form>
   );
