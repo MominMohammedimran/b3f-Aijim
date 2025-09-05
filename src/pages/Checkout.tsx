@@ -279,9 +279,9 @@ const seo = useSEO('/checkout');
       <div className="container mx-auto px-4 py-6  sm:py-8 mt-12">
         <div className="flex items-center mb-6">
           <Link to="/cart" className="mr-2">
-            <ArrowLeft size={24} className="text-yellow-400 hover:text-blue-800" />
+            <ArrowLeft size={24} className="text-white" />
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-yellow-400">Checkout</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-200">Checkout</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -289,7 +289,7 @@ const seo = useSEO('/checkout');
           <div className="lg:col-span-2">
             <div className="bg-gray-900 shadow-sm p-4 sm:p-6">
               <h2 className="text-lg sm:text-2xl font-semibold text-center mb-4">Shipping Details</h2>
-              
+              <h3 className="font-semibold text-center underline mb-2">Please select | add a new addres before proceeding payment</h3>
               {/* Saved Addresses */}
               {!addressesLoading && addresses.length > 0 && (
                 <SavedAddresses
@@ -404,6 +404,10 @@ const seo = useSEO('/checkout');
                             </div>
 
             {/* Continue to Payment Button - Moved to bottom of order summary */}
+            {!isAddressSaved &&(
+              <h3 >please select a saved address or enter a new address to proceed with payment</h3>
+            )}
+          
             {isAddressSaved && (
               <Button 
                 onClick={() => handleFormSubmit(formData)} 

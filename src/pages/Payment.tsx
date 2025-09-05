@@ -116,7 +116,8 @@ const Payment = () => {
                 <div className="space-y-2 text-sm">
                   {appliedCoupon && (
                     <div className="flex justify-between  items-center">
-                      <span className="text-yellow-400 font-semibold tracking-[2px]">Coupon Applied : <span className="underline text-lg font-bold text-green-500">
+                      <span className="text-gray-200 font-semibold tracking-[2px]">Coupon Applied : 
+                        <span className="underline text-yellow-400">
                       {appliedCoupon.code}
                       </span>
                       </span>
@@ -124,7 +125,8 @@ const Payment = () => {
                   )}
                   {rewardPointsUsed > 0 && (
                     <div className="flex justify-between items-center">
-                      <span className="text-blue-400">Reward Points Used : <span className="text-green-500 text-lg underline">
+                      <span className="text-gray-200 font-semibold tracking-[2px]">Reward Points Used :
+                         <span className="text-yellow-300 underline">
                       
                       {rewardPointsUsed}</span></span>
 

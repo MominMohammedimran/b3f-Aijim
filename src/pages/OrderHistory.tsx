@@ -219,7 +219,7 @@ const OrderHistory = () => {
 
                     {order.payment_status === 'pending' && order.status !== 'cancelled' && (
   <p className="text-xs font-Roboto font-semibold text-yellow-400 text-center mt-2">
-    ⚠️ Please complete payment within 
+    Please complete payment within 
     <br/>
     <b className='text-white text-[10px] font-semibold'> 24 Hours | remaining {" "}{countdown}</b>
     <br/> this order will be deleted .
@@ -228,7 +228,7 @@ const OrderHistory = () => {
 
 {order.status === 'cancelled' && (
   <p className="text-xs font-semibold text-yellow-400 text-center mt-2">
-    ⚠️ Cancelled orders will be removed after 
+    Cancelled orders will be removed after 
     <br/>
     <b className='text-white text-[10px] font-semibold'> 24 Hours | remaining {" "}{countdown}</b>
     <br/>
