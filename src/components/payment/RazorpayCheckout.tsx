@@ -220,7 +220,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         user_email: shippingAddress?.email || userProfile?.email,
         coupon_code: appliedCoupon ? {
           code: appliedCoupon.code,
-          discount_amount: appliedCoupon.discount || 0
+          discount_amount: appliedCoupon.   discount || 0
         } : null,
         reward_points_used: appliedPoints ? {
           points: appliedPoints.points,
