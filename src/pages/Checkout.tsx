@@ -289,8 +289,7 @@ const seo = useSEO('/checkout');
           <div className="lg:col-span-2">
             <div className="bg-gray-900 shadow-sm p-4 sm:p-6">
               <h2 className="text-lg sm:text-2xl font-semibold text-center mb-4">Shipping Details</h2>
-              <h3 className="font-semibold text-center underline mb-2">Please select | add a new addres before proceeding payment</h3>
-              {/* Saved Addresses */}
+             {/* Saved Addresses */}
               {!addressesLoading && addresses.length > 0 && (
                 <SavedAddresses
                   addresses={addresses}
@@ -405,7 +404,7 @@ const seo = useSEO('/checkout');
 
             {/* Continue to Payment Button - Moved to bottom of order summary */}
             {!isAddressSaved &&(
-              <h3 >please select a saved address or enter a new address to proceed with payment</h3>
+              <h3 classNAme='font-semibold underline text-center '>please select a saved address or enter a new address to proceed with payment</h3>
             )}
           
             {isAddressSaved && (
