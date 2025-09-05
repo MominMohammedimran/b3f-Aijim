@@ -404,7 +404,7 @@ const seo = useSEO('/checkout');
 
             {/* Continue to Payment Button - Moved to bottom of order summary */}
             {!isAddressSaved &&(
-              <h3 classNAme='font-semibold underline text-center '>please select a saved address or enter a new address to proceed with payment</h3>
+              <h3 className='font-semibold underline text-center '>please select a saved address or enter a new address to proceed with payment</h3>
             )}
           
             {isAddressSaved && (
