@@ -94,9 +94,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   <p className="text-sm text-gray-300 font-sans lowercase leading-snug tracking-wide truncate break-words max-w-[250px] sm:max-w-[300px] md:max-w-[400px]">
     {email || 'No email provided'}
   </p>
-  <p className="text-sm text-yellow-400 font-mono lowercase leading-relaxed">
-    Member since {formatDate(createdAt || currentUser?.created_at)}
-  </p>
+  
 </div>
 
         </div>

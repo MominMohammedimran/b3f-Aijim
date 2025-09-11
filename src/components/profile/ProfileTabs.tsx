@@ -50,7 +50,7 @@ const ProfileTabs = () => {
           
         </TabsList>
 
-        <TabsContent value="profile" className="mt-6">
+        {/*<TabsContent value="profile" className="mt-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -62,7 +62,7 @@ const ProfileTabs = () => {
               <ProfileSettings />
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent>*/}
 
         <TabsContent value="settings" className="mt-6">
           <Card>
