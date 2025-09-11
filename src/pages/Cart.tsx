@@ -246,7 +246,7 @@ const Cart = () => {
               </div>
               
               <div className='flex flex-col mt-2'>
-              <Button onClick={handleCheckout} className="w-80 mb-3  m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold">
+              <Button onClick={handleCheckout} className="w-full mb-3  m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold">
                 Proceed to Checkout
               </Button>
 
