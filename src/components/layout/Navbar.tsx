@@ -191,7 +191,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
             
           )}
         </div>
-        <span className="hidden sm:inline text-base sm:text-lg md:text-xl">Cart</span>
+        <span className="hidden font-semibold sm:inline text-base sm:text-lg md:text-xl">Cart</span>
       </Link>
     </div>
   </div>
@@ -211,71 +211,10 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
 
 
             
-<div className="fixed bottom-24 right-4 z-1000">
-  <button
-    className="relative w-12 h-12 bg-black text-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-800 transition"
-    onClick={handleBellClick}
-    onDoubleClick={handleClosePopup}
-  >
-    <Bell size={24} />
-
-   
-      <>
-        {/* Blinking red glow */}
-        <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 rounded-full animate-ping opacity-75"></span>
-        {/* Static number badge */}
-        <span className="absolute top-0 right-0 w-5 h-5 bg-red-600 text-white text-xs font-bold rounded-full flex items-center justify-center shadow">
-          1
-        </span>
-      </>
-  
-  </button>
-</div>
 
 
 
 
-{/* 📢 Offer Popup Card */}
-{showPopup && (
-  <div className="fixed bottom-36 right-4 w-80  bg-black  p-5 z-50 animate-fade-in">
-    <div className="flex justify-between items-start mb-3">
-      <div className="text-yellow-400">
-        <h3 className="text-xl font-extrabold tracking-wider uppercase font-space-grotesk">
-          ⚡ Flash Deal Coupon
-        </h3>
-      </div>
-      <button
-        className="text-white hover:text-yellow-300 transition"
-        onClick={
-          handleClosePopup
-        }
-      >
-        <X size={20} />
-      </button>
-    </div>
-
-    <div className="bg-gradient-to-br from-yellow-600 via-orange-500 to-red-600 p-4 text-center shadow-inner">
-      <p className="text-black font-bold text-lg uppercase font-space-grotesk tracking-wide mb-2">
-        Buy 3 T-Shirts for ₹1199
-      </p>
-      <p className="text-white text-sm font-medium tracking-wide mb-1">
-        Use Coupon Code:
-      </p>
-      <div
-        className="bg-black text-yellow-400 px-3 py-1 text-base font-bold tracking-widest inline-block cursor-pointer hover:scale-105 transition transform"
-        onClick={() => {
-          navigator.clipboard.writeText("AIJIM150");
-          toast.success("Coupon code copied!");
-        }}
-      >
-        AIJIM150
-      </div>
-      <p className="text-xs mt-2 text-white/80">
-         Valid till midnight only!
-      </p>
-    </div>
-  </div>
-)}
 
 
 
@@ -290,7 +229,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
     </Link>
 
     <Link to="/products"   className={`flex flex-col items-center text-xs sm:text-sm ${
-      isActive('/products') ? 'text-white font-medium' : 'text-[#6B7280] font-bold'
+      isActive('/products') ? 'text-white font-semibold' : 'text-[#6B7280] font-semibold'
     }`}>
       <Package size={18} className={isActive('/products') ? 'text-white font-bold' : 'text-[#6B7280] font-bold'} />
       <span>Products</span>
