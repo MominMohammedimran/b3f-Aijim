@@ -16,14 +16,15 @@ const ProfileTabs = () => {
   return (
     <div className="w-full max-w-4xl ">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-10 bg-gray-800 rounded-3xl p-1 ">
-          <TabsTrigger
+        <TabsList className="grid w-1/2 m-auto grid-cols-2 mb-10 bg-gray-800 rounded-3xl p-1 ">
+         
+         {/* <TabsTrigger
             value="profile"
             className="flex items-center gap-2 text-sm px-1 py-2 font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
           >
             <User size={16} />
             <span className="hidden sm:inline">Profile</span>
-          </TabsTrigger>
+          </TabsTrigger>*/}
          {/* <TabsTrigger
             value="settings"
             className="flex items-center gap-2 text-sm px-1 py-2 rounded-lg transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
@@ -31,19 +32,20 @@ const ProfileTabs = () => {
             <Settings size={16} />
             <span className="hidden sm:inline">Settings</span>
           </TabsTrigger> */}
-          <TabsTrigger
-            value="security"
-           className="flex items-center gap-2 text-sm px-1 py-2 font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-          >
-            <Shield size={16} />
-            <span className="hidden sm:inline">Security</span>
-          </TabsTrigger>
+         
           <TabsTrigger
             value="rewards"
           className="flex items-center gap-2 text-sm px-1 py-2  font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
            >
             <Gift size={16} />
             <span className="hidden sm:inline">Rewards</span>
+          </TabsTrigger>
+           <TabsTrigger
+            value="security"
+           className="flex items-center gap-2 text-sm px-1 py-2 font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+          >
+            <Shield size={16} />
+            <span className="hidden sm:inline">Security</span>
           </TabsTrigger>
           
         </TabsList>

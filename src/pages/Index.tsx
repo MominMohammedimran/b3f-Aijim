@@ -122,7 +122,7 @@ const seo = useSEO('/');
  p-4 pl-0 pr-0 shadow-md">
   <div className="flex items-center justify-evenly mb-2">
     <span className="bg-red-500 text-white px-3 py-1 mb-3 text-sm sm:text-m font-bold tracking-wide uppercase shadow">
-      🔥 Hot Selling
+       Hot Selling
     </span>
   </div>
 
@@ -187,7 +187,7 @@ const seo = useSEO('/');
           <ProductVideoSection />
 
           {/* 🛍 All Products */}
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white mt-10 mb-6 tracking-wide">🛒 All Products</h2>
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white mt-10 mb-6 tracking-wide"> All Products</h2>
 
           {loading ? (
             <p className="text-gray-400">Loading products...</p>

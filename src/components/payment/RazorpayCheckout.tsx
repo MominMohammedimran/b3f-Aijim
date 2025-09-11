@@ -93,7 +93,7 @@ console.log(appliedCoupon,appliedPoints)
     }
   };
 
-  console.log(userProfile)
+  
 
   const sendOrderConfirmationEmailHandler = async (orderData: any, paymentMethod: string) => {
     try {
@@ -423,11 +423,11 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
                 <p className="text-sm font-semibold text-white line-clamp-1">
                   {item.name}
                 </p>
-                <p className="text-xs text-gray-200 font-bold">
+                <p className="text-xs text-gray-200 font-semibold">
                   Size - {s.size} | Qty - {s.quantity}
                 </p>
               </div>
-              <span className="text-sm font-bold text-white">
+              <span className="text-lg font-semibold text-white">
                 ₹{item.price * s.quantity}
               </span>
             </div>
@@ -438,31 +438,31 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
      
 
       {/* Price Breakdown */}
-      <div className="space-y-2 mb-4 text-white">
+      <div className="space-y-0 mb-4 text-white">
                       <div className="flex justify-between">
-                        <span>Subtotal</span>
-                        <span className='font-bold'>{formatPrice(totalPrice)}</span>
+                        <span className="font-semibold uppercase ">Subtotal</span>
+                        <span className='font-semibold text-lg'>{formatPrice(totalPrice)}</span>
                       </div>
                       {appliedCoupon && (
                         <div className="flex justify-between text-green-400 font-bold">
-                          <span>Coupon Discount</span>
-                          <span className='font-bold'>-{formatPrice(couponDiscount)}</span>
+                          <span className="font-semibold uppercase">Coupon Discount</span>
+                          <span className='font-semibold text-lg'>-{formatPrice(couponDiscount)}</span>
                         </div>
                       )}
                       {appliedPoints && (
                         <div className="flex justify-between text-blue-400 font-bold">
-                          <span>Points Discount</span>
-                          <span className='font-bold'>-{formatPrice(pointsDiscount)}</span>
+                          <span className="font-semibold uppercase">Points Discount</span>
+                          <span className='font-semibold text-lg'>-{formatPrice(pointsDiscount)}</span>
                         </div>
                       )}
                       <div className="flex justify-between">
-                        <span>Shipping</span>
-                        <span>{deliveryFee === 0 ? <span className="line-through font-bold text-gray-300">Free Delivery</span> : `₹${deliveryFee}`}</span>
+                        <span className="font-semibold uppercase">Shipping</span>
+                        <span>{deliveryFee === 0 ? <span className="line-through font-semibold text-md text-gray-200">Free Delivery</span> : `₹${deliveryFee}`}</span>
                       </div>
-                      <div className="border-t pt-2">
+                      <div className="border-t pb-2">
                         <div className="flex justify-between font-semibold">
-                          <span>Total</span>
-                          <span className="underline font-bold">{formatPrice(finalTotal)}</span>
+                          <span className="font-semibold uppercase">Total</span>
+                          <span className="underline text-lg font-semibold">{formatPrice(finalTotal)}</span>
                         </div>
                       </div>
                     </div>
@@ -470,7 +470,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
       {/* Payment Button */}
       <div className="mt-5">
         <Button 
-          className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full uppercase bg-green-600 hover:bg-green-700 text-white font-bold text-md py-1 rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handlePayment}
           disabled={isProcessing || finalTotal <= 0}
         >

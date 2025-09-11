@@ -191,7 +191,7 @@ const checkPincode = () => {
       {/* Selected Sizes with Scroll */}
     {selectedSizes.length > 0 && (
   <div className="pt-4 border-t border-gray-700">
-    <h4 className="text-sm font-semibold mb-3">Selected Sizes</h4>
+    <h4 className="text-md font-semibold mb-3">Selected Sizes</h4>
 
     <div className="flex gap-2 overflow-x-auto  scroll-smooth no-scrollbar">
       {selectedSizes.map((sel) => {
@@ -204,12 +204,12 @@ const checkPincode = () => {
         return (
           <div
             key={sel.size}
-            className="min-w-[110px] bg-white p-1 pb-0 text-gray-900 border border-blue-400  text-xs  flex-shrink-0"
+            className="min-w-[130px]  p-1 text-gray-100 border border-white  text-xs bg-gradient-to-br from-black via-gray-900 to-black  flex-shrink-0"
           >
-            {/* Size & Remove */}
-            <div className="flex justify-between py-1 items-center mb-1">
-              <span className="font-medium flex  justify-between p-2  w-full text-center bg-black text-white py-1">
-                Size :
+            {/* Size & Remove 
+            <div className="flex justify-between py-1 items-center mb-0">
+              <span className="font-bold flex  uppercase justify-between p-2  w-full text-center bg-black text-white py-0.5">
+                Size -
                  {' '} {sel.size}
                    <button
                 onClick={() => toggleSize(sel.size)}
@@ -222,32 +222,46 @@ const checkPincode = () => {
               </span>
             
             </div>
+            */}
 
             {/* Quantity Controls */}
-            <div className="flex items-center justify-between mb-2 ">
+            <div className="flex items-center justify-between p-1  pb-0">
+              <span className="font-bold uppercase text-lg ">{sel.size}</span>
               <button
                 disabled={sel.quantity <= 1}
                 onClick={() => changeQuantity(sel.size, sel.quantity - 1)}
-                className="px-2 py-0 text-lg font-extrabold hover:bg-gray-200 text-black rounded transition duration-200"
+                className="px-1.5 py-0 text-lg font-bold hover:bg-gray-200 hover:text-black text-white rounded transition duration-200"
               >
                 −
               </button>
-              <span className="text-gray-800 text-lg font-bold">{sel.quantity}</span>
+              <span className="text-gray-200 text-lg font-bold">{sel.quantity}</span>
               <button
                 disabled={sel.quantity >= maxStock}
                 onClick={() => changeQuantity(sel.size, sel.quantity + 1)}
-                className="px-2 py-0 text-lg font-extrabold hover:bg-gray-200 text-black rounded transition duration-200"
+                className="px-1.5 py-0 text-lg font-bold hover:bg-gray-200 hover:text-black text-white rounded transition duration-200"
               >
                 +
               </button>
+              {/*<button 
+               onClick={() => toggleSize(sel.size)}
+                disabled={isRemoving}
+                className="text-white font-bold px-1 bg-red-500 mr-1  hover:text-red-400"
+                title="Unselect"
+                >
+                  X
+                  </button>*/}
+
+
             </div>
 
             {/* Cart Info & Delete */}
-            <div className="flex justify-between  py-2 items-center">
+           
               {inCartQty && (
-                <span className="font-extrabold w-full bg-black text-white  text-center px-2 mr-1">
-                  In Cart : {inCartQty}
+                <div className='flex justify-between items-center mt-1'>
+                <span className="font-bold w-full uppercase   text-red-500   text-center   ">
+                  In Cart - {inCartQty}
                 </span>
+                </div>
               )}
               {/*inCartQty && (
                 <button
@@ -259,7 +273,7 @@ const checkPincode = () => {
                   {isRemoving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 size={14} />}
                 </button>
               )*/}
-            </div>
+            
           </div>
         );
       })}
@@ -272,7 +286,7 @@ const checkPincode = () => {
          {totalPrice> 0 && (
              <div className="flex justify-evenly mt-5 ">
             <span className="text-2xl  items-center text-white  font-SpaceGrotesk font-semibold">
-              Total price &nbsp;: &nbsp; <span className='text-yellow-400  underline'> ₹{totalPrice}</span>
+              Total price &nbsp;: &nbsp; <span className='text-yellow-400  font-semibold underline'> ₹{totalPrice}</span>
             </span>
              </div>
 
@@ -281,7 +295,7 @@ const checkPincode = () => {
        
  
       {/* Actions */}
-      <div className="sticky bottom-6 mb-2 rounded--none z-40 mt-2">
+      <div className=" mb-1 rounded--none  mt-1">
         <ProductActionButtons
           product={product}
           selectedSizes={selectedSizes.map((s) => s.size)}
@@ -289,12 +303,12 @@ const checkPincode = () => {
         />
         
         {/* Place Order Button */}
-        <div className="mt-3">
+        <div className="mt-1">
           <ProductPlaceOrder
             product={product}
             selectedSizes={selectedSizes.map((s) => s.size)}
             variant="secondary"
-            className="w-full"
+            className="w-full "
           />
         </div>
       </div>
@@ -313,7 +327,7 @@ const checkPincode = () => {
         placeholder="pincode"
         value={pincode}
         onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))} // allow only digits
-        className="flex-1 px-3 py-1 w-full bg-gray-700 border border-gray-600  text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+        className="flex-1 px-3 py-1 w-full bg-gray-700 font-semibold border border-gray-600  text-white placeholder-gray-400  focus:border-transparent"
       />
       <button
         onClick={checkPincode}
@@ -324,23 +338,23 @@ const checkPincode = () => {
     </div>
 
     {pincodeMessage && (
-      <div className="text-sm mt-2 font-medium">
+      <div className="text-[13px] mt-2 ">
         {pincodeAvailable ? (
-          <p className="text-green-400">✅ Delivery & Return available to {pincode}</p>
+          <p className="text-green-400 font-semibold">Delivery & Return available to {pincode}</p>
         ) : (
-          <p className="text-red-400">❌ Delivery & Return not available to {pincode}</p>
+          <p className="text-red-400 font-semibold">Delivery & Return not available to {pincode}</p>
         )}
       </div>
     )}
 
-    <div className="text-sm text-gray-300 mt-3">
-      <p>• Easy 7-day returns</p>
-      <p>• No cash on delivery </p>
+    <div className="text-sm text-gray-300 mt-3 font-semibold">
+      <p className="font-semibold">• Easy 7-day returns</p>
+      <p className="font-semibold">• No cash on delivery </p>
     </div>
     <div className="border-t border-gray-600 pt-3">
       <Link
         to="/cancellation-refund"
-        className="text-yellow-400 hover:text-yellow-300 underline text-sm"
+        className="text-yellow-400 hover:text-yellow-300 underline text-sm font-semibold"
       >
         View Return Policy →
       </Link>

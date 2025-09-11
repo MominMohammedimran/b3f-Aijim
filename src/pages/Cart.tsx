@@ -111,7 +111,7 @@ const Cart = () => {
           <Button variant="outline" onClick={clearCart}>Clear Cart</Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Cart Items */}
           <div className="lg:col-span-2">
             <div className="space-y-6">
@@ -133,19 +133,19 @@ const Cart = () => {
                     </div>
 
                     {/* Product Details */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-white mb-2">{item.name}</h3>
-                      <p className="text-sm text-white mb-2">
-                        Price per item: {formatPrice(item.price)}
+                    <div className="flex-1 min-w-0 border">
+                      <h3 className="font-semibold text-white ">{item.name}</h3>
+                      <p className="text-sm  font-semibold text-white ">
+                        {formatPrice(item.price)}
                       </p>
 
                       {/* Remove entire item button */}
-                      <div className="mt-4 flex justify-start">
+                      <div className="mt-1 flex justify-start">
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => removeFromCart(item.product_id)}
-                          className="text-gray-800 font-semibold bg-yellow-400 hover:text-gray-900 hover:bg-yellow-600"
+                          className="text-gray-800 font-semibold text-sm bg-yellow-400 hover:text-gray-900 hover:bg-yellow-600"
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
                           Remove Item
@@ -156,7 +156,7 @@ const Cart = () => {
 
                   {/* Sizes Section with Enhanced Controls */}
                   <div className="mt-3">
-                    <h4 className="text-sm font-semibold mb-2 text-white">Sizes:</h4>
+                    <h4 className="text-md font-semibold mb-2 text-white">Sizes -</h4>
                     <div className="flex gap-3 overflow-x-auto py-1">
               {item.sizes.map((sizeItem) => {
   const fullProduct = {
@@ -172,22 +172,20 @@ const Cart = () => {
   return (
     <div
       key={sizeItem.size}
-      className="flex flex-col items-center bg-gray-50 p-1 w-30 shadow-sm "
+      className="flex flex-col gap-2 p-2 items-center bg-gradient-to-br from-black via-gray-900 to-black p-1 w-30 shadow-sm "
     >
-      <div className="flex justify-between w-full mb-1">
+      {/*<div className="flex justify-between w-full mb-1">
         <span className="bg-gray-800 flex justify-around p-2 text-white w-full py-1 text-center text-center text-xs font-semibold ">
           Size : {sizeItem.size}
-            <button
-                onClick={() => removeSizeFromCart(item.product_id, sizeItem.size)}
-               
-                className="text-white font-bold px-1 bg-red-500 mr-1  hover:text-red-400"
-                title="Unselect"
-              >
-                X
-              </button>
+           
         </span>
        
-      </div>
+      </div>*/}
+  <div className="flex justify-between w-full items-center gap-2">
+     <span className=" flex justify-around text-white   text-center text-md font-semibold mr-4 ">
+           {sizeItem.size}
+           
+        </span>
 
       <ProductActionButtons
         product={fullProduct}
@@ -199,11 +197,21 @@ const Cart = () => {
           // optional toast or refresh trigger
         }}
         
+        
       />
+       <button
+                onClick={() => removeSizeFromCart(item.product_id, sizeItem.size)}
+               
+                className="text-red-500 font-bold px-1  ml-1 mr-1"
+                title="Unselect"
+              >
+                X
+              </button>
+              
+        </div>      
 
-      <div className="text-xl font-extrabold text-red-500">
-        {formatPrice(item.price * sizeItem.quantity)}
-      </div>
+
+      
     </div>
   );
 })}
@@ -222,30 +230,28 @@ const Cart = () => {
               <h2 className="text-xl font-semibold text-center mb-4 text-white">Order Summary</h2>
               <div className="space-y-2 mb-4 text-white">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span className='font-bold'>{formatPrice(totalPrice)}</span>
+                  <span className='font-semibold uppercase'>Subtotal</span>
+                  <span className='font-semibold text-lg'>{formatPrice(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>{deliveryFee === 0 ? <span className="line-through font-bold text-gray-300">Free Delivery</span> : `₹${deliveryFee}`}</span>
+                  <span className="font-semibold uppercase">Shipping</span>
+                  <span>{deliveryFee === 0 ? <span className="line-through uppercase font-semibold text-lg text-gray-200">Free Delivery</span> : `₹${deliveryFee}`}</span>
                 </div>
-                <div className="border-t pt-2">
+                <div className="border-t pb-4">
                   <div className="flex justify-between font-semibold">
-                    <span>Total</span>
-                    <span className="underline font-bold">{formatPrice(finalTotal)}</span>
+                    <span className="font-semibold uppercase ">Total</span>
+                    <span className="underline font-semibold text-lg">{formatPrice(finalTotal)}</span>
                   </div>
                 </div>
               </div>
-
-              <Button onClick={handleCheckout} className="w-full mb-3 rounded-none hover:text-red-500 font-bold">
+              
+              <div className='flex flex-col mt-2'>
+              <Button onClick={handleCheckout} className="w-80 mb-3  m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold">
                 Proceed to Checkout
               </Button>
 
-              <Link to="/">
-                <Button className="w-full font-bold rounded-none  hover:text-red-500">
-                  Continue Shopping
-                </Button>
-              </Link>
+             
+              </div>
             </div>
           </div>
         </div>

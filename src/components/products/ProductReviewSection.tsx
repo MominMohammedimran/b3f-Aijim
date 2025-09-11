@@ -127,15 +127,15 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Customer Reviews</h3>
-          <div className="flex items-center mt-1">
+          <h3 className="text-md font-semibold">Customer Reviews</h3>
+          <div className="  mt-1">
             <div className="flex items-center">
               {[1, 2, 3, 4, 5].map((star) => (
                 <UserRound
                   key={star}
-                  className={`h-4 w-4 ${
+                  className={`h-5 w-5 ${
                     star <= Math.round(averageRating)
                       ? 'text-yellow-400 fill-current'
                       : 'text-gray-300'
@@ -143,8 +143,8 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
                 />
               ))}
             </div>
-            <span className="ml-2 text-sm text-gray-400">
-              {averageRating.toFixed(1)} ({reviews.length} {reviews.length === 1 ? 'review' : 'reviews'})
+            <span className=" text-xs text-gray-400 font-semibold">
+              Avg {averageRating.toFixed(1)} ({reviews.length} {reviews.length === 1 ? 'review' : 'reviews'})
             </span>
           </div>
         </div>
@@ -154,7 +154,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
           onClick={() => setShowWriteReview(!showWriteReview)}
           className="flex items-center gap-2"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-3" />
           Write Review
         </Button>
       </div>

@@ -375,43 +375,43 @@ const seo = useSEO('/checkout');
 
              <div className="space-y-2 mb-4 text-white">
                              <div className="flex justify-between">
-                               <span>Subtotal</span>
-                               <span className='font-bold'>{formatPrice(totalPrice)}</span>
+                               <span className='font-semibold uppercase '>Subtotal</span>
+                               <span className='font-semibold text-lg'>{formatPrice(totalPrice)}</span>
                              </div>
                              {appliedCoupon && (
-                               <div className="flex justify-between text-green-400 font-bold">
-                                 <span>Coupon Discount</span>
-                                 <span className='font-bold'>-{formatPrice(couponDiscount)}</span>
+                               <div className="flex justify-between text-green-400 ">
+                                 <span className='font-semibold uppercase '>Coupon Discount</span>
+                                 <span className='font-semibold text-lg'>-{formatPrice(couponDiscount)}</span>
                                </div>
                              )}
                              {appliedPoints && (
-                               <div className="flex justify-between text-blue-400 font-bold">
-                                 <span>Points Discount</span>
-                                 <span className='font-bold'>-{formatPrice(pointsDiscount)}</span>
+                               <div className="flex justify-between text-blue-400 ">
+                                 <span className='font-semibold uppercase '>Points Discount</span>
+                                 <span className='font-semibold text-lg'>-{formatPrice(pointsDiscount)}</span>
                                </div>
                              )}
                              <div className="flex justify-between">
-                               <span>Shipping</span>
-                               <span>{deliveryFee === 0 ? <span className="line-through font-bold text-gray-300">Free Delivery</span> : `₹${deliveryFee}`}</span>
+                               <span className='font-semibold uppercase '>Shipping</span>
+                               <span>{deliveryFee === 0 ? <span className="line-through font-semibold text-lg text-gray-200">Free Delivery</span> : `₹${deliveryFee}`}</span>
                              </div>
-                             <div className="border-t pt-2">
+                             <div className="border-t pb-2">
                                <div className="flex justify-between font-semibold">
-                                 <span>Total</span>
-                                 <span className="underline font-bold">{formatPrice(finalTotal)}</span>
+                                 <span className='font-semibold uppercase '>Total</span>
+                                 <span className="underline font-semibold text-lg">{formatPrice(finalTotal)}</span>
                                </div>
                               </div>
                             </div>
 
             {/* Continue to Payment Button - Moved to bottom of order summary */}
             {!isAddressSaved &&(
-              <h3 className='font-semibold underline text-center '>please select a saved address or enter a new address to proceed with payment</h3>
+              <h3 className='font-semibold  text-center '>please select a saved address or enter a new address to proceed with payment</h3>
             )}
           
             {isAddressSaved && (
               <Button 
                 onClick={() => handleFormSubmit(formData)} 
                 disabled={isLoading}
-                className="w-full font-bold rounded-none text-lg mt-4"
+                className="w-full font-bold  text-center rounded-none text-lg mt-4"
               >
                 {isLoading ? 'Processing...' : 'Continue to Payment'}
               </Button>

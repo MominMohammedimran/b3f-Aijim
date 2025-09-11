@@ -116,8 +116,8 @@ const Payment = () => {
                 <div className="space-y-2 text-sm">
                   {appliedCoupon && (
                     <div className="flex justify-between  items-center">
-                      <span className="text-gray-200 font-semibold tracking-[2px]">Coupon Applied : 
-                        <span className="underline text-yellow-400">
+                      <span className="text-gray-200 font-semibold tracking-[2px]">Coupon Applied - {' '} 
+                        <span className="underline font-semibold text-md text-yellow-400">
                       {appliedCoupon.code}
                       </span>
                       </span>
@@ -125,8 +125,8 @@ const Payment = () => {
                   )}
                   {rewardPointsUsed > 0 && (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-200 font-semibold tracking-[2px]">Reward Points Used :
-                         <span className="text-yellow-300 underline">
+                      <span className="text-gray-200 font-semibold tracking-[2px]">Reward Points Used - {' '}
+                         <span className="text-yellow-300 text-md font-semibold underline">
                       
                       {rewardPointsUsed}</span></span>
 
@@ -161,11 +161,11 @@ const Payment = () => {
           <div className="space-y-6">
             <div className="bg-gray-800 p-4">
               <h3 className="font-medium text-white mb-2">Secure Payment with Razorpay:</h3>
-              <ul className="text-sm text-white list-disc font-medium list-inside space-y-1">
-                <li>256‑bit SSL encryption</li>
-                <li>PCI DSS compliant</li>
-                <li>Multiple payment options</li>
-                <li>Instant payment confirmation</li>
+              <ul className="text-sm text-white list-disc font-semibold list-inside space-y-1">
+                <li className="font-semibold uppercase">256‑bit SSL encryption</li>
+                <li className="font-semibold uppercase">PCI DSS compliant</li>
+                <li className="font-semibold uppercase">Multiple payment options</li>
+                <li className="font-semibold uppercase">Instant payment confirmation</li>
               </ul>
             </div>
           </div>

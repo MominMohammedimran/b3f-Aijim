@@ -109,7 +109,7 @@ const AvailableCoupons: React.FC<AvailableCouponsProps> = ({ productPrice }) => 
                 setExpandedCoupon(expandedCoupon === coupon.id ? null : coupon.id)
               }
             >
-              <span className="text-white font-semibold text-md font-bold">
+              <span className="text-white font-semibold text-sm font-bold">
                 {coupon.code}
               </span>
               {expandedCoupon === coupon.id ? (
@@ -120,10 +120,21 @@ const AvailableCoupons: React.FC<AvailableCouponsProps> = ({ productPrice }) => 
             </div>
 
             {expandedCoupon === coupon.id && (
-              <div className="mt-3 space-y-0.5 text-sm text-gray-300">
-                <div className="flex justify-between">
-                <p>{formatDiscount(coupon)}</p>
-                <Button
+              <div className="mt-3 space-y-0.5 text-sm text-gray-300 flex justify-between items-center">
+                <div className="gap-2">
+                <p className="font-semibold text-xs">{formatDiscount(coupon)}</p>
+                 <p className="font-semibold text-xs">
+                  Valid {" "}
+                  {new Date(coupon.valid_to).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+               
+                
+                </div>
+                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => copyToClipboard(coupon.code)}
@@ -132,20 +143,11 @@ const AvailableCoupons: React.FC<AvailableCouponsProps> = ({ productPrice }) => 
                   {copiedCode === coupon.code ? (
                     <CheckCircle className="w-4 h-4" />
                   ) : (
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-3 h-3" />
                   )}
                   {copiedCode === coupon.code ? "Copied!" : "Copy"}
                 </Button>
-                
-                </div>
-                <p>
-                  Valid until:{" "}
-                  {new Date(coupon.valid_to).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </p>
+               
 
                 
               </div>

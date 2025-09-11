@@ -41,23 +41,23 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
               }`}
             />
             {pct > 0 && (
-              <span className="absolute top-2 right-1 bg-red-600 text-white text-xs px-2 py-1 animate-bounce z-10">
+              <span className="absolute top-1 right-0 bg-red-600 text-white text-[10px] px-1 py-0 font-semibold animate-bounce z-10">
                 {pct}% OFF
               </span>
             )}
           </div>
-          <div className="p-2 pl-3 pr-3  bg-[#111] border-x border-b border-gray-800">
-            <h3 className="text-white font-bold text-sm leading-tight">
+          <div className="p-1 pt-2 bg-[#111] border-x border-b border-gray-800">
+            <h3 className="text-white text-left font-bold text-[16px] leading-tight">
               {product.name}
             </h3>
-            <div className="flex items-center gap-2 text-sm mt-1">
+            <div className="flex items-center justify-evenly gap-2 text-sm ">
               {discount && (
-                <span className="text-gray-400 line-through">
+                <span className="text-gray-400 line-through font-semibold">
                   ₹{product.originalPrice}
                 </span>
               )}
-              <span className="text-white font-medium">₹{product.price}</span>
-              <span
+              <span className="text-white text-[17px] font-semibold">₹{product.price}</span>
+              {/*<span
                 className={`ml-auto text-[10px] px-1 py-0.5 rounded ${
                   inStock
                     ? 'bg-white text-black font-bold'
@@ -65,7 +65,7 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
                 }`}
               >
                 {inStock ? 'Stock' : 'Sold'}
-              </span>
+              </span>*/}
             </div>
           </div>
         </div>

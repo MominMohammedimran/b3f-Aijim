@@ -218,7 +218,7 @@ console.log(order)
                 alt={item.name}
               />
               <div className="flex-1">
-                <h5 className="text-lg font-medium  text-yellow-400 mb-1">{item.name}</h5>
+                <h5 className="text-lg font-medium  text-white mb-1">{item.name}</h5>
                 {Array.isArray(item.sizes) ? (
                   item.sizes.map((s: any, i: number) => (
                     <div
@@ -263,13 +263,13 @@ console.log(order)
         {/* Status & Rewards */}
         <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-3 mb-6">
           <div className="p-4 grid items-center border-b md:border-r border-gray-800">
-            <span className="font-bold text-lg   text-blue-900 mb-1  text-center">
-              Payment Status :<span className="w-full font-bold   text-center ">
+            <span className="font-semibold text-lg   text-blue-900 mb-1  text-center">
+              Payment Status -<span className="w-full font-bold  text-red-500 text-center ">
              "{getPaymentStatusText(order.payment_status)}"
             </span>
             </span>
             <p className="text-sm text-gray-800 leading-snug  font-bold text-center mb-2 ">
-              #Note : {order.payment_method || 'N/A'} 
+              #Note - {order.payment_method || 'N/A'} 
             </p>
            
             {!['cancelled','paid'].includes(order.payment_status) && (
@@ -288,15 +288,15 @@ console.log(order)
 
       
             <div className="p-4 grid items-center border-b w-full md:border-r border-gray-800">
-              <span className="font-bold text-lg w-full     text-green-800 mb-1 text-center ">Order Status :
-                 <span className=" w-full  font-bold text-center ">
+              <span className="font-semibold text-lg w-full     text-green-800 mb-1 text-center ">Order Status -
+                 <span className=" w-full text-red-500 font-bold text-center ">
                  &nbsp;"{getOrderStatusText(order.status)}"
               </span>
               </span>
              
               
               <p className="text-sm text-gray-800 leading-snug  font-bold text-center mb-2">
-                #Note : {order.status_note || 'N/A'}
+                #Note - {order.status_note || 'N/A'}
               </p>
               
               
@@ -304,17 +304,16 @@ console.log(order)
          
 
           <div className="p-4  grid items-center border-b  border-gray-800 ">
-            <span className="font-bold text-lg text-purple-900 text-center ">Rewards Section</span>
-             <div className='bg-purple-900 w-full m-auto  mt-1 pt-2 pb-2 '> 
-            <p className="text-sm font-medium text-center text-white">
-              Reward Points used :{' '}
-              <span className="font-medium  underline">
+             <div className=' w-full m-auto pt-1  '> 
+            <p className="text-md font-semibold text-center text-black">
+              Reward Points Used -{' '}
+              <span className="font-semibold text-red-500  underline">
                 {(order.reward_points_used as any)?.points || 0}
               </span>
             </p>
-            <p className="text-sm text-white font-medium text-center">
-              Coupon used :{' '}
-              <span className=" font-medium underline">
+            <p className="text-md text-black font-semibold text-center">
+              Coupon Used- {' '}
+              <span className=" font-semibold underline text-red-500">
                 {(order.coupon_code as any)?.code || 'None'}
               </span>
             </p>

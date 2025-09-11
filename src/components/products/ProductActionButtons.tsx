@@ -85,27 +85,24 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
 
   if (isInCart) {
     return (
-     <div className={`overflow-x-auto  w-25 whitespace-nowrap flex items-center gap-2 ${className}`}>
-  <Button
-    size="icon"
-    onClick={handleQuantityDecrease}
+     <div className={`overflow-x-auto  w-15 whitespace-nowrap flex items-center gap-2 ${className}`}>
+ 
+    <span  onClick={handleQuantityDecrease}
     disabled={currentQuantity <= 1}
-    className=" bg-gray-100 hover:bg-gray-200 text-black font-extrabold rounded transition duration-200 flex-shrink-0"
+    className=" bg-gray-100 hover:bg-gray-200 px-2 py-0 text-black font-extrabold rounded transition duration-200 flex-shrink-0"
   >
-    <span className="text-lg font-bold  ">−</span>
-  </Button>
+    −</span>
+ 
 
-  <span className="px-3 py-1 rounded text-lg font-medium text-gray-800 min-w-[20px] text-center flex-shrink-0">
+  <span className="px-2 py-0 rounded text-sm font-medium text-gray-200  text-center flex-shrink-0">
     {currentQuantity}
   </span>
 
-  <Button
-    size="icon"
-    onClick={handleQuantityIncrease}
-    className=" bg-gray-100 hover:bg-gray-200 text-black font-extrabold rounded transition duration-200 flex-shrink-0"
-  >
-    <span className="text-lg font-bold">+</span>
-  </Button>
+  
+    <span   onClick={handleQuantityIncrease}
+    className=" bg-gray-100 hover:bg-gray-200 px-2 py-0 text-black font-extrabold rounded transition duration-200 flex-shrink-0"
+  >+</span>
+
 
   {onRemove && (
     <Button
