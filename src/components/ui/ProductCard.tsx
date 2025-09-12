@@ -45,9 +45,18 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
                 {pct}% OFF
               </span>
             )}
+             <span
+                className={` rounded-none  ${
+                  inStock
+                    ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
+                    : ' absolute top-1/2 left-1/3 ml-2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
+                }`}
+              >
+                {inStock ? 'Stock' : 'Sold'}
+              </span>
           </div>
           <div className="p-1 pt-2 bg-[#111] border-x border-b border-gray-800">
-            <h3 className="text-white text-left font-bold text-[16px] leading-tight">
+            <h3 className="text-white text-left ml-2 font-bold text-[16px] leading-tight">
               {product.name}
             </h3>
             <div className="flex items-center justify-evenly gap-2 text-sm ">
@@ -57,15 +66,7 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
                 </span>
               )}
               <span className="text-white text-[17px] font-semibold">₹{product.price}</span>
-              {/*<span
-                className={`ml-auto text-[10px] px-1 py-0.5 rounded ${
-                  inStock
-                    ? 'bg-white text-black font-bold'
-                    : 'bg-red-600 font-bold text-white'
-                }`}
-              >
-                {inStock ? 'Stock' : 'Sold'}
-              </span>*/}
+             
             </div>
           </div>
         </div>
@@ -76,12 +77,28 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
             <img
               src={backImage}
               alt={`${product.name} - Back view`}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 text-white">
               
-              <button className="w-full bg-blue-600 hover:bg-blue-900 text-white text-xs font-bold py-2 px-3 rounded transition-colors">
+                   className={`w-full h-full object-cover ${
+                inStock ? '' : 'grayscale opacity-50'
+              }`}
+            />
+            <div className=" " />
+            <div className=" text-white">
+               {pct > 0 && (
+               <span className="absolute top-1 right-0 bg-red-600 text-white text-[10px] px-1 py-0 font-semibold animate-bounce z-10">
+                {pct}% OFF
+              </span>
+            )}
+              <span
+                className={` rounded-none  ${
+                  inStock
+                    ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
+                    : ' absolute top-1/2 left-1/3 ml-2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
+                }`}
+              >
+                {inStock ? 'Stock' : 'Sold'}
+              </span>
+              <button className="absolute bottom-4 left-1/4  w-1/2 bg-blue-600 hover:bg-blue-900 text-white text-xs font-bold py-2 px-1 rounded transition-colors">
                 View Product
               </button>
             </div>

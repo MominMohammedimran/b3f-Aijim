@@ -178,10 +178,10 @@ const checkPincode = () => {
                       ? 'border-gray-400 bg-white text-black'
                       : 'border-gray-400 hover:border-yellow-400'
                   }
-                  ${stock === 0 && !selected ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  ${stock === 0 && !selected ? 'opacity-90 text-white cursor-not-allowed' : ''}`}
               >
                 {size}
-                <div className="text-[8px] font-bold mt-1">{stock ? `Stock ` : 'Sold Out'}</div>
+                <div className="text-[8px] uppercase font-semibold mt-1">{stock ? `Stock ` : 'Sold Out'}</div>
               </button>
             </div>
           );
