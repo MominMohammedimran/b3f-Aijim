@@ -15,6 +15,7 @@ import ShareModal from './ShareModal';
 import LiveViewingCounter from './LiveViewingCounter';
 import AvailableCoupons from './AvailableCoupons';
 import ProductDescription from './ProductDescription';
+import { validatePincode } from '@/utils/pincodeService';
 
 interface SizeWithQuantity {
   size: string;
@@ -90,28 +91,11 @@ const checkPincode = async () => {
   setPincodeChecked(true);
 
   try {
-    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-    const data = await response.json();
-
-    if (data && data.length > 0 && data[0].Status === 'Success') {
-      const postOffice = data[0].PostOffice;
-      if (postOffice && postOffice.length > 0) {
-        setPincodeResult({
-          isServiceable: true,
-          message: `Delivery available to ${postOffice[0].District}, ${postOffice[0].State}`
-        });
-      } else {
-        setPincodeResult({
-          isServiceable: false,
-          message: 'Delivery not available to this location'
-        });
-      }
-    } else {
-      setPincodeResult({
-        isServiceable: false,
-        message: 'Invalid PIN code or delivery not available'
-      });
-    }
+    const result = await validatePincode(pincode);
+    setPincodeResult({
+      isServiceable: result.isServiceable,
+      message: result.message
+    });
   } catch (err) {
     console.error("Error checking pincode:", err);
     setPincodeResult({
