@@ -13,19 +13,24 @@ export const validatePincode = async (pincode: string): Promise<PincodeValidatio
   }
 
   try {
-    // Using a more reliable Indian postal API
-    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+    // Using Delhivery API for pincode validation
+    const apiKey = 'b90ea2d6b289d896ca461e054b69aa4ed2cfe4e9';
+    const response = await fetch(`https://track.delhivery.com/c/api/pin-codes/json/?filter_codes=${pincode}`, {
+      headers: {
+        'Authorization': `Token ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
     const data = await response.json();
 
-    if (data && data.length > 0 && data[0].Status === 'Success') {
-      const postOffice = data[0].PostOffice;
-      if (postOffice && postOffice.length > 0) {
-        // Check if it's a major serviceable area (you can customize this logic)
-        const isServiceable = true; // For now, all valid pincodes are serviceable
+    if (data && data.delivery_codes && data.delivery_codes.length > 0) {
+      const deliveryCode = data.delivery_codes[0];
+      if (deliveryCode && deliveryCode.postal_code && deliveryCode.postal_code.pin === pincode) {
+        const isServiceable = true; // Delhivery serviceable area
         return {
           isServiceable,
           message: isServiceable 
-            ? `Delivery available to ${postOffice[0].District}, ${postOffice[0].State}`
+            ? `Delivery available to ${deliveryCode.postal_code.district}, ${deliveryCode.postal_code.state_or_province}`
             : 'Delivery not available to this location'
         };
       }
