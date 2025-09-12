@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
+import { validatePincode } from '@/utils/pincodeService';
 
 interface AddressFormData {
   firstName: string;
@@ -53,13 +54,32 @@ const AddressForm: React.FC<AddressFormProps> = ({
 }) => {
   const { currentUser } = useAuth();
   const [saving, setSaving] = useState(false);
+  const [pincodeValidation, setPincodeValidation] = useState<{isServiceable: boolean; message: string} | null>(null);
+  const [checkingPincode, setCheckingPincode] = useState(false);
 
   const handleChange = (field: keyof AddressFormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const checkPincodeServiceability = async (zipCode: string) => {
+    if (zipCode.length === 6) {
+      setCheckingPincode(true);
+      const result = await validatePincode(zipCode);
+      setPincodeValidation(result);
+      setCheckingPincode(false);
+    } else {
+      setPincodeValidation(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if pincode is serviceable before proceeding
+    if (!pincodeValidation?.isServiceable) {
+      toast.error('Please enter a serviceable PIN code before saving address');
+      return;
+    }
     
     setSaving(true);
     try {
@@ -218,14 +238,32 @@ const AddressForm: React.FC<AddressFormProps> = ({
         <Input
           id="zipCode"
           value={formData.zipCode}
-          onChange={(e) => handleChange('zipCode', e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\D/g, '');
+            handleChange('zipCode', value);
+            if (value.length === 6) {
+              checkPincodeServiceability(value);
+            } else {
+              setPincodeValidation(null);
+            }
+          }}
           placeholder="6-digit PIN Code"
           pattern="[0-9]{6}"
           maxLength={6}
           required
           className="font-semibold text-gray-100"
         />
-        <p className="text-[11px] lowercase tracking-[1px] font-semibold text-yellow-400 mt-1">Enter a valid 6-digit Indian PIN code</p>
+        {checkingPincode && (
+          <p className="text-[11px] font-semibold text-blue-400 mt-1">Checking serviceability...</p>
+        )}
+        {pincodeValidation && (
+          <p className={`text-[11px] font-semibold mt-1 ${pincodeValidation.isServiceable ? 'text-green-400' : 'text-red-400'}`}>
+            {pincodeValidation.message}
+          </p>
+        )}
+        {!pincodeValidation && !checkingPincode && (
+          <p className="text-[11px] lowercase tracking-[1px] font-semibold text-yellow-400 mt-1">Enter a valid 6-digit Indian PIN code</p>
+        )}
       </div>
 
       <div>

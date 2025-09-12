@@ -87,11 +87,11 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
     return (
      <div className={`overflow-x-auto  w-15 whitespace-nowrap flex items-center gap-2 ${className}`}>
  
-    <span  onClick={handleQuantityDecrease}
+    <button onClick={handleQuantityDecrease}
     disabled={currentQuantity <= 1}
-    className=" bg-gray-100 hover:bg-gray-200 px-2 py-0 text-black font-extrabold rounded transition duration-200 flex-shrink-0"
+    className=" bg-gray-100 hover:bg-gray-200 px-2 py-0 text-black font-extrabold rounded transition duration-200 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
   >
-    −</span>
+    −</button>
  
 
   <span className="px-2 py-0 rounded text-sm font-medium text-gray-200  text-center flex-shrink-0">
@@ -99,9 +99,9 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
   </span>
 
   
-    <span   onClick={handleQuantityIncrease}
+    <button onClick={handleQuantityIncrease}
     className=" bg-gray-100 hover:bg-gray-200 px-2 py-0 text-black font-extrabold rounded transition duration-200 flex-shrink-0"
-  >+</span>
+  >+</button>
 
 
   {onRemove && (

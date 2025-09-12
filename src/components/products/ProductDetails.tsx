@@ -79,37 +79,45 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
     }
     setRemovingSize(null);
   };
- const [pincode, setPincode] = useState("");
-const [pincodeAvailable, setPincodeAvailable] = useState<boolean | null>(null);
-const [pincodeMessage, setPincodeMessage] = useState(false);
+const [pincode, setPincode] = useState("");
+const [pincodeResult, setPincodeResult] = useState<{isServiceable: boolean; message: string} | null>(null);
+const [pincodeChecked, setPincodeChecked] = useState(false);
 const [loadingPincode, setLoadingPincode] = useState(false);
 
 const checkPincode = async () => {
   if (!pincode) return;
   setLoadingPincode(true);
-  setPincodeMessage(true);
+  setPincodeChecked(true);
 
   try {
-    const response = await fetch(
-      `https://track.delhivery.com/c/api/pin-codes/json/?filter_codes=${pincode}`,
-      {
-        headers: {
-          "Authorization": "Token ab90ea2d6b289d896ca461e054b69aa4ed2cfe4e9"  // replace with your Delhivery test key
-        }
-      }
-    );
-
+    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
     const data = await response.json();
 
-    if (data.delivery_codes && data.delivery_codes.length > 0) {
-      const postal = data.delivery_codes[0].postal_code;
-      setPincodeAvailable(postal.pre_paid ); // true if any delivery mode is available
+    if (data && data.length > 0 && data[0].Status === 'Success') {
+      const postOffice = data[0].PostOffice;
+      if (postOffice && postOffice.length > 0) {
+        setPincodeResult({
+          isServiceable: true,
+          message: `Delivery available to ${postOffice[0].District}, ${postOffice[0].State}`
+        });
+      } else {
+        setPincodeResult({
+          isServiceable: false,
+          message: 'Delivery not available to this location'
+        });
+      }
     } else {
-      setPincodeAvailable(false);
+      setPincodeResult({
+        isServiceable: false,
+        message: 'Invalid PIN code or delivery not available'
+      });
     }
   } catch (err) {
     console.error("Error checking pincode:", err);
-    setPincodeAvailable(false);
+    setPincodeResult({
+      isServiceable: false,
+      message: 'Unable to verify PIN code. Please try again.'
+    });
   }
 
   setLoadingPincode(false);
@@ -352,13 +360,11 @@ const checkPincode = async () => {
 
     </div>
 
-    {pincodeMessage && (
+    {pincodeChecked && pincodeResult && (
       <div className="text-[13px] mt-2 ">
-        {pincodeAvailable ? (
-          <p className="text-green-400 font-semibold">Delivery & Return available to {pincode}</p>
-        ) : (
-          <p className="text-red-400 font-semibold">Delivery & Return not available to {pincode}</p>
-        )}
+        <p className={`font-semibold ${pincodeResult.isServiceable ? 'text-green-400' : 'text-red-400'}`}>
+          {pincodeResult.message}
+        </p>
       </div>
     )}
 
