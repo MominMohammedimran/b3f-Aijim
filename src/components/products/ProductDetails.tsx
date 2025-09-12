@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Loader2, Share, XCircle, Trash2 ,ShoppingCart} from 'lucide-react';
+import { Loader2, Share, ChevronDown, ChevronUp,XCircle, Trash2 ,ShoppingCart} from 'lucide-react';
 
 import {Link} from 'react-router-dom';
 import { Product } from '@/lib/types';
@@ -14,6 +14,7 @@ import ProductPlaceOrder from './ProductPlaceOrder';
 import ShareModal from './ShareModal';
 import LiveViewingCounter from './LiveViewingCounter';
 import AvailableCoupons from './AvailableCoupons';
+import ProductDescription from './ProductDescription';
 
 interface SizeWithQuantity {
   size: string;
@@ -78,20 +79,42 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
     }
     setRemovingSize(null);
   };
-  const [pincode, setPincode] = useState("");
+ const [pincode, setPincode] = useState("");
 const [pincodeAvailable, setPincodeAvailable] = useState<boolean | null>(null);
 const [pincodeMessage, setPincodeMessage] = useState(false);
+const [loadingPincode, setLoadingPincode] = useState(false);
 
-const serviceablePincodes = ["515402", "100006", "500001", "600045"];
-
-const checkPincode = () => {
+const checkPincode = async () => {
+  if (!pincode) return;
+  setLoadingPincode(true);
   setPincodeMessage(true);
-  if (serviceablePincodes.includes(pincode)) {
-    setPincodeAvailable(true);
-  } else {
+
+  try {
+    const response = await fetch(
+      `https://track.delhivery.com/c/api/pin-codes/json/?filter_codes=${pincode}`,
+      {
+        headers: {
+          "Authorization": "Token ab90ea2d6b289d896ca461e054b69aa4ed2cfe4e9"  // replace with your Delhivery test key
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.delivery_codes && data.delivery_codes.length > 0) {
+      const postal = data.delivery_codes[0].postal_code;
+      setPincodeAvailable(postal.pre_paid ); // true if any delivery mode is available
+    } else {
+      setPincodeAvailable(false);
+    }
+  } catch (err) {
+    console.error("Error checking pincode:", err);
     setPincodeAvailable(false);
   }
+
+  setLoadingPincode(false);
 };
+
 
 
   const totalPrice = selectedSizes.reduce((sum, s) => sum + s.quantity * product.price, 0);
@@ -103,19 +126,8 @@ const checkPincode = () => {
       </div>
     );
 
-    function renderDescription(desc: string) {
-  return desc.split('\n').map((line, i) => {
-    const [heading, ...rest] = line.split(':');
-    return (
-      <p key={i} className="text-xs sm:text-base leading-relaxed mb-1">
-        <span className="font-geist font-bold text-white">{heading.trim()}</span>
-        {rest.length > 0 && (
-          <span className="text-gray-300 font-neue-montreal text-justify tracking-wide  lowercase">: {rest.join(':').trim()}</span>
-        )}
-      </p>
-    );
-  });
-}
+  
+    
 
 
   return (
@@ -258,7 +270,7 @@ const checkPincode = () => {
            
               {inCartQty && (
                 <div className='flex justify-between items-center mt-1'>
-                <span className="font-bold w-full uppercase   text-red-500   text-center   ">
+                <span className="font-bold w-full uppercase   text-yellow-500   text-center   ">
                   In Cart - {inCartQty}
                 </span>
                 </div>
@@ -295,9 +307,10 @@ const checkPincode = () => {
        
  
       {/* Actions */}
-      <div className=" mb-1 rounded--none  mt-1">
+      <div className=" mb-1 rounded-none  mt-1">
         <ProductActionButtons
           product={product}
+          className="rounded-none"
           selectedSizes={selectedSizes.map((s) => s.size)}
           quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
         />
@@ -308,14 +321,14 @@ const checkPincode = () => {
             product={product}
             selectedSizes={selectedSizes.map((s) => s.size)}
             variant="secondary"
-            className="w-full "
+            className="w-full rounded-none font-semibold text-xl bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
           />
         </div>
       </div>
 
       {/* Delivery & Return Section */}
     {/* Delivery & Return Section */}
-<div className="p-4 w-full bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-600 mt-4">
+<div className="p-4 w-full bg-gradient-to-br from-black via-gray-900 to-black shadow-lg border border-gray-600 mt-4">
   <h3 className="text-lg font-semibold text-yellow-300 mb-3">Delivery & Returns</h3>
   <div className="space-y-3">
     <div className="flex items-center gap-2">
@@ -330,11 +343,13 @@ const checkPincode = () => {
         className="flex-1 px-3 py-1 w-full bg-gray-700 font-semibold border border-gray-600  text-white placeholder-gray-400  focus:border-transparent"
       />
       <button
-        onClick={checkPincode}
-        className="px-4 py-1 bg-yellow-500 text-black font-semibold  hover:bg-yellow-400 transition-colors"
-      >
-        Check
-      </button>
+  onClick={checkPincode}
+  disabled={loadingPincode}
+  className="px-4 py-1 bg-yellow-500 text-black font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50"
+>
+  {loadingPincode ? "Checking..." : "Check"}
+</button>
+
     </div>
 
     {pincodeMessage && (
@@ -366,9 +381,8 @@ const checkPincode = () => {
       <AvailableCoupons productPrice={product.price} />
 
       {/* Description */}
-      <div className="p-3  bg-gradient-to-br from-gray-800/80 to-gray-900/80 shadow-lg border border-gray-700 mt-4">
-        {renderDescription(product.description)}
-      </div>
+        <ProductDescription desc={product.description}/>
+      
 
       {/* Share Modal */}
       <ShareModal

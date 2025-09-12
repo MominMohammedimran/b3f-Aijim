@@ -91,7 +91,7 @@ const CouponCheckoutSection: React.FC<CouponCheckoutSectionProps> = ({
         {appliedCoupon ? (
           <Button 
             onClick={removeCoupon}
-            className="bg-red-600 text-white hover:bg-red-700"
+            className="bg-red-600 text-white bg-red-500 hover:bg-red-700"
           >
             REMOVE
           </Button>

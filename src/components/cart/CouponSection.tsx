@@ -112,7 +112,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         {appliedCoupon ? (
           <Button 
             onClick={removeCoupon}
-            className="bg-black border border-gray-300  tracking-[1px] rounded-none text-white hover:bg-red-700 font-inter font-bold uppercase px-6"
+            className=" border border-gray-300  tracking-[1px] rounded-none text-white bg-red-500 hover:bg-red-700 font-inter font-bold uppercase px-6"
           >
             REMOVE
           </Button>
@@ -138,8 +138,8 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       {appliedCoupon && (
         <div className="space-y-2">
          
-          <div className="text-m text-gray-200 font-bold tracking-[1px]">
-            Active coupon : <span className="font-bold text-yellow-300 underline tracking-[1px] "> {appliedCoupon.code} </span>
+          <div className="text-sm text-gray-100 font-semibold tracking-[1px]">
+            Active coupon : <span className="font-semibold text-lg text-yellow-300 underline tracking-[1px] "> {appliedCoupon.code} </span>
           </div>
         </div>
       )}

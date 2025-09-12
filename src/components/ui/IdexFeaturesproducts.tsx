@@ -35,7 +35,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
               src={product.image}
               alt={product.name}
               className={`w-full h-full object-cover transition-all duration-500 ${
-                inStock ? '' : 'grayscale opacity-50'
+                inStock ? '' : 'grayscale opacity-70'
               }`}
             />
             {pct > 0 && (
@@ -47,7 +47,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
                 className={` rounded-none  ${
                   inStock
                     ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
-                    : ' absolute top-1/2 left-1/3 ml-2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
+                    : ' absolute top-1/2 left-1/3  text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
                 }`}
               >
                 {inStock ? 'Stock' : 'Sold'}
@@ -84,7 +84,10 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
             <img
               src={backImage}
               alt={`${product.name} - Back view`}
-              className="w-full h-full object-cover"
+             
+               className={`w-full h-full object-cover ${
+                inStock ? '' : 'grayscale opacity-70'
+              }`}
             />
             <div className=" " />
             <div className=" text-white">
@@ -97,12 +100,13 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
                 className={` rounded-none  ${
                   inStock
                     ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
-                    : ' absolute top-1/2 left-1/3 ml-2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
+                    : ' absolute top-1/2 left-1/3 mr-3 text-lg uppercase px-3 py-0 bg-red-600 font-semibold  text-white'
                 }`}
               >
                 {inStock ? 'Stock' : 'Sold'}
+              
               </span>
-              <button className="absolute bottom-4 left-1/4  w-1/2 bg-blue-600 hover:bg-blue-900 text-white text-xs font-bold py-2 px-1 rounded transition-colors">
+              <button className="absolute bottom-4   w-full bg-blue-600 hover:bg-blue-900 text-white text-xs font-bold py-2 px-1 rounded transition-colors">
                 View Product
               </button>
             </div>

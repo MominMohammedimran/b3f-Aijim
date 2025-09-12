@@ -73,16 +73,16 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
               <div className="flex items-center space-x-2 flex-1">
                 <RadioGroupItem value={address.id} id={`address-${address.id}`} />
                 <div className="flex-1">
-                  <div className="font-medium">
-                    {address.first_name} {address.last_name}
+                  <div className="font-semibold not-italic tracking-wider text-gray-200">
+                    {address.first_name} 
                     {address.is_default && (
                       <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Default</span>
                     )}
                   </div>
-                  <div className="text-sm text-gray-400 mt-1">
+                  <div className="text-xs text-gray-400 mt-1 font-semibold not-italic">
                     {address.street}, {address.city}, {address.state} {address.zipcode}
                   </div>
-                  <div className="text-sm text-gray-400">{address.phone}</div>
+                  <div className="text-xs text-gray-400 font-semibold not-italic">{address.phone}</div>
                 </div>
               </div>
               

@@ -91,7 +91,7 @@ const AvailableCoupons: React.FC<AvailableCouponsProps> = ({ productPrice }) => 
   }
 
   return (
-    <div className="p-4 w-full bg-gray-900 rounded-md border border-gray-700 mt-4">
+    <div className="p-4 w-full bg-gradient-to-br from-black via-gray-900 to-black rounded-none border border-gray-700 mt-4">
       <div className="flex items-center gap-2 mb-4">
         <Ticket className="w-5 h-5 text-yellow-300" />
         <h3 className="text-lg font-semibold text-yellow-300">Available Coupons</h3>
@@ -101,7 +101,7 @@ const AvailableCoupons: React.FC<AvailableCouponsProps> = ({ productPrice }) => 
         {coupons.map((coupon) => (
           <div
             key={coupon.id}
-            className="bg-gray-800 border border-gray-700 rounded- p-3"
+            className=" border border-gray-700 rounded-none p-3"
           >
             <div
               className="flex items-center justify-between cursor-pointer"

@@ -380,13 +380,13 @@ const seo = useSEO('/checkout');
                              </div>
                              {appliedCoupon && (
                                <div className="flex justify-between text-green-400 ">
-                                 <span className='font-semibold uppercase '>Coupon Discount</span>
+                                 <span className='font-semibold uppercase '>Coupon </span>
                                  <span className='font-semibold text-lg'>-{formatPrice(couponDiscount)}</span>
                                </div>
-                             )}
+                          )}
                              {appliedPoints && (
                                <div className="flex justify-between text-blue-400 ">
-                                 <span className='font-semibold uppercase '>Points Discount</span>
+                                 <span className='font-semibold uppercase '>Points </span>
                                  <span className='font-semibold text-lg'>-{formatPrice(pointsDiscount)}</span>
                                </div>
                              )}

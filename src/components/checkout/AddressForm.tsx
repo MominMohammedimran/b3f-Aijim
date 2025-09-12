@@ -198,14 +198,14 @@ const AddressForm: React.FC<AddressFormProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="state" className="text-sm font-semibold">State *</Label>
+        <Label htmlFor="state" className="text-sm font-bold">State *</Label>
         <Select value={formData.state} onValueChange={(value) => handleChange('state', value)}>
           <SelectTrigger className=" text-sm font-bold  text-gray-100">
             <SelectValue placeholder="-- Select State --" />
           </SelectTrigger>
           <SelectContent>
             {indianStates.map((state) => (
-              <SelectItem key={state} value={state}>
+              <SelectItem className="font-bold"key={state} value={state}>
                 {state}
               </SelectItem>
             ))}
@@ -223,7 +223,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
           pattern="[0-9]{6}"
           maxLength={6}
           required
-          className="font-semibold text-gray-800"
+          className="font-semibold text-gray-100"
         />
         <p className="text-[11px] lowercase tracking-[1px] font-semibold text-yellow-400 mt-1">Enter a valid 6-digit Indian PIN code</p>
       </div>
