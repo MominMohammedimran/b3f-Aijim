@@ -3,3 +3,6 @@ project_id = "zfdsrtwjxwzwbrtfgypm"
 
 [functions.send-otp-email]
 verify_jwt = false
+
+[functions.validate-pincode]
+verify_jwt = false

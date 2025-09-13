@@ -1,3 +1,5 @@
+import { supabase } from '@/integrations/supabase/client';
+
 export interface PincodeValidationResult {
   isServiceable: boolean;
   message: string;
@@ -13,48 +15,17 @@ export const validatePincode = async (pincode: string): Promise<PincodeValidatio
   }
 
   try {
-    // First try a CORS-friendly postal API
-    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-    const data = await response.json();
+    // Call the Supabase edge function to validate pincode
+    const { data, error } = await supabase.functions.invoke('validate-pincode', {
+      body: { pincode }
+    });
 
-    if (data && data.length > 0 && data[0].Status === 'Success') {
-      const postOffice = data[0].PostOffice;
-      if (postOffice && postOffice.length > 0) {
-        const location = postOffice[0];
-        return {
-          isServiceable: true,
-          message: `Delivery available to ${location.District}, ${location.State}`
-        };
-      }
+    if (error) {
+      console.error('Edge function error:', error);
+      throw error;
     }
 
-    // Fallback to basic Indian pincode validation
-    if (/^[1-9][0-9]{5}$/.test(pincode)) {
-      // Basic Indian pincode format validation
-      const stateMap: { [key: string]: string } = {
-        '1': 'Delhi/North India',
-        '2': 'Haryana/Punjab/Himachal Pradesh',
-        '3': 'Rajasthan/Uttar Pradesh',
-        '4': 'Uttar Pradesh/Bihar',
-        '5': 'Uttarakhand/Uttar Pradesh',
-        '6': 'Haryana/Punjab',
-        '7': 'Rajasthan',
-        '8': 'Gujarat/Rajasthan'
-      };
-      
-      const firstDigit = pincode[0];
-      const region = stateMap[firstDigit] || 'India';
-      
-      return {
-        isServiceable: true,
-        message: `Delivery available to ${region} region`
-      };
-    }
-
-    return {
-      isServiceable: false,
-      message: 'Invalid PIN code format'
-    };
+    return data as PincodeValidationResult;
   } catch (error) {
     console.error('Pincode validation error:', error);
     
