@@ -62,7 +62,7 @@ const seo = useSEO('/product/details/:productId');
           <Link to="/" className="mr-2">
             <ArrowLeft size={24} className="back-arrow" />
           </Link>
-          <h1 className="text-2xl font-bold text-white">{product?.name || 'Product Details'}</h1>
+          <h1 className="text-xl font-bold text-white line-clamp-1">{product?.name || 'Product Details'}</h1>
         </div>
 
         {product ? (

@@ -11,12 +11,12 @@ import AccountSettings from './AccountSettings';
 import ResetPassword from '../../pages/ResetPassword'
 
 const ProfileTabs = () => {
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('rewards');
 
   return (
     <div className="w-full max-w-4xl ">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-1/2 m-auto grid-cols-2 mb-10 bg-gray-800 rounded-3xl p-1 ">
+        <TabsList className="grid w-full m-auto grid-cols-2 mb-10 bg-gray-800 rounded-3xl p-1 ">
          
          {/* <TabsTrigger
             value="profile"
