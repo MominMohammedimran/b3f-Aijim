@@ -61,32 +61,6 @@ serve(async (req) => {
       }
     }
 
-    // Fallback to basic Indian pincode validation
-    if (/^[1-9][0-9]{5}$/.test(pincode)) {
-      const stateMap: { [key: string]: string } = {
-        '1': 'Delhi/North India',
-        '2': 'Haryana/Punjab/Himachal Pradesh',
-        '3': 'Rajasthan/Uttar Pradesh',
-        '4': 'Uttar Pradesh/Bihar',
-        '5': 'Uttarakhand/Uttar Pradesh',
-        '6': 'Haryana/Punjab',
-        '7': 'Rajasthan',
-        '8': 'Gujarat/Rajasthan'
-      };
-      
-      const firstDigit = pincode[0];
-      const region = stateMap[firstDigit] || 'India';
-      
-      return new Response(
-        JSON.stringify({
-          isServiceable: true,
-          message: `Delivery available to ${region} region`
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
 
     return new Response(
       JSON.stringify({
