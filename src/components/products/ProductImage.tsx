@@ -55,6 +55,26 @@ const ProductImage: React.FC<ProductImageProps> = ({
   />
 
 
+        {/* navigation arrows - visible on md+ screens */}
+        {imgs.length > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 hidden md:flex bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
+              aria-label="Previous image"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all"
+              aria-label="Next image"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
+        )}
+
         {/* progress dots */}
         {imgs.length > 1 && (
           <div className="absolute bottom-4 inset-x-0 flex justify-center gap-2">
