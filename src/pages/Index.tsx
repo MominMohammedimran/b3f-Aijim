@@ -171,7 +171,7 @@ const seo = useSEO('/');
 
           {/* ✨ Featured Products */}
             <h2 className="text-2xl md:text-2xl font-bold mb-5 text-left">Feature products</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           
           {products.map((product, index) => (
             <div key={product.id} className={`animate-fade-in`} style={{ animationDelay: `${index * 0.1}s` }}>

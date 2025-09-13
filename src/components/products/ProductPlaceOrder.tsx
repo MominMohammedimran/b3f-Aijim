@@ -87,7 +87,7 @@ const ProductPlaceOrder: React.FC<ProductPlaceOrderProps> = ({
       type="button"
     >
       <CheckCircle className="h-4 w-4 mr-2" />
-      <span>Place Order</span>
+      <span className="font-bold">Place Order</span>
     </Button>
   );
 };

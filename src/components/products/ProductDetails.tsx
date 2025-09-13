@@ -85,6 +85,7 @@ const [pincodeResult, setPincodeResult] = useState<{isServiceable: boolean; mess
 const [pincodeChecked, setPincodeChecked] = useState(false);
 const [loadingPincode, setLoadingPincode] = useState(false);
 
+console.log(pincodeResult)
 const checkPincode = async () => {
   if (!pincode) return;
   setLoadingPincode(true);
@@ -313,7 +314,7 @@ const checkPincode = async () => {
             product={product}
             selectedSizes={selectedSizes.map((s) => s.size)}
             variant="secondary"
-            className="w-full rounded-none font-semibold text-xl bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
+            className="w-full rounded-none font-poppins font-semibold text-xl bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
           />
         </div>
       </div>
