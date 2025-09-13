@@ -48,7 +48,7 @@ serve(async (req) => {
 
     if (data && data.delivery_codes && data.delivery_codes.length > 0) {
       const deliveryCode = data.delivery_codes[0];
-      if (deliveryCode && deliveryCode.postal_code && deliveryCode.postal_code.pin === pincode) {
+      if (deliveryCode && deliveryCode.postal_code && deliveryCode.postal_code.pin === parseInt(pincode)) {
         return new Response(
           JSON.stringify({
             isServiceable: true,
