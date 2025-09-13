@@ -81,14 +81,13 @@ const location = useLocation();
   const pointsDiscount = appliedPoints?.discount || 0;
   const totalDiscount = couponDiscount + pointsDiscount;
   const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
-console.log(appliedCoupon,appliedPoints)
   const handleRewardPointsChange = (value: number) => {
     if (value < 100 && value > 0) {
       return;
     }
     if (value > availablePoints) {
       setRewardPointsToUse(availablePoints);
-    } else {
+    } else {SSS
       setRewardPointsToUse(Math.max(0, value));
     }
   };
