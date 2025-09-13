@@ -440,29 +440,29 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
       {/* Price Breakdown */}
       <div className="space-y-0 mb-4 text-white">
                       <div className="flex justify-between">
-                        <span className="font-semibold uppercase ">Subtotal</span>
-                        <span className='font-semibold text-lg'>{formatPrice(totalPrice)}</span>
+                        <span className="font-semibold uppercase text-sm ">Subtotal</span>
+                        <span className='font-semibold text-md'>{formatPrice(totalPrice)}</span>
                       </div>
                       {appliedCoupon && (
                         <div className="flex justify-between text-green-400 font-bold">
-                          <span className="font-semibold uppercase">Coupon </span>
-                          <span className='font-semibold text-lg'>-{formatPrice(couponDiscount)}</span>
+                          <span className="font-semibold uppercase text-sm">Coupon </span>
+                          <span className='font-semibold text-md'>-{formatPrice(couponDiscount)}</span>
                         </div>
                       )}
                       {appliedPoints && (
                         <div className="flex justify-between text-blue-400 font-bold">
-                          <span className="font-semibold uppercase">Points </span>
-                          <span className='font-semibold text-lg'>-{formatPrice(pointsDiscount)}</span>
+                          <span className="font-semibold uppercase text-sm">Points </span>
+                          <span className='font-semibold text-md'>-{formatPrice(pointsDiscount)}</span>
                         </div>
                       )}
                       <div className="flex justify-between">
-                        <span className="font-semibold uppercase">Shipping</span>
-                        <span>{deliveryFee === 0 ? <span className="line-through font-semibold text-md text-gray-200">Free Delivery</span> : `₹${deliveryFee}`}</span>
+                        <span className="font-semibold uppercase text-sm">Shipping</span>
+                        <span>{deliveryFee === 0 ? <span className="line-through font-semibold text-sm text-gray-200">Free Delivery</span> : `- ₹${deliveryFee}`}</span>
                       </div>
                       <div className="border-t pb-2">
                         <div className="flex justify-between font-semibold">
-                          <span className="font-semibold uppercase">Total</span>
-                          <span className="underline text-lg font-semibold">{formatPrice(finalTotal)}</span>
+                          <span className="font-semibold uppercase text-sm">Total</span>
+                          <span className="underline text-md font-semibold">{formatPrice(finalTotal)}</span>
                         </div>
                       </div>
                     </div>

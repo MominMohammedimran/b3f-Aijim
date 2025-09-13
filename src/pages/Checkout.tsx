@@ -375,29 +375,29 @@ const seo = useSEO('/checkout');
 
              <div className="space-y-2 mb-4 text-white">
                              <div className="flex justify-between">
-                               <span className='font-semibold uppercase '>Subtotal</span>
-                               <span className='font-semibold text-lg'>{formatPrice(totalPrice)}</span>
+                               <span className='font-semibold text-sm uppercase '>Subtotal</span>
+                               <span className='font-semibold text-md'>{formatPrice(totalPrice)}</span>
                              </div>
                              {appliedCoupon && (
-                               <div className="flex justify-between text-green-400 ">
-                                 <span className='font-semibold uppercase '>Coupon </span>
-                                 <span className='font-semibold text-lg'>-{formatPrice(couponDiscount)}</span>
+                               <div className="flex justify-between text-white">
+                                 <span className='font-semibold  text-sm uppercase '>Coupon </span>
+                                 <span className='font-semibold text-md'>-{formatPrice(couponDiscount)}</span>
                                </div>
                           )}
                              {appliedPoints && (
-                               <div className="flex justify-between text-blue-400 ">
-                                 <span className='font-semibold uppercase '>Points </span>
-                                 <span className='font-semibold text-lg'>-{formatPrice(pointsDiscount)}</span>
+                               <div className="flex justify-between text-white">
+                                 <span className='font-semibold text-sm uppercase '>Points </span>
+                                 <span className='font-semibold text-md'>-{formatPrice(pointsDiscount)}</span>
                                </div>
                              )}
                              <div className="flex justify-between">
-                               <span className='font-semibold uppercase '>Shipping</span>
-                               <span>{deliveryFee === 0 ? <span className="line-through font-semibold text-lg text-gray-200">Free Delivery</span> : `₹${deliveryFee}`}</span>
+                               <span className='font-semibold uppercase text-sm '>Shipping</span>
+                               <span>{deliveryFee === 0 ? <span className="line-through text-sm font-semibold text-gray-200">Free Delivery</span> : `- ₹${deliveryFee}`}</span>
                              </div>
                              <div className="border-t pb-2">
                                <div className="flex justify-between font-semibold">
-                                 <span className='font-semibold uppercase '>Total</span>
-                                 <span className="underline font-semibold text-lg">{formatPrice(finalTotal)}</span>
+                                 <span className='font-semibold text-sm uppercase '>Total</span>
+                                 <span className="underline font-semibold text-md">{formatPrice(finalTotal)}</span>
                                </div>
                               </div>
                             </div>

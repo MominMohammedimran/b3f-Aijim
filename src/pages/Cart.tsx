@@ -230,17 +230,17 @@ const Cart = () => {
               <h2 className="text-xl font-semibold text-center mb-4 text-white">Order Summary</h2>
               <div className="space-y-2 mb-4 text-white">
                 <div className="flex justify-between">
-                  <span className='font-semibold uppercase'>Subtotal</span>
-                  <span className='font-semibold text-lg'>{formatPrice(totalPrice)}</span>
+                  <span className='font-semibold text-sm uppercase'>Subtotal</span>
+                  <span className='font-semibold text-md'>{formatPrice(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold uppercase">Shipping</span>
-                  <span>{deliveryFee === 0 ? <span className="line-through uppercase font-semibold text-lg text-gray-200">Free Delivery</span> : `₹${deliveryFee}`}</span>
+                  <span className="font-semibold text-sm uppercase">Shipping</span>
+                  <span>{deliveryFee === 0 ? <span className="line-through text-sm uppercase font-semibold text-lg text-gray-200">Free Delivery</span> : `- ₹${deliveryFee}`}</span>
                 </div>
                 <div className="border-t pb-4">
                   <div className="flex justify-between font-semibold">
-                    <span className="font-semibold uppercase ">Total</span>
-                    <span className="underline font-semibold text-lg">{formatPrice(finalTotal)}</span>
+                    <span className="font-semibold uppercase text-sm">Total</span>
+                    <span className="underline font-semibold text-md">{formatPrice(finalTotal)}</span>
                   </div>
                 </div>
               </div>
