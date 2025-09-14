@@ -30,9 +30,7 @@ const SavedAddressSelector: React.FC<SavedAddressSelectorProps> = ({
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
 
-  useEffect(() => {
-    fetchSavedAddresses();
-  }, [currentUser]);
+ 
 
   const fetchSavedAddresses = async () => {
     if (!currentUser) return;
@@ -66,6 +64,9 @@ const SavedAddressSelector: React.FC<SavedAddressSelectorProps> = ({
       setLoading(false);
     }
   };
+   useEffect(() => {
+    fetchSavedAddresses();
+  }, [currentUser]);
 
   if (loading) {
     return <div className="p-4">Loading saved addresses...</div>;

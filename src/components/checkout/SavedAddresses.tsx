@@ -4,7 +4,7 @@ import { Address } from '@/hooks/useAddresses';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Trash2, Edit, Loader2 } from 'lucide-react';
+import { Trash2, Edit, Loader2,Delete } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface SavedAddressesProps {
@@ -65,22 +65,25 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
           <Label
             key={address.id}
             htmlFor={`address-${address.id}`}
-            className={`border p-3 rounded-none cursor-pointer block hover:bg-gray-800 text-white ${
-              selectedAddressId === address.id && !useNewAddress ? 'border-blue-500 bg-gray-800 text-yellow-500' : 'border-gray-200'
+            className={`border p-3 rounded-none cursor-pointer block hover:bg-blue-900  hover:text-yellow-500 text-white ${
+              selectedAddressId === address.id && !useNewAddress ? 'border-gray-200 bg-blue-900 text-red-500' : 'border-gray-200'
             }`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2 flex-1">
                 <RadioGroupItem value={address.id} id={`address-${address.id}`} />
                 <div className="flex-1">
-                  <div className="font-semibold not-italic tracking-wider text-gray-200">
+                  <div className="font-semibold  not-italic tracking-wider text-gray-200 line-clamp-1">
                     {address.first_name} 
                     {address.is_default && (
                       <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Default</span>
                     )}
                   </div>
-                  <div className="text-xs text-gray-400 mt-1 font-semibold not-italic">
-                    {address.street}, {address.city}, {address.state} {address.zipcode}
+                  <div className="text-xs text-gray-400  mt-1 font-semibold not-italic line-clamp-1">
+                    {address.street.length>8 ? address.street.substring(0,8) +"...":address.street}
+                  </div>
+                    <div className="text-xs text-gray-400   font-semibold not-italic line-clamp-1">
+                   {address.city} -  {address.zipcode}
                   </div>
                   <div className="text-xs text-gray-400 font-semibold not-italic">{address.phone}</div>
                 </div>
@@ -94,7 +97,8 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                     variant="ghost"
                     size="sm"
                     onClick={(e) => handleEdit(address, e)}
-                    className="p-2 h-8 w-8 hover:bg-gray-700"
+                    
+                    className="p-2 h-8 w-8 hover:bg-red-600"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -107,12 +111,12 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                     size="sm"
                     onClick={(e) => handleDelete(address.id, e)}
                     disabled={deletingId === address.id}
-                    className="p-2 h-8 w-8 hover:bg-red-600 text-red-400 hover:text-white"
+                    className="p-2 h-8 w-8 hover:bg-red-600 text-white hover:text-white"
                   >
                     {deletingId === address.id ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Trash2 className="h-4 w-4" />
+                      <Delete className="h-4 w-5"/>
                     )}
                   </Button>
                 )}

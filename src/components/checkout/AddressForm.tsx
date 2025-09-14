@@ -8,7 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { validatePincode } from '@/utils/pincodeService';
-
+import{SavedAddress} from '@/components/checkout/SavedAddresses'
 interface AddressFormData {
   firstName: string;
   lastName: string;
@@ -132,10 +132,18 @@ const AddressForm: React.FC<AddressFormProps> = ({
         if (error) throw error;
         toast.success('Address saved successfully!');
         onAddressSaved?.();
+        setSaving(false);
+        window.location.reload();
+
+
       } else {
         // Just notify that form is complete if not saving
         onAddressSaved?.();
+        setSaving(false);
+
       }
+      setSaving(false);
+     
     } catch (error: any) {
       console.error('Error saving/updating address:', error);
       toast.error(editingAddress ? 'Failed to update address' : 'Failed to save address');
