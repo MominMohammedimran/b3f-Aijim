@@ -8,7 +8,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { validatePincode } from '@/utils/pincodeService';
-import{SavedAddress} from '@/components/checkout/SavedAddresses'
 interface AddressFormData {
   firstName: string;
   lastName: string;
@@ -29,6 +28,7 @@ interface AddressFormProps {
   onAddressSaved?: () => void;
   editingAddress?: any;
   onAddressUpdated?: (address: any) => void;
+  refetchAddresses?: () => void;
 }
 
 // List of Indian states
@@ -51,6 +51,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
   onAddressSaved,
   editingAddress,
   onAddressUpdated,
+  refetchAddresses,
 }) => {
   const { currentUser } = useAuth();
   const [saving, setSaving] = useState(false);
@@ -132,8 +133,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
         if (error) throw error;
         toast.success('Address saved successfully!');
         onAddressSaved?.();
+        refetchAddresses?.(); // Refresh addresses without page reload
         setSaving(false);
-        window.location.reload();
 
 
       } else {

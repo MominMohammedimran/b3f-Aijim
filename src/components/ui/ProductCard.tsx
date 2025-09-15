@@ -45,15 +45,16 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
                 {pct}% OFF
               </span>
             )}
-             <span
-                className={` rounded-none  ${
-                  inStock
-                    ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
-                    : ' absolute top-1/2 left-1/4  text-md uppercase px-3 py-0 bg-red-600 font-semibold text-white'
-                }`}
-              >
-                {inStock ? 'Stock' : 'Sold'}
-              </span>
+            <span
+  className={`rounded-none ${
+    inStock
+      ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
+      : 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
+  }`}
+>
+  {inStock ? 'Stock' : 'Sold'}
+</span>
+
           </div>
           <div className="p-1 pt-2 bg-[#111] border-x border-b border-gray-800">
             <h3 className="text-white text-left ml-1 font-bold text-[14px] leading-tight">
@@ -93,8 +94,8 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
                 className={` rounded-none  ${
                   inStock
                     ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
-                    : ' absolute top-1/2 left-1/4  text-md uppercase px-3 py-0 bg-red-600 font-semibold text-white'
-                }`}
+                    :'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
+  }`}
               >
                 {inStock ? 'Stock' : 'Sold'}
               </span>

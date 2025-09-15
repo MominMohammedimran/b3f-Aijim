@@ -56,7 +56,7 @@ const seo = useSEO('/checkout');
   // Address management state
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [useNewAddress, setUseNewAddress] = useState(false);
-  const { addresses, defaultAddress, loading: addressesLoading, deleteAddress } = useAddresses(currentUser?.id);
+  const { addresses, defaultAddress, loading: addressesLoading, deleteAddress, refetch: refetchAddresses } = useAddresses(currentUser?.id);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
@@ -311,6 +311,7 @@ const seo = useSEO('/checkout');
                   isLoading={isLoading}
                   onAddressSaved={handleAddressSaved}
                   editingAddress={editingAddress}
+                  refetchAddresses={refetchAddresses}
                   onAddressUpdated={(updatedAddress) => {
                     setEditingAddress(null);
                     setUseNewAddress(false);

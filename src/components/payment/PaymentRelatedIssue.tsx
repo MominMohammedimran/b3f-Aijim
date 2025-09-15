@@ -180,7 +180,7 @@ const generatePaymentIssueId = () => {
                     
                   </div>
                     <h1 className="text-2xl font-bold text-gray-100">Payment Related Issue</h1>
-                    <p className="mt-2 text-gray-200">Submit your Payment-related concerns and we'll address them promptly.</p>
+                    <p className="mt-2 font-semibold text-sm text-gray-200">Submit your Payment-related concerns and we'll address them promptly.</p>
                   </div>
 
           {/* Show existing issues */}
@@ -188,12 +188,12 @@ const generatePaymentIssueId = () => {
   <div className="mb-8 space-y-4">
     <h2 className="text-xl font-semibold text-gray-100">Previously Submitted Issues</h2>
     {existingIssues.map((issue, index) => (
-      <Card key={issue.id || index} className="border-gray-200 rounded-none bg-gray-800">
+      <Card key={issue.id || index} className="border-gray-200 rounded-none bg-background">
         <CardHeader>
           <div className="flex justify-between items-start">
-            <CardTitle className="text-red-400 text-lg">Issue #{index + 1}
-              <p className="text-xs font-medium text-yellow-400">id :{" "}
-                <span className="leading-relaxed text-gray-200">
+            <CardTitle className="text-red-500 text-lg">Issue #{index + 1}
+              <p className="text-xs font-semibold text-yellow-400">
+                <span className="leading-relaxed font-semibold text-gray-100">
                   {issue.id}
                   </span>
                 </p>
@@ -210,35 +210,35 @@ const generatePaymentIssueId = () => {
           <div className="space-y-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Issue Type :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed">
                     {issue.reason}
                   </span>
                 </p>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Transction ID :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed">
                     {issue.transaction_id}
                   </span>
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Name :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed lowercase">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed lowercase">
                     {issue.user_name}
                   </span>
                 </p>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Email :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed lowercase">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed lowercase">
                     {issue.user_email}
                   </span>
                 </p>
-                 <p className="text-sm font-medium text-yellow-300">
+                 <p className="text-sm font-semibold text-yellow-300">
                   Number :{" "}
-                  <span className="font-semibold text-gray-100  leading-relaxed">
+                  <span className="font-semibold text-xs text-gray-100  leading-relaxed">
                     {issue.phone_number}
                   </span>
                 </p>
@@ -247,14 +247,14 @@ const generatePaymentIssueId = () => {
             
             </div>
             <div className="  w-full flex items-center">
-              <p className="text-sm font-medium text-yellow-300">image uploaded :</p>
-               <img className='w-[50%]  h-[150px] m-auto' src={issue.screenshot_url}/>
+              <p className="text-sm font-semibold text-yellow-300">image_upl:</p>
+               <img className='w-[30%]  h-[60px] m-auto' src={issue.screenshot_url}/>
 
             </div>
 
             <div>
-              <p className="text-sm font-medium text-yellow-300">Description :</p>
-              <p className="text-gray-100 bg-gray-700 p-3 rounded border border-gray-600">
+              <p className="text-sm font-semibold text-yellow-300 mb-1">Description </p>
+              <p className="text-gray-100 text-sm font-semibold bg-gray-700 p-1.5 rounded border border-gray-600">
                 {issue.description}
               </p>
             </div>
@@ -262,7 +262,7 @@ const generatePaymentIssueId = () => {
              {issue.admin_response && (
                       <div className="mt-4 p-4 bg-gray-700 rounded-lg border border-green-600">
                         <h4 className="font-medium text-yellow-500 mb-2">Admin Response:
-                            <p className="bg-black text-white  p-2">{issue.admin_response}</p>
+                            <p className=" text-white  p-2">{issue.admin_response}</p>
                         </h4>
                       
                         {issue.admin_uploaded_image && (
@@ -280,9 +280,9 @@ const generatePaymentIssueId = () => {
                 
                 <div>
                   <div>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Created At :{" "}
-                  <span className="font-semibold text-gray-100">
+                  <span className="font-semibold text-xs text-gray-100">
                    {new Date(issue.created_at).toLocaleString("en-IN", {
                        year: "numeric",
                        month: "2-digit",
@@ -296,9 +296,9 @@ const generatePaymentIssueId = () => {
                  
                 </p>
               </div>
-                  <p className="text-sm font-medium text-yellow-300">
+                  <p className="text-sm font-semibold text-yellow-300">
                     Updated At :{" "}
-                    <span className="font-semibold text-gray-100">
+                    <span className="font-semibold text-xs text-gray-100">
                        {new Date(issue.updated_at).toLocaleString("en-IN", {
                         year: "numeric",
                           month: "2-digit",
@@ -307,7 +307,7 @@ const generatePaymentIssueId = () => {
                         minute: "2-digit",
                         second: "2-digit",
                           hour12: true
-                           })}]
+                           })}
 
                     </span>
                   </p>
@@ -322,14 +322,14 @@ const generatePaymentIssueId = () => {
 
 
           <div ref={formRef} className="border border-border rounded-lg p-6 bg-card shadow-lg">
-              <h2 className="text-2xl font-bold mb-6 text-foreground">Submit a New Payment Issue</h2>
+              <h2 className="text-xl font-bold mb-6 text-foreground">Submit a New Payment Issue</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                               <label className="block text-sm font-medium  text-gray-200 mb-2">Order Number</label>
                               <Input 
                                 value={orderId} 
                                 disabled 
-                                className="bg-background  text-foreground cursor-not-allowed" 
+                                className="bg-background   font-semibold text-foreground cursor-not-allowed" 
                               />
                             </div>
               
@@ -339,7 +339,7 @@ const generatePaymentIssueId = () => {
                   required
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                  className="bg-background border-input text-foreground"
+                  className="bg-background font-semibold border-input text-foreground"
                 />
               </div>
               <div>
@@ -349,7 +349,7 @@ const generatePaymentIssueId = () => {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="bg-background border-input text-foreground"
+                  className="bg-background font-semibold border-input text-foreground"
                 />
               </div>
               <div>
@@ -358,7 +358,7 @@ const generatePaymentIssueId = () => {
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="bg-background border-input text-foreground"
+                  className="bg-background border-input font-semibold text-foreground"
                 />
               </div>
               <div>
@@ -367,7 +367,7 @@ const generatePaymentIssueId = () => {
                   required
                   value={formData.transaction_id}
                   onChange={(e) => setFormData({ ...formData, transaction_id: e.target.value })}
-                  className="bg-background border-input text-foreground"
+                  className="bg-background font-semibold border-input text-foreground"
                 />
               </div>
               <div>
@@ -392,11 +392,11 @@ const generatePaymentIssueId = () => {
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="bg-background border-input text-foreground"
+                  className="bg-background font-semibold border-input text-foreground"
                 />
               </div>
               <div>
-                <label className="block mb-1 text-foreground">Upload Screenshot (optional)</label>
+                <label className="block mb-1 text-foreground">Upload Image (mandatory)</label>
                 <Input
                   type="file"
                   accept="image/*"
@@ -408,7 +408,7 @@ const generatePaymentIssueId = () => {
                 <Button
                   type="submit"
                   disabled={uploading}
-                  className="flex-1"
+                  className="flex-1 font-semibold"
                 >
                   {uploading ? 'Uploading...' : 'Submit Issue'}
                 </Button>

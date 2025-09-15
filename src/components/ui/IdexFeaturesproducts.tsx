@@ -47,8 +47,8 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
                 className={` rounded-none  ${
                   inStock
                     ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
-                    : ' absolute top-1/2 left-1/4  text-md uppercase px-3 py-0 bg-red-600 font-semibold text-white'
-                }`}
+                    : 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
+  }`}
               >
                 {inStock ? 'Stock' : 'Sold'}
               </span>
@@ -100,8 +100,8 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
                 className={` rounded-none  ${
                   inStock
                     ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
-                    : ' absolute top-1/2 left-1/4  text-md uppercase px-3 py-0 bg-red-600 font-semibold  text-white'
-                }`}
+                    : 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
+  }`}
               >
                 {inStock ? 'Stock' : 'Sold'}
               

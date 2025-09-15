@@ -87,7 +87,7 @@ const location = useLocation();
     }
     if (value > availablePoints) {
       setRewardPointsToUse(availablePoints);
-    } else {SSS
+    } else {
       setRewardPointsToUse(Math.max(0, value));
     }
   };

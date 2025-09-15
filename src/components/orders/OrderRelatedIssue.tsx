@@ -157,7 +157,7 @@ export default function OrderRelatedIssue() {
   return (
     <Layout>
 
-    <div className="min-h-screen bg-black py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="mb-8 pt-5">
@@ -169,7 +169,7 @@ export default function OrderRelatedIssue() {
           
         </div>
           <h1 className="text-2xl font-bold text-gray-100">Order Related Issue</h1>
-          <p className="mt-2 text-gray-200">Submit your order-related concerns and we'll address them promptly.</p>
+          <p className="mt-2 font-semibold text-sm text-gray-200">Submit your order-related concerns and we'll address them promptly.</p>
         </div>
 
         {/* Show existing issues */}
@@ -177,11 +177,11 @@ export default function OrderRelatedIssue() {
           <div className="mb-8 space-y-4">
             <h2 className="text-xl font-semibold text-gray-100">Previously Submitted Issues</h2>
             {existingIssues.map((issue, index) => (
-              <Card key={issue.id || index} className="border-gray-200 rounded-none bg-gray-800">
+              <Card key={issue.id || index} className="border-gray-200 rounded-none bg-background">
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <CardTitle className="text-red-400 text-lg ">Issue  #{index + 1}
-                       <p className="text-xs font-medium text-yellow-500 ">id :{" "} 
+                    <CardTitle className="text-red-500 text-lg ">Issue  #{index + 1}
+                       <p className="text-xs font-semibold text-yellow-300 "> 
                          <span className="font-semibold text-gray-100 leading-relaxed">{issue.id}</span>
                         </p>
                     </CardTitle>
@@ -193,37 +193,37 @@ export default function OrderRelatedIssue() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       <div>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Issue Type :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed">
                     {issue.reason}
                   </span>
                 </p>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Transction ID :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed">
                     {issue.transaction_id}
                   </span>
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Name :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed">
                     {issue.user_name}
                   </span>
                 </p>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Email :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed">
                     {issue.user_email}
                   </span>
                 </p>
-                 <p className="text-sm font-medium text-yellow-300">
+                 <p className="text-sm font-semibold text-yellow-300">
                   Number :{" "}
-                  <span className="font-semibold text-gray-100 leading-relaxed">
+                  <span className="font-semibold text-xs text-gray-100 leading-relaxed">
                     {issue.phone_number}
                   </span>
                 </p>
@@ -233,14 +233,14 @@ export default function OrderRelatedIssue() {
                     
                     
                     <div>
-                      <p className="text-sm font-bold text-yellow-300">Description :</p>
-                      <p className="text-gray-100 bg-gray-700 p-3 rounded border border-gray-600">{issue.description}</p>
+                      <p className="text-sm font-semibold text-yellow-300 mb-1">Description </p>
+                      <p className="text-gray-100 bg-gray-700 p-2 text-sm rounded border border-gray-600">{issue.description}</p>
                     </div>
 
                     {issue.admin_response && (
-                      <div className="mt-4 p-4 bg-gray-700 rounded-lg border border-green-600">
-                        <h4 className="font-medium text-yellow-500 mb-2">Admin Response:
-                            <p className="bg-black text-white  p-2">{issue.admin_response}</p>
+                      <div className="mt-4 p-4  rounded-lg border border-green-600">
+                        <h4 className="font-semibold text-yellow-500 mb-2">Admin Response:
+                            <p className=" text-white  p-2">{issue.admin_response}</p>
                         </h4>
                       
                         {issue.admin_uploaded_image && (
@@ -258,9 +258,9 @@ export default function OrderRelatedIssue() {
                 
                 <div>
                   <div>
-                <p className="text-sm font-medium text-yellow-300">
+                <p className="text-sm font-semibold text-yellow-300">
                   Created At :{" "}
-                  <span className="font-semibold text-gray-100">
+                  <span className="font-semibold text-xs text-gray-100">
                    {new Date(issue.created_at).toLocaleString("en-IN", {
                        year: "numeric",
                        month: "2-digit",
@@ -274,9 +274,9 @@ export default function OrderRelatedIssue() {
                  
                 </p>
               </div>
-                  <p className="text-sm font-medium text-yellow-300">
+                  <p className="text-sm font-semibold text-yellow-300">
                     Updated At :{" "}
-                    <span className="font-semibold text-gray-100">
+                    <span className="font-semibold text-xs text-gray-100">
                        {new Date(issue.updated_at).toLocaleString("en-IN", {
                         year: "numeric",
                           month: "2-digit",
@@ -285,7 +285,7 @@ export default function OrderRelatedIssue() {
                         minute: "2-digit",
                         second: "2-digit",
                           hour12: true
-                           })}]
+                           })}
 
                     </span>
                   </p>
@@ -299,16 +299,16 @@ export default function OrderRelatedIssue() {
         )}
 
         {submittedData && (
-          <Card className="mb-8 border-green-600 bg-green-900">
+          <Card className="mb-1 border-green-600  rounded-none bg-background">
             <CardHeader>
-              <CardTitle className="text-green-300 flex items-center gap-2">
-                ✓ Issue Submitted Successfully
+              <CardTitle className="text-white text-lg flex items-center gap-1">
+                 Issue Submitted Successfully
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="p-4 bg-blue-900 rounded-lg">
-                <p className="text-blue-300 font-medium">What happens next?</p>
-                <p className="text-blue-200 text-sm mt-1">
+              <div className="p-4 bg-blue-900 rounded-none">
+                <p className="text-gray-100 font-medium">What happens next?</p>
+                <p className="text-gray-300 font-medium text-xs mt-1">
                   Our team will review your issue and respond within 24-48 hours. You'll receive updates via email.
                 </p>
               </div>
@@ -316,7 +316,7 @@ export default function OrderRelatedIssue() {
           </Card>
         )}
 
-        <Card className="bg-gray-800 border-gray-200 rounded-none2">
+        <Card className="bg-background border-gray-200 rounded-none">
           <CardHeader>
             <CardTitle className="text-gray-100">Submit New Issue</CardTitle>
           </CardHeader>
@@ -327,7 +327,7 @@ export default function OrderRelatedIssue() {
                 <Input 
                   value={orderId} 
                   disabled 
-                  className="text-white bg-gray-700 border border-gray-200 cursor-not-allowed" 
+                  className="text-white bg-gray-700 border border-gray-200 font-medium cursor-not-allowed" 
                 />
               </div>
 
@@ -339,7 +339,7 @@ export default function OrderRelatedIssue() {
                     required
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    className="bg-gray-700 border-gray-600 text-gray-100 focus:border-blue-500 focus:ring-blue-500"
+                    className=" border-gray-600 font-medium text-gray-100"
                   />
                 </div>
                 <div>
@@ -350,7 +350,7 @@ export default function OrderRelatedIssue() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="bg-gray-700 border-gray-600 text-gray-100 focus:border-blue-500 focus:ring-blue-500"
+                    className=" border-gray-600 font-medium text-gray-100"
                   />
                 </div>
               </div>
@@ -363,7 +363,7 @@ export default function OrderRelatedIssue() {
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="bg-gray-700 border-gray-600 text-gray-100 focus:border-blue-500 focus:ring-blue-500"
+                    className=" border-gray-600 font-medium text-gray-100"
                   />
                 </div>
                 <div>
@@ -372,7 +372,7 @@ export default function OrderRelatedIssue() {
                     placeholder="Enter transaction ID (if any)"
                     value={formData.transaction_id}
                     onChange={(e) => setFormData({ ...formData, transaction_id: e.target.value })}
-                    className="bg-gray-700 border-gray-600 text-gray-100 focus:border-blue-500 focus:ring-blue-500"
+                    className=" border-gray-600 font-medium text-gray-100"
                   />
                 </div>
               </div>
@@ -381,7 +381,7 @@ export default function OrderRelatedIssue() {
                 <label className="block text-sm font-medium text-gray-200 mb-2">Issue Type *</label>
                 <select
                   required
-                  className="w-full px-3 py-2 border border-gray-200 bg-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-200 font-medium bg-gray-900 rounded-md "
                   value={formData.selected_reason}
                   onChange={(e) => setFormData({ ...formData, selected_reason: e.target.value })}
                 >
@@ -400,7 +400,7 @@ export default function OrderRelatedIssue() {
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="bg-gray-700 border-gray-600 text-gray-100 focus:border-blue-500 focus:ring-blue-500"
+                  className=" border-gray-600 font-medium text-gray-100"
                 />
               </div>
 

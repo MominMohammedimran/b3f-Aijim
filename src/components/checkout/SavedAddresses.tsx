@@ -59,13 +59,13 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
             onAddressSelect(value);
           }
         }}
-        className="space-y-3"
+        className="space-y-2"
       >
         {addresses.map((address) => (
           <Label
             key={address.id}
             htmlFor={`address-${address.id}`}
-            className={`border p-3 rounded-none cursor-pointer block hover:bg-blue-900  hover:text-yellow-500 text-white ${
+            className={`border p-3 rounded-none cursor-pointer block hover:bg-blue-900 text-white ${
               selectedAddressId === address.id && !useNewAddress ? 'border-gray-200 bg-blue-900 text-red-500' : 'border-gray-200'
             }`}
           >
@@ -98,7 +98,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                     size="sm"
                     onClick={(e) => handleEdit(address, e)}
                     
-                    className="p-2 h-8 w-8 hover:bg-red-600"
+                    className="p-2 h-8 w-8 rounded-full bg-white text-black"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -111,7 +111,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                     size="sm"
                     onClick={(e) => handleDelete(address.id, e)}
                     disabled={deletingId === address.id}
-                    className="p-2 h-8 w-8 hover:bg-red-600 text-white hover:text-white"
+                    className="p-2 h-8 w-8 rounded-full  text-white bg-red-600 "
                   >
                     {deletingId === address.id ? (
                       <Loader2 className="h-4 w-4 animate-spin" />

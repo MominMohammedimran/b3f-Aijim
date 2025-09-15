@@ -106,7 +106,7 @@ console.log(userProfile,formData)
         <CardContent className="p-2  border-gray-800">
           <form onSubmit={handleSubmit} className="space-y-0">
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              {/*<div>
                 <Label htmlFor="first_name">First Name</Label>
                 <Input
 
@@ -127,10 +127,10 @@ console.log(userProfile,formData)
                   onChange={handleChange}
                   placeholder="Enter your last name"
                 />
-              </div>
+              </div>*/}
             </div>
             
-            <div>
+            <div className="mb-1">
               <Label htmlFor="display_name">Display Name</Label>
               <Input
                 id="display_name"
@@ -140,7 +140,7 @@ console.log(userProfile,formData)
                 placeholder="Enter your display name"
               />
             </div>
-            
+           {/* 
             <div>
               <Label htmlFor="phone">Phone Number</Label>
               <Input
@@ -209,23 +209,23 @@ console.log(userProfile,formData)
                   placeholder="Enter your country"
                 />
               </div>
-            </div>
+            </div>*/}
 
-            <div>
+            <div className="mb-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 value={currentUser?.email || ''}
                 disabled
-                className="bg-gray-800"
+                className="bg-gray-800 font-medium"
               />
-              <p className="text-sm text-white mt-1">
+              <p className="text-sm font-medium italic text-white mt-2  mb-5">
                 Email cannot be changed
               </p>
             </div>
 
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" disabled={loading} className="w-full font-semibold rounded-none">
+              {loading && <Loader2 className="mr-2   h-4 w-4 animate-spin" />}
               Save Changes
             </Button>
           </form>

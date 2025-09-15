@@ -77,11 +77,11 @@ export default function PasswordReset() {
               value={email}
             
               placeholder="you@example.com"
-              className="pl-10 bg-gray-700 text-white border-gray-600"
+              className="pl-10 bg-gray-700 font-medium text-white border-gray-600"
               disabled
             />
           </div>
-          <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700">
+          <Button type="submit" disabled={loading} className="w-full text-white bg-blue-600 hover:bg-blue-700">
             {loading ? 'Sending OTP...' : 'Send OTP'}
           </Button>
         </form>
@@ -96,7 +96,7 @@ export default function PasswordReset() {
             value={otp}
             onChange={(e) => setOtp(e.target.value)}
             placeholder="Enter the OTP sent to your email"
-            className="bg-gray-700 text-white border-gray-600"
+            className="bg-gray-700 text-xs font-medium text-white border-gray-600"
             required
           />
 
@@ -114,7 +114,7 @@ export default function PasswordReset() {
             />
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full bg-green-600 hover:bg-green-700">
+          <Button type="submit" disabled={loading} className="w-full text-white bg-green-600 hover:bg-green-700">
             {loading ? 'Resetting...' : 'Reset Password'}
           </Button>
         </form>
@@ -122,7 +122,7 @@ export default function PasswordReset() {
 
       {step === 'done' && (
         <div className="text-center space-y-2">
-          <h3 className="text-green-400 text-lg font-semibold">Password Reset Successful!</h3>
+          <h3 className="text-white text-lg font-semibold">Password Reset Successful!</h3>
           <p>You can now log in with your new password.</p>
         </div>
       )}
