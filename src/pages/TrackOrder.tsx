@@ -16,6 +16,7 @@ const TrackOrder = () => {
   const tracking = orders.find((order) => order.order_number=== id);
 const location = useLocation();
 const order = location.state?.order;
+console.log(tracking)
 
 const orderStatus = order?.status ?? 'pending';
 
@@ -50,6 +51,13 @@ const getEstimatedDeliveryMessage = (orderStatus: string) => {
 };
 
 const getCurrentLocation = (orderStatus: string) => {
+  // Check if we have courier tracking data
+  const courierData = tracking?.courier?.rawData?.ShipmentData?.[0]?.Shipment;
+  
+  if (courierData?.Status?.StatusLocation) {
+    return courierData.Status.StatusLocation;
+  }
+
   switch (orderStatus) {
     case 'processing':
     case 'confirmed':
@@ -81,6 +89,24 @@ const getCurrentLocation = (orderStatus: string) => {
       return 'Awaiting fulfillment';
   }
 };
+
+const getTrackingInfo = () => {
+  const courierData = tracking?.courier?.rawData?.ShipmentData?.[0]?.Shipment;
+  
+  return {
+    expectedDelivery: courierData?.ExpectedDeliveryDate || courierData?.PromisedDeliveryDate,
+    destination: courierData?.Destination,
+    pickupDate: courierData?.PickedupDate || courierData?.PickUpDate,
+    courierPartner: 'Delhivery',
+    currentStatus: courierData?.Status?.Status,
+    statusLocation: courierData?.Status?.StatusLocation,
+    statusDateTime: courierData?.Status?.StatusDateTime,
+    receivedBy: courierData?.Status?.RecievedBy,
+    instructions: courierData?.Status?.Instructions,
+    scans: courierData?.Scans || []
+  };
+};
+
 
  
   
@@ -159,7 +185,7 @@ const getCurrentLocation = (orderStatus: string) => {
         />
 
         {tracking.status !== 'cancelled' && (
-          <div className="bg-gray-800  shadow-md p-6">
+          <div className="bg-gray-800 shadow-md p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Truck className="h-5 w-5" />
               Delivery Information
@@ -176,36 +202,125 @@ const getCurrentLocation = (orderStatus: string) => {
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-gray-200 mt-0.5" />
                   <div>
-                    <p className="text-bold text-lg text-yellow-400">Estimated Delivery</p>
-                    <p className="text-sm  text-gray-200">{getEstimatedDeliveryMessage(orderStatus)}</p>
+                    <p className="text-bold text-lg text-yellow-400">Expected Delivery</p>
+                    <p className="text-sm text-gray-200">
+                      {getTrackingInfo().expectedDelivery 
+                        ? new Date(getTrackingInfo().expectedDelivery).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })
+                        : getEstimatedDeliveryMessage(orderStatus)
+                      }
+                    </p>
                   </div>
                 </div>
+                {getTrackingInfo().destination && (
+                  <div className="flex items-start gap-3">
+                    <MapPin className="h-5 w-5 text-gray-200 mt-0.5" />
+                    <div>
+                      <p className="text-bold text-lg text-yellow-400">Destination</p>
+                      <p className="text-sm text-gray-200">{getTrackingInfo().destination}</p>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <Package className="h-5 w-5 text-gray-200 mt-0.5" />
                   <div>
-                    <p className="text-bold text-lg text-yellow-400">Tracking ID</p>
-                    <p className="text-sm  text-gray-200">{tracking.order_number || 'Not yet assigned'}</p>
+                    <p className="text-bold text-lg text-yellow-400">AWB Number</p>
+                    <p className="text-sm text-gray-200">{tracking?.courier?.awb || 'Not yet assigned'}</p>
                   </div>
                 </div>
+                {getTrackingInfo().pickupDate && (
+                  <div className="flex items-start gap-3">
+                    <Clock className="h-5 w-5 text-gray-200 mt-0.5" />
+                    <div>
+                      <p className="text-bold text-lg text-yellow-400">Pickup Date</p>
+                      <p className="text-sm text-gray-200">
+                        {new Date(getTrackingInfo().pickupDate).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-start gap-3">
-                  <Clock className="h-5 w-5 text-gray-200 mt-0.5" />
+                  <Truck className="h-5 w-5 text-gray-200 mt-0.5" />
                   <div>
-                    <p className="text-bold text-lg text-yellow-400">Order Date</p>
-                    <p className="text-sm text-gray-200">
-                      {new Date(tracking.created_at).toLocaleDateString('en-US', {
+                    <p className="text-bold text-lg text-yellow-400">Courier Partner</p>
+                    <p className="text-sm text-gray-200">{getTrackingInfo().courierPartner}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Tracking Status */}
+            {getTrackingInfo().currentStatus && (
+              <div className="mt-6 p-4 bg-gray-700 rounded-none bg-mute/50">
+                <h3 className="text-lg font-semibold text-yellow-400 mb-3">Current Status</h3>
+                <div className="space-y-2">
+                  <p className="text-gray-200">
+                    <span className="font-medium text-yellow-400">Status:</span> {getTrackingInfo().currentStatus}
+                  </p>
+                  {getTrackingInfo().instructions && (
+                    <p className="text-gray-200">
+                      <span className="font-medium text-yellow-400">Instructions:</span> {getTrackingInfo().instructions}
+                    </p>
+                  )}
+                  {getTrackingInfo().statusDateTime && (
+                    <p className="text-gray-200">
+                      <span className="font-medium text-yellow-400">Last Updated:</span> {' '}
+                      {new Date(getTrackingInfo().statusDateTime).toLocaleDateString('en-US', {
                         year: 'numeric',
-                        month: 'long',
+                        month: 'short',
                         day: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit'
                       })}
                     </p>
-                  </div>
+                  )}
+                  {getTrackingInfo().receivedBy && (
+                    <p className="text-gray-200">
+                      <span className="font-medium">Received By:</span> {getTrackingInfo().receivedBy}
+                    </p>
+                  )}
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Tracking History 
+            {getTrackingInfo().scans && getTrackingInfo().scans.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold text-yellow-400 mb-3">Tracking History</h3>
+                <div className="space-y-3 max-h-60 overflow-y-auto">
+                  {getTrackingInfo().scans.slice(0, 5).map((scan: any, index: number) => (
+                    <div key={index} className="p-3 bg-gray-700 rounded border-l-4 border-yellow-400">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-gray-200">{scan.ScanDetail?.ScanDateTime && new Date(scan.ScanDetail.ScanDateTime).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}</p>
+                          <p className="text-sm text-gray-300">{scan.ScanDetail?.Scan}</p>
+                          {scan.ScanDetail?.StatusLocation && (
+                            <p className="text-xs text-gray-400">{scan.ScanDetail.StatusLocation}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+              */}
           </div>
         )}
 

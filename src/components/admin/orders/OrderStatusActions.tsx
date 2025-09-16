@@ -34,7 +34,6 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
   const [cancellationReason, setCancellationReason] = useState('');
   const [showCancellationReason, setShowCancellationReason] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [waybill, setWaybill] = useState('');
   const [awb, setAwb] = useState('');
   const [showCourierFields, setShowCourierFields] = useState(false);
   const [isTrackingOrder, setIsTrackingOrder] = useState(false);
@@ -46,8 +45,8 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
   };
 
   const handleTrackOrder = async () => {
-    if (!waybill) {
-      toast.error('Please enter waybill number first');
+    if (!awb) {
+      toast.error('Please enter AWB number first');
       return;
     }
 
@@ -55,7 +54,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
     try {
       const { data, error } = await supabase.functions.invoke('shipping-tracking', {
         body: {
-          waybill: waybill,
+          awb: awb,
           orderId: orderId
         }
       });
@@ -68,6 +67,22 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
 
       if (data?.success) {
         toast.success('Tracking information updated successfully');
+        console.log(data);
+        // Store the raw tracking data in courier field
+        const { error } = await supabase
+          .from('orders')
+          .update({
+            courier: {
+              awb: awb,
+              provider: 'delhivery',
+              rawData: data.tracking?.rawData || data.tracking
+            }
+          })
+          .eq('id', orderId);
+
+        if (error) {
+          console.error('Error updating courier data:', updateError);
+        }
         
         // Update status if tracking indicates delivered or out for delivery
         if (data.tracking?.status === 'delivered' || data.tracking?.status === 'out-for-delivery') {
@@ -101,9 +116,8 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
       };
 
       // Add courier information if status is shipped
-      if (selectedStatus === 'shipped' && (waybill || awb)) {
+      if (selectedStatus === 'shipped' && awb) {
         updateData.courier = {
-          waybill: waybill,
           awb: awb,
           provider: 'delhivery'
         };
@@ -197,26 +211,15 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
         </div>
 
         {showCourierFields && (
-          <>
-            <div>
-              <Label htmlFor="waybill">Waybill Number</Label>
-              <Input
-                id="waybill"
-                value={waybill}
-                onChange={(e) => setWaybill(e.target.value)}
-                placeholder="Enter waybill number"
-              />
-            </div>
-            <div>
-              <Label htmlFor="awb">AWB Number</Label>
-              <Input
-                id="awb"
-                value={awb}
-                onChange={(e) => setAwb(e.target.value)}
-                placeholder="Enter AWB number"
-              />
-            </div>
-          </>
+          <div>
+            <Label htmlFor="awb">AWB Number</Label>
+            <Input
+              id="awb"
+              value={awb}
+              onChange={(e) => setAwb(e.target.value)}
+              placeholder="Enter AWB number"
+            />
+          </div>
         )}
 
         {showCancellationReason && (
@@ -245,7 +248,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
           {isUpdating ? 'Updating...' : 'Update Status'}
         </Button>
         
-        {waybill && (
+        {awb && (
           <Button 
             variant="outline"
             onClick={handleTrackOrder}

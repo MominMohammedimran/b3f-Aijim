@@ -45,6 +45,11 @@ export interface Order {
   reward_points_used?: {points: number, value_used: number} | null;
   coupon_code?: {code: string, discount_amount: number} | null;
   status_note?:string;
+  courier?: {
+    awb?: string;
+    provider?: string;
+    rawData?: any;
+  };
 }
 
 export interface TrackingInfo {

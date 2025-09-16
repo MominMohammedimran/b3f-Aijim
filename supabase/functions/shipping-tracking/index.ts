@@ -14,19 +14,19 @@ serve(async (req) => {
   }
 
   try {
-    const { waybill, orderId } = await req.json();
+    const { awb, orderId } = await req.json();
 
-    if (!waybill) {
+    if (!awb) {
       return new Response(
-        JSON.stringify({ error: 'Waybill number is required' }),
+        JSON.stringify({ error: 'AWB number is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Tracking order ${orderId} with waybill: ${waybill}`);
+    console.log(`Tracking order ${orderId} with AWB: ${awb}`);
 
     // Call Delhivery tracking API
-    const trackingUrl = `https://track.delhivery.com/api/v1/packages/json/?waybill=${waybill}&ref_ids=${orderId}`;
+    const trackingUrl = `https://track.delhivery.com/api/v1/packages/json/?waybill=${awb}&ref_ids=${orderId}`;
     
     const trackingResponse = await fetch(trackingUrl, {
       method: 'GET',
