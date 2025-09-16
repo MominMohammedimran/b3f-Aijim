@@ -25,7 +25,7 @@ const Products = () => {
       }
 
       const transformed = (data || []).map((p: any) => {
-        const sizes = Array.isArray(p.sizes)
+        const sizes = Array.isArray(p.variants)
           ? p.sizes
               .filter((v) => v && typeof v === 'object' && v.size && v.stock != null)
               .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
@@ -54,7 +54,7 @@ const Products = () => {
       setLoading(false);
     })();
   }, []);
-
+console.log(products)
   const sortProducts = useMemo(() => {
     const sorter = (list: Product[]) => {
       if (sort === 'low') return [...list].sort((a, b) => a.price - b.price);

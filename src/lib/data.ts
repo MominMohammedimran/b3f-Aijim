@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 let _products: Product[] = [];
 let loaded = false;
 
+
 /** Parse sizes: [{ size: string, stock: number }] from Supabase `jsonb` */
 function parseSizes(raw: any): { size: string; stock: number }[] {
   try {
@@ -47,12 +48,14 @@ async function fetchProductsOnce(): Promise<Product[]> {
     category: p.category || '',
     tags: Array.isArray(p.tags) ? p.tags.map(String) : [],
     stock: p.stock ?? 0,
-    sizes: parseSizes(p.sizes), // ✅ this is now your main source of size + stock
+    variants: parseSizes(p.variants), // ✅ this is now your main source of size + stock
   }));
 
   loaded = true;
   return _products;
 }
+
+
 
 // Export dynamic array that gets filled once
 export const products: Product[] = [];

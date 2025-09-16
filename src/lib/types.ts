@@ -101,10 +101,7 @@ export interface UserProfile {
   };
 }
 
-export interface ProductVariant {
-  size: string;
-  stock: number;
-}
+
 
 export interface Product {
   id: string;
@@ -125,6 +122,10 @@ export interface Product {
   sizes?: ProductVariant[];
   variants?: ProductVariant[];  // Add variants as alias for sizes
   inStock?: boolean;
+}
+export interface ProductVariant {
+  size: string;
+  stock: number;
 }
 
 export interface Category {

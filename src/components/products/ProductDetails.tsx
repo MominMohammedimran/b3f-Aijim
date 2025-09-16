@@ -36,13 +36,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
   const { loading: inventoryLoading } = useProductInventory(product.id);
 
   const productVariants = useMemo(() => {
-    return Array.isArray(product.sizes)
-      ? product.sizes.map((v) => ({
+    return Array.isArray(product.variants)
+      ? product.variants.map((v) => ({
           size: String(v.size),
           stock: Number(v.stock),
         }))
       : [];
-  }, [product.sizes]);
+  }, [product.variants]);
 
   const availableSizes = productVariants.map((v) => v.size);
 
@@ -85,7 +85,7 @@ const [pincodeResult, setPincodeResult] = useState<{isServiceable: boolean; mess
 const [pincodeChecked, setPincodeChecked] = useState(false);
 const [loadingPincode, setLoadingPincode] = useState(false);
 
-console.log(pincodeResult)
+
 const checkPincode = async () => {
   if (!pincode) return;
   setLoadingPincode(true);

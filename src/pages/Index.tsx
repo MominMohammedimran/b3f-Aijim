@@ -55,7 +55,7 @@ const seo = useSEO('/');
       if (error) throw error;
 
  const transformed: Product[] = (data || []).map((item: any) => {
-  const rawSizes = Array.isArray(item.sizes) ? item.sizes : [];
+  const rawSizes = Array.isArray(item.variants) ? item.variants : [];
 
   const normalizedSizes: { size: string; stock: number }[] = rawSizes
     .filter((s) => typeof s === 'object' && s !== null && 'size' in s && 'stock' in s)
