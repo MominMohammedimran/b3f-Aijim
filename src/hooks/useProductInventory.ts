@@ -29,7 +29,6 @@ export const addInventoryUpdateListener = (listener: () => void) => {
 
 export const updateInventoryFromOrder = async (orderData: any) => {
   try {
-    console.log('Updating inventory from order:', orderData.id);
     
     // Ensure items exists and is an array
     if (!orderData.items || !Array.isArray(orderData.items)) {
@@ -142,8 +141,6 @@ export const updateInventoryFromPaidOrders = async () => {
 
     if (!paidOrders || paidOrders.length === 0) return;
 
-    console.log(`Processing ${paidOrders.length} paid orders for inventory update`);
-
     // Process each paid order
     for (const order of paidOrders) {
       await updateInventoryFromOrder(order);
@@ -169,8 +166,7 @@ export const updateInventoryFromPaidOrders = async () => {
       }
     }
 
-    console.log('Successfully updated inventory from paid orders');
-    
+     
   } catch (error) {
     console.error('Error updating inventory from paid orders:', error);
   }

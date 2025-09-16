@@ -23,7 +23,7 @@ export const sendOrderStatusEmail = async (
 ): Promise<boolean> => {
 
   try {
-    console.log('🚀 Sending order status email:', orderData);
+   
 
     if (
       !orderData.customerEmail ||
@@ -116,7 +116,7 @@ export const sendOrderConfirmationEmail = async (
   orderData: OrderEmailData
 ): Promise<boolean> => {
   try {
-    console.log('🎉 Sending order confirmation email:', orderData);
+   
 
     if (
       !orderData.customerEmail ||

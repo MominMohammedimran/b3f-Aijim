@@ -18,7 +18,7 @@ export const ensureMainAdminExists = async (): Promise<void> => {
     }
 
     if (existingAdmin) {
-      console.log('Admin user already exists');
+
       return;
     }
 

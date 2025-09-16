@@ -67,7 +67,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
 
       if (data?.success) {
         toast.success('Tracking information updated successfully');
-        console.log(data);
+     
         // Store the raw tracking data in courier field
         const { error } = await supabase
           .from('orders')

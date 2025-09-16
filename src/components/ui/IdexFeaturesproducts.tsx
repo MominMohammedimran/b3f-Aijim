@@ -22,7 +22,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
     ? product.images[1] 
     : product.image;
 
-    console.log(sizes)
+  
   return (
     <div
       onClick={() => onClick?.(product)}

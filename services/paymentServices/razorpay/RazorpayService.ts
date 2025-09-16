@@ -82,7 +82,7 @@ export const makePayment = async (
       // Open Razorpay checkout form
       rzpInstance.open();
       
-      console.log('Razorpay checkout opened successfully');
+     
     } catch (error) {
       console.error('Error initializing Razorpay:', error);
       throw new Error('Failed to initialize payment gateway. Please try again.');

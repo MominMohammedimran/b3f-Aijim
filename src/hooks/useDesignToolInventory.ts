@@ -20,7 +20,7 @@ export const useDesignToolInventory = () => {
     try {
       // Mock API call - replace with actual API
       await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Inventory fetched');
+    
     } catch (error) {
       console.error('Error fetching inventory:', error);
     } finally {

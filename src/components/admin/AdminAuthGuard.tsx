@@ -29,7 +29,7 @@ const AdminAuthGuard: React.FC<AdminAuthGuardProps> = ({ children }) => {
 
         // TODO: Implement admin check once database tables are created
         // For now, allow all authenticated users to access admin
-        console.log('Admin check - user:', currentUser.email);
+    
         setIsAdmin(true);
         
       } catch (error: any) {

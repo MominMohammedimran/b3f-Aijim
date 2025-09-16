@@ -16,7 +16,7 @@ export interface OrderEmailData {
 
 export const sendOrderEmail = async (orderData: OrderEmailData): Promise<boolean> => {
   try {
-    console.log('🚀 Sending order email via unified service:', orderData);
+  
 
     // Validate required fields
     if (!orderData.customerEmail || orderData.customerEmail === 'N/A' || orderData.customerEmail.trim() === '') {
@@ -56,7 +56,7 @@ export const sendOrderEmail = async (orderData: OrderEmailData): Promise<boolean
       return false;
     }
 
-    console.log('✅ Email sent successfully:', data);
+ 
     toast.success(`✅ Email sent to ${orderData.customerEmail}`);
     return true;
 

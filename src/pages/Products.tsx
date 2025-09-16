@@ -54,7 +54,7 @@ const Products = () => {
       setLoading(false);
     })();
   }, []);
-console.log(products)
+
   const sortProducts = useMemo(() => {
     const sorter = (list: Product[]) => {
       if (sort === 'low') return [...list].sort((a, b) => a.price - b.price);

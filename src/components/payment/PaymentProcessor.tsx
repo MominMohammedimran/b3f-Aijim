@@ -20,7 +20,7 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
   if (!orderData) return null;
 
   const handlePaymentSuccess = async () => {
-    console.log('Payment successful, sending confirmation email...');
+
     
     // Send confirmation email using unified service
     const emailData = {

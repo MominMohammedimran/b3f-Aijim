@@ -96,7 +96,7 @@ const location = useLocation();
 
   const sendOrderConfirmationEmailHandler = async (orderData: any, paymentMethod: string) => {
     try {
-      console.log('Sending order confirmation email...');
+     
       
       // Prepare cart items with proper image URLs for email
       const emailCartItems = cartItems.map(item => ({
@@ -120,7 +120,7 @@ const location = useLocation();
       if (emailData.customerEmail && emailData.customerEmail !== 'N/A') {
         const emailSent = await sendOrderConfirmationEmail(emailData);
         if (emailSent) {
-          console.log('✅ Order confirmation email sent successfully');
+         
           toast.success('Order confirmed! Confirmation email sent.');
         } else {
           console.warn('⚠️ Order confirmation email failed to send');
@@ -138,8 +138,7 @@ const location = useLocation();
 
   const sendAdminOrderNotification = async (orderData: any) => {
     try {
-      console.log('Sending admin order notification...');
-      
+    
       const adminNotificationData = {
         orderId: orderData.id,
         orderNumber: orderData.order_number,
@@ -175,9 +174,7 @@ const location = useLocation();
     setIsProcessing(true);
     
     try {
-      console.log('Starting Razorpay payment process...', { finalTotal, cartItems, shippingAddress });
-      
-      // Validate required data
+       // Validate required data
       if (!shippingAddress?.fullName || !shippingAddress?.email || !shippingAddress?.phone) {
         throw new Error('Missing shipping address information');
       }
@@ -229,8 +226,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         discount_applied: couponDiscount + pointsDiscount
       };
 
-      console.log('Creating order in database:', orderData);
-
+    
       const { data: createdOrder, error: dbError } = await supabase
         .from('orders')
         .insert(orderData)
@@ -242,8 +238,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         throw new Error('Failed to create order');
       }
 
-      console.log('Order created successfully:', createdOrder.id);
-
+    
       // Prepare payment data for Razorpay
       const paymentData = {
         amount: Math.round(finalTotal * 100), // Convert to paise for Razorpay
@@ -258,14 +253,12 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         }
       };
 
-      console.log('Calling Razorpay order creation:', paymentData);
-
+     
       const { data: orderResponse, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
         body: paymentData
       });
 
-      console.log('Supabase function response:', { orderResponse, orderError });
-
+     
       if (orderError) {
         console.error('Supabase function error:', orderError);
         
@@ -289,9 +282,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
       }
 
       
-      console.log('Razorpay order created successfully:', orderResponse.order_id);
-      console.log('Using API key for frontend:', orderResponse.key_id);
-
+   
       // Initialize Razorpay payment with the order data from backend
       const razorpayOptions = {
         key: orderResponse.key_id, // Use the key provided by the backend
@@ -310,8 +301,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         }
       };
 
-      console.log('Razorpay options:', razorpayOptions);
-      
+     
       // Use the enhanced payment method with proper configuration
       await makePayment(
         finalTotal, // Pass the actual amount
@@ -320,7 +310,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         paymentData.customerInfo.email,
         paymentData.customerInfo.contact,
         async (paymentId, orderId, signature) => {
-          console.log('Payment successful:', { paymentId, orderId, signature });
+          ('Payment successful:', { paymentId, orderId, signature });
           
           // Update order with payment details
           try {
@@ -340,7 +330,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
               })
               .eq('id', createdOrder.id);
 
-            console.log('✅ Order payment status updated successfully');
+           
           } catch (updateError) {
             console.error('❌ Failed to update order payment status:', updateError);
           }
@@ -352,7 +342,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
               id: createdOrder.id,
               items: cartItems
             });
-            console.log('✅ Inventory updated successfully after payment');
+           
           } catch (inventoryError) {
             console.error('❌ Failed to update inventory:', inventoryError);
             // Don't fail the payment process if inventory update fails
@@ -362,7 +352,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
           onSuccess?.();
         },
         () => {
-          console.log('Payment was cancelled by user');
+         
           toast.error('Payment was cancelled');
           onError?.();
         },

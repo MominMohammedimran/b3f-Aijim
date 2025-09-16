@@ -11,7 +11,7 @@ import useSEO from '@/hooks/useSEO';
 const ProductDetailsPage = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  console.log(products)
+
   const [product, setProduct] = useState<Product | null>(null);
 const seo = useSEO('/product/details/:productId');
   useEffect(() => {

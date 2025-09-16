@@ -44,7 +44,7 @@ const ProfileSettings = () => {
       
     }
   }, [userProfile]);
-console.log(userProfile,formData)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentUser) return;

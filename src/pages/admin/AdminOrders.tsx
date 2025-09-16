@@ -130,7 +130,7 @@ const AdminOrders: React.FC = () => {
               rewardPointsUsed:updatedOrder.reward_points_used?.points||0,
               deliveryFee:updatedOrder.delivery_fee,
             });
-            console.log('Status update email sent successfully',updatedOrder);
+           
           } catch (emailError) {
             console.error('Failed to send status update email:', emailError);
             toast.error('Status updated but failed to send email notification');

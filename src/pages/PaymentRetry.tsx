@@ -10,7 +10,7 @@ import { updateInventoryFromOrder } from '@/hooks/useProductInventory';
 
 const PaymentRetryPage = () => {
   const { productId } = useParams();
-  console.log(productId)
+
   const navigate = useNavigate();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -24,8 +24,7 @@ const PaymentRetryPage = () => {
       }
 
       try {
-        console.log('Fetching order:', productId);
-        
+       
         const { data, error } = await supabase
           .from('orders')
           .select('*')
@@ -37,8 +36,7 @@ const PaymentRetryPage = () => {
           throw error;
         }
 
-        console.log('Order data fetched:', data);
-
+       
         if (data.payment_status === 'paid') {
           toast.info('Payment already completed for this order');
           navigate('/orders');
@@ -89,8 +87,7 @@ const PaymentRetryPage = () => {
   };
 
   const handlePaymentFailure = () => {
-    console.log('Payment failed for retry');
-    toast.error('Payment failed. Please try again.');
+     toast.error('Payment failed. Please try again.');
   };
 
   if (loading) {

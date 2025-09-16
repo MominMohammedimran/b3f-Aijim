@@ -16,7 +16,7 @@ const TrackOrder = () => {
   const tracking = orders.find((order) => order.order_number=== id);
 const location = useLocation();
 const order = location.state?.order;
-console.log(tracking)
+
 
 const orderStatus = order?.status ?? 'pending';
 

@@ -56,8 +56,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     try {
       const rewardPoints = parseInt(formData.reward_points.toString()) || 0;
       
-      console.log('Updating profile with ID:', profile.id);
-      console.log('New reward points value:', rewardPoints);
+      
 
       // Update the profile directly using Supabase client
       const { data, error } = await supabase
@@ -77,7 +76,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         throw error;
       }
 
-      console.log('Profile update successful:', data);
+    
 
       // Verify the update by fetching the profile again
       const { data: verifyData, error: verifyError } = await supabase

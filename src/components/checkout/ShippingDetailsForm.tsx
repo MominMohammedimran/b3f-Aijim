@@ -87,7 +87,7 @@ useEffect(() => {
 
   fetchGeolocation();
 }, []);
-console.log(formData)
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 font-bold sm:grid-cols-2 gap-4">

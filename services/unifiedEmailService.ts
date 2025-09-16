@@ -16,17 +16,17 @@ export interface OrderEmailData {
 
 export const sendOrderEmail = async (orderData: OrderEmailData): Promise<boolean> => {
   try {
-    console.log('🚀 Sending order email via unified service:', orderData);
+ 
 
     // Validate required fields
     if (!orderData.customerEmail || orderData.customerEmail === 'N/A' || orderData.customerEmail.trim() === '') {
-      console.warn('❌ No valid customer email provided:', orderData.customerEmail);
+     
       toast.error('No valid customer email to send notification');
       return false;
     }
 
     if (!orderData.orderId) {
-      console.error('❌ No order ID provided');
+      
       toast.error('Missing order ID for email notification');
       return false;
     }
@@ -51,17 +51,17 @@ export const sendOrderEmail = async (orderData: OrderEmailData): Promise<boolean
     toast.dismiss(loadingToast);
 
     if (error) {
-      console.error('❌ Supabase function error:', error);
+     
       toast.error(`Failed to send email: ${error.message}`);
       return false;
     }
 
-    console.log('✅ Email sent successfully:', data);
+  
     toast.success(`✅ Email sent to ${orderData.customerEmail}`);
     return true;
 
   } catch (error: any) {
-    console.error('💥 Error in sendOrderEmail:', error);
+   
     toast.error('❌ Failed to send email notification');
     return false;
   }

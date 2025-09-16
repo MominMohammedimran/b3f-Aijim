@@ -117,7 +117,7 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
       setLoading(false);
     }
   };
-console.log(data.items[0].image)
+
   return (
     <div className="w-80 bg-gray-900 shadow-lg p-2">
     <div className="text-center mb-2">
