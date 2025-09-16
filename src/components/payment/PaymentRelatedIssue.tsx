@@ -82,8 +82,9 @@ const generatePaymentIssueId = () => {
     const { data: { user } } = await supabase.auth.getUser();
     const userId = user?.id || 'anonymous';
 
-    // Use original filename
-    const fileName = screenshot.name;
+    // Use unique filename to avoid conflicts
+    const timestamp = Date.now();
+    const fileName = `${timestamp}-${screenshot.name}`;
     
     // Upload file
     const { data: uploadedFile, error: uploadError } = await supabase
@@ -96,18 +97,13 @@ const generatePaymentIssueId = () => {
       return '';
     }
 
-    // Get signed URL with expiry (e.g., 1 hour)
-    const { data: signedData, error: signedError } = await supabase
+    // Get public URL since bucket is public
+    const { data: publicUrlData } = supabase
       .storage
       .from('paymentproofs')
-      .createSignedUrl(uploadedFile.path, 3600); // 3600 seconds = 1 hour
+      .getPublicUrl(uploadedFile.path);
 
-    if (signedError) {
-      console.error('Signed URL error:', signedError);
-      return '';
-    }
-
-    return signedData.signedUrl;
+    return publicUrlData.publicUrl;
   } catch (error) {
     console.error('Error during upload:', error);
     return '';

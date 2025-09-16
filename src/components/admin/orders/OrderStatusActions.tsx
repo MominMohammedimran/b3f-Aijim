@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -33,10 +34,55 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
   const [cancellationReason, setCancellationReason] = useState('');
   const [showCancellationReason, setShowCancellationReason] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [waybill, setWaybill] = useState('');
+  const [awb, setAwb] = useState('');
+  const [showCourierFields, setShowCourierFields] = useState(false);
+  const [isTrackingOrder, setIsTrackingOrder] = useState(false);
 
   const handleStatusChange = (newStatus: string) => {
     setSelectedStatus(newStatus);
     setShowCancellationReason(newStatus === 'cancelled');
+    setShowCourierFields(newStatus === 'shipped');
+  };
+
+  const handleTrackOrder = async () => {
+    if (!waybill) {
+      toast.error('Please enter waybill number first');
+      return;
+    }
+
+    setIsTrackingOrder(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('shipping-tracking', {
+        body: {
+          waybill: waybill,
+          orderId: orderId
+        }
+      });
+
+      if (error) {
+        console.error('Tracking error:', error);
+        toast.error('Failed to fetch tracking information');
+        return;
+      }
+
+      if (data?.success) {
+        toast.success('Tracking information updated successfully');
+        
+        // Update status if tracking indicates delivered or out for delivery
+        if (data.tracking?.status === 'delivered' || data.tracking?.status === 'out-for-delivery') {
+          setSelectedStatus(data.tracking.status);
+          onStatusUpdate(orderId, data.tracking.status, '');
+        }
+      } else {
+        toast.error('Failed to get tracking information');
+      }
+    } catch (error) {
+      console.error('Error tracking order:', error);
+      toast.error('Failed to track order');
+    } finally {
+      setIsTrackingOrder(false);
+    }
   };
 
   const handleUpdateStatus = async () => {
@@ -47,14 +93,26 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
 
     setIsUpdating(true);
     try {
+      // Prepare update object
+      const updateData: any = {
+        status: selectedStatus,
+        status_note: cancellationReason,
+        updated_at: new Date().toISOString()
+      };
+
+      // Add courier information if status is shipped
+      if (selectedStatus === 'shipped' && (waybill || awb)) {
+        updateData.courier = {
+          waybill: waybill,
+          awb: awb,
+          provider: 'delhivery'
+        };
+      }
+
       // Update order status in database
       const { error } = await supabase
         .from('orders')
-        .update({
-          status: selectedStatus,
-          status_note:cancellationReason,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', orderId);
 
       if (error) {
@@ -138,6 +196,29 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
           </Select>
         </div>
 
+        {showCourierFields && (
+          <>
+            <div>
+              <Label htmlFor="waybill">Waybill Number</Label>
+              <Input
+                id="waybill"
+                value={waybill}
+                onChange={(e) => setWaybill(e.target.value)}
+                placeholder="Enter waybill number"
+              />
+            </div>
+            <div>
+              <Label htmlFor="awb">AWB Number</Label>
+              <Input
+                id="awb"
+                value={awb}
+                onChange={(e) => setAwb(e.target.value)}
+                placeholder="Enter AWB number"
+              />
+            </div>
+          </>
+        )}
+
         {showCancellationReason && (
           <div className="md:col-span-2">
             <Label htmlFor="cancellationReason">Cancellation Reason</Label>
@@ -152,16 +233,28 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
         )}
       </div>
 
-      <Button 
-        onClick={handleUpdateStatus}
-        disabled={
-          selectedStatus === currentStatus || 
-          (selectedStatus === 'cancelled' && !cancellationReason.trim()) ||
-          isUpdating
-        }
-      >
-        {isUpdating ? 'Updating...' : 'Update Status'}
-      </Button>
+      <div className="flex space-x-2">
+        <Button 
+          onClick={handleUpdateStatus}
+          disabled={
+            selectedStatus === currentStatus || 
+            (selectedStatus === 'cancelled' && !cancellationReason.trim()) ||
+            isUpdating
+          }
+        >
+          {isUpdating ? 'Updating...' : 'Update Status'}
+        </Button>
+        
+        {waybill && (
+          <Button 
+            variant="outline"
+            onClick={handleTrackOrder}
+            disabled={isTrackingOrder}
+          >
+            {isTrackingOrder ? 'Tracking...' : 'Track Order'}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

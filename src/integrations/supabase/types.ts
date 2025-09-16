@@ -385,6 +385,7 @@ export type Database = {
       orders: {
         Row: {
           coupon_code: Json | null
+          courier: Json | null
           created_at: string | null
           delivery_fee: number | null
           discount_applied: number | null
@@ -409,6 +410,7 @@ export type Database = {
         }
         Insert: {
           coupon_code?: Json | null
+          courier?: Json | null
           created_at?: string | null
           delivery_fee?: number | null
           discount_applied?: number | null
@@ -433,6 +435,7 @@ export type Database = {
         }
         Update: {
           coupon_code?: Json | null
+          courier?: Json | null
           created_at?: string | null
           delivery_fee?: number | null
           discount_applied?: number | null
