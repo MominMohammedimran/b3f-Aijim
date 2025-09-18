@@ -170,12 +170,11 @@ const checkPincode = async () => {
           
           return (
             <div key={size} className="relative">
-              {selected && !isOutOfStock ? (
+              {selected && !isOutOfStock && (
                 <div className="absolute top-1 right-1 bg-blue-600 text-white text-[9px] px-1 rounded">✓</div>
-              ):(<div className="absolute top-1 right-2 bg-red-600 text-white text-[9px] px-1 rounded-none">X</div>)}
-              {inCart && (
-                <div className="absolute top-1 right-5 text-[9px] bg-yellow-300 text-black px-1 rounded"></div>
               )}
+            
+
               <button
                 onClick={() => toggleSize(size)}
                 disabled={isOutOfStock && !selected}
@@ -191,7 +190,7 @@ const checkPincode = async () => {
                 {size}
                 
                 {isOutOfStock ? (
-                  <div className="text-[8px] text-red-500 font-semibold mt-1">SOLD OUT</div>
+                  <div className="text-[8px] bg-red-500 text-white px-1 font-semibold mt-1">SOLD OUT</div>
                 ) :(<div className="text-[8px] uppercase font-semibold mt-1">
                   Stock
                 </div>)

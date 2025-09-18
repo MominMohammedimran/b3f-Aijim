@@ -126,18 +126,18 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
   <div className="flex items-center justify-between mb-2 mt-2 ">
 
     {/* Brand Logo */}
-    <div className="flex items-center justify-between w-full px-4">
+    <div className="flex items-center justify-between w-full px-2">
   {/* Left: Brand Text */}
-  <span className="text-white font-semibold text-2xl sm:text-3xl md:text-4xl tracking-wide font-Anton">
+  <span className="text-white font-bold text-2xl sm:text-3xl md:text-4xl tracking-wide font-poppins">
     AIJIM
   </span>
 
   {/* Center: Logo Image */}
-  <div className="flex-grow flex justify-center">
+  <div className="flex-grow flex justify-center items-center">
     <img
-      src="/aijim-uploads/aijim.png"
+      src="/aijim-uploads/aijim.svg"
       alt="AIJIM Logo"
-      className="w-12 sm:w-16 md:w-20 object-contain"
+      className=" w-28 sm:w-38 md:w-40 lg:w-50 object-contain"
     />
   </div>
 </div>
@@ -199,11 +199,11 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
 
 
  {/* 🔥 Flash Sale Marquee */}
-            <div className="bg-red-600 h-9  pt-2 pb-2  sm:h-12 md:h-14 flex items-center ">
-              <Marquee gradient={false} speed={50} pauseOnHover={true} className="w-full">
+            <div className="bg-red-600 h-6  pt-1 pb-1  flex items-center ">
+              <Marquee gradient={false} speed={100} pauseOnHover={true} className="w-full">
                 {Array.from({ length: 10 }).map((_, i) => (
-                  <span key={i} className="flex items-center text-white font-medium text-sm sm:text-lg md:text-lg lg:text-xl px-4 whitespace-nowrap">
-                      <Tag size={20} className='text-white'/> &nbsp;Flat ₹500 Off on Orders Above ₹2500
+                  <span key={i} className="flex items-center uppercase text-white font-semibold text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] px-4 whitespace-nowrap">
+                      <Tag size={18} className='text-white'/> &nbsp;Flat ₹500 Off on Orders Above ₹2500
                   </span>
                 ))}
               </Marquee>

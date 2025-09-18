@@ -11,11 +11,9 @@ const Footer = () => {
           
           {/* Brand Section */}
           <div className="space-y-4">
-            <div className="flex items-center ">
-              <img src="/aijim-uploads/aijim.png" alt="Aijim Logo" className="w-9 h-7" />
-              <h3 className="text-3xl font-semibold text-white font-sans bg-clip-text text-transparent font-mono">
-                AIJIM
-              </h3>
+            <div className="flex items-center space-x-4  ">
+              <img src="/aijim-uploads/aijim.svg" alt="Aijim Logo" className="w-35 sm:w-40 md:w-45 lg:w-50  h-10 sm:h-12 md:h-14 lg:h-15" />
+
             </div>
             <p className="text-gray-200  font-medium text-m leading-relaxed   tracking-wide">
   Your trusted partner — <span className="font-semibold text-white">Aijim</span>. From timeless T-shirts to bold new releases, 

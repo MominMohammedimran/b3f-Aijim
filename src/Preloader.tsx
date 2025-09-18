@@ -28,16 +28,16 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           <div className="flex flex-col items-center space-y-0">
             {/* Logo */}
             <motion.img
-              src="/aijim-uploads/aijim.png"
+              src="/aijim-uploads/aijim.svg"
               alt="AIJIM Logo"
-              className="w-44 h-44 object-contain"
+              className="w-68 h-50 object-contain"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: [0.9, 1.05, 1] }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 1, ease: "easeOut" }}
             />
 
-            {/* AIJIM Letters Reveal */}
+            {/* AIJIM Letters Reveal
             <div className="flex gap-3">
               {letters.map((char, i) => (
                 <motion.span
@@ -62,7 +62,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
                   {char}
                 </motion.span>
               ))}
-            </div>
+            </div>*/}
           </div>
         </motion.div>
       )}
