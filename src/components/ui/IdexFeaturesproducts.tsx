@@ -8,7 +8,7 @@ interface Props {
 }
 
 const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
-  const sizes = Array.isArray(product.sizes) ? product.sizes : [];
+  const sizes = Array.isArray(product.variants) ? product.variants : [];
   const totalStock = sizes.reduce((sum, s) => sum + (typeof s.stock === 'number' ? s.stock : 0), 0);
 
   const inStock = totalStock > 0;

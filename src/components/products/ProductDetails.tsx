@@ -39,10 +39,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
     return Array.isArray(product.variants)
       ? product.variants.map((v) => ({
           size: String(v.size),
-          stock: Number(v.stock),
+          stock: Number(v.stock) || 0,
         }))
       : [];
-  }, [product.variants]);
+  }, [product.sizes]);
 
   const availableSizes = productVariants.map((v) => v.size);
 
@@ -85,7 +85,7 @@ const [pincodeResult, setPincodeResult] = useState<{isServiceable: boolean; mess
 const [pincodeChecked, setPincodeChecked] = useState(false);
 const [loadingPincode, setLoadingPincode] = useState(false);
 
-
+console.log(pincodeResult)
 const checkPincode = async () => {
   if (!pincode) return;
   setLoadingPincode(true);
@@ -166,31 +166,40 @@ const checkPincode = async () => {
           const stock = variant?.stock ?? 0;
           const selected = selectedSizes.some((s) => s.size === size);
           const inCart = cartItems.find((c) => c.product_id === product.id)?.sizes.some((s) => s.size === size);
+          const isOutOfStock = stock === 0;
+          
           return (
             <div key={size} className="relative">
-              {selected && (
+              {selected && !isOutOfStock ? (
                 <div className="absolute top-1 right-1 bg-blue-600 text-white text-[9px] px-1 rounded">✓</div>
-              )}
+              ):(<div className="absolute top-1 right-2 bg-red-600 text-white text-[9px] px-1 rounded-none">X</div>)}
               {inCart && (
                 <div className="absolute top-1 right-5 text-[9px] bg-yellow-300 text-black px-1 rounded"></div>
               )}
               <button
                 onClick={() => toggleSize(size)}
-                disabled={stock === 0 && !selected}
-                className={`w-full px-2 py-1 text-xs font-bold border text-center
+                disabled={isOutOfStock && !selected}
+                className={`w-full px-2 py-1 text-xs font-bold border text-center transition-all
                   ${
-                    selected
+                    selected && !isOutOfStock
                       ? 'border-gray-400 bg-white text-black'
-                      : 'border-gray-400 hover:border-yellow-400'
-                  }
-                  ${stock === 0 && !selected ? 'opacity-90 text-white cursor-not-allowed' : ''}`}
+                      : isOutOfStock && !selected
+                      ? 'border-gray-600 bg-gray-800 text-gray-200 cursor-not-allowed '
+                      : 'border-gray-400 hover:border-yellow-400 text-white'
+                  }`}
               >
                 {size}
-                <div className="text-[8px] uppercase font-semibold mt-1">{stock ? `Stock ` : 'Sold Out'}</div>
+                
+                {isOutOfStock ? (
+                  <div className="text-[8px] text-red-500 font-semibold mt-1">SOLD OUT</div>
+                ) :(<div className="text-[8px] uppercase font-semibold mt-1">
+                  Stock
+                </div>)
+              }
               </button>
             </div>
           );
-        })}
+        })} 
       </div>
 
       {/* Selected Sizes with Scroll */}
@@ -243,7 +252,11 @@ const checkPincode = async () => {
               <button
                 disabled={sel.quantity >= maxStock}
                 onClick={() => changeQuantity(sel.size, sel.quantity + 1)}
-                className="px-1.5 py-0 text-lg font-bold hover:bg-gray-200 hover:text-black text-white rounded transition duration-200"
+                className={`px-1.5 py-0 text-lg font-bold rounded transition duration-200 ${
+                  sel.quantity >= maxStock 
+                    ? 'text-gray-500 cursor-not-allowed opacity-50' 
+                    : 'hover:bg-gray-200 hover:text-black text-white'
+                }`}
               >
                 +
               </button>
@@ -299,24 +312,42 @@ const checkPincode = async () => {
   
        
  
-      {/* Actions */}
+       {/* Actions */}
       <div className=" mb-1 rounded-none  mt-1">
-        <ProductActionButtons
-          product={product}
-          className="rounded-none"
-          selectedSizes={selectedSizes.map((s) => s.size)}
-          quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
-        />
-        
-        {/* Place Order Button */}
-        <div className="mt-1">
-          <ProductPlaceOrder
-            product={product}
-            selectedSizes={selectedSizes.map((s) => s.size)}
-            variant="secondary"
-            className="w-full rounded-none font-poppins font-semibold text-xl bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
-          />
-        </div>
+        {productVariants.every(v => v.stock === 0) ? (
+          // Out of stock UI - only show when ALL sizes are out of stock
+          <>
+            <div className="text-center py-4 border border-red-500 bg-red-500/10 rounded-md mb-3">
+              <p className="text-red-400 font-semibold text-lg mb-2">Product currently out of stock</p>
+            </div>
+            <Link 
+              to="/" 
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-3 rounded-none font-poppins font-semibold text-xl text-center block transition-colors"
+            >
+              Continue Shopping
+            </Link>
+          </>
+        ) : (
+          // In stock UI - show when ANY size has stock
+          <>
+            <ProductActionButtons
+              product={product}
+              className="rounded-none"
+              selectedSizes={selectedSizes.map((s) => s.size)}
+              quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
+            />
+            
+            {/* Place Order Button */}
+            <div className="mt-1">
+              <ProductPlaceOrder
+                product={product}
+                selectedSizes={selectedSizes.map((s) => s.size)}
+                variant="secondary"
+                className="w-full rounded-none font-poppins font-semibold text-xl bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {/* Delivery & Return Section */}

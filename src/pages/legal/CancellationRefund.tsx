@@ -17,9 +17,9 @@ const CancellationRefund = () => {
         
         <div className="bg-gray-900 text-white rounded-lg shadow-sm p-5">
           <div className="prose max-w-none">
-            <p>Last Updated: June 27, 2025</p>
+            <p>Last Updated: sept 27, 2025</p>
             
-            <p className="text-sm sm:text-base mb-4 leading-relaxed">
+            <p className="text-sm italic sm:text-base mb-4 leading-relaxed">
         At Aijim, we value your shopping experience. Here's how you can cancel or request a refund for your order:
       </p>
 

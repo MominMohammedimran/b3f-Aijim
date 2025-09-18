@@ -281,7 +281,7 @@ const Search = () => {
                     setSearchQuery('');
                     navigate('/search');
                   }}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="text-sm text-red-600 hover:text-red-600 bg-white rounded-full font-bold px-2"
                 >
                   Clear all filters
                 </button>

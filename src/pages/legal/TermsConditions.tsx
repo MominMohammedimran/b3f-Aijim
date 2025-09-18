@@ -14,9 +14,9 @@ const TermsConditions = () => {
           <h1 className="text-2xl font-bold text-white">Terms and Conditions</h1>
         </div>
 
-        <div className="bg-gray-900 text-white  shadow-sm p-5">
+        <div className="bg-gray-900 italic text-white  shadow-sm p-5">
           <div className="prose max-w-none">
-            <p>Last Updated: April 27, 2025</p>
+            <p>Last Updated: sept 27, 2025</p>
 
             <h2 className="text-xl font-bold underline mt-2 mb-2">Introduction</h2>
             <p className="text-sm ">

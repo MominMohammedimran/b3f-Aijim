@@ -10,11 +10,15 @@ import { useAuth } from '../context/AuthContext';
 import { formatPrice } from '@/lib/utils';
 import { useDeliverySettings } from '@/hooks/useDeliverySettings';
 import ProductActionButtons from '@/components/products/ProductActionButtons';
+import { addInventoryUpdateListener } from '@/hooks/useProductInventory';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const Cart = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  
+  const [productStocks, setProductStocks] = React.useState<Record<string, Record<string, number>>>({});
+  const [stocksLoading, setStocksLoading] = React.useState(true);
 
   const seo = useSEO('/cart');
 
@@ -51,6 +55,121 @@ const Cart = () => {
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
 
   const finalTotal = totalPrice + deliveryFee;
+
+  // Fetch product stocks for all cart items
+  const fetchProductStocks = React.useCallback(async () => {
+    if (cartItems.length === 0) {
+      setStocksLoading(false);
+      return;
+    }
+
+    setStocksLoading(true);
+    try {
+      const stocks: Record<string, Record<string, number>> = {};
+      
+      for (const item of cartItems) {
+        const { data: product, error } = await supabase.from('products')
+          .select('variants')
+          .eq('id', item.product_id)
+          .single();
+
+        if (!error && product?.variants && Array.isArray(product.variants)) {
+          const productStockMap: Record<string, number> = {};
+          product.variants.forEach((variant: any) => {
+            if (variant && typeof variant === 'object' && variant.size && typeof variant.stock === 'number') {
+              productStockMap[variant.size] = variant.stock;
+            }
+          });
+          stocks[item.product_id] = productStockMap;
+        }
+      }
+      
+      setProductStocks(stocks);
+    } catch (error) {
+      console.error('Error fetching product stocks:', error);
+    } finally {
+      setStocksLoading(false);
+    }
+  }, [cartItems]);
+
+  // Check if any item is out of stock
+  const hasOutOfStockItems = React.useMemo(() => {
+    return cartItems.some(item => {
+      const productStock = productStocks[item.product_id];
+      if (!productStock) return false;
+      
+      return item.sizes.some(sizeItem => {
+        const availableStock = productStock[sizeItem.size] || 0;
+        return sizeItem.quantity > availableStock;
+      });
+    });
+  }, [cartItems, productStocks]);
+
+  // Fetch stocks on component mount and when cart changes
+  React.useEffect(() => {
+    fetchProductStocks();
+  }, [fetchProductStocks]);
+
+  // Listen for inventory updates
+  React.useEffect(() => {
+    const unsubscribe = addInventoryUpdateListener(() => {
+      fetchProductStocks();
+    });
+    
+    return unsubscribe;
+  }, [fetchProductStocks]);
+
+  // Monitor orders table and clear cart when new orders are created
+  React.useEffect(() => {
+    if (!currentUser) return;
+
+    let lastOrderCount = 0;
+    
+    const checkNewOrders = async () => {
+      try {
+        const { data: orders, error } = await supabase
+          .from('orders')
+          .select('id')
+          .eq('user_id', currentUser.id)
+          .order('created_at', { ascending: false });
+
+        if (!error && orders) {
+          const currentOrderCount = orders.length;
+          
+          // If there are new orders since last check, clear cart
+          if (lastOrderCount > 0 && currentOrderCount > lastOrderCount) {
+            await clearCart();
+            toast.success('Cart cleared - order placed successfully!');
+          }
+          
+          lastOrderCount = currentOrderCount;
+        }
+      } catch (error) {
+        console.error('Error checking orders:', error);
+      }
+    };
+
+    // Initial check
+    checkNewOrders();
+
+    // Set up real-time subscription for orders
+    const subscription = supabase
+      .channel('orders')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'orders',
+        filter: `user_id=eq.${currentUser.id}`
+      }, () => {
+        clearCart();
+        toast.success('Cart cleared - order placed successfully!');
+      })
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [currentUser, clearCart]);
  
    if (loading) {
   return (
@@ -154,7 +273,7 @@ const Cart = () => {
                     </div>
                   </div>
 
-                  {/* Sizes Section with Enhanced Controls */}
+                   {/* Sizes Section with Enhanced Controls */}
                   <div className="mt-3">
                     <h4 className="text-md font-semibold mb-2 text-white">Sizes -</h4>
                     <div className="flex gap-3 overflow-x-auto py-1">
@@ -168,6 +287,10 @@ const Cart = () => {
     description: '',
     category: '',
   };
+
+  const productStock = productStocks[item.product_id];
+  const availableStock = productStock?.[sizeItem.size] || 0;
+  const isOutOfStock = sizeItem.quantity > availableStock;
 
   return (
     <div
@@ -193,13 +316,12 @@ const Cart = () => {
         cartItemId={item.id}
         currentQuantity={sizeItem.quantity}
         size={sizeItem.size}
+        maxStock={availableStock}
         onQuantityChange={() => {
           // optional toast or refresh trigger
         }}
-        
-        
       />
-       <button
+               <button
                 onClick={() => removeSizeFromCart(item.product_id, sizeItem.size)}
                
                 className="text-red-500 font-bold px-1  ml-1 mr-1"
@@ -210,7 +332,14 @@ const Cart = () => {
               
         </div>      
 
-
+        {/* Stock Status */}
+        {isOutOfStock && (
+          <div className="w-full text-center">
+            <span className="text-red-400 text-xs font-semibold bg-red-100/10 px-2 py-1 rounded">
+              Sold Out
+            </span>
+          </div>
+        )}
       
     </div>
   );
@@ -246,9 +375,22 @@ const Cart = () => {
               </div>
               
               <div className='flex flex-col mt-2'>
-              <Button onClick={handleCheckout} className="w-full mb-3  m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold">
-                Proceed to Checkout
-              </Button>
+              {hasOutOfStockItems ? (
+                <div className="text-center space-y-3">
+                  <p className="text-red-400 text-sm font-semibold">
+                    Some items are out of stock
+                  </p>
+                  <Link to="/">
+                    <Button className="w-full text-lg uppercase text-center rounded-none font-bold">
+                      Continue Shopping
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <Button onClick={handleCheckout} className="w-full mb-3  m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold">
+                  Proceed to Checkout
+                </Button>
+              )}
 
              
               </div>

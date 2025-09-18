@@ -48,19 +48,19 @@ const Footer = () => {
               <span className="text-m font-medium " >Terms Service</span>
           </a>
               <Link to="/cancellation-refund" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200  font-medium text-sm sm:text-m md:text-m lg:text-m  hover:text-yellow-400 transition-colors  flex items-center group">
-                <RefreshCcw size={14} className="mr-2 text-m group-hover:text-blue-400" />
+                <RefreshCcw size={14} className="mr-2 text-m " />
                 Refund Policy
               </Link>
               <Link to="/shipping-delivery" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors flex items-center group">
-                <Truck size={14} className="mr-2 group-hover:text-blue-400" />
+                <Truck size={14} className="mr-2" />
                 Shipping Info
               </Link>
-              <Link to="/about-us" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors  flex items-center group">
-                <UsersRound size={14} className="mr-2  group-hover:text-blue-400" />
+              <Link to="/about-us" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m  hover:text-yellow-400 transition-colors  flex items-center group">
+                <UsersRound size={14} className="mr-2" />
                 About Us
               </Link>
               <Link to="/contact-us"  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-gray-200 font-medium text-sm sm:text-m md:text-m lg:text-m hover:text-yellow-400 transition-colors  flex items-center group ">
-                <AtSign size={14} className="mr-2 group-hover:text-blue-400" />
+                <AtSign size={14} className="mr-2 " />
                 Contact Us
               </Link>
             </div>

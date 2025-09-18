@@ -81,7 +81,8 @@ const seo = useSEO('/');
       : [],
     category: item.category || '',
     stock: totalStock,
-    sizes: normalizedSizes, // ✅ Correct format
+    
+    variants:normalizedSizes,// ✅ Correct format
     tags: Array.isArray(item.tags)
       ? item.tags.filter((tag) => typeof tag === 'string')
       : [],

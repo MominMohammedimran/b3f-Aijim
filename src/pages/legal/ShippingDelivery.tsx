@@ -15,9 +15,9 @@ const ShippingDelivery = () => {
           <h1 className="text-2xl font-bold">Shipping and Delivery Policy</h1>
         </div>
         
-        <div className="bg-gray-800 text-white rounded-lg shadow-sm p-6">
+        <div className="bg-gray-800 italic text-white rounded-lg shadow-sm p-6">
           <div className="prose max-w-none">
-            <p>Last Updated: April 27, 2025</p>
+            <p>Last Updated: sept 27, 2025</p>
             
             <h2 className="text-lg font-bold underline mt-2 mb-2">Processing Time</h2>
             <p className='text-sm '>

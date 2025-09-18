@@ -21,7 +21,7 @@ const AboutUs = () => {
                 </div>
         
         <div className="max-w-4xl mx-auto">
-           <div className="bg-gray-900 text-white  shadow-sm p-5">
+           <div className="bg-gray-900 italic text-white  shadow-sm p-5">
              <h1 className="text-3xl md:text-4xl font-bold text-center mb-2">About Us</h1>
           
         

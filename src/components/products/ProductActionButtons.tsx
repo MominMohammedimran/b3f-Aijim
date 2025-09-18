@@ -14,6 +14,7 @@ interface ProductActionButtonsProps {
   cartItemId?: string;
   currentQuantity?: number;
   size?: string;
+  maxStock?: number;
   onQuantityChange?: (newQuantity: number) => void;
   onRemove?: () => void;
 }
@@ -27,6 +28,7 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
   cartItemId,
   currentQuantity = 1,
   size,
+  maxStock,
   onQuantityChange,
   onRemove,
 }) => {
@@ -69,8 +71,12 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
   const handleQuantityIncrease = async () => {
     if (isInCart && cartItemId && size) {
       const newQuantity = currentQuantity + 1;
-    await updateCartItemQuantity(product.id, size, newQuantity);
-
+      // Check stock limit if maxStock is provided
+      if (maxStock && newQuantity > maxStock) {
+        toast.error(`Only ${maxStock} items available in stock`);
+        return;
+      }
+      await updateCartItemQuantity(product.id, size, newQuantity);
       onQuantityChange?.(newQuantity);
     }
   };
@@ -99,8 +105,14 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
   </span>
 
   
-    <button onClick={handleQuantityIncrease}
-    className=" bg-gray-100 hover:bg-gray-200 px-2 py-0 text-black font-extrabold rounded transition duration-200 flex-shrink-0"
+    <button 
+    onClick={handleQuantityIncrease}
+    disabled={maxStock ? currentQuantity >= maxStock : false}
+    className={`px-2 py-0 font-extrabold rounded transition duration-200 flex-shrink-0 ${
+      maxStock && currentQuantity >= maxStock 
+        ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-50' 
+        : 'bg-gray-100 hover:bg-gray-200 text-black'
+    }`}
   >+</button>
 
 

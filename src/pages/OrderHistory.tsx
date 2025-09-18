@@ -8,6 +8,7 @@ import { supabase } from '../integrations/supabase/client';
 import { Order, CartItem } from '../lib/types';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { updateInventoryFromPaidOrders } from '@/hooks/useProductInventory';
 
 const OrderHistory = () => {
   const { currentUser } = useAuth();
@@ -29,6 +30,9 @@ const OrderHistory = () => {
       if (!currentUser) return;
       try {
         setLoading(true);
+
+        // Update inventory from paid orders first
+        await updateInventoryFromPaidOrders();
 
         // auto delete expired pending orders from DB
         const twentyFourHoursAgo = new Date();
@@ -194,6 +198,11 @@ const OrderHistory = () => {
     Not Paid
   </span>
 )}
+{order.payment_status === 'paid' && order.status !== 'cancelled' && (
+  <span className="bg-yellow-400 text-black text-xs font-semibold px-2 py-1 rounded-none">
+     Paid
+  </span>
+)}
 
 {order.status === 'delivered' && (
   <span className="bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-none">
@@ -213,8 +222,10 @@ const OrderHistory = () => {
                               Size - {s.size} | Qty - {s.quantity}
                             </p>
                           ))}
-                        </div>
+                            </div>
+                       
                       </div>
+                      
                     ))}
 
                     {order.payment_status === 'pending' && order.status !== 'cancelled' && (

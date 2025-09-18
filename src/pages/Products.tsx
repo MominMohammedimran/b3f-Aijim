@@ -26,7 +26,7 @@ const Products = () => {
 
       const transformed = (data || []).map((p: any) => {
         const sizes = Array.isArray(p.variants)
-          ? p.sizes
+          ? p.variants
               .filter((v) => v && typeof v === 'object' && v.size && v.stock != null)
               .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
           : [];
@@ -38,7 +38,7 @@ const Products = () => {
           originalPrice: p.original_price || p.price,
           image: p.image || '',
           images: p.images || [],
-          sizes,
+          variants:sizes,
           code:p.code,
           description: p.description || '',
           tags: Array.isArray(p.tags) ? p.tags : [],

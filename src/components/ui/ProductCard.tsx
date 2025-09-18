@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function ProductCard({ product, onClick, className = '' }: Props) {
-  const sizes = Array.isArray(product.sizes) ? product.sizes : [];
+  const sizes = Array.isArray(product.variants) ? product.variants : [];
 
   const totalStock = sizes.reduce(
     (sum, s) => sum + (typeof s.stock === 'number' ? s.stock : 0),
