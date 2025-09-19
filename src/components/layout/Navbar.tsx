@@ -126,9 +126,9 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
   <div className="flex items-center justify-between mb-2 mt-2 ">
 
     {/* Brand Logo */}
-    <div className="flex items-center justify-between w-full px-2">
+    <div className="flex items-center justify-between w-full px-1">
   {/* Left: Brand Text */}
-  <span className="text-white font-bold text-2xl sm:text-3xl md:text-4xl tracking-wide font-poppins">
+  <span className="text-white italic font-bold text-xl sm:text-2xl md:text-3xl tracking-wide font-poppins">
     AIJIM
   </span>
 
