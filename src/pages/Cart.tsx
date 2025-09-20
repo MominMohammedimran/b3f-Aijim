@@ -335,8 +335,8 @@ const Cart = () => {
         {/* Stock Status */}
         {isOutOfStock && (
           <div className="w-full text-center">
-            <span className="text-red-400 text-xs font-semibold bg-red-100/10 px-2 py-1 rounded">
-              Sold Out
+            <span className="text-red-600 text-xs font-semibold bg-red-100/10 px-2 py-1 rounded">
+              Sold 
             </span>
           </div>
         )}
@@ -377,7 +377,7 @@ const Cart = () => {
               <div className='flex flex-col mt-2'>
               {hasOutOfStockItems ? (
                 <div className="text-center space-y-3">
-                  <p className="text-red-400 text-sm font-semibold">
+                  <p className="text-red-600 text-sm font-semibold">
                     Some items are out of stock
                   </p>
                   <Link to="/">

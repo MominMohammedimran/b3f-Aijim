@@ -190,7 +190,7 @@ const checkPincode = async () => {
                 {size}
                 
                 {isOutOfStock ? (
-                  <div className="text-[8px] bg-red-500 text-white px-1 font-semibold mt-1">SOLD OUT</div>
+                  <div className="text-[8px] bg-red-600 text-white px-1 font-semibold mt-1">SOLD</div>
                 ) :(<div className="text-[8px] uppercase font-semibold mt-1">
                   Stock
                 </div>)
