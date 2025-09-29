@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
-import { Link, useNavigate ,useLocation} from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, ShoppingCart, MapPin, CreditCard, CheckCircle } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import { toast } from 'sonner';
 import { supabase } from '../integrations/supabase/client';
@@ -18,6 +17,7 @@ import { formatPrice } from '@/lib/utils';
 import CouponSection from '@/components/cart/CouponSection';
 import RewardPointsSection from '@/components/cart/RewardPointsSection';
 import { Button } from '@/components/ui/button';
+
 type FormData = {
   firstName: string;
   lastName: string;
@@ -33,7 +33,7 @@ type FormData = {
 
 const Checkout = () => {
   const navigate = useNavigate();
-const seo = useSEO('/checkout');
+  const seo = useSEO('/checkout');
   const { currentUser } = useAuth();
   const { currentLocation } = useLocationContext();
   const { cartItems, totalPrice } = useCart();
@@ -60,6 +60,7 @@ const seo = useSEO('/checkout');
   const [isLoading, setIsLoading] = useState(false);
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
+  
   // Coupon and reward points state
   const [appliedCoupon, setAppliedCoupon] = useState<{
     code: string;
@@ -70,6 +71,14 @@ const seo = useSEO('/checkout');
     points: number;
     discount: number;
   } | null>(null);
+
+  // Progress steps
+  const steps = [
+    { id: 'cart', label: 'CART', icon: ShoppingCart, completed: true },
+    { id: 'checkout', label: 'CHECKOUT', icon: MapPin, active: true },
+    { id: 'payment', label: 'PAYMENT', icon: CreditCard },
+    { id: 'done', label: 'DONE', icon: CheckCircle }
+  ];
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -157,7 +166,7 @@ const seo = useSEO('/checkout');
     if (address) {
       setSelectedAddressId(addressId);
       setUseNewAddress(false);
-      setIsAddressSaved(true); // Address is ready for payment
+      setIsAddressSaved(true);
       setFormData(prev => ({
         ...prev,
         firstName: address.first_name,
@@ -180,8 +189,7 @@ const seo = useSEO('/checkout');
     setSelectedAddressId(null);
     setUseNewAddress(true);
     setIsAddressSaved(false);
-    setEditingAddress(null); // Clear editing mode
-    // Clear form data for new address
+    setEditingAddress(null);
     setFormData(prev => ({
       ...prev,
       firstName: '',
@@ -198,7 +206,6 @@ const seo = useSEO('/checkout');
   const handleDeleteAddress = async (addressId: string) => {
     const success = await deleteAddress(addressId);
     if (success && selectedAddressId === addressId) {
-      // If deleted address was selected, reset selection
       setSelectedAddressId(null);
       setIsAddressSaved(false);
     }
@@ -206,20 +213,19 @@ const seo = useSEO('/checkout');
   };
 
   const handleEditAddress = (address: any) => {
-    // Pre-fill form with address data for editing
     setFormData({
       firstName: address.first_name,
       lastName: address.last_name,
-      email: formData.email, // Keep current email
+      email: formData.email,
       phone: address.phone || '',
       address: address.street,
       city: address.city,
       state: address.state,
       zipCode: address.zipcode,
       country: address.country,
-      saveAddress: false, // User can choose to save as new or update
+      saveAddress: false,
     });
-    setEditingAddress(address); // Track which address is being edited
+    setEditingAddress(address);
     setUseNewAddress(true);
     setSelectedAddressId(null);
     setIsAddressSaved(false);
@@ -268,7 +274,7 @@ const seo = useSEO('/checkout');
   };
 
   const subtotal = totalPrice;
-    const couponDiscount = appliedCoupon?.discount || 0;
+  const couponDiscount = appliedCoupon?.discount || 0;
   const pointsDiscount = appliedPoints?.discount || 0;
   const totalDiscount = couponDiscount + pointsDiscount;
   const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
@@ -276,20 +282,57 @@ const seo = useSEO('/checkout');
   return (
     <Layout>
       <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
-      <div className="container mx-auto px-4 py-6  sm:py-8 mt-12">
-        <div className="flex items-center mb-6">
-          <Link to="/cart" className="mr-2">
-            <ArrowLeft size={24} className="text-white" />
+      <div className="container mx-auto px-4 py-6 sm:py-8 mt-20">
+        {/* Header with Back Button */}
+        <div className="flex items-center mb-8">
+          <Link to="/cart" className="mr-4">
+            <ArrowLeft size={24} className="text-foreground hover:text-primary transition-colors" />
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-200">Checkout</h1>
+          <h1 className="text-4xl font-bold uppercase tracking-wider">CHECKOUT</h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Progress Stepper */}
+        <div className="mb-12">
+          <div className="flex justify-center items-center space-x-4 md:space-x-8">
+            {steps.map((step, index) => (
+              <div key={step.id} className="flex items-center">
+                <div className={`
+                  flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300
+                  ${step.completed 
+                    ? 'bg-primary border-primary text-primary-foreground' 
+                    : step.active 
+                      ? 'bg-primary border-primary text-primary-foreground shadow-glow' 
+                      : 'border-border text-muted-foreground'
+                  }
+                `}>
+                  <step.icon className="w-6 h-6" />
+                </div>
+                <span className={`
+                  ml-3 font-bold uppercase tracking-wider text-sm hidden md:block
+                  ${step.completed || step.active ? 'text-primary' : 'text-muted-foreground'}
+                `}>
+                  {step.label}
+                </span>
+                {index < steps.length - 1 && (
+                  <div className={`
+                    w-8 md:w-16 h-0.5 mx-4 transition-colors duration-300
+                    ${step.completed ? 'bg-primary' : 'bg-border'}
+                  `} />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Shipping Form */}
           <div className="lg:col-span-2">
-            <div className="bg-gray-900 shadow-sm p-4 sm:p-6">
-              <h2 className="text-lg sm:text-2xl font-semibold text-center mb-4">Shipping Details</h2>
-             {/* Saved Addresses */}
+            <div className="bg-card rounded-lg p-6 border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow">
+              <h2 className="text-2xl font-bold uppercase tracking-wider text-center mb-6 text-primary">
+                SHIPPING DETAILS
+              </h2>
+              
+              {/* Saved Addresses */}
               {!addressesLoading && addresses.length > 0 && (
                 <SavedAddresses
                   addresses={addresses}
@@ -302,7 +345,7 @@ const seo = useSEO('/checkout');
                 />
               )}
               
-              {/* Address Form - Show when using new address or no saved addresses */}
+              {/* Address Form */}
               {(useNewAddress || addresses.length === 0 || addressesLoading) && (
                 <AddressForm
                   formData={formData}
@@ -323,100 +366,115 @@ const seo = useSEO('/checkout');
             </div>
           </div>
 
-          {/* Coupon and Reward Points Section + Order Summary */}
+          {/* Right Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Coupon Section */}
-            <CouponSection 
-              cartTotal={totalPrice}
-              onCouponApplied={handleCouponApplied}
-              onCouponRemoved={handleCouponRemoved}
-              appliedCoupon={appliedCoupon || undefined}
-            />
+            <div className="bg-card rounded-lg p-4 border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow">
+              <CouponSection 
+                cartTotal={totalPrice}
+                onCouponApplied={handleCouponApplied}
+                onCouponRemoved={handleCouponRemoved}
+                appliedCoupon={appliedCoupon || undefined}
+              />
+            </div>
 
             {/* Reward Points Section */}
-            <RewardPointsSection
-              cartTotal={totalPrice - (appliedCoupon?.discount || 0)}
-              onPointsApplied={handlePointsApplied}
-              onPointsRemoved={handlePointsRemoved}
-              appliedPoints={appliedPoints || undefined}
-            />
-
+            <div className="bg-card rounded-lg p-4 border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow">
+              <RewardPointsSection
+                cartTotal={totalPrice - (appliedCoupon?.discount || 0)}
+                onPointsApplied={handlePointsApplied}
+                onPointsRemoved={handlePointsRemoved}
+                appliedPoints={appliedPoints || undefined}
+              />
+            </div>
 
             {/* Order Summary */}
-            <div className="bg-gray-800 p-4  border">
-              <h3 className="font-medium text-center text-2xl mb-5">Order Summary</h3>
+            <div className="bg-card rounded-lg p-6 border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow sticky top-24">
+              <h3 className="text-2xl font-bold uppercase tracking-wider text-center mb-6 text-primary">
+                ORDER SUMMARY
+              </h3>
 
-              <div className="space-y-3 mb-4">
+              <div className="space-y-4 mb-6">
                 {cartItems.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
+                  <div key={idx} className="flex items-start gap-4 pb-4 border-b border-border last:border-b-0">
                     <img
                       src={item.image || '/placeholder.svg'}
                       alt={item.name}
                       onClick={() => redirect({ id: item.code, pd_name: item.name })}
-                      className={`h-16 w-16 object-cover rounded border shadow-sm transition-transform duration-200 hover:scale-125
+                      className={`h-16 w-16 object-cover rounded border-2 shadow-sm transition-all duration-300 hover:scale-110
                         ${!item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'}`}
                     />
-                    <div className="text-sm">
-                      <p className="font-semibold text-lg ">{item.name}</p>
+                    <div className="flex-1">
+                      <p className="font-bold text-sm uppercase tracking-wide">{item.name}</p>
                       {Array.isArray(item.sizes) ? (
-                        <div className="flex flex-wrap gap-2 mt-1">
+                        <div className="flex flex-wrap gap-1 mt-2">
                           {item.sizes.map((s: any, i: number) => (
-                            <div key={i} className="bg-white border px-1 py-1 font-bold  text-xs text-gray-700">
-                              Size - {s.size} | Qty - {s.quantity} 
+                            <div key={i} className="bg-secondary border border-border px-2 py-1 rounded text-xs font-bold">
+                              {s.size} × {s.quantity} 
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <p className="text-xs font-semibold text-gray-600">Sizes : N/A</p>
+                        <p className="text-xs text-muted-foreground">No sizes available</p>
                       )}
                     </div>
                   </div>
                 ))}
               </div>
 
-             <div className="space-y-2 mb-4 text-white">
-                             <div className="flex justify-between">
-                               <span className='font-semibold text-sm uppercase '>Subtotal</span>
-                               <span className='font-semibold text-md'>{formatPrice(totalPrice)}</span>
-                             </div>
-                             {appliedCoupon && (
-                               <div className="flex justify-between text-white">
-                                 <span className='font-semibold  text-sm uppercase '>Coupon </span>
-                                 <span className='font-semibold text-md'>-{formatPrice(couponDiscount)}</span>
-                               </div>
-                          )}
-                             {appliedPoints && (
-                               <div className="flex justify-between text-white">
-                                 <span className='font-semibold text-sm uppercase '>Points </span>
-                                 <span className='font-semibold text-md'>-{formatPrice(pointsDiscount)}</span>
-                               </div>
-                             )}
-                             <div className="flex justify-between">
-                               <span className='font-semibold uppercase text-sm '>Shipping</span>
-                               <span>{deliveryFee === 0 ? <span className="line-through text-sm font-semibold text-gray-200">Free Delivery</span> : `- ₹${deliveryFee}`}</span>
-                             </div>
-                             <div className="border-t pb-2">
-                               <div className="flex justify-between font-semibold">
-                                 <span className='font-semibold text-sm uppercase '>Total</span>
-                                 <span className="underline font-semibold text-md">{formatPrice(finalTotal)}</span>
-                               </div>
-                              </div>
-                            </div>
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between items-center">
+                  <span className='font-bold text-sm uppercase tracking-wider'>SUBTOTAL</span>
+                  <span className='font-bold'>{formatPrice(totalPrice)}</span>
+                </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between items-center text-primary">
+                    <span className='font-bold text-sm uppercase tracking-wider'>COUPON</span>
+                    <span className='font-bold'>-{formatPrice(couponDiscount)}</span>
+                  </div>
+                )}
+                {appliedPoints && (
+                  <div className="flex justify-between items-center text-primary">
+                    <span className='font-bold text-sm uppercase tracking-wider'>POINTS</span>
+                    <span className='font-bold'>-{formatPrice(pointsDiscount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <span className='font-bold text-sm uppercase tracking-wider'>SHIPPING</span>
+                  <span className="font-bold">
+                    {deliveryFee === 0 ? (
+                      <span className="text-primary">FREE</span>
+                    ) : (
+                      `₹${deliveryFee}`
+                    )}
+                  </span>
+                </div>
+                <div className="border-t-2 border-border pt-3">
+                  <div className="flex justify-between items-center">
+                    <span className='font-bold uppercase tracking-wider'>TOTAL</span>
+                    <span className="text-xl font-bold text-primary">{formatPrice(finalTotal)}</span>
+                  </div>
+                </div>
+              </div>
 
-            {/* Continue to Payment Button - Moved to bottom of order summary */}
-            {!isAddressSaved &&(
-              <h3 className='font-semibold  text-center '>please select a saved address or enter a new address to proceed with payment</h3>
-            )}
-          
-            {isAddressSaved && (
-              <Button 
-                onClick={() => handleFormSubmit(formData)} 
-                disabled={isLoading}
-                className="w-full font-bold  text-center rounded-none text-lg mt-4"
-              >
-                {isLoading ? 'Processing...' : 'Continue to Payment'}
-              </Button>
-            )}
+              {/* Continue to Payment Button */}
+              {!isAddressSaved && (
+                <div className="text-center mb-4">
+                  <p className="text-sm text-muted-foreground font-semibold uppercase tracking-wider">
+                    Please select or enter address to proceed
+                  </p>
+                </div>
+              )}
+            
+              {isAddressSaved && (
+                <Button 
+                  onClick={() => handleFormSubmit(formData)} 
+                  disabled={isLoading}
+                  className="w-full font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
+                  {isLoading ? 'PROCESSING...' : 'CONTINUE TO PAYMENT'}
+                </Button>
+              )}
             </div>
           </div>
         </div>

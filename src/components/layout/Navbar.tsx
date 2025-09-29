@@ -121,19 +121,33 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
 
 
   return (
-    <div className={`fixed top-0 left-0 right-0 z-40 bg-black border-b border-gray-800 transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
-      <div className="container-custom">
-  <div className="flex items-center justify-between mb-2 mt-2 ">
+    
+    <div className={`fixed top-0 left-0 right-0 z-40  transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
+      {/* 🔥 Flash Sale Marquee */}
+            <div className="bg-red-600 h-4  pt-1 pb-1  md:h-6 md:pt-2 md:pb-2 flex items-center ">
+              <Marquee gradient={false} speed={100} pauseOnHover={true} className="w-full">
+                {Array.from({ length:5 }).map((_, i) => (
+                  <span key={i} className="flex items-center uppercase text-white font-semibold text-[9px] sm:text-[12px] md:text-[13px] lg:text-[15px] px-4 whitespace-nowrap">
+                      <Tag size={12} className='text-white'/> &nbsp;Flat ₹500 Off on Orders Above ₹2500
+                  </span>
+                ))}
+              </Marquee>
+            </div>
+             <div className={`flex items-center justify-between w-full  
+       ${isScrolled 
+          ? 'bg-transparent backdrop-blur-md p-1' 
+          : 'bg-transparent'
+      }`}>
 
     {/* Brand Logo */}
-    <div className="flex items-center justify-between w-full px-1">
+    <div className="flex  justify-between w-full px-1">
   {/* Left: Brand Text */}
-  <span className="text-white italic font-bold text-xl sm:text-2xl md:text-3xl tracking-wide font-poppins">
+  {/*<span className="text-white italic font-bold text-xl sm:text-2xl md:text-3xl tracking-wide font-poppins">
     AIJIM
   </span>
-
+/*}
   {/* Center: Logo Image */}
-  <div className="flex-grow flex justify-center items-center">
+  <div className="flex-grow flex">
     <img
       src="/aijim-uploads/aijim.svg"
       alt="AIJIM Logo"
@@ -145,7 +159,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
     
 
     {/* Right Icons */}
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-4 mr-5">
       
       {/* Popup Notification */}
     
@@ -157,7 +171,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-6 h-6"
+          className="w-5 h-5"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -172,42 +186,21 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
       </Link>
 
       {/* Cart Icon */}
-      <Link
-        to="/cart"
-        aria-label="cart"
-        className="flex items-center space-x-1 text-blue-400 font-medium hover:text-blue-300"
-      >
-        <div className="relative">
-          <ShoppingCart size={22} />
-          {cartCount > 0 && (
-            <div>
-               <span className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full animate-ping opacity-95"></span>
-        
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center animate-fade-in">
-              {cartCount}
-            </span>
-              </div>
-            
-            
-          )}
-        </div>
-        <span className="hidden font-semibold sm:inline text-base sm:text-lg md:text-xl">Cart</span>
-      </Link>
+      <Link to="/cart" className="relative mt-2">
+              <button className="text-white hover:text-accent">
+                <ShoppingCart className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            </Link>
     </div>
   </div>
-</div>  
+      
 
-
- {/* 🔥 Flash Sale Marquee */}
-            <div className="bg-red-600 h-6  pt-1 pb-1  flex items-center ">
-              <Marquee gradient={false} speed={100} pauseOnHover={true} className="w-full">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <span key={i} className="flex items-center uppercase text-white font-semibold text-[12px] sm:text-[13px] md:text-[14px] lg:text-[15px] px-4 whitespace-nowrap">
-                      <Tag size={18} className='text-white'/> &nbsp;Flat ₹500 Off on Orders Above ₹2500
-                  </span>
-                ))}
-              </Marquee>
-            </div>
+ 
 
 
             

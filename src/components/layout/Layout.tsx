@@ -43,7 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
       <StructuredData type="organization" data={organizationData} />
       <StructuredData type="website" data={websiteData} />
       <Navbar />
-      <main className="flex-grow pt-6 md:pt-16 pb-16 bg-black">
+      <main className="flex-grow  bg-black">
         {children}
       </main>
       {!hideFooter && <Footer />}

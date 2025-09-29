@@ -84,8 +84,26 @@ const [pincode, setPincode] = useState("");
 const [pincodeResult, setPincodeResult] = useState<{isServiceable: boolean; message: string} | null>(null);
 const [pincodeChecked, setPincodeChecked] = useState(false);
 const [loadingPincode, setLoadingPincode] = useState(false);
+let SelectedSize;
+const getSizeRecommendation = (size: string) => {
+  switch (size) {
+    case "S":
+      return "Regular size S → Aijim size XS";
+    case "XS":
+      return "Regular size XS → Aijim size XS";
+    case "M":
+      return "Regular size M → Aijim size S";
+    case "L":
+      return "Regular size L → Aijim size M";
+    case "XL":
+      return "Regular size XL → Aijim size L";
+    case "XXL":
+      return "Regular size XXL → Aijim size XXL";
+    default:
+      return null;
+  }
+};
 
-console.log(pincodeResult)
 const checkPincode = async () => {
   if (!pincode) return;
   setLoadingPincode(true);
@@ -111,7 +129,7 @@ const checkPincode = async () => {
 
 
   const totalPrice = selectedSizes.reduce((sum, s) => sum + s.quantity * product.price, 0);
-
+const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selectedSizes[selectedSizes.length-1].size):null;
   if (inventoryLoading)
     return (
       <div className="flex justify-center py-12">
@@ -157,6 +175,11 @@ const checkPincode = async () => {
 
       {/* Live Viewing Counter */}
       <LiveViewingCounter productId={product.id} />
+      {activeRecommendation&&(
+        <div className="mb-1 text-xs font-semibold text-white text-left">
+          {activeRecommendation}
+          </div>
+      )}
 
       {/* Sizes */}
       <h4 className="text-lg font-semibold mt-3 mb-3">Select Size</h4>
@@ -167,6 +190,7 @@ const checkPincode = async () => {
           const selected = selectedSizes.some((s) => s.size === size);
           const inCart = cartItems.find((c) => c.product_id === product.id)?.sizes.some((s) => s.size === size);
           const isOutOfStock = stock === 0;
+          
           
           return (
             <div key={size} className="relative">
@@ -204,7 +228,7 @@ const checkPincode = async () => {
       {/* Selected Sizes with Scroll */}
     {selectedSizes.length > 0 && (
   <div className="pt-4 border-t border-gray-700">
-    <h4 className="text-md font-semibold mb-3">Selected Sizes</h4>
+    <h4 className="text-md font-semibold mb-3">{SelectedSize} Selected Sizes</h4>
 
     <div className="flex gap-2 overflow-x-auto  scroll-smooth no-scrollbar">
       {selectedSizes.map((sel) => {
@@ -213,7 +237,7 @@ const checkPincode = async () => {
         const cartSizeInfo = cartItem?.sizes.find((s) => s.size === sel.size);
         const inCartQty = cartSizeInfo?.quantity;
         const isRemoving = removingSize === sel.size;
-
+      
         return (
           <div
             key={sel.size}

@@ -1,107 +1,179 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Shield, Cookie, Users, FileText, Eye, Lock, Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const PrivacyPolicy = () => {
+  const [activeSection, setActiveSection] = useState('introduction');
+
+  const sections = [
+    { id: 'introduction', title: 'Introduction', icon: Shield },
+    { id: 'data-collection', title: 'Information We Collect', icon: Eye },
+    { id: 'data-usage', title: 'How We Use Your Information', icon: FileText },
+    { id: 'cookies', title: 'Cookies & Tracking', icon: Cookie },
+    { id: 'third-party', title: 'Third-Party Disclosure', icon: Globe },
+    { id: 'data-security', title: 'Data Security', icon: Lock },
+    { id: 'user-rights', title: 'Your Rights', icon: Users },
+  ];
+
+  const scrollToSection = (sectionId: string) => {
+    setActiveSection(sectionId);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <Layout>
-      <div className="container-custom  mt-10">
-        <div className="flex items-center pt-10 mb-6">
-          <Link to="/" className="mr-2 font-bold">
-            <ArrowLeft size={20} className="text-gray-100 " />
-          </Link>
-          <h1 className="text-2xl font-bold">Privacy Policy</h1>
-        </div>
-        
-        <div className="bg-gray-900 text-white italic shadow-sm p-5">
-          <div className="prose max-w-none">
-            <p>Last Updated: sept 27, 2025</p>
-            
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Introduction</h2>
-            <p className='text-sm '>
-              Aijim ("we," "our," or "us") is committed to protecting your privacy. 
-              This Privacy Policy explains how we collect, use, disclose, and safeguard your information
-              when you visit our website and use our services.
-            </p>
-            
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Information We Collect</h2>
-            <p className='text-sm '>We may collect information about you in a variety of ways including:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li className='text-sm'>
-                <strong>Personal Data:</strong> Name, email address, phone number, billing address, shipping address,
-                payment information, and other details you provide when ordering products, creating an account,
-                or contacting us.
-              </li>
-              <li className='text-sm '>
-                <strong>Order Information:</strong> Details about the products you purchase, order history,
-                and preferences.
-              </li>
-              <li className='text-sm '>
-                <strong>Usage Data:</strong> Information about how you use our website, including your browsing 
-                history, search queries, and interaction with our features.
-              </li>
-              <li className='text-sm'>
-                <strong>Device Information:</strong> Information about your device, including IP address, browser type,
-                operating system, and device identifiers.
-              </li>
-            </ul>
-            
-            <h2 className="text-xl font-bold underline mt-6 mb-4">How We Use Your Information</h2>
-            <p className='text-sm mb-2'>We may use your information for various purposes, including:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li className='text-sm '>To process and fulfill your orders</li>
-              <li className='text-sm '>To manage your account and provide customer support</li>
-              <li className='text-sm '>To communicate with you about your orders, account, or our services</li>
-              <li className='text-sm'>To personalize your experience and improve our services</li>
-              <li className='text-sm '>To analyze usage trends and optimize our website performance</li>
-              <li className='text-sm '>To detect, prevent, and address technical issues or fraud</li>
-              <li className='text-sm '>To comply with legal obligations</li>
-            </ul>
-            
-            <h2 className="text-xl font-bold underline mt-6 mb-4">Data Security</h2>
-            <p className='text-sm '>
-              We implement appropriate technical and organizational measures to protect your personal information
-              from unauthorized access, disclosure, alteration, or destruction. However, no method of transmission
-              over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
-            </p>
-            
-            <h2 className="text-xl font-bold underline mt-6 mb-4">Third-Party Disclosure</h2>
-            <p className='text-sm mb-2'>
-              We may share your information with third parties only in the ways described in this Privacy Policy,
-              including:
-            </p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li className='text-sm '>Service providers who help us operate our business</li>
-              <li  className='text-sm '>Payment processors to complete transactions</li>
-              <li className='text-sm '>Shipping partners to deliver your orders</li>
-              <li className='text-sm '>When required by law or to protect our legal rights</li>
-            </ul>
-            
-            <h2 className="text-xl font-bold underline mt-6 mb-4">Your Rights</h2>
-            <p className='text-sm'>
-              Depending on your location, you may have certain rights regarding your personal information, including:
-            </p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li className="text-sm">The right to access your personal information</li>
-               <li className="text-sm">The right to correct or update your personal information</li>
-              <li className="text-sm">The right to delete your personal information</li>
-              <li className="text-sm">The right to object to or restrict processing of your personal information</li>
-              <li className="text-sm">The right to data portability</li>
-            </ul>
-            
-            <h2 className="text-xl underline font-bold mt-6 mb-4">Contact Us</h2>
-            <p className='text-sm '>
-              If you have questions about this Privacy Policy or our privacy practices, please contact us at:
-            </p>
-            <p className="mt-2">
-              <strong>Email :</strong> b3fprintingsolutions@gmail.com<br />
-              <strong>Phone :</strong> 7672080881
-            </p>
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <div className="container-custom pt-20 pb-6">
+          <div className="flex items-center mb-8">
+            <Link to="/" className="mr-4 text-muted-foreground hover:text-foreground transition-colors">
+              <ArrowLeft size={24} />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-black text-foreground tracking-tight">PRIVACY POLICY</h1>
+              <p className="text-muted-foreground font-semibold ">Last Updated: Sept 27, 2025</p>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div className="container-custom">
+          <div className="grid lg:grid-cols-4 gap-8">
+            {/* Desktop Navigation */}
+            <div className="hidden lg:block">
+              <div className="sticky top-24 bg-card border border-border rounded-lg p-6 shadow-glow">
+                <h3 className="font-bold text-foreground mb-4 uppercase text-sm tracking-wide">Quick Navigation</h3>
+                <nav className="space-y-2">
+                  {sections.map((section) => {
+                    const Icon = section.icon;
+                    return (
+                      <button
+                        key={section.id}
+                        onClick={() => scrollToSection(section.id)}
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
+                          activeSection === section.id
+                            ? 'bg-accent text-accent-foreground font-bold shadow-glow'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                        }`}
+                      >
+                        <Icon size={16} />
+                        <span className="text-sm font-semibold leading-tight">{section.title}</span>
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="lg:col-span-3 space-y-8">
+              {/* Mobile Accordion View */}
+             
+
+              {/* Desktop Full Content */}
+              <div className="block space-y-12">
+                {sections.map((section) => {
+                  const Icon = section.icon;
+                  return (
+                    <section key={section.id} id={section.id} className="scroll-mt-24">
+                      <div className="bg-card border border-border rounded-lg p-8 shadow-glow">
+                        <div    className="flex items-center gap-4 mb-6">
+                          <div className="w-12 h-12 bg-foreground border-2 border-accent rounded-lg flex items-center justify-center">
+                            <Icon size={24} className="text-accent" />
+                          </div>
+                          <div>
+                            <h2 
+                            className="text-2xl font-black text-foreground uppercase tracking-wide">{section.title}</h2>
+                            <div className="w-full h-1 bg-accent mt-2"></div>
+                          </div>
+                        </div>
+
+                        {/* Section Content */}
+                        <div className="text-muted-foreground font-semibold space-y-4 italic leading-tight">
+                          {section.id === 'introduction' || (
+                            <p>
+                              Aijim ("we," "our," or "us") is committed to protecting your privacy.
+                              This Privacy Policy explains how we collect, use, disclose, and safeguard your information
+                              when you visit our website and use our services.
+                            </p>
+                          )}
+
+                          {section.id === 'data-collection' || (
+                            <ul className="list-disc pl-6 space-y-2">
+                              <li><strong>Personal Data:</strong> Name, email, phone, billing & shipping address, payment info</li>
+                              <li><strong>Order Information:</strong> Products purchased, order history, preferences</li>
+                              <li><strong>Usage Data:</strong> Browsing history, search queries, site interactions</li>
+                              <li><strong>Device Information:</strong> IP, browser type, OS, device identifiers</li>
+                            </ul>
+                          )}
+
+                          {section.id === 'data-usage' && (
+                            <ul className="list-disc pl-6 space-y-2">
+                              <li>To process and fulfill your orders</li>
+                              <li>To manage your account and provide customer support</li>
+                              <li>To communicate about your orders or account</li>
+                              <li>To personalize your experience and improve services</li>
+                              <li>To analyze usage trends & optimize performance</li>
+                              <li>To detect and prevent fraud</li>
+                              <li>To comply with legal obligations</li>
+                            </ul>
+                          )}
+
+                          {section.id === 'cookies' || (
+                            <p>
+                              We use cookies and similar tracking technologies to monitor website activity and store
+                              certain information. You can disable cookies in your browser, but this may affect
+                              functionality.
+                            </p>
+                          )}
+
+                          {section.id === 'third-party' || (
+                            <ul className="list-disc pl-6 space-y-2">
+                              <li>Service providers who operate our business</li>
+                              <li>Payment processors to complete transactions</li>
+                              <li>Shipping partners to deliver orders</li>
+                              <li>When required by law or to protect our rights</li>
+                            </ul>
+                          )}
+
+                          {section.id === 'data-security' || (
+                            <p>
+                              We implement industry-standard measures to protect your personal information.
+                              However, no method of transmission or storage is 100% secure, so we cannot guarantee absolute protection.
+                            </p>
+                          )}
+
+                          {section.id === 'user-rights' || (
+                            <ul className="list-disc pl-6 space-y-2">
+                              <li>The right to access, correct, or update your personal data</li>
+                              <li>The right to delete your personal information</li>
+                              <li>The right to object to or restrict processing</li>
+                              <li>The right to data portability</li>
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+
+              {/* Contact Section */}
+             
+            </div>
+          </div>
+        </div>
+      </div> 
     </Layout>
   );
 };

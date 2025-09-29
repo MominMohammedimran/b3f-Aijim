@@ -14,6 +14,7 @@ import { useWishlist } from '../context/WishlistContext';
 import SEOHelmet from '@/components/seo/SEOHelmet';
 import useSEO from '@/hooks/useSEO';
 import Marquee from "react-fast-marquee"; 
+import NewHero from "@/components/landing/NewHero";
 import HeroSlider from '../components/ui/HeroSlider'
 import IndexFeaturesproducts from '../components/ui/IdexFeaturesproducts'
 import { supabase } from '@/integrations/supabase/client'; // ensure you have this
@@ -110,12 +111,13 @@ const seo = useSEO('/');
   return (
     <Layout>
        <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
-
-
-      <div className="bg-black min-h-screen pt-20 text-white">
+   
+    <NewHero/>
+      <div className="bg-black min-h-screen pt-5 text-white">
        
         <div className="container-custom mt-22 pt-2">
-          <HeroSlider />
+        
+          {/*<HeroSlider />/*}
 
           {/* 🔥 Hot Selling */}
       <div className="mb-8 mt-8 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black

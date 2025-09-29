@@ -1,66 +1,150 @@
 import React from 'react';
-import Layout from '../components/layout/Layout';
-import SEOHelmet from '@/components/seo/SEOHelmet';
-import useSEO from '@/hooks/useSEO';
+import Layout from '@/components/layout/Layout';
+import { Target, Heart, Leaf, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-import { Link } from 'react-router-dom';
-import{ArrowLeft} from 'lucide-react'
 const AboutUs = () => {
- const seo = useSEO('/about-us');
+  const values = [
+    {
+      icon: Target,
+      title: 'BRAND STORY',
+      description: 'Born from the streets, AIJIM represents the fusion of urban culture and premium craftsmanship. We create clothing that speaks to the bold, the fearless, and the authentic.'
+    },
+    {
+      icon: Heart,
+      title: 'MISSION',
+      description: 'To redefine streetwear by creating premium, comfortable clothing that empowers individuals to express their unique style and confidence.'
+    },
+    {
+      icon: Leaf,
+      title: 'SUSTAINABILITY',
+      description: 'We are committed to sustainable fashion practices, using eco-friendly materials and ethical manufacturing processes to reduce our environmental impact.'
+    },
+    {
+      icon: Users,
+      title: 'COMMUNITY',
+      description: 'AIJIM is more than a brand - it\'s a community of like-minded individuals who value authenticity, creativity, and self-expression.'
+    }
+  ];
+
   return (
     <Layout>
-    <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
+      <div className="min-h-screen bg-background">
+        {/* Hero Section */}
+        <div className="relative h-screen flex items-center justify-center overflow-hidden">
+        
+          
+          {/* Content */}
+          <div className="relative z-10 text-center container-custom">
+            <div className="animate-fade-in">
+              <h1 className="text-6xl md:text-8xl font-black text-foreground mb-0 tracking-tight">
+                WE ARE <span className="text-accent  font-black text-foreground">AIJIM</span>
+              </h1>
+              <div className="w-full h-2 bg-accent mx-0 mb-1 bg-white animate-pulse"></div>
+              <p className="text-xl md:text-2xl italic text-foreground max-w-3xl mx-auto font-semibold leading-relaxed">
+                Defining streetwear for the <span className="text-accent text-foreground font-semibold">fearless</span>,
+                <br />creating fashion for the <span className="text-accent text-foreground font-semibold">authentic</span>.
+              </p>
+            </div>
+          </div>
 
+          {/* Animated elements */}
+          </div>
 
-      <div className="container-custom pt-2 pb-24 mt-10">
-        <div className="flex items-center mb-4 pt-10">
-                  <Link to="/" className="mr-2">
-                    <ArrowLeft size={24} className="back-arrow font-bold" />
-                  </Link>
-                  <h1 className="text-2xl font-bold text-gray-100">Back</h1>
+        {/* Values Grid */}
+        <div className="container-custom py-10">
+          <div className="grid md:grid-cols-2 gap-2 max-w-6xl mx-auto">
+            {values.map((value, index) => {
+              const Icon = value.icon;
+              return (
+                <div 
+                  key={index}
+                  className="group bg-card border border-border rounded-lg p-4 shadow-glow hover:shadow-glow-strong transition-all duration-300 hover:scale-105"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 text-white bg-white border-2 border-accent rounded-lg flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300">
+                      <Icon size={15} className="text-accent group-hover:text-accent-foreground" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
+                        {value.title}
+                      </h3>
+                      <p className="text-foreground/50 italic text-xs font-medium leading-snug">
+                        {value.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-        
-        <div className="max-w-4xl mx-auto">
-           <div className="bg-gray-900 italic text-white  shadow-sm p-5">
-             <h1 className="text-3xl md:text-4xl font-bold text-center mb-2">About Us</h1>
-          
-        
-            <h2 className="text-2xl font-semibold underline mb-2 mt-3">Our Story</h2>
-            <p className="mb-1 text-sm">
-              Founded in 2025, our company was born out of a passion for creating custom apparel and 
-              products that help individuals and businesses express their unique identity.
-            
-              We believe that everyone deserves the opportunity to wear and use products that truly 
-              represent who they are. That's why we've built an easy-to-use platform that puts the 
-              power of design in your hands.
-            </p>
-          </div>
-          
-          <div className="bg-gray-900 text-white shadow-sm p-5">
-            <h2 className="text-2xl font-semibold underline mb-4">Our Mission</h2>
-            <p className='text-sm'>
-              Our mission is to provide high-quality customizable products with exceptional 
-              customer service. We strive to make the design process simple and enjoyable, 
-              while delivering products that exceed our customers' expectations.
-            </p>
-          </div>
-          
-          <div className="bg-gray-900 text-white  shadow-sm p-5">
-            <h2 className="text-2xl font-semibold underline  mb-4">Contact Us</h2>
-            <p className="mb-4 text-sm">
-              We'd love to hear from you! Whether you have questions about our products, 
-              need help with an order, or want to discuss a business opportunity, we're here to help.
-            </p>
-            <p>
-              <a 
-                href="/contact-us" 
-                className="text-yellow-300 hover:text-yellow-500 font-medium"
-              >
-                Visit our Contact page →
-              </a>
-            </p>
+              );
+            })}
           </div>
         </div>
+
+        {/* Brand Philosophy */}
+        {/*<div className="bg-card border-y border-border py-16">
+          <div className="container-custom">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
+                PREMIUM STREETWEAR. <span className="text-foregroungd font-semibold">AUTHENTIC STYLE.</span>
+              </h2>
+              <div className="w-24 h-1 bg-accent mx-auto mb-8"></div>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                Every piece we create is a statement. From the carefully selected fabrics to the precision 
+                of our cuts, AIJIM represents the perfect intersection of street culture and premium quality. 
+                We don't just make clothes; we craft experiences, emotions, and expressions of individuality.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Founded by creators who understand the pulse of the streets, AIJIM is for those who refuse 
+                to compromise on quality or authenticity. We believe that great design should be accessible, 
+                sustainable, and most importantly, true to the culture that inspires it.
+              </p>
+            </div>
+          </div>
+        </div>/*}
+
+        {/* Craft Section */}
+        <div className="container-custom py-16">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold text-foreground mb-1">
+                CRAFTED WITH <span className="text-foreground text-black">PRECISION</span>
+              </h2>
+              <div className="w-full h-1 bg-white mb-2"></div>
+              <div className="space-y-0 text-foreground/60 font-semibold italic text-sm leading-tight">
+                <p>
+                  Every AIJIM piece undergoes rigorous quality control. From fabric selection to final stitching, 
+                  we maintain the highest standards of craftsmanship.
+                </p>
+                <p>
+                  Our design team draws inspiration from global street culture, urban architecture, and 
+                  contemporary art to create pieces that are both timeless and cutting-edge.
+                </p>
+                <p>
+                  We work with skilled artisans who share our passion for excellence, ensuring that every 
+                  garment meets our exacting standards for comfort, durability, and style.
+                </p>
+              </div>
+            </div>
+            
+            <div className="space-y-6 italic ">
+              <div className="bg-card border border-border rounded-lg p-6   shadow-glow">
+                <h4 className="font-bold text-foreground mb-2">PREMIUM MATERIALS</h4>
+                <p className="text-sm text-muted-foreground">100% organic cotton, sustainable fabrics, and premium blends</p>
+              </div>
+              <div className="bg-card border border-border rounded-lg p-6 shadow-glow">
+                <h4 className="font-bold text-foreground mb-2">ETHICAL PRODUCTION</h4>
+                <p className="text-sm text-muted-foreground">Fair wages, safe working conditions, and transparent supply chains</p>
+              </div>
+              <div className="bg-card border border-border rounded-lg p-6 shadow-glow">
+                <h4 className="font-bold text-foreground mb-2">QUALITY ASSURANCE</h4>
+                <p className="text-sm text-muted-foreground">Multiple quality checks at every stage of production</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+      
       </div>
     </Layout>
   );

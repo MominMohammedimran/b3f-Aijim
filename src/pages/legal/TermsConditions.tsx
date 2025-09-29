@@ -1,103 +1,197 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { User, ShoppingBag, CreditCard, FileText, Scale, Gavel } from 'lucide-react';
 
 const TermsConditions = () => {
+  const [activeSection, setActiveSection] = useState('account');
+
+  const sections = [
+    { id: 'account', title: 'Account Terms', icon: User },
+    { id: 'orders', title: 'Orders & Purchases', icon: ShoppingBag },
+    { id: 'payments', title: 'Payment Terms', icon: CreditCard },
+    { id: 'usage', title: 'Website Usage', icon: FileText },
+    { id: 'legal', title: 'Legal Terms', icon: Scale },
+   
+  ];
+
   return (
     <Layout>
-      <div className="container-custom mt-10">
-        <div className="flex items-center pt-10 mb-6">
-          <Link to="/" className="mr-2">
-            <ArrowLeft size={20} className="text-white " />
-          </Link>
-          <h1 className="text-2xl font-bold text-white">Terms and Conditions</h1>
-        </div>
-
-        <div className="bg-gray-900 italic text-white  shadow-sm p-5">
-          <div className="prose max-w-none">
-            <p>Last Updated: sept 27, 2025</p>
-
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Introduction</h2>
-            <p className="text-sm ">
-              These Terms and Conditions ("Terms") govern your use of the Aijim website
-              and the purchase of products offered by Aijim ("we," "our," or "us").
-              By accessing our website or placing an order, you agree to be bound by these Terms.
+      <div className="min-h-screen bg-background">
+        <div className="container-custom italic  py-10 mt-16">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-3xl font-bold text-foreground ">TERMS OF SERVICE</h1>
+            <div className="w-full h-1 bg-foreground mx-auto"></div>
+            <p className="text-foreground mt-4 font-semibold max-full mx-auto">
+              By using AIJIM's services, you agree to these terms. Please read them carefully.
             </p>
+          </div>
 
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Account Registration</h2>
-            <p className="text-sm ">
-              To make purchases or access certain features, you may need to create an account. You are responsible
-              for maintaining the confidentiality of your account credentials and for all activities that occur
-              under your account. You must provide accurate and complete information during the registration
-              process and keep your account information updated.
-            </p>
+          <div className="flex gap-8">
+            {/* Left Index */}
+            <aside className="hidden lg:block w-80">
+              <div className="bg-card border border-border rounded-lg p-6 shadow-glow sticky top-24">
+                <h3 className="text-lg font-bold mb-6 text-foreground">SECTIONS</h3>
+                <nav className="space-y-2">
+                  {sections.map((section) => {
+                    const Icon = section.icon;
+                    return (
+                      <a
+                        key={section.id}
+                        href={`#${section.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setActiveSection(section.id);
+                          document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className={`flex items-center px-4 py-3 rounded-lg transition-all ${
+                          activeSection === section.id
+                            ? 'bg-accent text-white font-bold shadow-glow'
+                            : 'text-foreground hover:text-foreground hover:bg-foreground'
+                        }`}
+                      >
+                        <Icon size={20} className="mr-3" />
+                        {section.title}
+                      </a>
+                    );
+                  })}
+                </nav>
+              </div>
+            </aside>
 
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Products and Pricing</h2>
-            <p className="text-sm ">
-              We strive to display accurate product information and pricing on our website. However, we do not
-              warrant that product descriptions or prices are accurate, complete, reliable, or error-free. We
-              reserve the right to correct any errors, inaccuracies, or omissions and to change or update
-              information at any time without prior notice.
-            </p>
+            {/* Content */}
+            <main className="flex-1">
+              <div className="bg-card border border-border rounded-lg shadow-glow">
+                
+                {/* Account Terms */}
+                <section id="account" className="p-8 border-b border-border">
+                  <div className="flex items-center mb-2">
+                    <User className="text-white mr-3" size={28} />
+                    <h2 className="text-2xl font-bold text-foreground">ACCOUNT TERMS</h2>
+                  </div>
+                  <div className="w-full h-0.5 bg-white mb-6"></div>
+                  <div className="space-y-2 text-muted-foreground font-semibold leading-tight">
+                    <p>When you create an account with AIJIM, you must provide accurate and complete information.</p>
+                    <ul className="list-disc list-inside font-semibold space-y-1 ml-4">
+                      <li>You are responsible for maintaining the security of your account</li>
+                      <li>You must be at least 18 years old to create an account</li>
+                      <li>One account per person is permitted</li>
+                      <li>You must notify us immediately of any unauthorized use</li>
+                    </ul>
+                    <p className="text-foreground font-semibold">Account termination may occur if these terms are violated.</p>
+                  </div>
+                </section>
 
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Orders and Payments</h2>
-            <p className="text-sm">
-              When you place an order, you make an offer to purchase the products you have selected. We reserve
-              the right to accept or decline your order at our discretion. We accept various payment methods as
-              indicated on our website. All payments must be made in full before we process your order.
-            </p>
+                {/* Orders */}
+                <section id="orders" className="p-8 border-b border-border">
+                  <div className="flex items-center mb-2">
+                    <ShoppingBag className="text-white mr-3" size={28} />
+                    <h2 className="text-2xl font-bold text-foreground">ORDERS & PURCHASES</h2>
+                  </div>
+                  <div className="w-full h-0.5 bg-white mb-6 "></div>
+                  <div className="space-y-4 text-muted-foreground font-semibold leading-tight">
+                    <p>All orders are subject to availability and acceptance by AIJIM.</p>
+                    <ul className="list-disc list-inside font-semibold space-y-2 leading-tight  ml-4">
+                      <li>Orders are processed within 1-2 business days</li>
+                      <li>Product availability is not guaranteed until payment is confirmed</li>
+                      <li>We reserve the right to cancel orders for any reason</li>
+                      <li>Bulk orders may require additional verification</li>
+                    </ul>
+                    <p className="font-semibold text-foreground">
+                      Order confirmations are sent via email and constitute acceptance of your order.
+                    </p>
+                  </div>
+                </section>
 
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Shipping and Delivery</h2>
-            <p className="text-sm ">
-              We will make reasonable efforts to deliver your products within the estimated timeframe. However,
-              delivery times are not guaranteed, and delays may occur due to factors beyond our control. Risk of
-              loss and title for items purchased pass to you upon delivery of the items to the shipping carrier.
-            </p>
+                {/* Payments */}
+                <section id="payments" className="p-8 border-b border-border">
+                  <div className="flex items-center mb-2">
+                    <CreditCard className="text-white mr-3" size={28} />
+                    <h2 className="text-2xl font-bold text-foreground">PAYMENT TERMS</h2>
+                  </div>
+                  <div className="w-full h-0.5 bg-white mb-6"></div>
+                  <div className="space-y-4 text-muted-foreground leading-tight">
+                    <p>Payment is due at the time of purchase and must be made through our secure payment gateway.</p>
+                    <ul className="list-disc list-inside space-y-2 ml-4 leading-tight">
+                      <li>We accept major credit cards, debit cards, and digital wallets</li>
+                      <li>All prices are in Indian Rupees (INR) unless otherwise stated</li>
+                      <li>Payment failures may result in order cancellation</li>
+                      <li>Refunds are processed according to our refund policy</li>
+                    </ul>
+                    <div className="bg-muted border border-border rounded-none p-4 mt-4">
+                      <p className="font-medium text-foreground">Security Notice:</p>
+                      <p className="text-sm font-semibold">We use industry-standard encryption to protect your payment information.</p>
+                    </div>
+                  </div>
+                </section>
 
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Returns and Refunds</h2>
-            <p className='text-sm '>
-              Please refer to our separate Cancellation and Refund Policy for details on cancellations, returns, and refunds.
-            </p>
+                {/* Usage */}
+                <section id="usage" className="p-8 border-b border-border">
+                  <div className="flex items-center mb-2">
+                    <FileText className="text-white mr-3" size={28} />
+                    <h2 className="text-2xl font-bold text-foreground">WEBSITE USAGE</h2>
+                  </div>
+                  <div className="w-full h-0.5 bg-accent mb-6"></div>
+                  <div className="space-y-4 text-muted-foreground font-semibold leading-tight">
+                    <p>You may use our website for lawful purposes only. Prohibited activities include:</p>
+                    <ul className="list-disc list-inside space-y-2 ml-4 leading-tight">
+                      <li>Attempting to gain unauthorized access to our systems</li>
+                      <li>Using automated tools to scrape or harvest data</li>
+                      <li>Posting harmful, offensive, or illegal content</li>
+                      <li>Interfering with the proper functioning of the website</li>
+                    </ul>
+                    <p className="font-semibold text-foreground">
+                      Violation of these terms may result in immediate account suspension.
+                    </p>
+                  </div>
+                </section>
 
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Intellectual Property</h2>
-            <p className='text-sm '>
-              All content on our website, including text, graphics, logos, images, product designs, and software,
-              is the property of Aijim or its licensors and is protected by copyright, trademark, and other
-              intellectual property laws. You may not use, reproduce, distribute, or create derivative works from
-              our content without our express written permission.
-            </p>
+                {/* Legal */}
+                <section id="legal" className="p-8 border-b border-border">
+                  <div className="flex items-center mb-2">
+                    <Scale className="text-white mr-3" size={28} />
+                    <h2 className="text-2xl font-bold text-foreground">LEGAL TERMS</h2>
+                  </div>
+                  <div className="w-full h-0.5 bg-white mb-6"></div>
+                  <div className="space-y-4 text-muted-foreground font-semibold leading-tight">
+                    <p>These terms are governed by the laws of India and subject to the jurisdiction of Mumbai courts.</p>
+                    <div className="grid md:grid-cols-2 gap-4 font-semibold leading-relaxed  mt-6">
+                      <div className="bg-muted border border-border rounded-lg p-4">
+                        <h4 className="font-semibold text-foreground mb-2 leading-tight">Limitation of Liability</h4>
+                        <p className="text-sm font-semibold">AIJIM's liability is limited to the amount paid for the specific product or service.</p>
+                      </div>
+                      <div className="bg-muted border border-border rounded-lg p-4">
+                        <h4 className="font-semibold text-foreground mb-2">Indemnification</h4>
+                        <p className="text-sm font-semibold leading-tight">Users agree to indemnify AIJIM against claims arising from their use of our services.</p>
+                      </div>
+                    </div>
+                  </div>
+                </section>
 
-            <h2 className="text-xl font-bold underline mt-2 mb-2">User-Generated Content</h2>
-            <p className='text-sm '>
-              If you submit designs, feedback, reviews, or other content to our website, you grant us a non-exclusive,
-              royalty-free, perpetual, irrevocable right to use, reproduce, modify, adapt, publish, translate,
-              create derivative works from, distribute, and display such content worldwide.
-            </p>
-
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Limitation of Liability</h2>
-            <p className='text-sm '>
-              To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special,
-              consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly
-              or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from your
-              use of our website or purchase of our products.
-            </p>
-
-            <h2 className="text-xl font-bold underline mt-2 mb-2">Changes to Terms</h2>
-            <p className='text-sm '>
-              We may update these Terms from time to time. The updated version will be effective as of the date
-              stated at the top of this page. We encourage you to review these Terms periodically to stay informed
-              about our policies.
-            </p>
-
-            <h2 className="text-xl font-bold underline mt-6 mb-4">Contact Us</h2>
-            <p className='text-sm'>
-              If you have questions about these Terms, please contact us at:
-            </p>
-            <p className="mt-2">
-              <strong>Email:</strong> support@aijim.in<br />
-              <strong>Phone:</strong> 7672080881
-            </p>
+                {/* Disputes */}
+                {/*<section id="disputes" className="p-8">
+                  <div className="flex items-center mb-6">
+                    <Gavel className="text-accent mr-3" size={28} />
+                    <h2 className="text-2xl font-bold text-foreground">DISPUTE RESOLUTION</h2>
+                  </div>
+                  <div className="w-20 h-0.5 bg-accent mb-6"></div>
+                  <div className="space-y-4 text-muted-foreground leading-relaxed">
+                    <p>We encourage customers to contact us directly to resolve any issues before pursuing legal action.</p>
+                    <div className="bg-muted border border-border rounded-lg p-6 mt-4">
+                      <h4 className="font-semibold text-foreground mb-3">Contact for Disputes:</h4>
+                      <div className="space-y-1">
+                        <p>Email: legal@aijim.com</p>
+                        <p>Phone: +91 7672080881</p>
+                        <p>Address: 123 Fashion Street, Mumbai, India 400001</p>
+                      </div>
+                    </div>
+                    <p className="text-sm">
+                      Last updated: {new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </p>
+                  </div>
+                </section>*/}
+              </div>
+            </main>
           </div>
         </div>
       </div>
