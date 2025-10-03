@@ -108,7 +108,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
         </div>
 
         {appliedPoints ? (
-          <div className="bg-green-50 border border-green-200 p-3 ">
+          <div className="bg-green-50 border border-green-200 p-0 ">
             <div className="flex justify-between items-center">
               <div className="text-green-800 tracking-[1px] font-semibold">
                 <div className="font-semibold text-sm">Points Applied</div>
@@ -125,7 +125,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
             </div>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -156,11 +156,11 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
               </Button>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <Button
                 onClick={handleApplyPoints}
                 disabled={loading || pointsToUse <= 0}
-                className="flex-1 font-semibold rounded-none" 
+                className="flex-1 text-xs font-semibold rounded-none" 
               >
                 {loading ? 'Applying...' : `Apply ${pointsToUse} Points`}
               </Button>

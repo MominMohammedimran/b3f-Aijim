@@ -13,6 +13,7 @@ import ProductActionButtons from '@/components/products/ProductActionButtons';
 import { addInventoryUpdateListener } from '@/hooks/useProductInventory';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -225,7 +226,8 @@ const Cart = () => {
     <Layout>
         <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
       <div className="container mx-auto px-4 py-8 mt-10">
-        <div className="flex justify-between items-center mb-6">
+         <CheckoutStepper currentStep={1} />
+        <div className="flex justify-between items-center mt-5 mb-6">
           <h1 className="text-xl font-bold leading-relaxed ">Shopping Cart ({cartItems.length})</h1>
           <Button variant="outline" onClick={clearCart}>Clear Cart</Button>
         </div>
@@ -253,7 +255,7 @@ const Cart = () => {
 
                     {/* Product Details */}
                     <div className="flex-1 min-w-0 border">
-                      <h3 className="font-semibold text-white ">{item.name}</h3>
+                      <h3 className="font-semibold text-white line-clamp-1 leading-relaxed ">{item.name}</h3>
                       <p className="text-sm  font-semibold text-white ">
                         {formatPrice(item.price)}
                       </p>
@@ -324,10 +326,10 @@ const Cart = () => {
                <button
                 onClick={() => removeSizeFromCart(item.product_id, sizeItem.size)}
                
-                className="text-red-500 font-bold px-1  ml-1 mr-1"
+                className="text-white font-bold px-1  ml-1 mr-1"
                 title="Unselect"
               >
-                X
+                <Trash2 size={18}/>
               </button>
               
         </div>      
@@ -353,7 +355,7 @@ const Cart = () => {
           </div>
 
           {/* Order Summary */}
-          <div className="lg:col-span-1">
+           <div className="lg:col-span-1   ">
             {/* Order Summary */}
             <div className="bg-gray-800 p-6 shadow border sticky top-4">
               <h2 className="text-xl font-semibold text-center mb-4 text-white">Order Summary</h2>
@@ -373,11 +375,11 @@ const Cart = () => {
                   </div>
                 </div>
               </div>
-              
+             
               <div className='flex flex-col mt-2'>
               {hasOutOfStockItems ? (
                 <div className="text-center space-y-3">
-                  <p className="text-red-600 text-sm font-semibold">
+                  <p className="text-red-600 text-sm mb-2 font-semibold">
                     Some items are out of stock
                   </p>
                   <Link to="/">
@@ -387,15 +389,18 @@ const Cart = () => {
                   </Link>
                 </div>
               ) : (
-                <Button onClick={handleCheckout} className="w-full mb-3  m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold">
+                <div className=" fixed lg:sticky bottom-12 mb-2 left-0 right-0 z-10">
+                <Button onClick={handleCheckout} className="w-full mb-3   m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold">
                   Proceed to Checkout
                 </Button>
+                </div>
               )}
 
              
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </Layout>

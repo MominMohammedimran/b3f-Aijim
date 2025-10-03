@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, MapPin, CreditCard, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import { toast } from 'sonner';
 import { supabase } from '../integrations/supabase/client';
@@ -17,6 +17,7 @@ import { formatPrice } from '@/lib/utils';
 import CouponSection from '@/components/cart/CouponSection';
 import RewardPointsSection from '@/components/cart/RewardPointsSection';
 import { Button } from '@/components/ui/button';
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 
 type FormData = {
   firstName: string;
@@ -31,15 +32,56 @@ type FormData = {
   saveAddress: boolean;
 };
 
+// Collapsible Section with smooth animation
+const CollapsibleSection = ({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [maxHeight, setMaxHeight] = useState<number>(0);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setMaxHeight(contentRef.current.scrollHeight);
+    }
+  }, [children]);
+
+  return (
+    <div className="bg-card rounded-lg border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow">
+      <button
+        className="flex justify-between items-center w-full p-4 font-bold uppercase tracking-wider text-left"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{title}</span>
+        {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </button>
+      <div
+        className="overflow-hidden transition-[max-height] duration-300"
+        style={{ maxHeight: isOpen ? maxHeight : 0 }}
+      >
+        <div ref={contentRef} className="p-4 pt-0">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Checkout = () => {
   const navigate = useNavigate();
   const seo = useSEO('/checkout');
   const { currentUser } = useAuth();
   const { currentLocation } = useLocationContext();
   const { cartItems, totalPrice } = useCart();
-  const { settings: deliverySettings, loading: settingsLoading } = useDeliverySettings();
+  const { settings: deliverySettings } = useDeliverySettings();
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
-  
+
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -52,33 +94,16 @@ const Checkout = () => {
     country: 'India',
     saveAddress: false,
   });
-  
-  // Address management state
+
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [useNewAddress, setUseNewAddress] = useState(false);
   const { addresses, defaultAddress, loading: addressesLoading, deleteAddress, refetch: refetchAddresses } = useAddresses(currentUser?.id);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
-  
-  // Coupon and reward points state
-  const [appliedCoupon, setAppliedCoupon] = useState<{
-    code: string;
-    discount: number;
-  } | null>(null);
-  
-  const [appliedPoints, setAppliedPoints] = useState<{
-    points: number;
-    discount: number;
-  } | null>(null);
 
-  // Progress steps
-  const steps = [
-    { id: 'cart', label: 'CART', icon: ShoppingCart, completed: true },
-    { id: 'checkout', label: 'CHECKOUT', icon: MapPin, active: true },
-    { id: 'payment', label: 'PAYMENT', icon: CreditCard },
-    { id: 'done', label: 'DONE', icon: CheckCircle }
-  ];
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
+  const [appliedPoints, setAppliedPoints] = useState<{ points: number; discount: number } | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -119,7 +144,6 @@ const Checkout = () => {
           }));
         }
 
-        // Set default address if available
         if (defaultAddress && !useNewAddress) {
           setSelectedAddressId(defaultAddress.id);
           setFormData(prev => ({
@@ -140,27 +164,13 @@ const Checkout = () => {
     };
 
     loadProfile();
-  }, [currentUser, cartItems, navigate, currentLocation]);
+  }, [currentUser, cartItems, navigate, currentLocation, defaultAddress, useNewAddress]);
 
-  // Handle coupon application
-  const handleCouponApplied = (discount: number, code: string) => {
-    setAppliedCoupon({ code, discount });
-  };
+  const handleCouponApplied = (discount: number, code: string) => setAppliedCoupon({ code, discount });
+  const handleCouponRemoved = () => setAppliedCoupon(null);
+  const handlePointsApplied = (points: number, discount: number) => setAppliedPoints({ points, discount });
+  const handlePointsRemoved = () => setAppliedPoints(null);
 
-  const handleCouponRemoved = () => {
-    setAppliedCoupon(null);
-  };
-
-  // Handle reward points application
-  const handlePointsApplied = (points: number, discount: number) => {
-    setAppliedPoints({ points, discount });
-  };
-
-  const handlePointsRemoved = () => {
-    setAppliedPoints(null);
-  };
-
-  // Address selection handlers
   const handleAddressSelect = (addressId: string) => {
     const address = addresses.find(addr => addr.id === addressId);
     if (address) {
@@ -181,10 +191,7 @@ const Checkout = () => {
     }
   };
 
-  const handleAddressSaved = () => {
-    setIsAddressSaved(true);
-  };
-
+  const handleAddressSaved = () => setIsAddressSaved(true);
   const handleUseNewAddress = () => {
     setSelectedAddressId(null);
     setUseNewAddress(true);
@@ -283,56 +290,18 @@ const Checkout = () => {
     <Layout>
       <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
       <div className="container mx-auto px-4 py-6 sm:py-8 mt-20">
-        {/* Header with Back Button */}
+        <CheckoutStepper currentStep={2} />
         <div className="flex items-center mb-8">
           <Link to="/cart" className="mr-4">
             <ArrowLeft size={24} className="text-foreground hover:text-primary transition-colors" />
           </Link>
-          <h1 className="text-4xl font-bold uppercase tracking-wider">CHECKOUT</h1>
-        </div>
-
-        {/* Progress Stepper */}
-        <div className="mb-12">
-          <div className="flex justify-center items-center space-x-4 md:space-x-8">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                <div className={`
-                  flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300
-                  ${step.completed 
-                    ? 'bg-primary border-primary text-primary-foreground' 
-                    : step.active 
-                      ? 'bg-primary border-primary text-primary-foreground shadow-glow' 
-                      : 'border-border text-muted-foreground'
-                  }
-                `}>
-                  <step.icon className="w-6 h-6" />
-                </div>
-                <span className={`
-                  ml-3 font-bold uppercase tracking-wider text-sm hidden md:block
-                  ${step.completed || step.active ? 'text-primary' : 'text-muted-foreground'}
-                `}>
-                  {step.label}
-                </span>
-                {index < steps.length - 1 && (
-                  <div className={`
-                    w-8 md:w-16 h-0.5 mx-4 transition-colors duration-300
-                    ${step.completed ? 'bg-primary' : 'bg-border'}
-                  `} />
-                )}
-              </div>
-            ))}
-          </div>
+          <h1 className="text-2xl font-bold uppercase tracking-wider">CHECKOUT</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Shipping Form */}
-          <div className="lg:col-span-2">
-            <div className="bg-card rounded-lg p-6 border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow">
-              <h2 className="text-2xl font-bold uppercase tracking-wider text-center mb-6 text-primary">
-                SHIPPING DETAILS
-              </h2>
-              
-              {/* Saved Addresses */}
+          {/* Left Section */}
+          <div className="lg:col-span-2 space-y-6">
+            <CollapsibleSection title="Shipping Details" defaultOpen>
               {!addressesLoading && addresses.length > 0 && (
                 <SavedAddresses
                   addresses={addresses}
@@ -343,9 +312,8 @@ const Checkout = () => {
                   onDeleteAddress={handleDeleteAddress}
                   onEditAddress={handleEditAddress}
                 />
-              )}
-              
-              {/* Address Form */}
+)}
+
               {(useNewAddress || addresses.length === 0 || addressesLoading) && (
                 <AddressForm
                   formData={formData}
@@ -363,37 +331,33 @@ const Checkout = () => {
                   }}
                 />
               )}
-            </div>
+            </CollapsibleSection>
           </div>
 
           {/* Right Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Coupon Section */}
-            <div className="bg-card rounded-lg p-4 border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow">
-              <CouponSection 
+            <CollapsibleSection title="Apply Coupon" defaultOpen={false}>
+              <CouponSection
                 cartTotal={totalPrice}
                 onCouponApplied={handleCouponApplied}
                 onCouponRemoved={handleCouponRemoved}
                 appliedCoupon={appliedCoupon || undefined}
               />
-            </div>
+            </CollapsibleSection>
 
             {/* Reward Points Section */}
-            <div className="bg-card rounded-lg p-4 border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow">
+            <CollapsibleSection title="Reward Points" defaultOpen={false}>
               <RewardPointsSection
                 cartTotal={totalPrice - (appliedCoupon?.discount || 0)}
                 onPointsApplied={handlePointsApplied}
                 onPointsRemoved={handlePointsRemoved}
                 appliedPoints={appliedPoints || undefined}
               />
-            </div>
+            </CollapsibleSection>
 
             {/* Order Summary */}
-            <div className="bg-card rounded-lg p-6 border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow sticky top-24">
-              <h3 className="text-2xl font-bold uppercase tracking-wider text-center mb-6 text-primary">
-                ORDER SUMMARY
-              </h3>
-
+            <CollapsibleSection title="Order Summary" defaultOpen={true}>
               <div className="space-y-4 mb-6">
                 {cartItems.map((item, idx) => (
                   <div key={idx} className="flex items-start gap-4 pb-4 border-b border-border last:border-b-0">
@@ -410,7 +374,7 @@ const Checkout = () => {
                         <div className="flex flex-wrap gap-1 mt-2">
                           {item.sizes.map((s: any, i: number) => (
                             <div key={i} className="bg-secondary border border-border px-2 py-1 rounded text-xs font-bold">
-                              {s.size} × {s.quantity} 
+                              {s.size} × {s.quantity}
                             </div>
                           ))}
                         </div>
@@ -457,7 +421,6 @@ const Checkout = () => {
                 </div>
               </div>
 
-              {/* Continue to Payment Button */}
               {!isAddressSaved && (
                 <div className="text-center mb-4">
                   <p className="text-sm text-muted-foreground font-semibold uppercase tracking-wider">
@@ -465,17 +428,17 @@ const Checkout = () => {
                   </p>
                 </div>
               )}
-            
+
               {isAddressSaved && (
-                <Button 
-                  onClick={() => handleFormSubmit(formData)} 
+                <Button
+                  onClick={() => handleFormSubmit(formData)}
                   disabled={isLoading}
-                  className="w-full font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="w-full fixed lg:relative bottom-12 left-0 right-0 z-10 font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {isLoading ? 'PROCESSING...' : 'CONTINUE TO PAYMENT'}
                 </Button>
               )}
-            </div>
+            </CollapsibleSection>
           </div>
         </div>
       </div>

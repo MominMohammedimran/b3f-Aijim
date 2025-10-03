@@ -13,148 +13,86 @@ interface Coupon {
   valid_from: string;
 }
 
-interface AvailableCouponsProps {
-  productPrice: number;
-}
-
-const AvailableCoupons: React.FC<AvailableCouponsProps> = ({ productPrice }) => {
+const AvailableCoupons: React.FC = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
-  const [expandedCoupon, setExpandedCoupon] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchAvailableCoupons();
-  }, [productPrice]);
-
-  const fetchAvailableCoupons = async () => {
-    try {
-      const { data, error } = await supabase
+    (async () => {
+      const { data } = await supabase
         .from("coupons")
         .select("id, code, discount_type, discount_value, valid_to, valid_from")
         .eq("active", true);
-      
-
-      if (error) throw error;
       setCoupons(data || []);
-    } catch (error) {
-      console.error("Error fetching coupons:", error);
-      setCoupons([]);
-    } finally {
-      setLoading(false);
-    }
+    })();
+  }, []);
+
+  const formatDiscount = (c: Coupon) =>
+    c.discount_type === "percent"
+      ? `${c.discount_value}% OFF`
+      : `₹${c.discount_value} OFF`;
+
+  const copy = async (code: string) => {
+    await navigator.clipboard.writeText(code);
+    setCopied(code);
+    toast.success(`Copied "${code}"`);
+    setTimeout(() => setCopied(null), 2000);
   };
-
-  const copyToClipboard = async (code: string) => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopiedCode(code);
-      toast.success(`Coupon code "${code}" copied!`);
-      setTimeout(() => setCopiedCode(null), 2000);
-    } catch (error) {
-      console.error("Failed to copy:", error);
-      toast.error("Failed to copy coupon code");
-    }
-  };
-
-  const formatDiscount = (coupon: Coupon) => {
-    return coupon.discount_type === "percent"
-      ? `Flat ${coupon.discount_value}% OFF`
-      : `Flat ₹${coupon.discount_value} OFF`;
-  };
-
-  if (loading) {
-    return (
-      <div className="p-4 w-full bg-gray-900 rounded-md border border-gray-700 mt-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Ticket className="w-5 h-5 text-yellow-300" />
-          <h3 className="text-lg font-semibold text-yellow-300">Available Coupons</h3>
-        </div>
-        <div className="animate-pulse">
-          <div className="h-4 bg-gray-700 rounded mb-2"></div>
-          <div className="h-4 bg-gray-700 rounded w-3/4"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (coupons.length === 0) {
-    return (
-      <div className="p-4 w-full bg-gray-900 rounded-md border border-gray-700 mt-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Ticket className="w-5 h-5 text-yellow-300" />
-          <h3 className="text-lg font-semibold text-yellow-300">Available Coupons</h3>
-        </div>
-        <p className="text-gray-400 text-sm">No coupons available at the moment.</p>
-      </div>
-    );
-  }
 
   return (
-    <div className="p-4 w-full bg-gradient-to-br from-black via-gray-900 to-black rounded-none border border-gray-700 mt-4">
-      <div className="flex items-center gap-2 mb-4">
-        <Ticket className="w-5 h-5 text-yellow-300" />
-        <h3 className="text-lg font-semibold text-yellow-300">Available Coupons</h3>
-      </div>
+    <div className="p-4 mt-4 bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-md">
+      {/* Header */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="flex justify-between items-center w-full"
+      >
+        <div className="flex items-center gap-2">
+          <Ticket className="w-5 h-5 text-white" />
+          <h3 className="text-lg font-semibold text-white">Available Coupons</h3>
+        </div>
+        {expanded ? (
+          <ChevronUp className="w-5 h-5 text-gray-400" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-gray-400" />
+        )}
+      </button>
 
-      <div className="space-y-3">
-        {coupons.map((coupon) => (
-          <div
-            key={coupon.id}
-            className=" border border-gray-700 rounded-none p-3"
-          >
-            <div
-              className="flex items-center justify-between cursor-pointer"
-              onClick={() =>
-                setExpandedCoupon(expandedCoupon === coupon.id ? null : coupon.id)
-              }
-            >
-              <span className="text-white font-semibold text-sm font-bold">
-                {coupon.code}
-              </span>
-              {expandedCoupon === coupon.id ? (
-                <ChevronUp className="w-5 h-5 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
-              )}
-            </div>
-
-            {expandedCoupon === coupon.id && (
-              <div className="mt-3 space-y-0.5 text-sm text-gray-300 flex justify-between items-center">
-                <div className="gap-2">
-                <p className="font-semibold text-xs">{formatDiscount(coupon)}</p>
-                 <p className="font-semibold text-xs">
-                  Valid {" "}
-                  {new Date(coupon.valid_to).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </p>
-               
-                
+      {/* Dropdown scrollable area */}
+      {expanded && (
+        <div className="mt-3 max-h-40 overflow-y-auto pr-2 space-y-3 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
+          {coupons.length === 0 ? (
+            <p className="text-gray-400 text-sm">No coupons available.</p>
+          ) : (
+            coupons.map((c) => (
+              <div
+                key={c.id}
+                className="flex justify-between items-center border border-gray-700 p-2 rounded-md"
+              >
+                <div>
+                  <p className="font-bold text-yellow-400 text-sm">{c.code}</p>
+                  <p className="text-xs text-gray-300">{formatDiscount(c)}</p>
+                  <p className="text-xs text-gray-500">
+                    Valid till{" "}
+                    {new Date(c.valid_to).toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
                 </div>
-                 <Button
-                  variant="outline"
+                <Button
                   size="sm"
-                  onClick={() => copyToClipboard(coupon.code)}
-                  className="bg-yellow-500 hover:bg-yellow-400 text-black border-yellow-500 hover:border-yellow-400"
+                  onClick={() => copy(c.code)}
+                  className="bg-yellow-500 hover:bg-yellow-400 text-black text-xs"
                 >
-                  {copiedCode === coupon.code ? (
-                    <CheckCircle className="w-4 h-4" />
-                  ) : (
-                    <Copy className="w-3 h-3" />
-                  )}
-                  {copiedCode === coupon.code ? "Copied!" : "Copy"}
+                  {copied === c.code ? "Copied!" : "Copy"}
                 </Button>
-               
-
-                
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 };

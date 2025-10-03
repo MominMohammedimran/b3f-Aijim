@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, X, ChevronDown } from 'lucide-react';
+import { ArrowLeft, X,ChevronDown} from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import PriceRangeFilter from '../components/ui/PriceRangeFilter';
 import { products } from '../lib/data';
@@ -21,45 +20,44 @@ const Search = () => {
   const queryParams = new URLSearchParams(location.search);
   const categoryParam = queryParams.get('category');
   const queryParam = queryParams.get('query');
-  
+
   const [searchQuery, setSearchQuery] = useState(queryParam || '');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
+  const [isSortPopupOpen, setIsSortPopupOpen] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 99999 });
   const [sortOption, setSortOption] = useState<SortOption>('default');
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>(categoryParam);
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
-  
+
   const minProductPrice = Math.min(...products.map(product => product.price));
   const maxProductPrice = Math.max(...products.map(product => product.price));
-  
+
   const uniqueCategories = [...new Set(products.map(product => product.category))];
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    
+
     let filtered = [...products];
-    
+
     if (selectedCategory) {
-      filtered = filtered.filter(product => 
+      filtered = filtered.filter(product =>
         product.category.toLowerCase() === selectedCategory.toLowerCase()
       );
-    } 
-    else if (queryParam && !selectedCategory) {
-      filtered = filtered.filter(product => 
+    } else if (queryParam && !selectedCategory) {
+      filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(queryParam.toLowerCase()) ||
         product.category.toLowerCase().includes(queryParam.toLowerCase())
       );
     }
-    
-    filtered = filtered.filter(product => 
+
+    filtered = filtered.filter(product =>
       product.price >= priceRange.min && product.price <= priceRange.max
     );
-    
+
     switch (sortOption) {
       case 'price-low-high':
         filtered.sort((a, b) => a.price - b.price);
@@ -70,14 +68,14 @@ const Search = () => {
       default:
         break;
     }
-    
+
     setFilteredProducts(filtered);
     setCurrentPage(1);
   }, [categoryParam, queryParam, priceRange, sortOption, selectedCategory]);
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
       setSelectedCategory(null);
@@ -86,19 +84,19 @@ const Search = () => {
       setSelectedCategory(null);
     }
   };
-  
+
   const clearSearch = () => {
     setSearchQuery('');
     setSelectedCategory(null);
     navigate('/search');
   };
-  
+
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
     setSearchQuery('');
     navigate(`/search?category=${encodeURIComponent(category)}`);
   };
-  
+
   const handleProductClick = (product: Product) => {
     if (product.code.includes('TSHIRT-PRINT') || product.code.includes('MUG-PRINT')) {
       navigate(`/design-tool`);
@@ -106,41 +104,31 @@ const Search = () => {
       navigate(`/product/details/${product.code}`);
     }
   };
-  
+
   const handlePriceRangeChange = (min: number, max: number) => {
     setPriceRange({ min, max });
   };
-  
-  const handleSortChange = (option: SortOption) => {
-    setSortOption(option);
-    setIsSortOpen(false);
-  };
-  
-  const closeFilters = () => {
-    setIsFilterOpen(false);
-    setIsSortOpen(false);
-  };
-  
+
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const currentProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
-  
+
   const nextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
       window.scrollTo(0, 0);
     }
   };
-  
+
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
       window.scrollTo(0, 0);
     }
   };
-  
+
   return (
     <Layout>
       <div className="container-custom mt-16">
@@ -150,150 +138,28 @@ const Search = () => {
           </Link>
           <h1 className="text-2xl font-bold">Search</h1>
         </div>
-        
-        <SearchBox 
+
+        <SearchBox
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
           clearSearch={clearSearch}
         />
-        
-        <CategoryFilter 
+
+        <CategoryFilter
           categories={uniqueCategories}
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategoryClick}
         />
-        
+
         {(searchQuery || categoryParam || selectedCategory) && (
           <>
-            <div className="flex justify-between items-center mb-4 animate-fade-in">
-             {/* <div className="relative">
-                <button 
-                  onClick={() => { 
-                    setIsFilterOpen(!isFilterOpen); 
-                    setIsSortOpen(false); 
-                  }}
-                  className={`bg-yellow-300 font-bold ${isFilterOpen ? 'text-blue-900' : 'text-black'} px-4 py-2 rounded-md flex items-center`}
-                >
-                  Filter <ChevronDown size={18} className="ml-1" />
-                </button>
-                
-                {isFilterOpen && (
-                  <div className="absolute top-full left-0 mt-2 z-40 w-64 bg-black shadow-xl rounded-lg border border-gray-200 p-4">
-                    <div className="mb-2 font-medium">Price Range</div>
-                    <PriceRangeFilter
-                      minPrice={minProductPrice}
-                      maxPrice={maxProductPrice}
-                      onChange={handlePriceRangeChange}
-                    />
-                    <Button 
-                      onClick={closeFilters}
-                      className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      Apply Filter
-                    </Button>
-                  </div>
-                )}
-              </div> */}
-              
-              <div className="relative items-end">
-                <button 
-                  onClick={() => { 
-                    setIsSortOpen(!isSortOpen); 
-                    setIsFilterOpen(false); 
-                  }}
-                  className={`bg-yellow-300 font-bold ${isSortOpen ? 'text-blue-900' : 'text-black'} px-4 py-2 rounded-md flex items-center`}
-                >
-                  Sort by <ChevronDown size={18} className="ml-1" />
-                </button>
-                
-                {isSortOpen && (
-                  <div className="relative top-full right-0 mt-2 z-1000 w-48 bg-black rounded-lg shadow-xl border border-gray-200 overflow-hidden">
-                    <button
-                      onClick={() => handleSortChange('default')}
-                      className={`w-full text-center px-4 py-2 hover:bg-gray-800 text-white ${sortOption === 'default' ? 'bg-gray-800 text-blue-800' : ''}`}
-                    >
-                      Default
-                    </button>
-                    <button
-                      onClick={() => handleSortChange('price-low-high')}
-                      className={`w-full text-left px-4 py-2 hover:bg-gray-800 text-white ${sortOption === 'price-low-high' ? 'bg-gray-800 text-blue-800' : ''}`}
-                    >
-                      Price: Low to High
-                    </button>
-                    <button
-                      onClick={() => handleSortChange('price-high-low')}
-                      className={`w-full text-left px-4 py-2 hover:bg-gray-800 text-white ${sortOption === 'price-high-low' ? 'bg-gray-800 text-blue-800' : ''}`}
-                    >
-                      Price: High to Low
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            {(selectedCategory || sortOption !== 'default' || priceRange.min > minProductPrice || priceRange.max < maxProductPrice) && (
-              <div className="flex flex-wrap gap-2 mb-4">
-                {selectedCategory && (
-                  <div className="bg-white text-blue-800 font-bold px-3 py-1 rounded-full text-sm flex items-center">
-                    Category: {selectedCategory}
-                    <button 
-                      onClick={() => {
-                        setSelectedCategory(null);
-                        navigate('/search');
-                      }}
-                      className="ml-2"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                )}
-                
-                {sortOption !== 'default' && (
-                  <div className="bg-white text-blue-800 font-bold px-3 py-1 rounded-full text-sm flex items-center">
-                    Sort: {sortOption === 'price-low-high' ? 'Price Low to High' : 'Price High to Low'}
-                    <button 
-                      onClick={() => setSortOption('default')}
-                      className="ml-2"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                )}
-                
-                {(priceRange.min > minProductPrice || priceRange.max < maxProductPrice) && (
-                  <div className="bg-white text-blue-800 font-boldpx-3 py-1 rounded-full text-sm flex items-center">
-                    Price: Rs.{priceRange.min} - Rs.{priceRange.max}
-                    <button 
-                      onClick={() => setPriceRange({ min: minProductPrice, max: maxProductPrice })}
-                      className="ml-2"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                )}
-                
-                <button 
-                  onClick={() => {
-                    setSelectedCategory(null);
-                    setSortOption('default');
-                    setPriceRange({ min: minProductPrice, max: maxProductPrice });
-                    setSearchQuery('');
-                    navigate('/search');
-                  }}
-                  className="text-sm text-red-600 hover:text-red-600 bg-white rounded-full font-bold px-2"
-                >
-                  Clear all filters
-                </button>
-              </div>
-            )}
-            
-            <ProductGrid 
+            <ProductGrid
               products={currentProducts}
               onProductClick={handleProductClick}
             />
-            
-            <Pagination 
+
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onNextPage={nextPage}
@@ -302,6 +168,100 @@ const Search = () => {
           </>
         )}
       </div>
+
+      {/* Sticky Filter & Sort Buttons */}
+      <div className="fixed bottom-14 left-0 right-0 z-50  bg-black border-t border-gray-200 py-0 flex justify-around ">
+        <Button
+          onClick={() => setIsFilterPopupOpen(true)}
+          className="bg-gray-900 text-white uppercase font-semibold border-r border-gray-200 rounded-none shadow-lg w-1/2 hover:bg-gray-900 "
+        >
+          Filter <ChevronDown size={18} />
+        </Button>
+        <Button
+          onClick={() => setIsSortPopupOpen(true)}
+          className="bg-gray-900  text-white uppercase font-semibold px-6  rounded-none shadow-lg w-1/2 hover:bg-gray-900"
+        >
+          Sort <ChevronDown size={18} />
+        </Button>
+      </div>
+
+      {/* Filter Popup */}
+      {isFilterPopupOpen && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-end">
+          <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">Filter</h2>
+              <button onClick={() => setIsFilterPopupOpen(false)}>
+                <X size={24} className="text-gray-300 hover:text-white" />
+              </button>
+            </div>
+
+            <h3 className="font-semibold mb-2">Price Range</h3>
+            <PriceRangeFilter
+              minPrice={minProductPrice}
+              maxPrice={maxProductPrice}
+              onChange={handlePriceRangeChange}
+            />
+
+            <div className="mt-6 flex justify-between gap-4">
+              <Button
+                variant="outline"
+                className="w-1/2 border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800"
+                onClick={() => {
+                  setPriceRange({ min: minProductPrice, max: maxProductPrice });
+                  setSelectedCategory(null);
+                  setIsFilterPopupOpen(false);
+                }}
+              >
+                Clear
+              </Button>
+              <Button
+                className="w-1/2 bg-yellow-400 text-black font-bold hover:bg-yellow-300"
+                onClick={() => setIsFilterPopupOpen(false)}
+              >
+                Apply
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sort Popup */}
+      {isSortPopupOpen && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-end">
+          <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">Sort By</h2>
+              <button onClick={() => setIsSortPopupOpen(false)}>
+                <X size={24} className="text-gray-300 hover:text-white" />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {["default", "price-low-high", "price-high-low"].map((option) => (
+                <button
+                  key={option}
+                  onClick={() => {
+                    setSortOption(option as SortOption);
+                    setIsSortPopupOpen(false);
+                  }}
+                  className={`w-full px-4 py-2 rounded-md border ${
+                    sortOption === option
+                      ? "bg-yellow-400 text-black font-bold"
+                      : "border-gray-600 hover:bg-gray-800"
+                  }`}
+                >
+                  {option === "default"
+                    ? "Default"
+                    : option === "price-low-high"
+                    ? "Price: Low to High"
+                    : "Price: High to Low"}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };

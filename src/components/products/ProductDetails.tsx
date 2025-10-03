@@ -176,9 +176,9 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
       {/* Live Viewing Counter */}
       <LiveViewingCounter productId={product.id} />
       {activeRecommendation&&(
-        <div className="mb-1 text-xs font-semibold text-white text-left">
+        <h2 className="mb-1 text-xs font-semibold font-poppins italic text-white text-left">
           {activeRecommendation}
-          </div>
+          </h2>
       )}
 
       {/* Sizes */}
@@ -208,13 +208,13 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
                       ? 'border-gray-400 bg-white text-black'
                       : isOutOfStock && !selected
                       ? 'border-gray-600 bg-gray-800 text-gray-200 cursor-not-allowed '
-                      : 'border-gray-400 hover:border-yellow-400 text-white'
+                      : 'border-gray-400 hover:border-yellow-400  text-white'
                   }`}
               >
                 {size}
                 
                 {isOutOfStock ? (
-                  <div className="text-[8px] bg-red-600 text-white px-1 font-semibold mt-1">SOLD</div>
+                  <div className="text-[8px] bg-red-600 text-white  px-1 font-semibold mt-1">SOLD</div>
                 ) :(<div className="text-[8px] uppercase font-semibold mt-1">
                   Stock
                 </div>)

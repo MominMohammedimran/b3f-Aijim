@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import Layout from '@/components/layout/Layout';
 import { CheckCircle, Package } from 'lucide-react';
+import{CheckoutStepper} from '@/components/checkout/CheckoutStepper'
 
 const OrderComplete = () => {
   const [searchParams] = useSearchParams();
@@ -67,6 +68,7 @@ const OrderComplete = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8 max-w-md">
+      <CheckoutStepper currentStep={4}/>
         <Card>
           <CardContent className="pt-6 text-center space-y-6">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />

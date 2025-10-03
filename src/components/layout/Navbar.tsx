@@ -2,7 +2,7 @@
 import { Link, useLocation as useRouterLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, User, Search, Package, Home, PackageSearch, LogOut ,Bell, X,Tag
   
-} from 'lucide-react';
+,Percent} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation } from '../../context/LocationContext';
 import LocationPopover from '../ui/LocationPopover';
@@ -124,19 +124,19 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
     
     <div className={`fixed top-0 left-0 right-0 z-40  transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
       {/* 🔥 Flash Sale Marquee */}
-            <div className="bg-red-600 h-4  pt-1 pb-1  md:h-6 md:pt-2 md:pb-2 flex items-center ">
-              <Marquee gradient={false} speed={100} pauseOnHover={true} className="w-full">
-                {Array.from({ length:5 }).map((_, i) => (
-                  <span key={i} className="flex items-center uppercase text-white font-semibold text-[9px] sm:text-[12px] md:text-[13px] lg:text-[15px] px-4 whitespace-nowrap">
-                      <Tag size={12} className='text-white'/> &nbsp;Flat ₹500 Off on Orders Above ₹2500
+            <div className="bg-red-600 h-5  pt-1 pb-1  md:h-6 md:pt-2 md:pb-2 flex items-center ">
+              <Marquee gradient={false} speed={40} pauseOnHover={true} className="w-full">
+                {Array.from({ length:10 }).map((_, i) => (
+                  <span key={i} className="flex items-center uppercase text-white font-semibold text-[10px] sm:text-[14px] md:text-[15px] lg:text-[15px] px-4 whitespace-nowrap">
+                      <Tag size={14} className='text-white font-semibold'/> &nbsp;Flat ₹500 Off on Orders Above ₹2500
                   </span>
                 ))}
               </Marquee>
             </div>
              <div className={`flex items-center justify-between w-full  
        ${isScrolled 
-          ? 'bg-transparent backdrop-blur-md p-1' 
-          : 'bg-transparent'
+          ? 'bg-transparent backdrop-blur-md bg-gray-800/90' 
+          : 'bg-transparent '
       }`}>
 
     {/* Brand Logo */}

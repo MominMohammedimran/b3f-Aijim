@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,13 +75,16 @@ const Payment = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8 mt-10">
+
         <div className="flex items-center justify-between mb-6">
+          <CheckoutStepper currentStep={3}/>
           <div className="flex items-center">
             <Link to="/checkout" className="mr-4">
               <ArrowLeft size={24} className="text-white" />
             </Link>
             <h1 className="text-2xl font-bold leading-snug">Payment</h1>
           </div>
+          
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline" size="sm" className="text-black bg-white hover:text-red-500 hover:bg-white">

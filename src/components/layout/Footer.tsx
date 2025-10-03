@@ -15,16 +15,17 @@ const Footer = () => {
     {
       title: "HELP",
       links: [
-        { name: "Terms & Condition", href: "/terms-condition" },
-        { name: "Returns & Refunds", href: "/returns" },
-        { name: "Shipping Info", href: "/shipping" },
+        { name: "Terms & Condition", href: "/terms-conditions" },
+        { name: "cancellation , Returns & Refunds", href: "/cancellation-refund" },
+        { name: "Shipping Info", href: "/shipping-delivery" },
+        {name:"Track Orders",href:"/orders"},
       ],
     },
     {
       title: "CONTACT",
       links: [
         { name: "Customer Care", href: "/contact-us" },
-        { name: "Track Orders", href: "/orders" },
+      
       ],
     },
   ];
@@ -53,7 +54,7 @@ const Footer = () => {
               alt="AIJIM Logo"
               className="h-12 mb-4"
             />
-            <p className="text-sm font-semibold italic leading-tight text-foreground">
+            <p className="text-xs font-semibold italic leading-tight text-foreground">
               Premium oversized streetwear that defines your style.  
               Comfort meets attitude in every piece we create.
             </p>
@@ -75,14 +76,20 @@ const Footer = () => {
           {/* Quick Links */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h3 className="text-sm font-bold uppercase tracking-widest text-white mb-4">
+              <h3 className="text-sm font-bold underline cursor-text uppercase tracking-widest text-white mb-2">
                 {section.title}
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-0">
                 {section.links.map((link) => (
                   <li key={link.name}>
                     <Link
                       to={link.href}
+                      onClick={()=>{
+                        window.scrollTop({
+                          top:0,
+                          behavior:'smooth'
+                        })
+                      }}
                       className="text-sm text-white/90 font-semibold italic hover:text-white transition-colors"
                     >
                       {link.name}

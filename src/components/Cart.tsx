@@ -2,6 +2,7 @@
 import React from 'react';
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 
 interface CartProps {
   isOpen: boolean;
@@ -61,6 +62,7 @@ const Cart = ({ isOpen, onClose }: CartProps) => {
               </div>
             ) : (
               <div className="space-y-4">
+                 <CheckoutStepper currentStep={1} />
                 {state.items.map((item) => (
                   <div key={item.id} className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg">
                     <img
