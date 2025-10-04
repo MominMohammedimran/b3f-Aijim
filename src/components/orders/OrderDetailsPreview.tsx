@@ -98,16 +98,16 @@ useEffect(() => {
     case 'confirmed':
     case 'shipped':
     case 'delivered':
-    case 'return-accepted':
-    case 'return-processing':
-    case 'return-picked':
-    case 'return-warehouse':
-    case 'payment-refund ':
-    case 'payment-refund-successfull':
+    case 'return-acpt':
+    case 'return-pcs':
+    case 'return-pcd':
+    case 'return-wh':
+    case 'payment-rf':
+    case 'payment-rf-s':
       case 'cancelled':
       return status.charAt(0).toUpperCase() + status.slice(1);
     default:
-      return 'Pending';
+      return 'pending';
   }
 };
 const getPaymentStatusText = (status: string) => {
@@ -157,14 +157,14 @@ const getPaymentStatusText = (status: string) => {
         <div className="flex flex-col md:justify-evenly mb-6">
           <div>
             <div className="flex p-2 justify-between border-b border-gray-100 items-center gap-3 ">
-              <h3 className="text-xl font-bold md:text-2xl text-gray-100">
+              <h3 className="text-lg font-bold md:text-xl text-gray-100">
                 {order.order_number}
               </h3>
               <div className="text-right md:text-2xl pt-5">
-                <div className="text-xl font-bold text-gray-200">
+                <div className="text-lg font-bold text-gray-200">
                   {formatPrice(order.total)}
                 </div>
-                <div className="text-sm text-gray-300">
+                <div className="text-xs font-semibold text-gray-300">
                   {order.items.reduce((total: number, item: any) => {
                     return total + (Array.isArray(item.sizes)
                       ? item.sizes.reduce(
@@ -210,7 +210,7 @@ const getPaymentStatusText = (status: string) => {
                 onClick={() =>
                   redirect({ id: item.code, pd_name: item.name })
                 }
-                className={`h-20 w-20 object-cover border shadow-sm hover:scale-105 ${
+                className={`h-12 w-10 object-cover border shadow-sm hover:scale-105 ${
                   !item.name.toLowerCase().includes('custom printed')
                     ? 'cursor-pointer'
                     : 'cursor-default'
@@ -218,15 +218,15 @@ const getPaymentStatusText = (status: string) => {
                 alt={item.name}
               />
               <div className="flex-1">
-                <h5 className="text-lg font-medium  text-white mb-1">{item.name}</h5>
+                <h5 className="text-sm font-medium line-clamp-1 text-white mb-1">{item.name}</h5>
                 {Array.isArray(item.sizes) ? (
                   item.sizes.map((s: any, i: number) => (
                     <div
                       key={i}
-                      className="text-white text-sm font-medium"
+                      className="flex text-white text-xs font-medium"
                     >
-                      <p className= "gap-20 ">Size - {s.size} |  Qty - {s.quantity} 
-                         <span>
+                      <p className= "gap-0 text-[11px] font-semibold ">Size - {s.size} |  Qty - {s.quantity} 
+                         <span className="font-semibold ">
                           &nbsp; {formatPrice(s.quantity * item.price)}
                         </span>
                       </p>
@@ -235,9 +235,9 @@ const getPaymentStatusText = (status: string) => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-xs font-medium text-white">
+                  <div className="text-[11px] font-semibold text-white">
                     Size {item.size} ×  Qty — {item.quantity}
-                    <p>
+                    <p className="font-semibold">
                     {item.total}
                   </p>
                   </div>
@@ -248,7 +248,7 @@ const getPaymentStatusText = (status: string) => {
             </div>
             
           ))}
-          <p className="text-gray-200 font-bold text-center text-xs">
+          <p className="text-gray-200 font-semibold text-center text-[12px]">
             Placed on{' '}
             {new Date(order.created_at).toLocaleDateString('en-US', {
               weekday: 'long',
@@ -262,13 +262,13 @@ const getPaymentStatusText = (status: string) => {
 
         {/* Status & Rewards */}
         <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-3 mb-6">
-          <div className="p-4 grid items-center border-b md:border-r border-gray-800">
-            <span className="font-semibold text-lg   text-blue-900 mb-1  text-center">
-              Payment Status -<span className="w-full font-bold  text-red-500 text-center ">
+          <div className="p-2 grid items-center border-b md:border-r border-gray-800">
+            <span className="font-semibold text-md   text-blue-900 mb-1  text-center">
+              Payment Status -<span className="w-full font-semibold  text-red-500 text-center ">
              "{getPaymentStatusText(order.payment_status)}"
             </span>
             </span>
-            <p className="text-sm text-gray-800 leading-snug  font-bold text-center mb-2 ">
+            <p className="text-sm text-gray-800 leading-snug  font-semibold text-center mb-2 ">
               #Note - {order.payment_method || 'N/A'} 
             </p>
            
@@ -276,7 +276,7 @@ const getPaymentStatusText = (status: string) => {
                      <div className="flex gap-2">
                      <Button
                  onClick={() => handleRetryPayment(order)}
-                 className="bg-green-600 rounded-none text-lg w-100 m-auto hover:bg-green-700 text-white "
+                 className="bg-green-600 py-0 font-semibold rounded-none text-sm w-100 m-auto hover:bg-green-700 text-white "
             >
                  Complete Payment
               </Button>
@@ -287,15 +287,15 @@ const getPaymentStatusText = (status: string) => {
           </div>
 
       
-            <div className="p-4 grid items-center border-b w-full md:border-r border-gray-800">
-              <span className="font-semibold text-lg w-full     text-green-800 mb-1 text-center ">Order Status -
-                 <span className=" w-full text-red-500 font-bold text-center ">
+            <div className="p-2 grid items-center border-b w-full md:border-r border-gray-800">
+              <span className="font-semibold text-md w-full     text-green-800 mb-1 text-center ">Order Status -
+                 <span className=" w-full text-red-500 font-semibold text-center ">
                  &nbsp;"{getOrderStatusText(order.status)}"
               </span>
               </span>
              
               
-              <p className="text-sm text-gray-800 leading-snug  font-bold text-center mb-2">
+              <p className="text-sm text-gray-800 leading-snug  font-semibold text-center mb-2">
                 #Note - {order.status_note || 'N/A'}
               </p>
               
@@ -303,15 +303,15 @@ const getPaymentStatusText = (status: string) => {
             </div>
          
 
-          <div className="p-4  grid items-center border-b  border-gray-800 ">
+          <div className="p-2  grid items-center border-b  border-gray-800 ">
              <div className=' w-full m-auto pt-1  '> 
-            <p className="text-md font-semibold text-center text-black">
+            <p className="text-sm font-semibold text-center text-black">
               Reward Points Used -{' '}
               <span className="font-semibold text-red-500  underline">
                 {(order.reward_points_used as any)?.points || 0}
               </span>
             </p>
-            <p className="text-md text-black font-semibold text-center">
+            <p className="text-sm text-black font-semibold text-center">
               Coupon Used- {' '}
               <span className=" font-semibold underline text-red-500">
                 {(order.coupon_code as any)?.code || 'None'}
@@ -324,15 +324,15 @@ const getPaymentStatusText = (status: string) => {
       
 
         {/* Actions */}
-        <div className="grid grid-cols-1  gap-[10px]">
+        <div className="w-full grid grid-cols-1 justify-evenly ">
         
-          <div className=" flex gap-4">
+          <div className=" flex w-full ">
               {order.status !== 'delivered' && (
             <Link
               to={`/payment-issue?orderId=${order.order_number}`}
-              className="w-full"
+              className="w-full "
             >
-              <Button className="bg-red-600 rounded-none hover:bg-red-700 text-white w-full">
+              <Button className="bg-red-600 text-sm border-r border-black rounded-none hover:bg-red-700 text-white w-full">
                 Payment Issue?
               </Button>
             </Link>

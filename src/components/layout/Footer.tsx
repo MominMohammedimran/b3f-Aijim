@@ -16,7 +16,7 @@ const Footer = () => {
       title: "HELP",
       links: [
         { name: "Terms & Condition", href: "/terms-conditions" },
-        { name: "cancellation , Returns & Refunds", href: "/cancellation-refund" },
+        { name: "Cancellation & Returns", href: "/cancellation-refund" },
         { name: "Shipping Info", href: "/shipping-delivery" },
         {name:"Track Orders",href:"/orders"},
       ],
@@ -46,7 +46,7 @@ const Footer = () => {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Top Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-3">
           {/* Brand Section */}
           <div>
             <img
@@ -54,7 +54,7 @@ const Footer = () => {
               alt="AIJIM Logo"
               className="h-12 mb-4"
             />
-            <p className="text-xs font-semibold italic leading-tight text-foreground">
+            <p className="text-xs font-medium italic leading-tight text-foreground">
               Premium oversized streetwear that defines your style.  
               Comfort meets attitude in every piece we create.
             </p>
@@ -65,7 +65,7 @@ const Footer = () => {
                 <a
                   key={i}
                   href="#"
-                  className="p-2 rounded-full bg-gray-800 hover:bg-accent hover:text-white transition-all duration-300"
+                  className="p-2 rounded-full bg-gray-700 hover:bg-accent hover:text-white transition-all duration-300"
                 >
                   <Icon className="h-4 w-4" />
                 </a>
@@ -76,7 +76,7 @@ const Footer = () => {
           {/* Quick Links */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h3 className="text-sm font-bold underline cursor-text uppercase tracking-widest text-white mb-2">
+              <h3 className="text-sm font-semibold underline cursor-text uppercase tracking-widest text-white mb-0">
                 {section.title}
               </h3>
               <ul className="space-y-0">
@@ -90,7 +90,7 @@ const Footer = () => {
                           behavior:'smooth'
                         })
                       }}
-                      className="text-sm text-white/90 font-semibold italic hover:text-white transition-colors"
+                      className="text-xs text-white/90 font-medium italic hover:text-white transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -99,6 +99,12 @@ const Footer = () => {
               </ul>
             </div>
           ))}
+           <div className="border-b w-full border-gray-800 text-center  ">
+          <p className="w-full text-[12px] text-white font-medium">
+            © {new Date().getFullYear()} <span className="font-semibold">AIJIM</span> ® —  
+            Made with love in India
+          </p>
+        </div>
 
           {/* Newsletter */}
           
@@ -108,12 +114,7 @@ const Footer = () => {
         {/* Bottom Bar */}
        
         </div>
-         <div className="border-t w-full border-gray-800 py-6 text-center">
-          <p className="text-sm text-white font-semibold">
-            © {new Date().getFullYear()} <span className="font-semibold">AIJIM</span> ® —  
-            Made with love in India
-          </p>
-        </div>
+        
       </div>
 
     

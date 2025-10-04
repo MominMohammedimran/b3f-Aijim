@@ -170,7 +170,7 @@ const Search = () => {
       </div>
 
       {/* Sticky Filter & Sort Buttons */}
-      <div className="fixed bottom-14 left-0 right-0 z-50  bg-black border-t border-gray-200 py-0 flex justify-around ">
+      <div className="fixed bottom-12 left-0 right-0 z-50  bg-black border-t border-gray-200 py-0 flex justify-around ">
         <Button
           onClick={() => setIsFilterPopupOpen(true)}
           className="bg-gray-900 text-white uppercase font-semibold border-r border-gray-200 rounded-none shadow-lg w-1/2 hover:bg-gray-900 "
@@ -187,7 +187,7 @@ const Search = () => {
 
       {/* Filter Popup */}
       {isFilterPopupOpen && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-end">
+        <div className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end">
           <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Filter</h2>
@@ -198,7 +198,7 @@ const Search = () => {
 
             <h3 className="font-semibold mb-2">Price Range</h3>
             <PriceRangeFilter
-              minPrice={minProductPrice}
+              minPrice={0}
               maxPrice={maxProductPrice}
               onChange={handlePriceRangeChange}
             />
@@ -208,7 +208,7 @@ const Search = () => {
                 variant="outline"
                 className="w-1/2 border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800"
                 onClick={() => {
-                  setPriceRange({ min: minProductPrice, max: maxProductPrice });
+                  setPriceRange({ min: 0, max: maxProductPrice });
                   setSelectedCategory(null);
                   setIsFilterPopupOpen(false);
                 }}

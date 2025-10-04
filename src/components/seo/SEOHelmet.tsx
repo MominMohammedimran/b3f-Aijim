@@ -18,8 +18,8 @@ interface SEOProps {
 const SEOHelmet: React.FC<SEOProps> = ({
   title = 'AIJIM | Affordable Premium Fashion',
   description =' Explore the latest trends and premium printed products by AIJIM — fashion-forward and quality-driven.',
-  image = 'https://aijim.pages.dev/og-image.png',
-  url = 'https://aijim.pages.dev',
+  image = 'https://aijim.shop/og-image.png',
+  url = 'https://aijim.shop',
   type = 'website',
   siteName = 'AIJIM',
   twitterHandle = '@aijimindia',

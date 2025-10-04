@@ -53,7 +53,7 @@ const CollapsibleSection = ({
   }, [children]);
 
   return (
-    <div className="bg-card rounded-lg border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-glow">
+    <div className="bg-card rounded-none border border-gray-300 hover:border-primary transition-all duration-300 hover:shadow-glow">
       <button
         className="flex justify-between items-center w-full p-4 font-bold uppercase tracking-wider text-left"
         onClick={() => setIsOpen(!isOpen)}
@@ -289,18 +289,18 @@ const Checkout = () => {
   return (
     <Layout>
       <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
-      <div className="container mx-auto px-4 py-6 sm:py-8 mt-20">
+      <div className="container mx-auto px-4 py-4 sm:py-6 mt-20 rounded-none">
         <CheckoutStepper currentStep={2} />
-        <div className="flex items-center mb-8">
+        <div className="flex mt-4 items-center mb-8">
           <Link to="/cart" className="mr-4">
             <ArrowLeft size={24} className="text-foreground hover:text-primary transition-colors" />
           </Link>
           <h1 className="text-2xl font-bold uppercase tracking-wider">CHECKOUT</h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3  rounded-none ">
           {/* Left Section */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 rounded-none ">
             <CollapsibleSection title="Shipping Details" defaultOpen>
               {!addressesLoading && addresses.length > 0 && (
                 <SavedAddresses
@@ -335,7 +335,7 @@ const Checkout = () => {
           </div>
 
           {/* Right Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 rounded-none ">
             {/* Coupon Section */}
             <CollapsibleSection title="Apply Coupon" defaultOpen={false}>
               <CouponSection
@@ -358,7 +358,7 @@ const Checkout = () => {
 
             {/* Order Summary */}
             <CollapsibleSection title="Order Summary" defaultOpen={true}>
-              <div className="space-y-4 mb-6">
+              <div className="space-y-4  mb-6">
                 {cartItems.map((item, idx) => (
                   <div key={idx} className="flex items-start gap-4 pb-4 border-b border-border last:border-b-0">
                     <img
@@ -369,7 +369,7 @@ const Checkout = () => {
                         ${!item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'}`}
                     />
                     <div className="flex-1">
-                      <p className="font-bold text-sm uppercase tracking-wide">{item.name}</p>
+                      <p className="font-bold text-sm uppercase line-clamp-1 tracking-wide">{item.name}</p>
                       {Array.isArray(item.sizes) ? (
                         <div className="flex flex-wrap gap-1 mt-2">
                           {item.sizes.map((s: any, i: number) => (
@@ -433,7 +433,7 @@ const Checkout = () => {
                 <Button
                   onClick={() => handleFormSubmit(formData)}
                   disabled={isLoading}
-                  className="w-full fixed lg:relative bottom-12 left-0 right-0 z-10 font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="w-full relative rounded-none  font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {isLoading ? 'PROCESSING...' : 'CONTINUE TO PAYMENT'}
                 </Button>

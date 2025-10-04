@@ -228,8 +228,8 @@ const Cart = () => {
       <div className="container mx-auto px-4 py-8 mt-10">
          <CheckoutStepper currentStep={1} />
         <div className="flex justify-between items-center mt-5 mb-6">
-          <h1 className="text-xl font-bold leading-relaxed ">Shopping Cart ({cartItems.length})</h1>
-          <Button variant="outline" onClick={clearCart}>Clear Cart</Button>
+          <h1 className="text-lg font-bold leading-relaxed ">Shopping Cart ({cartItems.length})</h1>
+          <Button variant="outline" size="xs" className="px-2"onClick={clearCart}>Clear Cart</Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -245,7 +245,7 @@ const Cart = () => {
                         src={item.image || '/placeholder.svg'}
                         alt={item.name}
                         onClick={() => redirect({ id: item.code, pd_name: item.name })}
-                        className={`h-24 w-24 object-cover rounded border shadow-sm transition-transform duration-200 hover:scale-125
+                        className={`h-16 w-16 object-fit rounded border shadow-sm transition-transform duration-200 hover:scale-125
                            ${!item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'}`}
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = '/placeholder.svg';
@@ -255,21 +255,22 @@ const Cart = () => {
 
                     {/* Product Details */}
                     <div className="flex-1 min-w-0 border">
-                      <h3 className="font-semibold text-white line-clamp-1 leading-relaxed ">{item.name}</h3>
-                      <p className="text-sm  font-semibold text-white ">
-                        {formatPrice(item.price)}
-                      </p>
+                      <h3 className="font-semibold text-sm text-white line-clamp-1 leading-relaxed ">{item.name}</h3>
+                     
 
                       {/* Remove entire item button */}
-                      <div className="mt-1 flex justify-start">
+                      <div className="mt-1 flex justify-between ">
+                         <p className="text-sm  font-semibold text-white ">
+                        {formatPrice(item.price)}
+                      </p>
                         <Button
-                          size="sm"
+                          size="xs"
                           variant="outline"
                           onClick={() => removeFromCart(item.product_id)}
-                          className="text-gray-800 font-semibold text-sm bg-yellow-400 hover:text-gray-900 hover:bg-yellow-600"
+                          className="text-gray-800 rounded-none px-1 font-semibold text-xs bg-yellow-400 hover:text-gray-900 hover:bg-yellow-600"
                         >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Remove Item
+                          
+                          Remove 
                         </Button>
                       </div>
                     </div>
@@ -277,7 +278,7 @@ const Cart = () => {
 
                    {/* Sizes Section with Enhanced Controls */}
                   <div className="mt-3">
-                    <h4 className="text-md font-semibold mb-2 text-white">Sizes -</h4>
+                    <h4 className="text-sm font-semibold mb-2 text-white">Sizes -</h4>
                     <div className="flex gap-3 overflow-x-auto py-1">
               {item.sizes.map((sizeItem) => {
   const fullProduct = {
@@ -389,7 +390,7 @@ const Cart = () => {
                   </Link>
                 </div>
               ) : (
-                <div className=" fixed lg:sticky bottom-12 mb-2 left-0 right-0 z-10">
+                <div className=" sticky">
                 <Button onClick={handleCheckout} className="w-full mb-3   m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold">
                   Proceed to Checkout
                 </Button>

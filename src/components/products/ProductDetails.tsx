@@ -31,6 +31,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
   const [selectedSizes, setSelectedSizes] = useState<SizeWithQuantity[]>([]);
   const [removingSize, setRemovingSize] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showSizeChart,setShowSizeChart]=useState(false);
 
   const { cartItems, removeSizeFromCart } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
@@ -176,10 +177,42 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
       {/* Live Viewing Counter */}
       <LiveViewingCounter productId={product.id} />
       {activeRecommendation&&(
-        <h2 className="mb-1 text-xs font-semibold font-poppins italic text-white text-left">
+      <div className="flex gap-2 items-center">
+        <h2 className=" text-xs font-semibold font-poppins italic text-white text-left">
           {activeRecommendation}
           </h2>
+          <button onClick={()=>
+          setShowSizeChart(true)}
+          className="text-xs font-medium font-poppins px-1 border border-gray-400"
+          >
+          Size chart
+          </button>
+          </div>
       )}
+      {showSizeChart && (
+  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+    <div className="bg-white p-4 rounded-none max-w-lg w-full relative">
+      {/* Close Button */}
+      <button
+        onClick={() => setShowSizeChart(false)}
+        className="absolute top-2 right-2 text-gray-900 hover:text-black"
+      >
+        ✕
+      </button>
+
+      {/* Title */}
+      <h2 className="text-lg font-bold mb-3 text-center">Size Chart</h2>
+
+      {/* Image */}
+      <img
+        src="/aijim-uploads/sizechart.jpg" // <-- replace with your actual size chart image path
+        alt="Size Chart"
+        className="w-full h-auto"
+      />
+    </div>
+  </div>
+)}
+
 
       {/* Sizes */}
       <h4 className="text-lg font-semibold mt-3 mb-3">Select Size</h4>
@@ -215,7 +248,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
                 
                 {isOutOfStock ? (
                   <div className="text-[8px] bg-red-600 text-white  px-1 font-semibold mt-1">SOLD</div>
-                ) :(<div className="text-[8px] uppercase font-semibold mt-1">
+                ) :(<div className="text-[8px] uppercase font-bold mt-1">
                   Stock
                 </div>)
               }
@@ -352,32 +385,32 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
           </>
         ) : (
           // In stock UI - show when ANY size has stock
-          <>
+          <div className='w-full  flex flex-row fixed bottom-8 left-0 right-0 z-10 items-center justify-center '>
             <ProductActionButtons
               product={product}
-              className="rounded-none"
+              className="w-full rounded-none "
               selectedSizes={selectedSizes.map((s) => s.size)}
               quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
             />
             
             {/* Place Order Button */}
-            <div className="mt-1">
+            <div className="">
               <ProductPlaceOrder
                 product={product}
                 selectedSizes={selectedSizes.map((s) => s.size)}
                 variant="secondary"
-                className="w-full rounded-none font-poppins font-semibold text-xl bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
+                className="w-full rounded-none border-l border-gray-800 font-semibold text-xl bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
               />
             </div>
-          </>
+          </div>
         )}
       </div>
 
       {/* Delivery & Return Section */}
     {/* Delivery & Return Section */}
-<div className="p-4 w-full bg-gradient-to-br from-black via-gray-900 to-black shadow-lg border border-gray-600 mt-4">
-  <h3 className="text-lg font-semibold text-yellow-300 mb-3">Delivery & Returns</h3>
-  <div className="space-y-3">
+<div className="p-1 w-full bg-gradient-to-br from-black via-gray-900 to-black shadow-lg border border-gray-600 mt-4">
+  <h3 className="text-md font-semibold text-yellow-300 mb-2 pl-3">Delivery & Returns</h3>
+  <div className="space-y-3 p-3 pt-0">
     <div className="flex items-center gap-2">
       <input
         type="text"
@@ -387,12 +420,12 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
         placeholder="pincode"
         value={pincode}
         onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))} // allow only digits
-        className="flex-1 px-3 py-1 w-full bg-gray-700 font-semibold border border-gray-600  text-white placeholder-gray-400  focus:border-transparent"
+        className="flex-1 text-md px-3 w-full bg-gray-700 font-semibold border border-gray-600  text-white placeholder-gray-400  focus:border-transparent"
       />
       <button
   onClick={checkPincode}
   disabled={loadingPincode}
-  className="px-4 py-1 bg-yellow-500 text-black font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50"
+  className="px-2 py-0 bg-yellow-500 text-md text-black font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50"
 >
   {loadingPincode ? "Checking..." : "Check"}
 </button>
@@ -400,21 +433,21 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
     </div>
 
     {pincodeChecked && pincodeResult && (
-      <div className="text-[13px] mt-2 ">
+      <div className="text-[8px] mt-2 ">
         <p className={`font-semibold ${pincodeResult.isServiceable ? 'text-green-400' : 'text-red-400'}`}>
           {pincodeResult.message}
         </p>
       </div>
     )}
 
-    <div className="text-sm text-gray-300 mt-3 font-semibold">
-      <p className="font-semibold">• Easy 7-day returns</p>
-      <p className="font-semibold">• No cash on delivery </p>
+    <div className="text-xs text-gray-300 mt-3 font-semibold">
+      <p className="font-medium">• Easy 7-day returns</p>
+      <p className="font-medium">• No cash on delivery </p>
     </div>
-    <div className="border-t border-gray-600 pt-3">
+    <div className="border-t border-gray-600 pt-1">
       <Link
         to="/cancellation-refund"
-        className="text-yellow-400 hover:text-yellow-300 underline text-sm font-semibold"
+        className="text-yellow-400 hover:text-yellow-300 underline text-xs font-semibold"
       >
         View Return Policy →
       </Link>
@@ -423,10 +456,12 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
 </div>
 
       {/* Available Coupons */}
-      <AvailableCoupons productPrice={product.price} />
+     
+     
 
       {/* Description */}
         <ProductDescription desc={product.description}/>
+         <AvailableCoupons productPrice={product.price} />
       
 
       {/* Share Modal */}

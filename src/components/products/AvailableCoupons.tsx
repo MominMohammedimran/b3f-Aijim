@@ -41,15 +41,15 @@ const AvailableCoupons: React.FC = () => {
   };
 
   return (
-    <div className="p-4 mt-4 bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-md">
+    <div className="p-4  bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none">
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
         className="flex justify-between items-center w-full"
       >
         <div className="flex items-center gap-2">
-          <Ticket className="w-5 h-5 text-white" />
-          <h3 className="text-lg font-semibold text-white">Available Coupons</h3>
+          <Ticket className="w-5 h-5 text-yellow-400" />
+          <h3 className="text-lg font-semibold text-yellow-400">Available Coupons</h3>
         </div>
         {expanded ? (
           <ChevronUp className="w-5 h-5 text-gray-400" />

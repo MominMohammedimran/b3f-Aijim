@@ -197,12 +197,13 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
              
               <SelectItem value="cancelled">Cancelled</SelectItem>
               {/* Return Statuses with Shorter Values */}
-  <SelectItem value="return-accepted">Return Accepted</SelectItem>
+              <SelectItem value="return-acpt">Return Accepted</SelectItem>
+  <SelectItem value="return-pcs">Return Processing</SelectItem>
   
-  <SelectItem value="return-picked">Return Picked</SelectItem>
-  <SelectItem value="return-warehouse">Returned to Warehouse</SelectItem>
-  <SelectItem value="payment-refund">Payment Initiated</SelectItem>
-  <SelectItem value="payment-refund-successfull">Payment Successful</SelectItem>
+  <SelectItem value="return-pcd">Return Picked</SelectItem>
+  <SelectItem value="return-wh">Returned to Warehouse</SelectItem>
+  <SelectItem value="payment-rf">Payment Initiated</SelectItem>
+  <SelectItem value="payment-rf-s">Payment Successful</SelectItem>
 
   <SelectItem value="cancelled">Cancelled</SelectItem>
             

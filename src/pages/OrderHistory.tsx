@@ -139,7 +139,7 @@ const OrderHistory = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="flex flex-col items-center justify-center pt-12 h-64 text-center">
+        <div className="flex flex-col items-center justify-center pt-12 mb-12  h-64 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mt-10 mb-4"></div>
           {!currentUser && (
             <div className="mt-6 space-y-2">
@@ -214,12 +214,12 @@ const OrderHistory = () => {
 
                     {order.items.map((item, idx) => (
                       <div key={idx} className="flex gap-3 mb-2 bg-gray-900 p-2 rounded-none">
-                        <img src={item.image} alt={item.name} className="h-16 w-16 object-cover" />
+                        <img src={item.image} alt={item.name} className="h-14 w-12 object-cover" />
                         <div className="flex-1 text-white">
-                          <p className="font-medium">{item.name}</p>
+                          <p className="font-semibold line-clamp-1">{item.name}</p>
                           {item.sizes?.map((s, i) => (
-                            <p key={i} className="text-sm">
-                              Size - {s.size} | Qty - {s.quantity}
+                            <p key={i} className="flex text-xs font-semibold justify-evenly">
+                              Size - {s.size} <span>|</span>  Qty - {s.quantity}
                             </p>
                           ))}
                             </div>
@@ -260,7 +260,7 @@ const OrderHistory = () => {
                           disabled={expired}
                           className={`flex-1 font-semibold rounded-none ${
                             expired
-                              ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                              ? 'bg-gray-700 text-gray-400 cursor-not-allowed hidden'
                               : 'bg-red-600 hover:bg-red-700 text-white'
                           }`}
                         >

@@ -75,19 +75,19 @@ const Payment = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8 mt-10">
-
-        <div className="flex items-center justify-between mb-6">
-          <CheckoutStepper currentStep={3}/>
-          <div className="flex items-center">
+<CheckoutStepper currentStep={3}/>
+        <div className="flex items-center justify-between mt-3 mb-6">
+          
+          <div className="flex items-center justify-center ">
             <Link to="/checkout" className="mr-4">
-              <ArrowLeft size={24} className="text-white" />
+              <ArrowLeft size={20} className="text-white" />
             </Link>
-            <h1 className="text-2xl font-bold leading-snug">Payment</h1>
+            <h1 className="text-xl font-bold leading-snug">Payment</h1>
           </div>
           
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm" className="text-black bg-white hover:text-red-500 hover:bg-white">
+              <Button variant="outline" size="xs" className="items-center justify-center px-1 py-1 rounded-none font-semibold text-black bg-white hover:text-red-500 hover:bg-white">
                
                 Cancel Order
               </Button>
@@ -159,6 +159,44 @@ const Payment = () => {
               </div>
             </div>
           </div>
+
+          {/*shipping Address */}
+          <div className="bg-gray-900 text-white p-4 rounded-none shadow-md border border-gray-700">
+      <h3 className="text-md font-semibold mb-3 border-b border-gray-700 pb-2 leading-relaxed">
+        Shipping Address used for this Order
+      </h3>
+      <div className="space-y-1 font-semibold text-xs">
+        {/* Full Name */}
+        <p className="text-gray-300 ">
+          <span className="font-semibold text-white">Name - </span>
+          {shippingAddress.fullName || `${shippingAddress.firstName} ${shippingAddress.lastName}`}
+        </p>
+        
+        {/* Address */}
+        <p className="line-clamp-1 text-gray-300">
+          <span className="font-semibold text-white">Address - </span>
+          {shippingAddress.address}, {shippingAddress.city}, - {shippingAddress.zipCode}
+        </p>
+        
+        {/* Country */}
+        <p className="text-gray-300">
+          <span className="font-semibold text-white">Country - </span>
+          {shippingAddress.country}
+        </p>
+        
+        {/* Phone */}
+        <p className="text-gray-300">
+          <span className="font-semibold text-white">Phone - </span>
+          {shippingAddress.phone}
+        </p>
+        
+        {/* Email */}
+        <p className="text-gray-300">
+          <span className="font-semibold text-white">Email - </span>
+          {shippingAddress.email}
+        </p>
+      </div>
+    </div>
 
           {/* Right: Secure Payment Info */}
           <div className="space-y-6">
