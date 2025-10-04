@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const allowedOrigins = [
-  "https://aijim.pages.dev",
+  "https://aijim.shop",
   "http://localhost:8080",
   "https://zfdsrtwjxwzwbrtfgypm.supabase.co"
 ];
@@ -71,7 +71,7 @@ serve(async (req: Request) => {
         const imageUrl = item.image?.startsWith('http') 
           ? item.image 
           : item.image?.startsWith('/') 
-            ? `https://aijim.pages.dev${item.image}`
+            ? `https://aijim.shop${item.image}`
             : item.image || "https://via.placeholder.com/60";
 
         return `
@@ -95,7 +95,7 @@ serve(async (req: Request) => {
           <table role="presentation" style="margin:auto;">
             <tr>
               <td style="vertical-align:middle;padding-right:10px;">
-                <img src="https://aijim.pages.dev/aijim-uploads/aijim.png" alt="AIJIM Logo" style="height:40px;width:auto;display:block;" />
+                <img src="https://aijim.shop/aijim-uploads/aijim.png" alt="AIJIM Logo" style="height:40px;width:auto;display:block;" />
               </td>
               <td style="vertical-align:middle;">
                 <h2 style="color:#fff;margin:0;font-family:sans-serif;">

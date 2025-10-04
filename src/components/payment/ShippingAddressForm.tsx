@@ -48,7 +48,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
           email: customerInfo.email,
           contact: customerInfo.contact,
         },
-        callback_url: 'https://aijim.pages.dev/order-complete',
+        callback_url: 'https://aijim.shop/order-complete',
       }),
     });
 

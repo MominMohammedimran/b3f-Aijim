@@ -3,7 +3,7 @@
 // Deploy this at: https://workers.cloudflare.com/
 
 // Configuration
-const ALLOWED_ORIGIN = 'https://aijim.pages.dev';
+const ALLOWED_ORIGIN = 'https://aijim.shop';
 const BACKEND_API = 'https://my-backend.example.com'; // Replace with your actual backend URL
 const RATE_LIMIT_PER_MINUTE = 100;
 

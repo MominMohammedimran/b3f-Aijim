@@ -13,8 +13,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
   const organizationData = {
     name: "AIJIM",
-    url: "https://aijim.pages.dev",
-    logo: "https://aijim.pages.dev/logo.png",
+    url: "https://aijm.shop",
+    logo: "https://aijim.shop/logo.png",
     description: "Premium fashion and apparel including oversized tees, hoodies and trendy clothing with great discounts.",
     contactPoint: {
       telephone: "+91-XXXXXXXXXX",
@@ -23,17 +23,17 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
     },
     sameAs: [
       "https://facebook.com/aijim",
-      "https://instagram.com/aijim",
+      "https://instagram.com/aijim.shop",
       "https://twitter.com/aijim"
     ]
   };
 
   const websiteData = {
     name: "AIJIM",
-    url: "https://aijim.pages.dev",
+    url: "https://aijim.shop",
     description: "Premium fashion platform for trendy apparel",
     potentialAction: {
-      target: "https://aijim.pages.dev/search?q={search_term_string}",
+      target: "https://aijim.shop/search?q={search_term_string}",
       queryInput: "required name=search_term_string"
     }
   };

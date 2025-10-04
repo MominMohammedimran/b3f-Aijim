@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const allowedOrigins = [
-  "https://aijim.pages.dev",
+  "https://aijim.shop",
   "http://localhost:8080",
   "https://zfdsrtwjxwzwbrtfgypm.supabase.co"
 ];

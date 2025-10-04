@@ -1,3 +1,3 @@
-Sitemap: https://aijim.pages.dev/sitemap.xml
+Sitemap: https://aijim.shop/sitemap.xml
 User-agent: *
 Allow: /

@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const allowedOrigins = [
-  "https://aijim.pages.dev",
+  "https://aijim.shop",
   "http://localhost:8080",
   "https://zfdsrtwjxwzwbrtfgypm.supabase.co"
 ];
@@ -73,7 +73,7 @@ serve(async (req: Request) => {
         const imageUrl = item.image?.startsWith('http') 
           ? item.image 
           : item.image?.startsWith('/') 
-            ? `https://aijim.pages.dev${item.image}`
+            ? `https://aijim.shop${item.image}`
             : item.image || "https://via.placeholder.com/60";
 
         return `
@@ -103,7 +103,7 @@ serve(async (req: Request) => {
 
       <td style="vertical-align:middle;padding-right:10px;">
 
-        <img src="http://localhost:8080/aijim-uploads/aijim.png" alt="Brand Logo" style="height:40px;width:auto;display:block;" />
+        <img src="http://aijim.shop/aijim-uploads/aijim.png" alt="Brand Logo" style="height:40px;width:auto;display:block;" />
 
       </td>
 

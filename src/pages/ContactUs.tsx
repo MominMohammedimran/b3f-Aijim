@@ -22,7 +22,7 @@ const ContactUs = () => {
     {
       icon: Mail,
       title: 'EMAIL US',
-      primary: 'support@aijim.com',
+      primary: 'aijim.official@aijim.com',
       secondary: 'orders@aijim.com',
       description: 'Get quick responses within 24 hours'
     },

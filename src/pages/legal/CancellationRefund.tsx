@@ -219,7 +219,7 @@ const RefundReturnPolicyNew = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
-                href="mailto:returns@aijim.com"
+                href="mailto:aijim.official@gmail.com"
                 className="bg-accent text-accent-foreground px-6 py-3 rounded-lg font-bold hover:bg-accent/90 transition-colors shadow-glow"
               >
                 EMAIL US

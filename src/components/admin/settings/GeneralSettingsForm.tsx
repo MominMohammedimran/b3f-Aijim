@@ -52,8 +52,8 @@ const GeneralSettingsForm: React.FC = () => {
     try {
       const { data, error } = await supabase.rpc('update_admin_settings', {
         p_site_name: settings.site_name,
-        p_site_description: 'Custom printing services',
-        p_contact_email: 'contact@aijim.com',
+        p_site_description: 'Premium streetwear',
+        p_contact_email: 'aijim.official@aijim.com',
         p_contact_phone: '+91 9999999999',
         p_business_address: 'India',
         p_delivery_fee: settings.delivery_fee,
