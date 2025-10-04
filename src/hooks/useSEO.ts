@@ -1,5 +1,5 @@
 const defaultSEO = {
-  title: 'AIJIM | Custom Fashion & Print Products',
+  title: 'AIJIM | Premium fashion , Affordable price ',
   description:
     'Your trusted partner [AIJIM] — From custom T-shirts to fashion drops, we bring your ideas to life with premium quality and fast delivery.',
   keywords: [
@@ -13,14 +13,14 @@ const defaultSEO = {
     'hoodies',
    
   ],
-  url: 'https://aijim.pages.dev',
-  image: 'https://aijim.pages.dev/og-image.jpg',
+  url: 'https://aijim.shop',
+  image: 'https://aijim.shop/og-image.jpg',
   twitterHandle: '@aijimindia',
 };
 
 const routeSEO: Record<string, Partial<typeof defaultSEO>> = {
   '/': {
-    title: 'AIJIM | Custom Prints, Fashion, and Personalized Gifts',
+    title: 'AIJIM | Premium Fashion , Affordable price ',
     description: 'Explore the latest trends and premium printed products by AIJIM — fashion-forward and quality-driven.',
   },
   '/signin': {

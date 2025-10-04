@@ -44,7 +44,7 @@ const Footer = () => {
                   </div>
       
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="w-full mx-auto px-6 lg:px-12">
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-3">
           {/* Brand Section */}
@@ -54,7 +54,7 @@ const Footer = () => {
               alt="AIJIM Logo"
               className="h-12 mb-4"
             />
-            <p className="text-xs font-medium italic leading-tight text-foreground">
+            <p className="text-sm font-medium italic leading-tight text-foreground">
               Premium oversized streetwear that defines your style.  
               Comfort meets attitude in every piece we create.
             </p>
@@ -72,6 +72,12 @@ const Footer = () => {
               ))}
             </div>
           </div>
+           <div className="border-b w-full border-gray-800 text-center  ">
+          <p className="w-full text-[12px] text-white font-medium">
+            © {new Date().getFullYear()} <span className="font-semibold">AIJIM</span> ® —  
+            Made with love in India
+          </p>
+        </div>
 
           {/* Quick Links */}
           {footerSections.map((section) => (
@@ -90,7 +96,7 @@ const Footer = () => {
                           behavior:'smooth'
                         })
                       }}
-                      className="text-xs text-white/90 font-medium italic hover:text-white transition-colors"
+                      className="text-xs text-white/90 font-semibold italic hover:text-white transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -99,12 +105,7 @@ const Footer = () => {
               </ul>
             </div>
           ))}
-           <div className="border-b w-full border-gray-800 text-center  ">
-          <p className="w-full text-[12px] text-white font-medium">
-            © {new Date().getFullYear()} <span className="font-semibold">AIJIM</span> ® —  
-            Made with love in India
-          </p>
-        </div>
+          
 
           {/* Newsletter */}
           
