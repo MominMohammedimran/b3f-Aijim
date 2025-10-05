@@ -83,7 +83,7 @@ p,
 span,
 a,
 button,input,ul,li{
-  font-family:'Poppins','Neue Montreal', 'roboto', 'sans-serif';
+  font-family:'Geist', 'roboto','sans-serif';
   text-transform: none;
   font-weight: 400;
   
@@ -93,9 +93,9 @@ button,input,ul,li{
 
 h1, h2, h3, h4, h5, h6,label
 {
-    font-family:'Nunito','Neue Montreal', 'roboto', 'sans-serif';
+    font-family:'Geist', 'roboto','sans-serif';
   text-transform: uppercase;
-  font-style: italic;
+
   line-height:1.5em;
   letter-spacing: 0.04em;
 

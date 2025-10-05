@@ -31,7 +31,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-950 text-gray-300 border-t border-gray-800">
+    <footer className="bg-gray-950 h-auto text-gray-300 border-t border-gray-800">
       {/* 🔥 Marquee Bar */}
        <div className="bg-white h-6  pt-1 pb-1  md:h-8 md:pt-3 md:pb-3 flex items-center ">
                     <Marquee gradient={false} speed={50} pauseOnHover={true} className="w-full">
@@ -80,8 +80,10 @@ const Footer = () => {
         </div>
 
           {/* Quick Links */}
+          <div className="grid grid-cols-2 lg:grid-cols-3">
           {footerSections.map((section) => (
-            <div key={section.title}>
+           
+            <div key={section.title} >
               <h3 className="text-sm font-semibold underline cursor-text uppercase tracking-widest text-white mb-0">
                 {section.title}
               </h3>
@@ -104,7 +106,9 @@ const Footer = () => {
                 ))}
               </ul>
             </div>
+          
           ))}
+          </div>
           
 
           {/* Newsletter */}

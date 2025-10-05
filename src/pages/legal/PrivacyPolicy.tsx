@@ -67,7 +67,7 @@ const PrivacyPolicy = () => {
                         }`}
                       >
                         <Icon size={16} />
-                        <span className="text-sm font-semibold leading-tight">{section.title}</span>
+                        <span className="text-xs font-semibold leading-tight">{section.title}</span>
                       </button>
                     );
                   })}
@@ -86,7 +86,7 @@ const PrivacyPolicy = () => {
                   const Icon = section.icon;
                   return (
                     <section key={section.id} id={section.id} className="scroll-mt-24">
-                      <div className="bg-card border border-border rounded-lg p-8 shadow-glow">
+                      <div className="bg-card border border-border rounded-lg p-2 shadow-glow">
                         <div    className="flex items-center gap-4 mb-6">
                           <div className="w-12 h-12 bg-foreground border-2 border-accent rounded-lg flex items-center justify-center">
                             <Icon size={24} className="text-accent" />
@@ -99,7 +99,7 @@ const PrivacyPolicy = () => {
                         </div>
 
                         {/* Section Content */}
-                        <div className="text-muted-foreground font-semibold space-y-4 italic leading-tight">
+                        <div className="text-muted-foreground text-xs font-semibold space-y-4 italic leading-tight">
                           {section.id === 'introduction' || (
                             <p>
                               Aijim ("we," "our," or "us") is committed to protecting your privacy.

@@ -61,10 +61,10 @@ const TermsConditions = () => {
 
             {/* Content */}
             <main className="flex-1">
-              <div className="bg-card border border-border rounded-lg shadow-glow">
+              <div className="bg-card border text-xs border-border rounded-lg shadow-glow">
                 
                 {/* Account Terms */}
-                <section id="account" className="p-8 border-b border-border">
+                <section id="account" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <User className="text-white mr-3" size={28} />
                     <h2 className="text-2xl font-bold text-foreground">ACCOUNT TERMS</h2>
@@ -83,7 +83,7 @@ const TermsConditions = () => {
                 </section>
 
                 {/* Orders */}
-                <section id="orders" className="p-8 border-b border-border">
+                <section id="orders" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <ShoppingBag className="text-white mr-3" size={28} />
                     <h2 className="text-2xl font-bold text-foreground">ORDERS & PURCHASES</h2>
@@ -104,7 +104,7 @@ const TermsConditions = () => {
                 </section>
 
                 {/* Payments */}
-                <section id="payments" className="p-8 border-b border-border">
+                <section id="payments" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <CreditCard className="text-white mr-3" size={28} />
                     <h2 className="text-2xl font-bold text-foreground">PAYMENT TERMS</h2>
@@ -147,7 +147,7 @@ const TermsConditions = () => {
                 </section>
 
                 {/* Legal */}
-                <section id="legal" className="p-8 border-b border-border">
+                <section id="legal" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <Scale className="text-white mr-3" size={28} />
                     <h2 className="text-2xl font-bold text-foreground">LEGAL TERMS</h2>

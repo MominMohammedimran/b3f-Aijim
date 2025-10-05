@@ -4,7 +4,7 @@
 
 // Configuration
 const ALLOWED_ORIGIN = 'https://aijim.shop';
-const BACKEND_API = 'https://my-backend.example.com'; // Replace with your actual backend URL
+const BACKEND_API = 'https://zfdsrtwjxwzwbrtfgypm.supabase.co'; // Replace with your actual backend URL
 const RATE_LIMIT_PER_MINUTE = 100;
 
 // In-memory rate limiting (note: this is per worker instance)
