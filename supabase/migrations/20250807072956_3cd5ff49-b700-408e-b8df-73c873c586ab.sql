@@ -22,7 +22,7 @@ USING (bucket_id = 'paymentproofs' AND auth.uid()::text = (storage.foldername(na
 CREATE POLICY "Admins can view all payment proofs" 
 ON storage.objects 
 FOR SELECT 
-USING (bucket_id = 'paymentproofs' AND auth.email() = 'b3fprintingsolutions@gmail.com');
+USING (bucket_id = 'paymentproofs' AND auth.email() = 'aijim.official@gmail.com');
 
 -- Create order_issues table
 CREATE TABLE IF NOT EXISTS public.order_issues (
@@ -58,12 +58,12 @@ USING (user_email = auth.email());
 CREATE POLICY "Admin can view all order issues" 
 ON public.order_issues 
 FOR SELECT 
-USING (auth.email() = 'b3fprintingsolutions@gmail.com');
+USING (auth.email() = 'aijim.official@gmail.com');
 
 CREATE POLICY "Admin can update all order issues" 
 ON public.order_issues 
 FOR UPDATE 
-USING (auth.email() = 'b3fprintingsolutions@gmail.com');
+USING (auth.email() = 'aijim.official@gmail.com');
 
 -- Create function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION public.update_order_issues_updated_at()

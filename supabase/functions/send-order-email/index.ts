@@ -29,7 +29,7 @@ const handler = async (req: Request): Promise<Response> => {
     const smtpConfig = {
       hostname: Deno.env.get('SMTP_HOSTNAME') || 'smtp.gmail.com',
       port: parseInt(Deno.env.get('SMTP_PORT') || '587'),
-      username: Deno.env.get('SMTP_USERNAME') || 'b3f.prints.pages.dev@gmail.com',
+      username: Deno.env.get('SMTP_USERNAME') || 'aijim.official@gmail.com',
       password: Deno.env.get('SMTP_PASSWORD'),
       tls: true,
     };
@@ -57,7 +57,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <p>We'll send you another email when your order ships.</p>
-          <p>Thank you for choosing B3F Prints!</p>
+          <p>Thank you for choosing Aijim!</p>
         </div>
       `;
     } else {
@@ -76,7 +76,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
           
           <p>Thank you for your patience!</p>
-          <p>Best regards,<br>B3F Prints Team</p>
+          <p>Best regards,<br>Aijim Team</p>
         </div>
       `;
     }

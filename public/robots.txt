@@ -1,3 +1,11 @@
 Sitemap: https://aijim.shop/sitemap.xml
 User-agent: *
 Allow: /
+
+Sitemap:
+https://aijim.shop/sitemap.xml
+
+#content  usage permissions
+content-signal:search=yes
+content-signal:ai-input=no
+content-signal:ai-train=no

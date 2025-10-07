@@ -93,7 +93,7 @@ export const ensureAdminExists = async () => {
     if (!supabase) return false;
     
     // Check if the specific admin exists by email
-    const adminEmail = 'b3fprintingsolutions@gmail.com';
+    const adminEmail = 'aijim.official@gmail.com';
     
     const { data: existingAdmin, error: checkError } = await supabase
       .from('admin_users')

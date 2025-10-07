@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { Instagram, Mail, Facebook, Twitter,Truck,HandCoins } from "lucide-react";
 import Marquee from "react-fast-marquee"
 
@@ -10,6 +10,7 @@ const Footer = () => {
       links: [
         { name: "Our Story", href: "/about-us" },
         { name: "Privacy Policy", href: "/privacy-policy" },
+         { name: "Customer Care", href: "/contact-us" },
       ],
     },
     {
@@ -21,30 +22,26 @@ const Footer = () => {
         {name:"Track Orders",href:"/orders"},
       ],
     },
-    {
-      title: "CONTACT",
-      links: [
-        { name: "Customer Care", href: "/contact-us" },
-      
-      ],
-    },
+    
+    
   ];
+  const navigate=useNavigate();
 
   return (
-    <footer className="bg-gray-950 h-auto text-gray-300 border-t border-gray-800">
+    <footer className="bg-black w-full h-auto mt-3 mb-20 pb-5 text-gray-300 border-t border-gray-800">
       {/* 🔥 Marquee Bar */}
        <div className="bg-white h-6  pt-1 pb-1  md:h-8 md:pt-3 md:pb-3 flex items-center ">
                     <Marquee gradient={false} speed={50} pauseOnHover={true} className="w-full">
                       {Array.from({ length:22 }).map((_, i) => (
                         <span key={i} className="flex items-center uppercase text-black font-semibold text-[11px] sm:text-[12px] md:text-[13px] lg:text-[15px] px-4 whitespace-nowrap">
-                             | <HandCoins size={20} className="ml-10 mr-4 "/>REWARD POINTS FOR EACH SUCCESSFUL ORDER PLACED   
+                             | <HandCoins size={20} className="ml-10 mr-4 text-yellow-900"/>REWARD POINTS FOR EACH SUCCESSFUL ORDER PLACED   
                         </span>
                       ))}
                     </Marquee>
                   </div>
       
 
-      <div className="w-full mx-auto px-6 lg:px-12">
+      <div className="w-full mx-auto px-3 lg:px-8">
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-3">
           {/* Brand Section */}
@@ -53,6 +50,9 @@ const Footer = () => {
               src="/aijim-uploads/aijim.svg"
               alt="AIJIM Logo"
               className="h-12 mb-4"
+              onClick={()=>{
+              navigate("/");
+              }}
             />
             <p className="text-sm font-medium italic leading-tight text-foreground">
               Premium oversized streetwear that defines your style.  
@@ -60,27 +60,33 @@ const Footer = () => {
             </p>
 
             {/* Social Icons */}
-            <div className="flex space-x-4 mt-6">
-              {[Instagram, Mail].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="p-2 rounded-full bg-gray-700 hover:bg-accent hover:text-white transition-all duration-300"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              ))}
+             <div className="flex space-x-4 mt-6 items-center justify-center">
+              <a
+                href="https://www.instagram.com/aijim.shop?igsh=ZWlnMXl1YzNkYjlx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full bg-gray-800 hover:bg-yellow-500 text-white hover:text-black transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
+
+              <a
+                href="mailto:aijim.official@gmail.com"
+                className="p-2 rounded-full bg-gray-800 hover:bg-yellow-500 text-white hover:text-black transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <Mail className="h-5 w-5" />
+              </a>
             </div>
           </div>
            <div className="border-b w-full border-gray-800 text-center  ">
-          <p className="w-full text-[12px] text-white font-medium">
+          <p className="w-full text-[12px] lg:text-[16px] text-white font-medium">
             © {new Date().getFullYear()} <span className="font-semibold">AIJIM</span> ® —  
             Made with love in India
           </p>
         </div>
 
           {/* Quick Links */}
-          <div className="grid grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 ">
           {footerSections.map((section) => (
            
             <div key={section.title} >
@@ -93,12 +99,12 @@ const Footer = () => {
                     <Link
                       to={link.href}
                       onClick={()=>{
-                        window.scrollTop({
+                        window.scrollTo({
                           top:0,
                           behavior:'smooth'
                         })
                       }}
-                      className="text-xs text-white/90 font-semibold italic hover:text-white transition-colors"
+                      className="text-xs text-white/90 font-semibold italic hover:text-yellow-400 transition-colors"
                     >
                       {link.name}
                     </Link>

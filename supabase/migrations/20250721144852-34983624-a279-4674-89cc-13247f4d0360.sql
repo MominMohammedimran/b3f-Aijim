@@ -5,9 +5,9 @@ DROP FUNCTION IF EXISTS public.update_admin_settings(jsonb);
 CREATE TABLE IF NOT EXISTS public.admin_settings (
   id INTEGER PRIMARY KEY DEFAULT 1,
   site_name TEXT DEFAULT 'AIJIM',
-  site_description TEXT DEFAULT 'Custom printing services',
-  contact_email TEXT DEFAULT 'contact@aijim.com',
-  contact_phone TEXT DEFAULT '+91 9999999999',
+  site_description TEXT DEFAULT 'Premium Oversized Tees @Affordable',
+  contact_email TEXT DEFAULT 'aijim.official@gmail.com',
+  contact_phone TEXT DEFAULT '+91 - 7672080881',
   business_address TEXT DEFAULT 'India',
   delivery_fee NUMERIC DEFAULT 80,
   min_order_amount NUMERIC DEFAULT 100,
@@ -20,7 +20,7 @@ ALTER TABLE public.admin_settings ENABLE ROW LEVEL SECURITY;
 
 -- Create policy for admins only
 CREATE POLICY "Admin can manage settings" ON public.admin_settings
-FOR ALL USING (auth.email() = 'b3fprintingsolutions@gmail.com');
+FOR ALL USING (auth.email() = 'aijim.official@gmail.com');
 
 -- Insert default settings if not exists
 INSERT INTO public.admin_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;

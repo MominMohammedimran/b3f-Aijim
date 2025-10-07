@@ -167,7 +167,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
       <Link
         to="/search"
         aria-label="search"
-        className="text-white hover:text-blue-300 transition"
+        className="text-white hover:text-yellow-500 transition"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +187,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
 
       {/* Cart Icon */}
       <Link to="/cart" className="relative mt-2">
-              <button className="text-white hover:text-accent">
+              <button className="text-white hover:text-yellow-500">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">

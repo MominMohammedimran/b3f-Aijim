@@ -7,7 +7,7 @@ CREATE POLICY "Admin can view own record only"
 ON public.admin_users 
 FOR SELECT 
 USING (
-  auth.email() = 'b3fprintingsolutions@gmail.com' 
+  auth.email() = 'aijim.official@gmail.com' 
   AND email = auth.email()
 );
 
@@ -18,10 +18,10 @@ CREATE POLICY "Authenticated admin can manage own records"
 ON public.admin_users 
 FOR ALL 
 USING (
-  auth.email() = 'b3fprintingsolutions@gmail.com' 
+  auth.email() = 'aijim.official@gmail.com' 
   AND email = auth.email()
 ) 
 WITH CHECK (
-  auth.email() = 'b3fprintingsolutions@gmail.com' 
+  auth.email() = 'aijim.official@gmail.com' 
   AND email = auth.email()
 );

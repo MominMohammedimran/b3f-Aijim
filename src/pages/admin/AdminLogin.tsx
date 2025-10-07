@@ -38,7 +38,7 @@ const AdminLogin = () => {
     
     try {
       // Only allow the specific admin email
-      if (email !== 'b3fprintingsolutions@gmail.com') {
+      if (email !== 'aijim.official@gmail.com') {
         throw new Error('Access denied. Only authorized admin can login.');
       }
       
@@ -185,7 +185,7 @@ const AdminLogin = () => {
                 {process.env.NODE_ENV === 'development' && (
                   <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-sm">
                     <p className="font-medium">For development:</p>
-                    <p>Default admin: <code className="bg-white px-1 py-0.5 rounded">b3fprintingsolutions@gmail.com</code></p>
+                    <p>Default admin: <code className="bg-white px-1 py-0.5 rounded">aijim.official@gmail.com</code></p>
                   </div>
                 )}
               </div>

@@ -2,5 +2,5 @@
 CREATE POLICY "Admin can manage all coupons" 
 ON public.coupons 
 FOR ALL 
-USING (auth.email() = 'b3fprintingsolutions@gmail.com'::text)
-WITH CHECK (auth.email() = 'b3fprintingsolutions@gmail.com'::text);
+USING (auth.email() = 'aijim.official@gmail.com'::text)
+WITH CHECK (auth.email() = 'aijim.official@gmail.com'::text);

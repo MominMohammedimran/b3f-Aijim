@@ -99,7 +99,7 @@ const PrivacyPolicy = () => {
                         </div>
 
                         {/* Section Content */}
-                        <div className="text-muted-foreground text-xs font-semibold space-y-4 italic leading-tight">
+                        <div className="text-foregroud/90 text-xs font-semibold space-y-4 italic leading-tight">
                           {section.id === 'introduction' || (
                             <p>
                               Aijim ("we," "our," or "us") is committed to protecting your privacy.

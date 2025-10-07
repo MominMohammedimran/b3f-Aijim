@@ -15,16 +15,16 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
     name: "AIJIM",
     url: "https://aijm.shop",
     logo: "https://aijim.shop/logo.png",
-    description: "Premium fashion and apparel including oversized tees, hoodies and trendy clothing with great discounts.",
+    description: "Premium Oversized Tees @Affordable.",
     contactPoint: {
       telephone: "+91-XXXXXXXXXX",
       contactType: "Customer Service",
       areaServed: "India"
     },
     sameAs: [
-      "https://facebook.com/aijim",
+    
       "https://instagram.com/aijim.shop",
-      "https://twitter.com/aijim"
+     
     ]
   };
 
@@ -47,7 +47,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
         {children}
       </main>
       {!hideFooter && <Footer />}
-      <ChatbaseAIWidget />
+      
     </div>
   );
 };

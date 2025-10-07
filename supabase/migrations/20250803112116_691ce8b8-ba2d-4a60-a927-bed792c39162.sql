@@ -30,11 +30,11 @@ CREATE POLICY "Users can view their own payment issues"
 
 CREATE POLICY "Admin can view all payment issues"
   ON public.payment_issues FOR SELECT
-  USING (auth.email() = 'b3fprintingsolutions@gmail.com');
+  USING (auth.email() = 'aijim.official@gmail.com');
 
 CREATE POLICY "Admin can update all payment issues"
   ON public.payment_issues FOR UPDATE
-  USING (auth.email() = 'b3fprintingsolutions@gmail.com');
+  USING (auth.email() = 'aijim.official@gmail.com');
 
 -- Add missing fields to orders table if they don't exist
 DO $$ 

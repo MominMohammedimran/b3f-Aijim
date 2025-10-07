@@ -109,7 +109,7 @@ const AdminLoginForm: React.FC<AdminLoginFormProps> = ({
           {process.env.NODE_ENV === 'development' && (
             <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-sm">
               <p className="font-medium">For development:</p>
-              <p>Email: <code className="bg-white px-1 py-0.5 rounded">b3fprintingsolutions@gmail.com</code></p>
+              <p>Email: <code className="bg-white px-1 py-0.5 rounded">aijim.official@gmail.com</code></p>
               <p>Password: <code className="bg-white px-1 py-0.5 rounded">Mmdimran@1</code></p>
             </div>
           )}
@@ -163,7 +163,7 @@ const AdminLoginForm: React.FC<AdminLoginFormProps> = ({
           {process.env.NODE_ENV === 'development' && (
             <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md text-sm">
               <p className="font-medium">For development:</p>
-              <p>Default admin: <code className="bg-white px-1 py-0.5 rounded">b3fprintingsolutions@gmail.com</code></p>
+              <p>Default admin: <code className="bg-white px-1 py-0.5 rounded">aijim.official@gmail.com</code></p>
             </div>
           )}
         </div>

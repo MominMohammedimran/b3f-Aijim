@@ -6,6 +6,14 @@ const baseUrl = 'https://aijim.shop';
 // Define your URLs here (you can extend this later to pull from your routes or database)
 const urls = [
   { loc: '/', changefreq: 'daily', priority: 1.0 },
+    { loc: '/products', changefreq: 'daily', priority: 1.0 },
+      { loc: '/search', changefreq: 'daily', priority: 1.0 },
+        { loc: '/orders', changefreq: 'daily', priority: 1.0 },
+          { loc: '/profile', changefreq: 'daily', priority: 1.0 },
+            { loc: '/checkout', changefreq: 'daily', priority: 1.0 },
+              { loc: '/contect-us', changefreq: 'daily', priority: 1.0 },
+                { loc: '/about-us', changefreq: 'daily', priority: 1.0 },
+                  { loc: '/payment', changefreq: 'daily', priority: 1.0 },
   
 ];
 

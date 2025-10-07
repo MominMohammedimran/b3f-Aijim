@@ -67,7 +67,7 @@ serve(async (req: Request) => {
           
           <p>This code will expire in 10 minutes. If you didn't request this verification, please ignore this email.</p>
           
-          <p style="margin-top:32px;font-size:14px;color:#666;">Thank you for choosing B3F Prints!</p>
+          <p style="margin-top:32px;font-size:14px;color:#666;">Thank you for choosing Aijim!</p>
         </div>
       </div>
     `;
@@ -77,7 +77,7 @@ serve(async (req: Request) => {
     const mailPayload = {
       sender: {
         name: "Aijim",
-        email: "b3f.prints.pages.dev@gmail.com"
+        email: "aijim.official@gmail.com"
       },
       to: [{ email: email }],
       subject: emailSubject,

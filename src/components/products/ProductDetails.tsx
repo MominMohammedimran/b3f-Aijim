@@ -385,10 +385,10 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
           </>
         ) : (
           // In stock UI - show when ANY size has stock
-          <div className='w-full  flex flex-row fixed bottom-8 left-0 right-0 z-10 items-center justify-center '>
+          <div className='w-90  flex flex-row fixed bottom-8 left-0 right-0 z-10 items-center justify-center '>
             <ProductActionButtons
               product={product}
-              className="w-full rounded-none "
+              className="w-full rounded-none text-lg "
               selectedSizes={selectedSizes.map((s) => s.size)}
               quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
             />
@@ -399,7 +399,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
                 product={product}
                 selectedSizes={selectedSizes.map((s) => s.size)}
                 variant="secondary"
-                className="w-full rounded-none border-l border-gray-800 font-semibold text-xl bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
+                className="w-full rounded-none border-l border-gray-800 font-semibold text-lg bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
               />
             </div>
           </div>
@@ -461,7 +461,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
 
       {/* Description */}
         <ProductDescription desc={product.description}/>
-         <AvailableCoupons productPrice={product.price} />
+         <AvailableCoupons />
       
 
       {/* Share Modal */}

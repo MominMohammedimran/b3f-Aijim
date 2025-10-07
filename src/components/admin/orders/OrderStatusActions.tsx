@@ -81,7 +81,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
           .eq('id', orderId);
 
         if (error) {
-          console.error('Error updating courier data:', updateError);
+          console.error('Error updating courier data:', error);
         }
         
         // Update status if tracking indicates delivered or out for delivery

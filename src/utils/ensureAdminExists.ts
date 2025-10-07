@@ -2,7 +2,7 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export const ensureMainAdminExists = async (): Promise<void> => {
-  const mainAdminEmail = 'b3fprintingsolutions@gmail.com';
+  const mainAdminEmail = 'aijim.official@gmail.com';
 
   try {
     // Check if admin already exists

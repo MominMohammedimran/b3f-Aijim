@@ -74,8 +74,8 @@ export const initializeAdmin = async (userId: string, email: string): Promise<vo
 
 // ✅ Ensure the main admin exists (fallback to alternative email too)
 export const ensureMainAdminExists = async (): Promise<void> => {
-  const mainAdminEmail = 'b3fprintingsolutions@gmail.com';
-  const altAdminEmail = 'b3fprintingsolutions@gmai.com';
+  const mainAdminEmail = 'aijim.official@gmail.com';
+  const altAdminEmail = 'aijim.official@gmail.com';
 
   try {
     const { data: existingAdmins, error } = await supabase

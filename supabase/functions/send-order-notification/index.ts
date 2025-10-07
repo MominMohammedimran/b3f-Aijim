@@ -191,7 +191,7 @@ serve(async (req: Request) => {
 
           ${
             shippingAddress?.zipCode
-              ? `<p style="margin-top:16px;">Estimated Delivery: <strong style="color:red">7–10 Days</strong><br/>Track here: <a href="https://aijim.pages.dev/orders" target="_blank">Track Order</a></p>`
+              ? `<p style="margin-top:16px;">Estimated Delivery: <strong style="color:red">7–10 Days</strong><br/>Track here: <a href="https://aijim.shop/orders" target="_blank">Track Order</a></p>`
               : ""
           }
 
@@ -205,12 +205,12 @@ serve(async (req: Request) => {
     const mailPayload = {
       sender: {
         name: "Aijim",
-        email: "b3f.prints.pages.dev@gmail.com"
+        email: "aijim.official@gmail.com"
       },
       to: [
   { email: shippingAddress?.email || userProfile?.email },
   ...(status === "confirmed"
-    ? [{ email: "b3f.prints.pages.dev@gmail.com" }]
+    ? [{ email: "aijim.official@gmail.com" }]
     : [])
 ],
 

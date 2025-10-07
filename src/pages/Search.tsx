@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, X,ChevronDown} from 'lucide-react';
 import Layout from '../components/layout/Layout';
-import PriceRangeFilter from '../components/ui/PriceRangeFilter';
 import { products } from '../lib/data';
 import { Product } from '../lib/types';
 import { Button } from '@/components/ui/button';
@@ -22,11 +21,12 @@ const Search = () => {
   const queryParam = queryParams.get('query');
 
   const [searchQuery, setSearchQuery] = useState(queryParam || '');
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+ 
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [isSortPopupOpen, setIsSortPopupOpen] = useState(false);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 99999 });
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedFilterCategories, setSelectedFilterCategories] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>('default');
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>(categoryParam);
 
@@ -38,26 +38,49 @@ const Search = () => {
 
   const uniqueCategories = [...new Set(products.map(product => product.category))];
 
+
   useEffect(() => {
     window.scrollTo(0, 0);
 
     let filtered = [...products];
 
-    if (selectedCategory) {
-      filtered = filtered.filter(product =>
-        product.category.toLowerCase() === selectedCategory.toLowerCase()
-      );
-    } else if (queryParam && !selectedCategory) {
+    // Apply search query
+    if (queryParam) {
       filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(queryParam.toLowerCase()) ||
         product.category.toLowerCase().includes(queryParam.toLowerCase())
       );
     }
 
-    filtered = filtered.filter(product =>
-      product.price >= priceRange.min && product.price <= priceRange.max
-    );
+    // Apply category selection from chips
+    if (selectedCategory) {
+      filtered = filtered.filter(product =>
+        product.category.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
 
+    // Apply filter categories from popup
+    if (selectedFilterCategories.length > 0) {
+      filtered = filtered.filter(product =>
+        selectedFilterCategories.some(cat => 
+          product.category.toLowerCase() === cat.toLowerCase()
+        )
+      );
+    }
+
+    // Apply size filter
+    if (selectedSizes.length > 0) {
+      filtered = filtered.filter(product => {
+        if (product.sizes && Array.isArray(product.sizes)) {
+          return selectedSizes.some(size => 
+            product.sizes.some(variant => variant.size === size)
+          );
+        }
+        return false;
+      });
+    }
+
+    // Apply sorting
     switch (sortOption) {
       case 'price-low-high':
         filtered.sort((a, b) => a.price - b.price);
@@ -71,7 +94,7 @@ const Search = () => {
 
     setFilteredProducts(filtered);
     setCurrentPage(1);
-  }, [categoryParam, queryParam, priceRange, sortOption, selectedCategory]);
+  }, [queryParam, selectedCategory, selectedFilterCategories, selectedSizes, sortOption]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,8 +128,20 @@ const Search = () => {
     }
   };
 
-  const handlePriceRangeChange = (min: number, max: number) => {
-    setPriceRange({ min, max });
+  const toggleSize = (size: string) => {
+    setSelectedSizes(prev =>
+      prev.includes(size)
+        ? prev.filter(s => s !== size)
+        : [...prev, size]
+    );
+  };
+
+  const toggleFilterCategory = (category: string) => {
+    setSelectedFilterCategories(prev =>
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
   };
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -146,27 +181,23 @@ const Search = () => {
           clearSearch={clearSearch}
         />
 
-        <CategoryFilter
+       {/*<CategoryFilter
           categories={uniqueCategories}
           selectedCategory={selectedCategory}
           onCategorySelect={handleCategoryClick}
+        />*/}
+
+        <ProductGrid
+          products={currentProducts}
+          onProductClick={handleProductClick}
         />
 
-        {(searchQuery || categoryParam || selectedCategory) && (
-          <>
-            <ProductGrid
-              products={currentProducts}
-              onProductClick={handleProductClick}
-            />
-
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onNextPage={nextPage}
-              onPrevPage={prevPage}
-            />
-          </>
-        )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onNextPage={nextPage}
+          onPrevPage={prevPage}
+        />
       </div>
 
       {/* Sticky Filter & Sort Buttons */}
@@ -187,8 +218,8 @@ const Search = () => {
 
       {/* Filter Popup */}
       {isFilterPopupOpen && (
-        <div className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end">
-          <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up">
+        <div className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end" onClick={() => setIsFilterPopupOpen(false)}>
+          <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Filter</h2>
               <button onClick={() => setIsFilterPopupOpen(false)}>
@@ -196,19 +227,53 @@ const Search = () => {
               </button>
             </div>
 
-            <h3 className="font-semibold mb-2">Price Range</h3>
-            <PriceRangeFilter
-              minPrice={0}
-              maxPrice={maxProductPrice}
-              onChange={handlePriceRangeChange}
-            />
+            {/* Filter by Size 
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3 text-lg">Size</h3>
+              <div className="grid grid-cols-4 gap-2">
+                {availableSizes.map(size => (
+                  <button
+                    key={size}
+                    onClick={() => toggleSize(size)}
+                    className={`px-4 py-2 rounded-md border font-semibold ${
+                      selectedSizes.includes(size)
+                        ? "bg-yellow-400 text-black border-yellow-400"
+                        : "border-gray-600 text-white hover:bg-gray-800"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>*/}
+
+            {/* Filter by Category */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3 text-lg">Category</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {uniqueCategories.map(category => (
+                  <button
+                    key={category}
+                    onClick={() => toggleFilterCategory(category)}
+                    className={`px-4 py-2 rounded-md border font-semibold text-sm ${
+                      selectedFilterCategories.includes(category)
+                        ? "bg-yellow-400 text-black border-yellow-400"
+                        : "border-gray-600 text-white hover:bg-gray-800"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div className="mt-6 flex justify-between gap-4">
               <Button
                 variant="outline"
                 className="w-1/2 border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800"
                 onClick={() => {
-                  setPriceRange({ min: 0, max: maxProductPrice });
+                  setSelectedSizes([]);
+                  setSelectedFilterCategories([]);
                   setSelectedCategory(null);
                   setIsFilterPopupOpen(false);
                 }}

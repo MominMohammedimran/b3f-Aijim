@@ -87,7 +87,7 @@ const Payment = () => {
           
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="outline" size="xs" className="items-center justify-center px-1 py-1 rounded-none font-semibold text-black bg-white hover:text-red-500 hover:bg-white">
+              <Button variant="outline" size="sm" className="items-center justify-center px-1 py-1 rounded-none font-semibold text-black bg-white hover:text-red-500 hover:bg-white">
                
                 Cancel Order
               </Button>

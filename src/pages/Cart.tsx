@@ -229,7 +229,7 @@ const Cart = () => {
          <CheckoutStepper currentStep={1} />
         <div className="flex justify-between items-center mt-5 mb-6">
           <h1 className="text-lg font-bold leading-relaxed ">Shopping Cart ({cartItems.length})</h1>
-          <Button variant="outline" size="xs" className="px-2"onClick={clearCart}>Clear Cart</Button>
+          <Button variant="outline" size="sm" className="px-2"onClick={clearCart}>Clear Cart</Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -264,7 +264,7 @@ const Cart = () => {
                         {formatPrice(item.price)}
                       </p>
                         <Button
-                          size="xs"
+                          size="sm"
                           variant="outline"
                           onClick={() => removeFromCart(item.product_id)}
                           className="text-gray-800 rounded-none px-1 font-semibold text-xs bg-yellow-400 hover:text-gray-900 hover:bg-yellow-600"

@@ -45,8 +45,8 @@ const ContactUs = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-background">
-        <div className="container-custom pt-16 pb-8">
-          <div className="flex items-center mb-8">
+        <div className="container-custom pt-16 pb-">
+          <div className="flex items-center mb-4">
             <Link to="/" className="mr-4 text-foreground hover:text-foreground transition-colors">
               <ArrowLeft size={24} />
             </Link>
@@ -64,7 +64,7 @@ const ContactUs = () => {
                 <h2 className="text-2xl font-black text-foreground mb-1 uppercase tracking-wide">
                   GET IN TOUCH
                 </h2>
-                <p className="text-muted-foreground font-semibold italic leading-relaxed mb-8">
+                <p className="text-muted-foreground font-semibold italic leading-snug mb-8">
                   Have questions about our products, need style advice, or want to share feedback? 
                   We're here to help. Choose the best way to reach us below.
                 </p>
@@ -86,8 +86,8 @@ const ContactUs = () => {
                           <h3 className="font-bold text-foreground  uppercase tracking-wide text-md">
                             {contact.title}
                           </h3>
-                          <p className="text-foreground/90 font-bold mb-1">{contact.primary}</p>
-                         <p className="text-muted-foreground text-sm font-semibold italic ">{contact.description}</p>
+                          <p className="text-foreground/90 text-sm font-bold mb-1">{contact.primary}</p>
+                         <p className="text-muted-foreground text-xs font-semibold italic ">{contact.description}</p>
                         </div>
                       </div>
                     </div>

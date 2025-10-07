@@ -202,10 +202,10 @@ serve(async (req: Request) => {
     const mailPayload = {
       sender: {
         name: "AIJIM Order System",
-        email: "b3f.prints.pages.dev@gmail.com"
+        email: "aijim.official@gmail.com"
       },
       to: [
-        { email: "b3f.prints.pages.dev@gmail.com" }
+        { email: "aijim.official@gmail.com" }
       ],
       subject: emailSubject,
       htmlContent: emailHtml,

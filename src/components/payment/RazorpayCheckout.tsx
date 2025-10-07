@@ -310,7 +310,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         paymentData.customerInfo.email,
         paymentData.customerInfo.contact,
         async (paymentId, orderId, signature) => {
-          ('Payment successful:', { paymentId, orderId, signature });
+          console.log('Payment successful:', { paymentId, orderId, signature });
           
           // Update order with payment details
           try {

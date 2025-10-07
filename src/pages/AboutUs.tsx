@@ -35,13 +35,13 @@ const AboutUs = () => {
         
           
           {/* Content */}
-          <div className="relative z-10 text-center container-custom">
+          <div className="absolute text-center container-custom">
             <div className="animate-fade-in">
-              <h1 className="text-6xl md:text-8xl font-black text-foreground mb-0 tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-black text-foreground mb-0 tracking-tight">
                 WE ARE <span className="text-accent  font-black text-foreground">AIJIM</span>
               </h1>
               <div className="w-full h-2 bg-accent mx-0 mb-1 bg-white animate-pulse"></div>
-              <p className="text-xl md:text-2xl italic text-foreground max-w-3xl mx-auto font-semibold leading-relaxed">
+              <p className="text-md md:text-lg italic text-foreground max-w-3xl mx-auto font-semibold leading-relaxed">
                 Defining streetwear for the <span className="text-accent text-foreground font-semibold">fearless</span>,
                 <br />creating fashion for the <span className="text-accent text-foreground font-semibold">authentic</span>.
               </p>

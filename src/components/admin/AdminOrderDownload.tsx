@@ -144,7 +144,7 @@ const AdminOrderDownload: React.FC<AdminOrderDownloadProps> = ({ order }) => {
 
         <div style="margin-top: 50px; text-align: center; font-size: 12px; color: #666;">
           <p>Thank you for your business!</p>
-          <p>For any queries, contact us at support@b3fprints.com</p>
+          <p>For any queries, contact us at aijim.official@gmail.com</p>
         </div>
       </body>
       </html>

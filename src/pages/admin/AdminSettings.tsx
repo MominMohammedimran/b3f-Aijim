@@ -37,8 +37,8 @@ const AdminSettings = () => {
   const [settings, setSettings] = useState<Settings>({
     site_name: 'Aijim',
     site_description: 'Custom printing services',
-    contact_email: 'contact@b3fprints.com',
-    contact_phone: '+91 9999999999',
+    contact_email: 'aijim.official@gmail.com',
+    contact_phone: '+91 - 7672080881',
     business_address: 'India',
     delivery_fee: 80,
     min_order_amount: 100
@@ -62,10 +62,10 @@ const AdminSettings = () => {
       } else if (data && Array.isArray(data) && data.length > 0) {
         const settingsData = data[0];
         setSettings({
-          site_name: settingsData.site_name || 'B3F Prints',
-          site_description: settingsData.site_description || 'Custom printing services',
-          contact_email: settingsData.contact_email || 'contact@b3fprints.com',
-          contact_phone: settingsData.contact_phone || '+91 9999999999',
+          site_name: settingsData.site_name || 'Aijim',
+          site_description: settingsData.site_description || 'Premium Oversized Tees @Affordable',
+          contact_email: settingsData.contact_email || 'aijim.official@gmail.com',
+          contact_phone: settingsData.contact_phone || '+91 - 7672080881',
           business_address: settingsData.business_address || 'India',
           delivery_fee: Number(settingsData.delivery_fee) || 80,
           min_order_amount: Number(settingsData.min_order_amount) || 100

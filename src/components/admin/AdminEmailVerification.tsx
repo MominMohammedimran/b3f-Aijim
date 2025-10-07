@@ -73,7 +73,7 @@ const AdminEmailVerification: React.FC<AdminEmailVerificationProps> = ({
       if (signInError) throw signInError;
       
       const userId = signInData.user?.id;
-      if (userId && email === 'b3fprintingsolutions@gmail.com') {
+      if (userId && email === 'aijim.official@gmail.com') {
         // Initialize admin in database for the default admin email
         await initializeAdmin(userId, email);
       }
