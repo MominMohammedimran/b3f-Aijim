@@ -43,13 +43,13 @@ const Footer = () => {
 
       <div className="w-full mx-auto px-3 lg:px-8">
         {/* Top Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 py-3">
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-5 py-3">
           {/* Brand Section */}
           <div>
             <img
               src="/aijim-uploads/aijim.svg"
               alt="AIJIM Logo"
-              className="h-12 mb-4"
+              className="h-12 m-auto mb-4"
               onClick={()=>{
               navigate("/");
               }}
@@ -77,20 +77,21 @@ const Footer = () => {
                 <Mail className="h-5 w-5" />
               </a>
             </div>
-          </div>
-           <div className="border-b w-full border-gray-800 text-center  ">
-          <p className="w-full text-[12px] lg:text-[16px] text-white font-medium">
+            <div className="border-b w-full border-gray-800 text-center  mt-5 ">
+          <p className="w-full text-[12px] lg:text-[18px] text-white font-medium">
             © {new Date().getFullYear()} <span className="font-semibold">AIJIM</span> ® —  
             Made with love in India
           </p>
         </div>
+          </div>
+           
 
           {/* Quick Links */}
           <div className="grid grid-cols-2 ">
           {footerSections.map((section) => (
            
             <div key={section.title} >
-              <h3 className="text-sm font-semibold underline cursor-text uppercase tracking-widest text-white mb-0">
+              <h3 className="text-sm lg:text-md font-semibold underline cursor-text uppercase tracking-widest text-white mb-0">
                 {section.title}
               </h3>
               <ul className="space-y-0">
@@ -104,7 +105,7 @@ const Footer = () => {
                           behavior:'smooth'
                         })
                       }}
-                      className="text-xs text-white/90 font-semibold italic hover:text-yellow-400 transition-colors"
+                      className="text-xs lg:text-sm text-white/90 font-semibold italic hover:text-yellow-400 transition-colors"
                     >
                       {link.name}
                     </Link>

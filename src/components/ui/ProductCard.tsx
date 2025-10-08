@@ -56,11 +56,11 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
 </span>
 
           </div>
-          <div className="p-1 pt-2 bg-[#111] border-x border-b border-gray-800">
-            <h3 className="text-white text-center ml-1 font-bold text-[14px] line-clamp-2  leading-tight">
+          <div className="p-0 pl-1 pt-2 bg-[#111] border-x border-b border-gray-800">
+            <h3 className="text-white text-left ml-1 font-bold text-[14px] line-clamp-2  leading-tight">
               {product.name}
             </h3>
-            <div className="flex items-center justify-evenly mt-1 gap-2 text-sm ">
+            <div className="p-1 flex items-center justify-evenly mt-1 gap-2 text-sm ">
               {discount && (
                 <span className="text-gray-400 line-through font-semibold">
                   ₹{product.originalPrice}

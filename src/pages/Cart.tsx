@@ -245,7 +245,7 @@ const Cart = () => {
                         src={item.image || '/placeholder.svg'}
                         alt={item.name}
                         onClick={() => redirect({ id: item.code, pd_name: item.name })}
-                        className={`h-16 w-16 object-fit rounded border shadow-sm transition-transform duration-200 hover:scale-125
+                        className={`h-16 w-14 object-cover rounded border shadow-sm transition-transform duration-200 hover:scale-125
                            ${!item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'}`}
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = '/placeholder.svg';
@@ -259,19 +259,17 @@ const Cart = () => {
                      
 
                       {/* Remove entire item button */}
-                      <div className="mt-1 flex justify-between ">
+                      <div className="mt-1 flex justify-between items-center mt-1">
                          <p className="text-sm  font-semibold text-white ">
                         {formatPrice(item.price)}
                       </p>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => removeFromCart(item.product_id)}
-                          className="text-gray-800 rounded-none px-1 font-semibold text-xs bg-yellow-400 hover:text-gray-900 hover:bg-yellow-600"
+                        <p
+                           onClick={() => removeFromCart(item.product_id)}
+                          className="rounded-none   font-semibold text-xs underline text-yellow-400 bg-none hover:text-red-400 "
                         >
                           
                           Remove 
-                        </Button>
+                        </p>
                       </div>
                     </div>
                   </div>

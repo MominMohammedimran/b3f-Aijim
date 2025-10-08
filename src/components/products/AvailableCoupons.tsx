@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Ticket, Copy, CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { Ticket, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -41,7 +41,7 @@ const AvailableCoupons: React.FC = () => {
   };
 
   return (
-    <div className="p-4  bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none">
+    <div className="p-4 bg-muted-background border border-gray-700 rounded-none">
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -60,7 +60,9 @@ const AvailableCoupons: React.FC = () => {
 
       {/* Dropdown scrollable area */}
       {expanded && (
-        <div className="mt-3 max-h-40 overflow-y-auto pr-2 space-y-3 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
+        <div
+          className="mt-3 max-h-40 overflow-y-auto pr-2 space-y-3 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent scroll-smooth"
+        >
           {coupons.length === 0 ? (
             <p className="text-gray-400 text-sm">No coupons available.</p>
           ) : (

@@ -214,46 +214,46 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
 
      <div className="fixed bottom-0 left-0 right-0 bg-black border-t  border-gray-800 p-2 z-50 ">
           <div className="flex items-center justify-between leading-snug">
-        <Link to="/" className={`flex flex-col items-center text-xs sm:text-sm ${
-      isActive('/') ? 'text-white font-medium' : 'text-[#6B7280] font-bold'
+        <Link to="/" className={`flex flex-col items-center font-bold text-xs sm:text-sm ${
+      isActive('/') ? 'text-white  border-b border-white' : 'text-[#6B7280] '
     }`}>
-      <Home size={18} className={isActive('/') ? 'text-white font-bold' : 'text-[#6B7280] font-bold'} />
+      <Home size={18} className={isActive('/') ? 'text-white ' : 'text-[#6B7280] '} />
       <span>Home</span>
     </Link>
 
-    <Link to="/products"   className={`flex flex-col items-center text-xs sm:text-sm ${
-      isActive('/products') ? 'text-white font-semibold' : 'text-[#6B7280] font-semibold'
+    <Link to="/products"   className={`flex flex-col items-center font-bold text-xs sm:text-sm ${
+      isActive('/products') ? 'text-white border-b border-white' : 'text-[#6B7280]'
     }`}>
-      <Package size={18} className={isActive('/products') ? 'text-white font-bold' : 'text-[#6B7280] font-bold'} />
+      <Package size={18} className={isActive('/products') ? 'text-white ' : 'text-[#6B7280] '} />
       <span>Products</span>
     </Link>
 
-    <Link to="/search" className={`flex flex-col items-center text-xs sm:text-sm ${
-      isActive('/search') ? 'text-white font-medium' : 'text-[#6B7280] font-bold'
+    <Link to="/search" className={`flex flex-col items-center font-bold text-xs sm:text-sm ${
+      isActive('/search') ? 'text-white border-b border-white' : 'text-[#6B7280] '
     }`}>
-      <Search size={18} className={isActive('/search') ? 'text-white font-bold' : 'text-[#6B7280] '} />
+      <Search size={18} className={isActive('/search') ? 'text-white ' : 'text-[#6B7280] '} />
       <span>Search</span>
     </Link>
 
-    <Link to="/orders" className={`flex flex-col items-center text-xs sm:text-sm ${
-      isActive('/orders') ? 'text-white font-medium' : 'text-[#6B7280] font-bold'
+    <Link to="/orders" className={`flex flex-col items-center font-bold text-xs sm:text-sm ${
+      isActive('/orders') ? 'text-white border-b border-white' : 'text-[#6B7280]'
     }`}>
-      <PackageSearch size={18} className={isActive('/orders') ? 'text-white font-bold' : 'text-[#6B7280] font-bold'} />
+      <PackageSearch size={18} className={isActive('/orders') ? 'text-white ' : 'text-[#6B7280] '} />
       <span>Orders</span>
     </Link>
 
     {currentUser ? (
-      <Link to="/profile" className={`flex flex-col items-center text-xs sm:text-sm ${
-        isActive('/profile') ? 'text-white font-medium' : 'text-[#6B7280] '
+      <Link to="/profile" className={`flex flex-col items-center font-bold text-xs sm:text-sm ${
+        isActive('/profile') ? 'text-white border-b border-white' : 'text-[#6B7280] '
       }`}>
-        <User size={18} className={isActive('/profile') ? 'text-white font-bold' : 'text-[#6B7280] '} />
+        <User size={18} className={isActive('/profile') ? 'text-white ' : 'text-[#6B7280] '} />
         <span>Profile</span>
       </Link>
     ) : (
-      <Link to="/signin" className={`flex flex-col items-center text-xs sm:text-sm ${
-        isActive('/signin') ? 'text-white font-medium' : 'text-[#6B7280] '
+      <Link to="/signin" className={`flex flex-col items-center font-bold text-xs sm:text-sm ${
+        isActive('/signin') ? 'text-white border-b border-white' : 'text-[#6B7280] '
       }`}>
-        <User size={18} className={isActive('/signin') ? 'text-white font-bold' : 'text-[#6B7280] font-bold'} />
+        <User size={18} className={isActive('/signin') ? 'text-white ' : 'text-[#6B7280]'} />
         <span>Sign In</span>
       </Link>
     )}

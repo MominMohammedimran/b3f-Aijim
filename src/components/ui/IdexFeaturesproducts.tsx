@@ -54,8 +54,8 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
                 {inStock ? 'Stock' : 'Sold'}
               </span>
           </div>
-         <div className="p-1 pt-2 bg-[#111] border-x border-b border-gray-800">
-            <h3 className="text-white text-center font-bold text-[14px] leading-tight line-clamp-2 ml-1">
+         <div className="p-0 pl-1  pt-2 bg-[#111] border-x border-b border-gray-800">
+            <h3 className="text-white text-left font-bold text-[14px] leading-tight line-clamp-2 ml-1">
               {product.name}
             </h3>
             <div className="flex items-center mt-1 justify-evenly gap-2 text-sm ">

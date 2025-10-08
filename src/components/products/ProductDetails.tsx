@@ -16,6 +16,7 @@ import LiveViewingCounter from './LiveViewingCounter';
 import AvailableCoupons from './AvailableCoupons';
 import ProductDescription from './ProductDescription';
 import { validatePincode } from '@/utils/pincodeService';
+import ProductImageGallery from './ProductImageGallery';
 
 interface SizeWithQuantity {
   size: string;
@@ -385,7 +386,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
           </>
         ) : (
           // In stock UI - show when ANY size has stock
-          <div className='w-90  flex flex-row fixed bottom-8 left-0 right-0 z-10 items-center justify-center '>
+          <div className='w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 left-0 right-0 z-10 items-center justify-center '>
             <ProductActionButtons
               product={product}
               className="w-full rounded-none text-lg "
@@ -394,14 +395,14 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
             />
             
             {/* Place Order Button */}
-            <div className="">
+            
               <ProductPlaceOrder
                 product={product}
                 selectedSizes={selectedSizes.map((s) => s.size)}
                 variant="secondary"
                 className="w-full rounded-none border-l border-gray-800 font-semibold text-lg bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
               />
-            </div>
+          
           </div>
         )}
       </div>

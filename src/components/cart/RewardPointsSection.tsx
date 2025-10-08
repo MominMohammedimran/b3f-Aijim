@@ -1,13 +1,11 @@
-
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Gift, Minus, Plus } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
-import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Gift, Minus, Plus } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface RewardPointsSectionProps {
   cartTotal: number;
@@ -23,159 +21,190 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
   cartTotal,
   onPointsApplied,
   onPointsRemoved,
-  appliedPoints
+  appliedPoints,
 }) => {
   const { currentUser } = useAuth();
   const [pointsToUse, setPointsToUse] = useState(0);
   const [availablePoints, setAvailablePoints] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
-    if (currentUser) {
-      fetchUserPoints();
-    }
+  useEffect(() => {
+    if (currentUser) fetchUserPoints();
   }, [currentUser]);
 
   const fetchUserPoints = async () => {
-    if (!currentUser) return;
-
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('reward_points')
-        .eq('id', currentUser.id)
+        .from("profiles")
+        .select("reward_points")
+        .eq("id", currentUser?.id)
         .single();
 
       if (error) throw error;
-      
       setAvailablePoints(data?.reward_points || 0);
     } catch (error) {
-      console.error('Error fetching reward points:', error);
-      setAvailablePoints(0);
+      console.error("Error fetching reward points:", error);
+      toast.error("Failed to load reward points");
     }
   };
 
   const handleApplyPoints = () => {
-    if (pointsToUse <0) {
-      toast.error('Please enter valid points to use');
-      return;
-    }
+    if (pointsToUse <= 0) return toast.error("Enter valid points to use");
+    if (pointsToUse > availablePoints) return toast.error("Not enough points");
+    if (pointsToUse > cartTotal) return toast.error("Points exceed cart total");
 
-    if (pointsToUse > availablePoints) {
-      toast.error('Not enough reward points available');
-      return;
-    }
-
-    // 1 point = ₹1 discount
     const discount = pointsToUse;
-    
-    if (discount > cartTotal) {
-      toast.error('Points discount cannot exceed cart total');
-      return;
-    }
-
     onPointsApplied(pointsToUse, discount);
-    toast.success(`Applied ${pointsToUse} reward points`);
+    toast.success(`Applied ${pointsToUse} points for ₹${discount} off`);
   };
 
   const handleRemovePoints = () => {
     setPointsToUse(0);
     onPointsRemoved();
-    toast.success('Reward points removed');
+    toast.success("Reward points removed");
   };
 
   const adjustPoints = (increment: boolean) => {
-    const newPoints = increment ? pointsToUse + 10 : Math.max(0, pointsToUse - 10);
     const maxPoints = Math.min(availablePoints, cartTotal);
-    setPointsToUse(Math.min(newPoints, maxPoints));
+    const newPoints = increment
+      ? Math.min(pointsToUse + 10, maxPoints)
+      : Math.max(pointsToUse - 10, 0);
+    setPointsToUse(newPoints);
   };
 
   if (!currentUser || availablePoints <= 0) return null;
 
-  return (
-    <Card className="mb-4">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center gap-2 tracking-[1px] text-white">
-          <Gift className="h-5 w-5 text-yellow-400 " />
-          Reward Points
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="text-sm text-gray-300 font-semibold tracking-[1px]">
-          Available : 
-          {"  "  }<span className="font-semibold text-yellow-400 tracking-[1px]">{availablePoints} points</span>
-          <span className="text-xs text-gray-400 tracking-[1px] ml-2">(1 point = ₹1)</span>
-        </div>
+  const progressPercent =
+    (pointsToUse / Math.min(availablePoints, cartTotal)) * 100;
 
+  return (
+    <div className="w-full mb-5 border border-gray-700 rounded-md bg-gradient-to-b from-gray-950 via-black to-gray-900 p-4 shadow-[0_0_10px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300">
+      {/* Header */}
+      <div className="flex items-center justify-start gap-2 border-b border-gray-700 pb-2 mb-3">
+        <Gift className="text-yellow-400 w-5 h-5" />
+        <h3 className="text-lg font-semibold text-yellow-400 tracking-wide uppercase">
+          Reward Points
+        </h3>
+      </div>
+
+      {/* Available points info */}
+      <div className="text-sm font-medium text-gray-300 mb-2">
+        Available:{" "}
+        <span className="text-yellow-400">{availablePoints} Points</span>{" "}
+        <span className="text-xs text-gray-400">(1 Point = ₹1)</span>
+      </div>
+
+      {/* Active / Apply state */}
+      <AnimatePresence mode="wait">
         {appliedPoints ? (
-          <div className="bg-green-50 border border-green-200 p-0 ">
-            <div className="flex justify-between items-center">
-              <div className="text-green-800 tracking-[1px] font-semibold">
-                <div className="font-semibold text-sm">Points Applied</div>
-                <div className="text-xs font-semibold">Using {appliedPoints.points} points for ₹{appliedPoints.discount} discount</div>
+          <motion.div
+            key="applied"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="bg-yellow-900/10 border border-yellow-500/40 rounded-md p-3"
+          >
+            <div className="flex justify-between items-center text-sm text-gray-200">
+              <div>
+                <p className="font-semibold text-yellow-400">Points Applied</p>
+                <p className="text-xs text-gray-400">
+                  Using {appliedPoints.points} points for ₹
+                  {appliedPoints.discount} off
+                </p>
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleRemovePoints}
-                className="text-white bg-black border-none hover:text-red-500"
+                className="border-none text-red-400 hover:text-red-500 bg-transparent hover:bg-red-500/10"
               >
                 Remove
               </Button>
             </div>
-          </div>
+          </motion.div>
         ) : (
-          <div className="space-y-2">
+          <motion.div
+            key="apply"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="space-y-3"
+          >
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => adjustPoints(false)}
                 disabled={pointsToUse <= 0}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 border-gray-600 bg-gray-800"
               >
-                <Minus className="h-4 w-4" />
+                <Minus className="h-4 w-4 text-gray-300" />
               </Button>
+
               <Input
                 type="number"
                 value={pointsToUse}
-                onChange={(e) => setPointsToUse(Math.min(Math.max(0, parseInt(e.target.value) || 0), Math.min(availablePoints, cartTotal)))}
-                className="text-center"
+                onChange={(e) =>
+                  setPointsToUse(
+                    Math.min(
+                      Math.max(0, parseInt(e.target.value) || 0),
+                      Math.min(availablePoints, cartTotal)
+                    )
+                  )
+                }
+                className="text-center bg-gray-800 text-gray-200 border-gray-600 focus:ring-yellow-400"
                 placeholder="Enter points"
                 min="0"
                 max={Math.min(availablePoints, cartTotal)}
               />
+
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => adjustPoints(true)}
                 disabled={pointsToUse >= Math.min(availablePoints, cartTotal)}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 border-gray-600 bg-gray-800"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-4 w-4 text-gray-300" />
               </Button>
             </div>
-            
-            <div className="flex gap-1">
+
+            {/* Progress bar */}
+            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-yellow-400 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercent}%` }}
+                transition={{ duration: 0.4 }}
+              />
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex gap-2">
               <Button
                 onClick={handleApplyPoints}
                 disabled={loading || pointsToUse <= 0}
-                className="flex-1 text-xs font-semibold rounded-none" 
+                className="flex-1 text-xs font-semibold bg-yellow-500 hover:bg-yellow-600 text-black rounded-none"
               >
-                {loading ? 'Applying...' : `Apply ${pointsToUse} Points`}
+                {loading ? "Applying..." : `Apply ${pointsToUse} Points`}
               </Button>
               <Button
                 variant="outline"
-                onClick={() => setPointsToUse(Math.min(availablePoints, cartTotal))}
+                onClick={() => {
+                  const maxUse = Math.min(availablePoints, cartTotal);
+                  setPointsToUse(maxUse);
+                  toast.info(`Set to max usable points: ${maxUse}`);
+                }}
                 disabled={availablePoints <= 0}
+                className="text-xs border-gray-600 hover:bg-gray-800 text-gray-300"
               >
                 Use Max
               </Button>
             </div>
-          </div>
+          </motion.div>
         )}
-      </CardContent>
-    </Card>
+      </AnimatePresence>
+    </div>
   );
 };
 

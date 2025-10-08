@@ -29,30 +29,24 @@ const AboutUs = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <div className="relative h-screen flex items-center justify-center overflow-hidden">
+      <div className="min-h-screen bg-background py-12 mt-10">
         
-          
-          {/* Content */}
-          <div className="absolute text-center container-custom">
-            <div className="animate-fade-in">
-              <h1 className="text-2xl md:text-3xl font-black text-foreground mb-0 tracking-tight">
+        {/* Hero Section */}
+        
+
+        {/* Values Grid */}
+        <div className="container-custom ">
+           <div className="animate-fade-in border py-5 mt-5 mb-4 ">
+              <h1 className="text-2xl md:text-3xl text-center font-black text-foreground mb-0 tracking-tight">
                 WE ARE <span className="text-accent  font-black text-foreground">AIJIM</span>
               </h1>
               <div className="w-full h-2 bg-accent mx-0 mb-1 bg-white animate-pulse"></div>
-              <p className="text-md md:text-lg italic text-foreground max-w-3xl mx-auto font-semibold leading-relaxed">
+              <p className="text-md md:text-lg italic text-center text-foreground max-w-3xl mx-auto font-semibold leading-relaxed">
                 Defining streetwear for the <span className="text-accent text-foreground font-semibold">fearless</span>,
                 <br />creating fashion for the <span className="text-accent text-foreground font-semibold">authentic</span>.
               </p>
             </div>
-          </div>
 
-          {/* Animated elements */}
-          </div>
-
-        {/* Values Grid */}
-        <div className="container-custom py-10">
           <div className="grid md:grid-cols-2 gap-2 max-w-6xl mx-auto">
             {values.map((value, index) => {
               const Icon = value.icon;
@@ -69,7 +63,7 @@ const AboutUs = () => {
                       <h3 className="text-xl font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
                         {value.title}
                       </h3>
-                      <p className="text-foreground/50 italic text-xs font-medium leading-snug">
+                      <p className="text-foreground/90 not-italic text-xs font-medium leading-snug">
                         {value.description}
                       </p>
                     </div>
@@ -110,7 +104,7 @@ const AboutUs = () => {
                 CRAFTED WITH <span className="text-foreground text-black">PRECISION</span>
               </h2>
               <div className="w-full h-1 bg-white mb-2"></div>
-              <div className="space-y-0 text-foreground/60 font-semibold italic text-sm leading-tight">
+              <div className="space-y-0 text-foreground/90 font-semibold not-italic text-sm leading-tight">
                 <p>
                   Every AIJIM piece undergoes rigorous quality control. From fabric selection to final stitching, 
                   we maintain the highest standards of craftsmanship.
@@ -126,18 +120,18 @@ const AboutUs = () => {
               </div>
             </div>
             
-            <div className="space-y-6 italic ">
+            <div className="space-y-6 not-italic ">
               <div className="bg-card border border-border rounded-lg p-6   shadow-glow">
                 <h4 className="font-bold text-foreground mb-2">PREMIUM MATERIALS</h4>
-                <p className="text-sm text-muted-foreground">100% organic cotton, sustainable fabrics, and premium blends</p>
+                <p className="text-sm text-foreground/90">100% organic cotton, sustainable fabrics, and premium blends</p>
               </div>
               <div className="bg-card border border-border rounded-lg p-6 shadow-glow">
                 <h4 className="font-bold text-foreground mb-2">ETHICAL PRODUCTION</h4>
-                <p className="text-sm text-muted-foreground">Fair wages, safe working conditions, and transparent supply chains</p>
+                <p className="text-sm text-foreground/90">Fair wages, safe working conditions, and transparent supply chains</p>
               </div>
               <div className="bg-card border border-border rounded-lg p-6 shadow-glow">
                 <h4 className="font-bold text-foreground mb-2">QUALITY ASSURANCE</h4>
-                <p className="text-sm text-muted-foreground">Multiple quality checks at every stage of production</p>
+                <p className="text-sm text-foreground/90">Multiple quality checks at every stage of production</p>
               </div>
             </div>
           </div>

@@ -201,7 +201,7 @@ const Search = () => {
       </div>
 
       {/* Sticky Filter & Sort Buttons */}
-      <div className="fixed bottom-12 left-0 right-0 z-50  bg-black border-t border-gray-200 py-0 flex justify-around ">
+      <div className="fixed bottom-14 left-0 right-0 z-50  bg-black border-t border-gray-200 py-0 flex justify-around ">
         <Button
           onClick={() => setIsFilterPopupOpen(true)}
           className="bg-gray-900 text-white uppercase font-semibold border-r border-gray-200 rounded-none shadow-lg w-1/2 hover:bg-gray-900 "

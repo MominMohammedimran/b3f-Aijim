@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
-
+import AvailableCoupons from '@/components/products/AvailableCoupons'
 interface CouponSectionProps {
   cartTotal: number;
   onCouponApplied: (discount: number, code: string) => void;
@@ -87,16 +87,15 @@ const CouponSection: React.FC<CouponSectionProps> = ({
   const discountedPrice = cartTotal;
 
   return (
-    <div className="bg-gray-800 p-6 border mb-6">
-      <h3 className="font-space-grotesk font-bold text-white mb-4">APPLY COUPON</h3>
-      
+    <div className="  w-full h-full p-1 mb-6">
+       
       <div className="flex gap-3 mb-4">
        {appliedCoupon ? (
   <Input
     type="text"
     value={appliedCoupon.code}
     readOnly
-    className="flex-1  shadow-sm tracking-[1px] rounded-none bg-black border border-gray-300 text-white font-semibold"
+    className="flex-1 text-xs shadow-sm tracking-[1px] rounded-none bg-black border border-gray-300 text-white font-semibold"
   />
 ) : (
   <Input
@@ -104,7 +103,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     placeholder="Enter coupon code"
     value={couponCode}
     onChange={(e) => setCouponCode(e.target.value)}
-    className="flex-1  tracking-[1px] shadow-sm rounded-none "
+    className="flex-1  text-xs tracking-[1px] shadow-sm rounded-none "
     disabled={loading}
   />
 )}
@@ -120,7 +119,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
           <Button 
             onClick={applyCoupon}
             disabled={loading}
-            className="bg-black border border-gray-300 tracking-[1px] text-white rounded-none hover:bg-gray-900 font-inter font-bold uppercase px-6"
+            className="bg-black border text-xs border-gray-300 tracking-[1px] text-white rounded-none hover:bg-gray-900 font-inter font-bold uppercase px-6"
           >
             {loading ? 'APPLYING...' : 'APPLY'}
           </Button>
@@ -129,7 +128,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
 
       {/* Messages - only show when no coupon is applied */}
       {message && !appliedCoupon && (
-        <div className={`text-sm mb-3 ${messageType === 'success' ? 'text-green-500 font-semibold tracking-[1px] ' : 'text-red-300 font-semibold tracking-[1px]'}`}>
+        <div className={`text-xs mb-3 ${messageType === 'success' ? 'text-green-500 font-semibold tracking-[1px] ' : 'text-red-500 font-semibold tracking-[1px]'}`}>
           {message}
         </div>
       )}
@@ -138,11 +137,12 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       {appliedCoupon && (
         <div className="space-y-2">
          
-          <div className="text-sm text-gray-100 font-semibold tracking-[1px]">
-            Active coupon : <span className="font-semibold text-lg text-yellow-300 underline tracking-[1px] "> {appliedCoupon.code} </span>
+          <div className="text-xs text-gray-100 font-semibold tracking-[1px]">
+            Active coupon : <span className="font-semibold text-sm text-yellow-300 underline tracking-[1px] "> {appliedCoupon.code} </span>
           </div>
         </div>
       )}
+      <AvailableCoupons className='mb-10 pb-10'/>
     </div>
   );
 };

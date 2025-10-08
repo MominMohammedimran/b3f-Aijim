@@ -35,8 +35,8 @@ const PrivacyPolicy = () => {
     <Layout>
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <div className="container-custom pt-20 pb-6">
-          <div className="flex items-center mb-8">
+        <div className="container-custom pt-20 pb-1">
+          <div className="flex items-center mb-3">
             <Link to="/" className="mr-4 text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft size={24} />
             </Link>
@@ -99,7 +99,7 @@ const PrivacyPolicy = () => {
                         </div>
 
                         {/* Section Content */}
-                        <div className="text-foregroud/90 text-xs font-semibold space-y-4 italic leading-tight">
+                        <div className="text-foregroud/90 text-xs font-bold space-y-4  leading-tight">
                           {section.id === 'introduction' || (
                             <p>
                               Aijim ("we," "our," or "us") is committed to protecting your privacy.

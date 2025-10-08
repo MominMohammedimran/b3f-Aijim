@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Product } from '@/lib/types';
 import ProductImage from '../ProductImage';
+import ProductImageGallery from '../ProductImageGallery'
 import ProductDetails from '../ProductDetails';
 import ProductReviewSection from '../ProductReviewSection';
 import RelatedProducts from '../RelatedProducts';
@@ -20,6 +21,8 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }
           name={product.name} 
           additionalImages={product.images || []}
         />
+        
+
         
         <ProductDetails
           product={product}
