@@ -13,6 +13,8 @@ const NewHero = () => {
           src={"https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Aijim_00001.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL0FpamltXzAwMDAxLnBuZyIsImlhdCI6MTc1MzI4MDM4MCwiZXhwIjoxNzg0ODE2MzgwfQ.Z0xqfsI5UAHONgA-cwPA1WUFxtGWDiH1rpkFu9iyBI0"}
           alt="AIJIM lifestyle - model wearing oversized streetwear"
           className="w-full h-full object-cover object-center"
+          fetchPriority='high'
+          decoding='async'
               />
         <div className="absolute inset-0 bg-black/40"></div>
       </div>

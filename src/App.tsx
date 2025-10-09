@@ -23,7 +23,7 @@ function App() {
     // Simulate an async operation (e.g., fetching user session)
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2500); // Adjust the duration as needed
+    }, 1500); // Adjust the duration as needed
 
     return () => clearTimeout(timer);
   }, []);

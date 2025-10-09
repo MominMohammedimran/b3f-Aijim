@@ -186,8 +186,8 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
       </Link>
 
       {/* Cart Icon */}
-      <Link to="/cart" className="relative mt-2">
-              <button className="text-white hover:text-yellow-500">
+      <Link to="/cart" aria-label='go to cart page' className="relative mt-2">
+              <button className="text-white aria-labelleby='cart-button' hover:text-yellow-500">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">
