@@ -11,9 +11,7 @@ const urls = [
         { loc: '/orders', changefreq: 'daily', priority: 1.0 },
           { loc: '/profile', changefreq: 'daily', priority: 1.0 },
             { loc: '/checkout', changefreq: 'daily', priority: 1.0 },
-              { loc: '/contect-us', changefreq: 'daily', priority: 1.0 },
-                { loc: '/about-us', changefreq: 'daily', priority: 1.0 },
-                  { loc: '/payment', changefreq: 'daily', priority: 1.0 },
+               { loc: '/payment', changefreq: 'daily', priority: 1.0 },
   
 ];
 
