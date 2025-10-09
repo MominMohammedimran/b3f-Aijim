@@ -1,72 +1,61 @@
-import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
-  const [fadeOut, setFadeOut] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Wait until resources are loaded, then trigger fade
-    const handleLoaded = () => {
-      setTimeout(() => {
-        setFadeOut(true);
-        setTimeout(onComplete, 600); // delay before removing
-      }, 800);
-    };
-
-    if (document.readyState === "complete") handleLoaded();
-    else window.addEventListener("load", handleLoaded);
-
-    return () => window.removeEventListener("load", handleLoaded);
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(timer);
+          setTimeout(onComplete, 400); // smooth fade-out
+          return 100;
+        }
+        return prev + 2;
+      });
+    }, 40);
+    return () => clearInterval(timer);
   }, [onComplete]);
 
   return (
-    <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-opacity duration-700 ${
-        fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
-      }`}
-    >
-      {/* 🔥 Logo with Neon Pulse */}
-      <div className="relative flex flex-col items-center justify-center">
-        <div className="absolute inset-0 blur-3xl bg-yellow-400/20 rounded-full animate-glow"></div>
-        <img
+    <AnimatePresence>
+      <motion.div
+        key="preloader"
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.6 } }}
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black"
+      >
+        {/* Logo */}
+        <motion.img
           src="/aijim-uploads/aijim.svg"
           alt="AIJIM Logo"
-          className="relative w-32 h-32 object-contain animate-logo-pulse"
-          loading="eager"
-          decoding="async"
+          className="w-44 sm:w-56 md:w-64 h-auto mb-6"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         />
-      </div>
 
-      {/* ⚡ Loading Bar */}
-      <div className="w-48 h-[3px] bg-gray-800 rounded-full overflow-hidden mt-6 shadow-inner">
-        <div className="h-full w-full bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-500 animate-slide" />
-      </div>
+        {/* Progress Bar BELOW Image */}
+        <div className="relative w-56 h-1.5 bg-gray-800 rounded-full overflow-hidden mb-3">
+          <motion.div
+            className="h-full bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          />
+        </div>
 
-      {/* 🧍 Tagline */}
-      <p className="mt-4 text-[11px] tracking-[3px] uppercase text-gray-400 font-semibold italic">
-        redefining streetwear
-      </p>
-
-      {/* ✨ Styles */}
-      <style>
-        {`
-        @keyframes slide {
-          0% { transform: translateX(-100%); }
-          50% { transform: translateX(-30%); }
-          100% { transform: translateX(100%); }
-        }
-        @keyframes glow {
-          0%, 100% { opacity: 0.5; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.15); }
-        }
-        @keyframes logoPulse {
-          0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px rgba(255,255,0,0.4)); }
-          50% { transform: scale(1.05); filter: drop-shadow(0 0 12px rgba(255,255,0,0.7)); }
-        }
-        .animate-slide { animation: slide 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
-        .animate-glow { animation: glow 3s ease-in-out infinite; }
-        .animate-logo-pulse { animation: logoPulse 2s ease-in-out infinite; }
-      `}
-      </style>
-    </div>
+        {/* Loading Text */}
+        <motion.p
+          className="text-xs sm:text-sm tracking-[3px] text-gray-400 font-semibold uppercase"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          Loading AIJIM... {progress}%
+        </motion.p>
+      </motion.div>
+    </AnimatePresence>
   );
 }

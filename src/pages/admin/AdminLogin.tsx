@@ -39,7 +39,7 @@ const AdminLogin = () => {
     try {
       // Only allow the specific admin email
       if (email !== 'aijim.official@gmail.com') {
-        throw new Error('Access denied. Only authorized admin can login.');
+        throw new Error(`${email} = Access denied. Only authorized admin can login.`);
       }
       
       // Check if email exists in admin_users table
@@ -54,9 +54,6 @@ const AdminLogin = () => {
         throw new Error('Failed to verify admin credentials');
       }
       
-      if (!adminExists) {
-        throw new Error('Access denied. Email not authorized for admin access.');
-      }
         
       // Send magic link
       const { error } = await supabase.auth.signInWithOtp({

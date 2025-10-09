@@ -83,7 +83,7 @@ p,
 span,
 a,
 button,input,ul,li{
-  font-family:'Geist', 'roboto','sans-serif';
+  font-family:'Satoshi','sans-serif';
   text-transform: none;
   font-weight: 400;
   
@@ -93,7 +93,7 @@ button,input,ul,li{
 
 h1, h2, h3, h4, h5, h6,label
 {
-    font-family:'Geist', 'roboto','sans-serif';
+    font-family:'Satoshi','sans-serif';
   text-transform: uppercase;
 
   line-height:1.5em;
