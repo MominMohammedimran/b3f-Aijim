@@ -18,7 +18,7 @@ const TermsConditions = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-background">
-        <div className="container-custom italic  py-0">
+        <div className="container-custom  py-0">
            {/* Header */}
                  <div className="container-custom pt-20 pb-1">
                    <div className="flex items-center mb-3">
@@ -26,7 +26,7 @@ const TermsConditions = () => {
                        <ArrowLeft size={24} />
                      </Link>
                      <div>
-                       <h1 className="text-2xl font-black text-foreground tracking-tight">TERMS & CONDITION</h1>
+                       <h1 className="text-xl font-bold text-foreground tracking-tight">TERMS & CONDITION</h1>
                        <p className="text-muted-foreground font-semibold ">Last Updated: Sept 27, 2025</p>
                      </div>
                    </div>
@@ -51,7 +51,7 @@ const TermsConditions = () => {
                         }}
                         className={`flex items-center px-4 py-3 rounded-lg transition-all ${
                           activeSection === section.id
-                            ? 'bg-accent text-white font-bold shadow-glow'
+                            ? 'bg-accent text-white font-semibold shadow-glow'
                             : 'text-foreground hover:text-foreground hover:bg-foreground'
                         }`}
                       >
@@ -72,10 +72,10 @@ const TermsConditions = () => {
                 <section id="account" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <User className="text-white mr-3" size={28} />
-                    <h2 className="text-2xl font-bold text-foreground">ACCOUNT TERMS</h2>
+                    <h2 className="text-xl font-semibold text-foreground">ACCOUNT TERMS</h2>
                   </div>
                   <div className="w-full h-0.5 bg-white mb-6"></div>
-                  <div className="space-y-1 text-white/90 not-italic font-bold leading-tight">
+                  <div className="space-y-1 text-white/90  font-semibold leading-tight">
                     <p>When you create an account with AIJIM, you must provide accurate and complete information.</p>
                     <ul className="list-disc list-inside font-semibold space-y-1 ml-4">
                       <li>You are responsible for maintaining the security of your account</li>
@@ -91,10 +91,10 @@ const TermsConditions = () => {
                 <section id="orders" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <ShoppingBag className="text-white mr-3" size={28} />
-                    <h2 className="text-2xl font-bold text-foreground">ORDERS & PURCHASES</h2>
+                    <h2 className="text-xl font-semibold text-foreground">ORDERS & PURCHASES</h2>
                   </div>
                   <div className="w-full h-0.5 bg-white mb-6 "></div>
-                  <div className="space-y-1 text-white/90 not-italic font-bold leading-tight">
+                  <div className="space-y-1 text-white/90  font-semibold leading-tight">
                     <p>All orders are subject to availability and acceptance by AIJIM.</p>
                     <ul className="list-disc list-inside font-semibold space-y-2 leading-tight  ml-4">
                       <li>Orders are processed within 1-2 business days</li>
@@ -112,12 +112,12 @@ const TermsConditions = () => {
                 <section id="payments" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <CreditCard className="text-white mr-3" size={28} />
-                    <h2 className="text-2xl font-bold text-foreground">PAYMENT TERMS</h2>
+                    <h2 className="text-xl font-semibold text-foreground">PAYMENT TERMS</h2>
                   </div>
                   <div className="w-full h-0.5 bg-white mb-6"></div>
-                  <div className="space-y-1 text-white/90 not-italic leading-tight">
+                  <div className="space-y-1 text-white/90 font-semibold leading-tight">
                     <p>Payment is due at the time of purchase and must be made through our secure payment gateway.</p>
-                    <ul className="list-disc list-inside space-y-2 ml-4 leading-tight">
+                    <ul className="list-disc list-inside space-y-2 font-semibold  ml-4 leading-tight">
                       <li>We accept major credit cards, debit cards, and digital wallets</li>
                       <li>All prices are in Indian Rupees (INR) unless otherwise stated</li>
                       <li>Payment failures may result in order cancellation</li>
@@ -134,12 +134,12 @@ const TermsConditions = () => {
                 <section id="usage" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <FileText className="text-white mr-3" size={28} />
-                    <h2 className="text-2xl font-bold text-foreground">WEBSITE USAGE</h2>
+                    <h2 className="text-xl font-semibold text-foreground">WEBSITE USAGE</h2>
                   </div>
                   <div className="w-full h-0.5 bg-accent mb-6"></div>
                   <div className="space-y-1 not-italic text-white/90 font-semibold leading-tight">
                     <p>You may use our website for lawful purposes only. Prohibited activities include:</p>
-                    <ul className="list-disc list-inside space-y-2 ml-4 leading-tight">
+                    <ul className="list-disc list-inside space-y-2 font-semibold ml-4 leading-tight">
                       <li>Attempting to gain unauthorized access to our systems</li>
                       <li>Using automated tools to scrape or harvest data</li>
                       <li>Posting harmful, offensive, or illegal content</li>
@@ -155,10 +155,10 @@ const TermsConditions = () => {
                 <section id="legal" className="p-2 border-b border-border">
                   <div className="flex items-center mb-2">
                     <Scale className="text-white mr-3" size={28} />
-                    <h2 className="text-2xl font-bold text-foreground">LEGAL TERMS</h2>
+                    <h2 className="text-xl font-semibold text-foreground">LEGAL TERMS</h2>
                   </div>
                   <div className="w-full h-0.5 bg-white mb-6"></div>
-                  <div className="space-y-4 text-white/90 not-italic font-semibold leading-tight">
+                  <div className="space-y-4 text-white/90 font-semibold leading-tight">
                     <p>These terms are governed by the laws of India and subject to the jurisdiction of Mumbai courts.</p>
                     <div className="grid md:grid-cols-2 gap-4 font-semibold leading-relaxed  mt-6">
                       <div className="bg-muted border border-border rounded-lg p-4">

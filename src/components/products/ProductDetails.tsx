@@ -147,26 +147,26 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
     <div className="relative bg-[#0b0b0b] text-white rounded-md p-1 px-2 md:p-3 shadow-lg">
       {/* Brand + Share */}
       <div className="flex items-center justify-between">
-        <span className="text-m font-bold uppercase tracking-wide text-white">AIJIM</span>
+        <span className="text-sm font-semibold uppercase tracking-wide text-white">AIJIM</span>
         <Button variant="ghost" size="icon" onClick={() => setShowShareModal(true)}>
           <Share className="w-8 h-8 z-10 text-[15px] text-gray-100" />
         </Button>
       </div>
 
       {/* Name + Price */}
-      <div className="flex flex-col mt-1 mb-2 sm:gap-5 justify-between items-start sm:items-start gap-2">
-        <h2 className="text-2xl sm:text-3xl sm:text-left font-bold text-white">{product.name}</h2>
+      <div className="flex flex-col mt-1 mb-1 sm:gap-4 justify-between items-start gap-2">
+        <h2 className="text-lg font-semibold text-white">{product.name}</h2>
       <div className="flex items-center font-semibold gap-3">
   {product.originalPrice && product.originalPrice > product.price && (
-    <span className="text-m font-bold text-gray-400 line-through">
+    <span className="text-md font-semibold text-gray-400 line-through">
       ₹{product.originalPrice}
     </span>
   )}
-  <span className="text-2xl font-satoshi font-bold  text-gray-100">
+  <span className="text-lg  font-semibold  text-gray-100">
     ₹{product.price}
   </span>
   {discountPercent > 0 && (
-            <span className="text-xs bg-red-600 items-last text-white px-2 py-0.5  font-bold">
+            <span className="text-[9px] bg-red-600 items-last text-white px-1 py-0.5  font-bold">
               {discountPercent}% OFF
             </span>
           )}
@@ -179,12 +179,12 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
       <LiveViewingCounter productId={product.id} />
       {activeRecommendation&&(
       <div className="flex gap-2 items-center">
-        <h2 className=" text-xs font-semibold font-poppins italic text-white text-left">
+        <h2 className=" text-xs font-semibold  text-white text-left">
           {activeRecommendation}
           </h2>
           <button onClick={()=>
           setShowSizeChart(true)}
-          className="text-xs font-medium font-poppins px-1 border border-gray-400"
+          className="text-xs font-medium  px-1 border border-gray-400"
           >
           Size chart
           </button>
@@ -241,14 +241,14 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
                     selected && !isOutOfStock
                       ? 'border-gray-400 bg-white text-black'
                       : isOutOfStock && !selected
-                      ? 'border-gray-600 bg-gray-800 text-gray-200 cursor-not-allowed '
+                      ? 'border-gray-600 bg-black text-gray-200 cursor-not-allowed '
                       : 'border-gray-400 hover:border-yellow-400  text-white'
                   }`}
               >
                 {size}
                 
                 {isOutOfStock ? (
-                  <div className="text-[8px] bg-red-600 text-white  px-1 font-semibold mt-1">SOLD</div>
+                  <div className="text-[8px] bg-red-600 text-white px-0.5 font-semibold mt-1">SOLD</div>
                 ) :(<div className="text-[8px] uppercase font-bold mt-1">
                   Stock
                 </div>)
@@ -275,9 +275,9 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
         return (
           <div
             key={sel.size}
-            className="min-w-[130px]  p-1 text-gray-100 border border-white  text-xs bg-gradient-to-br from-black via-gray-900 to-black  flex-shrink-0"
+            className="min-w-[120px]  p-1 text-gray-100 border border-white  text-xs bg-gradient-to-br from-black via-gray-900 to-black  flex-shrink-0"
           >
-            {/* Size & Remove 
+            {/* Size & Remove2
             <div className="flex justify-between py-1 items-center mb-0">
               <span className="font-bold flex  uppercase justify-between p-2  w-full text-center bg-black text-white py-0.5">
                 Size -

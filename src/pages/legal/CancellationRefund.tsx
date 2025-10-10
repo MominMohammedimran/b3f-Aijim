@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import{Link} from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
-import { ArrowRight, CheckCircle, Clock, Package, RefreshCw, HelpCircle, ChevronDown } from 'lucide-react';
+import { ArrowRight,ArrowLeft, CheckCircle, Clock, Package, RefreshCw, HelpCircle, ChevronDown } from 'lucide-react';
 
 const RefundReturnPolicyNew = () => {
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
@@ -64,12 +65,22 @@ const RefundReturnPolicyNew = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-background">
-        <div className="container-custom italic py-8">
+        <div className="container-custom  py-8">
+          <div className='container-custom pt-16 '>
+          <div className="flex items-center ">
+                      <Link to="/" className="mr-4 text-foreground hover:text-foreground transition-colors">
+                        <ArrowLeft size={24} />
+                      </Link>
+                      <div>
+                        <h1 className="text-xl font-bold text-foreground tracking-tight">Cancellation info </h1>
+                         </div>
+                    </div>
+              </div>
           {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-2xl font-bold text-foreground mt-10 ">REFUND & RETURN POLICY</h1>
+          <div className="text-center mb-8">
+            <h1 className="text-xl font-bold text-foreground uppercase mt-10 ">Cancellation, REFUND & RETURN POLICY</h1>
             <div className="w-full h-1 bg-white mx-auto"></div>
-            <p className="text-muted-foreground mt-1 max-w-2xl font-semibold  mx-auto">
+            <p className="text-muted-foreground mt-1 max-w-2xl font-semibold text-sm leading-snug mx-auto">
               Easy returns, hassle-free refunds. We want you to love your AIJIM purchase.
             </p>
           </div>
@@ -88,8 +99,8 @@ const RefundReturnPolicyNew = () => {
                     const Icon = step.icon;
                     return (
                       <div key={index} className="text-center relative">
-                        <div className={`w-24 h-24 rounded-full border-4 border-accent bg-white mx-auto mb-4 flex items-center justify-center shadow-glow`}>
-                          <Icon size={32} className={step.color} />
+                        <div className={`w-16 h-16 rounded-full border-4 border-accent bg-white mx-auto mb-4 flex items-center justify-center shadow-glow`}>
+                          <Icon size={24} className={step.color} />
                         </div>
                         <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
                         <p className="text-sm text-muted-foreground leading-relaxed font-semibold">{step.description}</p>
@@ -110,12 +121,12 @@ const RefundReturnPolicyNew = () => {
                 const Icon = step.icon;
                 return (
                   <div key={index} className="flex items-start gap-4">
-                    <div className={`w-16 h-16 rounded-full border-4 border-accent bg-card flex items-center justify-center shadow-glow flex-shrink-0`}>
-                      <Icon size={24} className={step.color} />
+                    <div className={`w-10 h-10 rounded-full border-4 border-accent bg-card flex items-center justify-center shadow-glow flex-shrink-0`}>
+                      <Icon size={16} className={step.color} />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-foreground mb-0">{step.title}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                      <p className="text-sm text-white/70 leading-snug">{step.description}</p>
                     </div>
                   </div>
                 );

@@ -36,12 +36,12 @@ const AboutUs = () => {
 
         {/* Values Grid */}
         <div className="container-custom ">
-           <div className="animate-fade-in border py-5 mt-5 mb-4 ">
-              <h1 className="text-2xl md:text-3xl text-center font-black text-foreground mb-0 tracking-tight">
+           <div className="animate-fade-in  py-5 mt-2 mb-4 ">
+              <h1 className="text-2xl md:text-3xl text-center font-bold text-foreground mb-0 tracking-tight">
                 WE ARE <span className="text-accent  font-black text-foreground">AIJIM</span>
               </h1>
               <div className="w-full h-2 bg-accent mx-0 mb-1 bg-white animate-pulse"></div>
-              <p className="text-md md:text-lg italic text-center text-foreground max-w-3xl mx-auto font-semibold leading-relaxed">
+              <p className="text-md md:text-lg not-italic text-center text-foreground max-w-3xl mx-auto font-semibold leading-relaxed">
                 Defining streetwear for the <span className="text-accent text-foreground font-semibold">fearless</span>,
                 <br />creating fashion for the <span className="text-accent text-foreground font-semibold">authentic</span>.
               </p>
@@ -63,7 +63,7 @@ const AboutUs = () => {
                       <h3 className="text-xl font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
                         {value.title}
                       </h3>
-                      <p className="text-foreground/90 not-italic text-xs font-medium leading-snug">
+                      <p className="text-foreground/80 not-italic text-xs font-semibold leading-snug">
                         {value.description}
                       </p>
                     </div>
@@ -100,20 +100,19 @@ const AboutUs = () => {
         <div className="container-custom py-16">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-foreground mb-1">
+              <h2 className="text-xl font-bold text-foreground mb-1">
                 CRAFTED WITH <span className="text-foreground text-black">PRECISION</span>
               </h2>
               <div className="w-full h-1 bg-white mb-2"></div>
-              <div className="space-y-0 text-foreground/90 font-semibold not-italic text-sm leading-tight">
+              <div className="space-y-0 text-foreground/90 font-semibold not-italic text-sm leading-snug">
                 <p>
                   Every AIJIM piece undergoes rigorous quality control. From fabric selection to final stitching, 
                   we maintain the highest standards of craftsmanship.
-                </p>
-                <p>
+                
+                
                   Our design team draws inspiration from global street culture, urban architecture, and 
                   contemporary art to create pieces that are both timeless and cutting-edge.
-                </p>
-                <p>
+                
                   We work with skilled artisans who share our passion for excellence, ensuring that every 
                   garment meets our exacting standards for comfort, durability, and style.
                 </p>

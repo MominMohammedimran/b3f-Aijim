@@ -51,8 +51,8 @@ const ContactUs = () => {
               <ArrowLeft size={24} />
             </Link>
             <div>
-              <h1 className="text-2xl font-black text-foreground tracking-tight">CONTACT US</h1>
-              <p className="text-muted-foreground italic font-semibold">Get in touch with our team</p>
+              <h1 className="text-xl font-bold text-foreground tracking-tight">CONTACT US</h1>
+              <p className="text-muted-foreground not-italic font-semibold">Get in touch with our team</p>
             </div>
           </div>
         </div>
@@ -61,10 +61,10 @@ const ContactUs = () => {
           <div className="grid lg:grid-cols-2 gap-12">
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-black text-foreground mb-1 uppercase tracking-wide">
+                <h2 className="text-xl font-bold text-foreground mb-1 uppercase tracking-wide">
                   GET IN TOUCH
                 </h2>
-                <p className="text-muted-foreground font-semibold italic leading-snug mb-8">
+                <p className="text-muted-foreground font-semibold  text-sm leading-snug mb-8">
                   Have questions about our products, need style advice, or want to share feedback? 
                   We're here to help. Choose the best way to reach us below.
                 </p>
@@ -86,8 +86,8 @@ const ContactUs = () => {
                           <h3 className="font-bold text-foreground  uppercase tracking-wide text-md">
                             {contact.title}
                           </h3>
-                          <p className="text-foreground/90 text-sm font-bold mb-1">{contact.primary}</p>
-                         <p className="text-muted-foreground text-xs font-semibold italic ">{contact.description}</p>
+                          <p className="text-foreground/90 text-sm font-semibold mb-1 mt-1">{contact.primary}</p>
+                         <p className="text-muted-foreground text-xs font-semibold ">{contact.description}</p>
                         </div>
                       </div>
                     </div>
@@ -99,18 +99,18 @@ const ContactUs = () => {
             <div>
               <div className="bg-card border border-border rounded-lg p-8 shadow-glow">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-accent text-accent-foreground rounded-lg flex items-center justify-center">
+                  <div className="w-14 h-12 bg-accent text-accent-foreground rounded-lg flex items-center justify-center">
                     <MessageCircle size={24} />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-foreground uppercase tracking-wide">
+                    <h2 className="text-xl font-bold text-foreground uppercase tracking-wide">
                       SEND MESSAGE
                     </h2>
-                    <p className="text-muted-foreground font-semibold italic text-sm">We'll get back to you within 24 hours</p>
+                    <p className="text-muted-foreground font-semibold  text-sm">We'll get back to you within 24 hours</p>
                   </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-2">
                   <div>
                     <label className="block text-foreground font-bold mb-2 uppercase text-sm tracking-wide">
                       Full Name *

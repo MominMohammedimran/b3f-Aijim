@@ -34,7 +34,7 @@ const ProductVideoSection: React.FC = () => {
 
   return (
     <div className="mb-8  mt-8 px-4">
-      <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">Product Videos</h2>
+      <h2 className="text-lg font-bold mb-4 text-white">Product Videos</h2>
 
       <div
         ref={containerRef}

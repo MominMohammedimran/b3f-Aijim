@@ -41,14 +41,14 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
               }`}
             />
             {pct > 0 && (
-              <span className="absolute top-1 right-0 bg-red-600 text-white text-[10px] px-1 py-0 font-semibold animate-bounce z-10">
+              <span className="absolute top-1 right-0 bg-red-600 text-white text-[8px] px-1 py-0 font-bold animate-bounce z-10">
                 {pct}% OFF
               </span>
             )}
             <span
   className={`rounded-none ${
     inStock
-      ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
+      ? 'absolute top-5 right-0 text-[8px] uppercase px-1 py-0 bg-white text-black font-bold'
       : 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
   }`}
 >
@@ -56,17 +56,17 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
 </span>
 
           </div>
-          <div className="p-0 pl-1 pt-2 bg-[#111] border-x border-b border-gray-800">
-            <h3 className="text-white text-left ml-1 font-bold text-[14px] line-clamp-2  leading-tight">
+          <div className="p-0 pl-1  pt-2 bg-[#111] border-x border-b border-gray-800">
+            <h3 className="text-white text-left font-semibold text-xs leading-tight line-clamp-2 ml-1">
               {product.name}
             </h3>
-            <div className="p-1 flex items-center justify-evenly mt-1 gap-2 text-sm ">
+            <div className="flex items-center mt-1 pl-2 gap-4  ">
               {discount && (
-                <span className="text-gray-400 line-through font-semibold">
+                <span className="text-gray-400 text-xs line-through font-semibold">
                   ₹{product.originalPrice}
                 </span>
               )}
-              <span className="text-white text-[17px] font-semibold">₹{product.price}</span>
+              <span className="text-white text-sm font-semibold">₹{product.price}</span>
              
             </div>
           </div>
@@ -86,14 +86,14 @@ export default function ProductCard({ product, onClick, className = '' }: Props)
             <div className=" " />
             <div className=" text-white">
                {pct > 0 && (
-               <span className="absolute top-1 right-0 bg-red-600 text-white text-[10px] px-1 py-0 font-semibold animate-bounce z-10">
+               <span className="absolute top-1 right-0 bg-red-600 text-white text-[8px] px-1 py-0 font-bold animate-bounce z-10">
                 {pct}% OFF
               </span>
             )}
               <span
                 className={` rounded-none  ${
                   inStock
-                    ? 'absolute top-6 right-0 text-[11px] uppercase px-1.5 py-0 bg-white text-black font-semibold'
+                    ? 'absolute top-6 right-0 text-[8px] uppercase px-1 py-0 bg-white text-black font-bold'
                     :'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white'
   }`}
               >

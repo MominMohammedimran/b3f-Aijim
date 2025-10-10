@@ -22,7 +22,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search for products..."
-        className="input-field pl-10 py-3 w-full text-gray-800 font-semibold text-xl border rounded-lg"
+        className="input-field pl-10 py-2 w-full text-gray-800 font-semibold text-lg border rounded-lg"
       />
       <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-800">
         <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">

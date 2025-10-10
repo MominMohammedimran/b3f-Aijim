@@ -28,7 +28,7 @@ const Footer = () => {
   const navigate=useNavigate();
 
   return (
-    <footer className="bg-black w-full h-auto mt-3 mb-20 pb-5 text-gray-300 border-t border-gray-800">
+    <footer className="bg-black w-full not-italic h-auto mt-3 mb-20 pb-5 text-gray-300 border-t border-gray-800">
       {/* 🔥 Marquee Bar */}
        <div className="bg-white h-6  pt-1 pb-1  md:h-8 md:pt-3 md:pb-3 flex items-center ">
                     <Marquee gradient={false} speed={50} pauseOnHover={true} className="w-full">
@@ -45,16 +45,16 @@ const Footer = () => {
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-2  gap-5 py-3">
           {/* Brand Section */}
-          <div>
+          <div >
             <img
               src="/aijim-uploads/aijim.svg"
               alt="AIJIM Logo"
-              className="h-12 m-auto mb-4"
+              className="h-12 m-auto mb-4 pr-4"
               onClick={()=>{
               navigate("/");
               }}
             />
-            <p className="text-sm font-medium italic leading-tight text-foreground">
+            <p className="text-sm w-full  font-medium items-center justify-center leading-relaxed text-foreground">
               Premium oversized streetwear that defines your style.  
               Comfort meets attitude in every piece we create.
             </p>
@@ -105,7 +105,7 @@ const Footer = () => {
                           behavior:'smooth'
                         })
                       }}
-                      className="text-xs lg:text-sm text-white/90 font-semibold italic hover:text-yellow-400 transition-colors"
+                      className="text-xs lg:text-sm text-white/90 font-semibold  hover:text-yellow-400 transition-colors"
                     >
                       {link.name}
                     </Link>

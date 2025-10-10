@@ -120,7 +120,7 @@ const seo = useSEO('/');
           {/*<HeroSlider />/*}
 
           {/* 🔥 Hot Selling */}
-      <div className="mb-8 mt-8 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black
+      <div className="mb-4 mt-4 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black
 
  p-4 pl-0 pr-0 shadow-md">
   <div className="flex items-center justify-evenly mb-2">
@@ -148,10 +148,11 @@ const seo = useSEO('/');
             />
           </div>
 
-          <div className="flex items-center justify-center gap-1 sm:gap-3 mb-3 flex-wrap text-center mt-2">
-            <h3 className="text-2xl sm:text-3xl font-bold text-white">
-              {product.name}
-            </h3>
+          <div className="flex items-center justify-center gap-1 sm:gap-3 mb-0 flex-wrap text-center mt-2">
+            <span className=" text-white px-3 py-1 leading-relaxed text-md mb-0 sm:text-md font-bold tracking-wide uppercase shadow">
+               {product.name}
+             </span>
+
             
           </div>
 
@@ -173,7 +174,7 @@ const seo = useSEO('/');
 
 
           {/* ✨ Featured Products */}
-            <h2 className="text-2xl md:text-2xl font-bold mb-5 text-left">Feature products</h2>
+            <h2 className="text-xl  font-bold mb-5 text-left">Feature products</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
           
           {products.map((product, index) => (
@@ -190,7 +191,7 @@ const seo = useSEO('/');
           <ProductVideoSection />
 
           {/* 🛍 All Products */}
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white mt-10 mb-6 tracking-wide"> All Products</h2>
+          <h2 className="text-xl font-extrabold text-white mt-6 mb-6 tracking-wide"> All Products</h2>
 
           {loading ? (
             <p className="text-gray-400">Loading products...</p>

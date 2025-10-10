@@ -80,10 +80,10 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
 
   return (
-    <div className="w-full mb-8 p-6 border  font-sans bg-gray-900 shadow-lg hover:shadow-2xl transition-all duration-300">
+    <div className="w-full mb-8 p-2 pl-4 border  font-sans bg-gray-900 shadow-lg hover:shadow-2xl transition-all duration-300">
       <div className="flex flex-col sm:flex-row md:flex-row items-start md:items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="h-16 w-16 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-md">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-md">
             <User className="h-8 w-8 text-black" />
           </div>
 
@@ -91,7 +91,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   <h1 className="text-2xl font-bold font-sans text-white leading-relaxed truncate break-words max-w-[250px] sm:max-w-[300px] md:max-w-[400px]">
     {name || userProfile?.display_name || 'User'}
   </h1>
-  <p className="text-sm text-gray-400 font-medium lowercase leading-snug line-clamp-1 tracking-wide truncate break-words max-w-[250px] sm:max-w-[300px] md:max-w-[400px]">
+  <p className="text-xs text-gray-400 font-medium lowercase leading-snug line-clamp-1">
     {email || 'No email provided'}
   </p>
   

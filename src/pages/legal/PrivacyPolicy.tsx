@@ -41,7 +41,7 @@ const PrivacyPolicy = () => {
               <ArrowLeft size={24} />
             </Link>
             <div>
-              <h1 className="text-2xl font-black text-foreground tracking-tight">PRIVACY POLICY</h1>
+              <h1 className="text-xl font-bold text-foreground tracking-tight">PRIVACY POLICY</h1>
               <p className="text-muted-foreground font-semibold ">Last Updated: Sept 27, 2025</p>
             </div>
           </div>
@@ -93,14 +93,14 @@ const PrivacyPolicy = () => {
                           </div>
                           <div>
                             <h2 
-                            className="text-2xl font-black text-foreground uppercase tracking-wide">{section.title}</h2>
+                            className="text-xl font-bold text-foreground uppercase tracking-wide">{section.title}</h2>
                             <div className="w-full h-1 bg-accent mt-2"></div>
                           </div>
                         </div>
 
                         {/* Section Content */}
-                        <div className="text-foregroud/90 text-xs font-bold space-y-4  leading-tight">
-                          {section.id === 'introduction' || (
+                        <div className="text-foregroud/70 text-xs font-semibold space-y-4  leading-tight">
+                          {section.id === 'introduction' && (
                             <p>
                               Aijim ("we," "our," or "us") is committed to protecting your privacy.
                               This Privacy Policy explains how we collect, use, disclose, and safeguard your information
@@ -108,12 +108,12 @@ const PrivacyPolicy = () => {
                             </p>
                           )}
 
-                          {section.id === 'data-collection' || (
+                          {section.id === 'data-collection' && (
                             <ul className="list-disc pl-6 space-y-2">
-                              <li><strong>Personal Data:</strong> Name, email, phone, billing & shipping address, payment info</li>
-                              <li><strong>Order Information:</strong> Products purchased, order history, preferences</li>
-                              <li><strong>Usage Data:</strong> Browsing history, search queries, site interactions</li>
-                              <li><strong>Device Information:</strong> IP, browser type, OS, device identifiers</li>
+                              <li>Personal Data - Name, email, phone, billing & shipping address, payment info</li>
+                              <li>Order Information - Products purchased, order history, preferences</li>
+                              <li>Usage Data - Browsing history, search queries, site interactions</li>
+                              <li>Device Information - IP, browser type, OS, device identifiers</li>
                             </ul>
                           )}
 
@@ -129,7 +129,7 @@ const PrivacyPolicy = () => {
                             </ul>
                           )}
 
-                          {section.id === 'cookies' || (
+                          {section.id === 'cookies' &&(
                             <p>
                               We use cookies and similar tracking technologies to monitor website activity and store
                               certain information. You can disable cookies in your browser, but this may affect
@@ -137,7 +137,7 @@ const PrivacyPolicy = () => {
                             </p>
                           )}
 
-                          {section.id === 'third-party' || (
+                          {section.id === 'third-party' && (
                             <ul className="list-disc pl-6 space-y-2">
                               <li>Service providers who operate our business</li>
                               <li>Payment processors to complete transactions</li>
@@ -146,14 +146,14 @@ const PrivacyPolicy = () => {
                             </ul>
                           )}
 
-                          {section.id === 'data-security' || (
+                          {section.id === 'data-security' && (
                             <p>
                               We implement industry-standard measures to protect your personal information.
                               However, no method of transmission or storage is 100% secure, so we cannot guarantee absolute protection.
                             </p>
                           )}
 
-                          {section.id === 'user-rights' || (
+                          {section.id === 'user-rights' && (
                             <ul className="list-disc pl-6 space-y-2">
                               <li>The right to access, correct, or update your personal data</li>
                               <li>The right to delete your personal information</li>

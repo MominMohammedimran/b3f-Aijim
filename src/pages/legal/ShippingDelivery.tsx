@@ -30,14 +30,14 @@ const ShippingDelivery = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen italic bg-background">
-        <div className="container-custom italic pt-16 pb-8">
-          <div className="flex items-center mb-8">
+      <div className="min-h-screen bg-background">
+        <div className="container-custom  pt-16 pb-8">
+          <div className="flex items-center mb-4">
             <Link to="/" className="mr-4 text-foreground hover:text-foreground transition-colors">
               <ArrowLeft size={24} />
             </Link>
             <div>
-              <h1 className="text-2xl font-black text-foreground tracking-tight">SHIPPING INFORMATION</h1>
+              <h1 className="text-xl font-bold text-foreground tracking-tight">SHIPPING INFORMATION</h1>
               <p className="text-muted-foreground mt-0 font-semibold">Fast, reliable delivery across India</p>
             </div>
           </div>
@@ -60,7 +60,7 @@ const ShippingDelivery = () => {
               <p className="text-muted-foreground font-semibold text-sm">Delhivery Partner  3-5 days</p>
             </div>
             <div className="bg-card border border-border rounded-lg p-6 text-center shadow-glow">
-              <div className="w-12 h-12 bg-accent/20 border-2 border-accent rounded-lg mx-auto mb-4 flex items-center justify-center">
+              <div className="w-12 h-12 bg-white border-2 border-accent rounded-lg mx-auto mb-4 flex items-center justify-center">
                 <MapPin size={24} className="text-accent" />
               </div>
               <h3 className="font-bold text-foreground text-lg mb-2">PAN INDIA</h3>

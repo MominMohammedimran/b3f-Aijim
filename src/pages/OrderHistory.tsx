@@ -161,7 +161,7 @@ const OrderHistory = () => {
       <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
       <div className="min-h-screen bg-black pt-20">
         <div className="container mx-auto px-4 py-4">
-          <h1 className="text-3xl font-bold text-white mb-2">Your Orders</h1>
+          <h1 className="text-xl font-semibold text-white mb-1">Your Orders</h1>
           <p className="text-gray-400 mb-6">Track and manage all your orders in one place</p>
 
           {orders.length === 0 ? (

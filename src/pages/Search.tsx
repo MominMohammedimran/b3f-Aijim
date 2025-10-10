@@ -171,7 +171,7 @@ const Search = () => {
           <Link to="/" className="mr-2">
             <ArrowLeft size={24} className="back-arrow" />
           </Link>
-          <h1 className="text-2xl font-bold">Search</h1>
+          <h1 className="text-xl font-semibold">Search</h1>
         </div>
 
         <SearchBox
@@ -201,7 +201,7 @@ const Search = () => {
       </div>
 
       {/* Sticky Filter & Sort Buttons */}
-      <div className="fixed bottom-14 left-0 right-0 z-50  bg-black border-t border-gray-200 py-0 flex justify-around ">
+      <div className="fixed bottom-14 left-0 right-0 z-50  bg-black/50 border-t border-gray-200 py-0 flex justify-around ">
         <Button
           onClick={() => setIsFilterPopupOpen(true)}
           className="bg-gray-900 text-white uppercase font-semibold border-r border-gray-200 rounded-none shadow-lg w-1/2 hover:bg-gray-900 "

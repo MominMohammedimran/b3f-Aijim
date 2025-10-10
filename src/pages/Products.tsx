@@ -129,7 +129,7 @@ const Products = () => {
     return (
       <section className="mb-10 px-4">
         <div className="flex justify-between items-center mb-2">
-          <h2 className="text-2xl sm:text-xl mb-1 font-bold">{title}</h2>
+          <h2 className="text-lg mb-1 font-bold">{title}</h2>
           <SortDropdown section={sectionKey} />
         </div>
 
@@ -153,7 +153,7 @@ const Products = () => {
     <Layout>
       <div className="bg-black text-white py-16 mt-4 min-h-screen">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl sm:text-3xl font-extrabold line-clamp-1 leading-snug mb-3 pt-4 px-4">
+          <h1 className="text-xl font-semibold line-clamp-1 leading-snug mb-3 pt-4 px-4">
             AIJIM Collections
           </h1>
 
@@ -168,11 +168,11 @@ const Products = () => {
 
               <section className="px-4 mt-10">
                 <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-lg sm:text-xl font-bold">🛍 All Products</h2>
+                  <h2 className="text-lg font-bold">🛍 All Products</h2>
                   <SortDropdown section="all" />
                 </div>
 
-           <div className="grid gap-4  grid-cols-[repeat(auto-fit,minmax(150px,auto))] justify-start">
+           <div className="grid gap-2  grid-cols-[repeat(auto-fit,minmax(152px,auto))] justify-start">
 {sortProducts(products).map((p) => (
                     <ProductCard
                       key={p.id}

@@ -28,7 +28,7 @@ const config: Config = {
         inter: ['Inter', 'sans-serif'],
         manrope: ['Manrope', 'sans-serif'],
         geist: ['Geist', 'sans-serif'],
-        grotesk: ['"Space Grotesk"', 'sans-serif'],
+        grotesk: ['Space Grotesk', 'sans-serif'],
         outfit: ['Outfit', 'sans-serif'],
         poppins: ['Poppins', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
