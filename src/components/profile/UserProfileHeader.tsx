@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User, LogOut } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { cleanupAuthState } from '@/context/AuthContext';
+import{usePWAInstall}from '@/hooks/usePWAInstall'
 
 interface UserProfileHeaderProps {
   name?: string;
@@ -24,6 +25,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   signingOut = false
 }) => {
   const { currentUser, signOut, userProfile } = useAuth();
+  const {canInstall,installApp,isInstalled}=usePWAInstall();
   const navigate = useNavigate();
   const { clearCart } = useCart();
   const [localSigningOut, setLocalSigningOut] = useState(false);
@@ -110,6 +112,22 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
             {signingOut || localSigningOut ? 'Signing Out...' : 'Log Out'}
           </Button>
         </div>
+        <div className='mt-2'>
+         {!isInstalled && canInstall && (
+        <Button
+          onClick={installApp}
+          className="bg-yellow-400 text-black hover:bg-yellow-500 font-semibold"
+        >
+          📱 Install AIJIM App
+        </Button>
+      )}
+
+      {isInstalled && (
+        <p className="text-green-400 font-medium mt-4">
+          ✅ App already installed on your device.
+        </p>
+      )}
+      </div>
       </div>
     </div>
   );

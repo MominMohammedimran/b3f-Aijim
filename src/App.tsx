@@ -14,6 +14,15 @@ import { initializeSecurity } from './utils/securityUtils';
 const queryClient = new QueryClient();
 
 function App() {
+  if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then(() => console.log("✅ Service Worker registered"))
+      .catch((err) => console.log("Service Worker failed:", err));
+  });
+}
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

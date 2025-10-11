@@ -49,7 +49,7 @@ const AvailableCoupons: React.FC = () => {
       >
         <div className="flex items-center gap-2">
           <Ticket className="w-5 h-5 text-yellow-400" />
-          <h3 className="text-lg font-semibold text-yellow-400">Available Coupons</h3>
+          <h3 className="text-md font-semibold text-yellow-400">Available Coupons</h3>
         </div>
         {expanded ? (
           <ChevronUp className="w-5 h-5 text-gray-400" />
@@ -72,9 +72,9 @@ const AvailableCoupons: React.FC = () => {
                 className="flex justify-between items-center border border-gray-700 p-2 rounded-md"
               >
                 <div>
-                  <p className="font-bold text-yellow-400 text-sm">{c.code}</p>
-                  <p className="text-xs text-gray-300">{formatDiscount(c)}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="font-semibold text-yellow-400 text-sm">{c.code}</p>
+                  <p className="text-xs font-semibold text-gray-300">{formatDiscount(c)}</p>
+                  <p className="text-xs font-semibold text-gray-500">
                     Valid till{" "}
                     {new Date(c.valid_to).toLocaleDateString("en-US", {
                       day: "numeric",

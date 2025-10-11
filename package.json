@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "generate:sitemap": "node scripts/generate-sitemap.js",
-    "deploy":"npm run generate-sitemap",
+    "deploy": "npm run generate-sitemap",
     "build": "vite build && npm run generate:sitemap",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
@@ -76,6 +76,7 @@
     "react-slick": "^0.30.3",
     "react-swipeable": "^7.0.2",
     "recharts": "^2.12.7",
+    "sharp": "^0.34.4",
     "slick-carousel": "^1.8.1",
     "sonner": "^2.0.5",
     "tailwind-merge": "^2.5.2",

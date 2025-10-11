@@ -16,26 +16,41 @@ const ProductImage: React.FC<ProductImageProps> = ({
   const imgs = [image, ...additionalImages].filter(Boolean);
   const [idx, setIdx] = useState(0);
   const [open, setOpen] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
+  const [doubleTap, setDoubleTap] = useState<number | null>(null);
+  const touchStart = useRef<number | null>(null);
 
-  // 🌀 Auto-scroll (mobile only)
+  // 🌀 Auto-slide (only on mobile)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIdx((i) => (i + 1) % imgs.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [imgs.length]);
+    const timer = setInterval(() => {
+      if (!open && window.innerWidth < 1024) {
+        setIdx((i) => (i + 1) % imgs.length);
+      }
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [imgs.length, open]);
 
-  // 👉 Swipe detection
-  const startX = useRef<number | null>(null);
-  const onTouchStart = (e: React.TouchEvent) => {
-    startX.current = e.touches[0].clientX;
+  // 👆 Swipe Handling
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = e.touches[0].clientX;
   };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (startX.current == null) return;
-    const deltaX = e.changedTouches[0].clientX - startX.current;
-    if (deltaX > 50) prev();
-    if (deltaX < -50) next();
-    startX.current = null;
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStart.current;
+    if (delta > 50) prev();
+    else if (delta < -50) next();
+    touchStart.current = null;
+  };
+
+  // 🔁 Double Tap Zoom on Mobile
+  const handleDoubleTap = () => {
+    const now = Date.now();
+    if (doubleTap && now - doubleTap < 300) {
+      setZoomed((z) => !z);
+    } else {
+      setDoubleTap(now);
+    }
   };
 
   const next = () => setIdx((i) => (i + 1) % imgs.length);
@@ -43,14 +58,14 @@ const ProductImage: React.FC<ProductImageProps> = ({
 
   return (
     <>
-      <div className="relative w-full overflow-hidden">
-        {/* 💻 Large Screen Grid (2 columns like RareRabbit) */}
-        <div className="hidden lg:grid grid-cols-2 gap-0 auto-rows-[400px]">
+      {/* 🖼 Main Container */}
+      <div className="w-full relative">
+        {/* 💻 Grid for Large Screens (2-column layout) */}
+        <div className="hidden lg:grid grid-cols-2 gap-0">
           {imgs.map((img, i) => (
-            <motion.div
+            <div
               key={i}
-              className="overflow-hidden cursor-zoom-in"
-              whileHover={{ scale: 1.02 }}
+              className="overflow-hidden cursor-zoom-in group"
               onClick={() => {
                 setIdx(i);
                 setOpen(true);
@@ -59,52 +74,45 @@ const ProductImage: React.FC<ProductImageProps> = ({
               <img
                 src={img}
                 alt={`${name}-${i}`}
-                className="w-full h-[400px] object-cover transition-transform duration-500 hover:scale-105"
+                className="w-full h-[80vh] object-cover transition-transform duration-[1800ms] group-hover:scale-105"
               />
-            </motion.div>
+            </div>
           ))}
         </div>
 
-        {/* 📱 Mobile Slider with Swipe + Numbers */}
+        {/* 📱 Mobile Auto-Slide */}
         <div
-          className="relative lg:hidden h-[70vh] overflow-hidden select-none"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
+          className="lg:hidden relative h-[70vh] overflow-hidden"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onClick={handleDoubleTap}
         >
           <AnimatePresence mode="wait">
             <motion.img
               key={idx}
               src={imgs[idx]}
               alt={name}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 1.0}}             className="absolute inset-0 w-full h-full object-cover"
+              initial={{ scale: 1, x: 0 }}
+             
+              transition={{
+                duration: zoomed ? 0.7 : 4,
+                ease: zoomed ? "easeOut" : "easeInOut",
+              }}
+              className={`absolute inset-0 w-full h-full object-cover select-none ${
+                zoomed ? "cursor-zoom-out" : "cursor-zoom-in"
+              }`}
+              onDoubleClick={() => setZoomed((z) => !z)}
             />
           </AnimatePresence>
 
-          {/* 🔢 Number Navigation (1 2 3 4 ...) */}
-          {imgs.length > 1 && (
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-3 bg-black/30 px-3 py-1 rounded-sm text-white text-xs font-semibold tracking-wider">
-              {imgs.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setIdx(i)}
-                  className={`transition-all duration-200 ${
-                    i === idx
-                      ? "text-white underline underline-offset-4 scale-110"
-                      : "text-white/50 hover:text-white/70"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-          )}
+          {/* 🔢 Image Counter */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 text-white text-xs px-3 py-1 rounded">
+            {idx + 1} / {imgs.length}
+          </div>
         </div>
       </div>
 
-      {/* 🔍 Fullscreen Zoom (desktop only) */}
+      {/* 🔍 Fullscreen Zoom View */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -116,38 +124,38 @@ const ProductImage: React.FC<ProductImageProps> = ({
             <img
               src={imgs[idx]}
               alt={`zoom-${idx}`}
-              className="max-w-[95vw] max-h-[90vh] object-contain rounded-md"
+              className="max-w-[95vw] max-h-[90vh] object-contain select-none"
             />
 
-            {/* 🧭 Image Counter */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-4 py-1 rounded-md">
+            {/* Image Counter */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-4 py-1 rounded">
               {idx + 1} / {imgs.length}
             </div>
 
-            {/* ⬅️➡️ Arrows (only in zoom mode) */}
+            {/* Arrows (only in zoom mode) */}
             {imgs.length > 1 && (
               <>
                 <button
                   onClick={prev}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
                 >
-                  <ChevronLeft size={30} />
+                  <ChevronLeft size={32} />
                 </button>
                 <button
                   onClick={next}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
                 >
-                  <ChevronRight size={30} />
+                  <ChevronRight size={32} />
                 </button>
               </>
             )}
 
-            {/* ❌ Close */}
+            {/* Close Button */}
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-6 right-6 text-white"
+              className="absolute top-6 right-6 bg-red-600 hover:bg-red-700 p-2 rounded-full shadow"
             >
-              <X size={24} />
+              <X size={22} className="text-white" />
             </button>
           </motion.div>
         )}

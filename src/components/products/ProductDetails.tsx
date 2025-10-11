@@ -217,7 +217,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
 
       {/* Sizes */}
       <h4 className="text-lg font-semibold mt-3 mb-3">Select Size</h4>
-      <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+      <div className="grid grid-cols-4 md:grid-cols-5 gap-2">
         {availableSizes.map((size) => {
           const variant = productVariants.find((v) => v.size === size);
           const stock = variant?.stock ?? 0;
@@ -229,14 +229,14 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
           return (
             <div key={size} className="relative">
               {selected && !isOutOfStock && (
-                <div className="absolute top-1 right-1 bg-blue-600 text-white text-[9px] px-1 rounded">✓</div>
+                <div className="absolute top-1 right-1 bg-blue-600 text-white text-[9px] px-0.3 rounded">✓</div>
               )}
             
 
               <button
                 onClick={() => toggleSize(size)}
                 disabled={isOutOfStock && !selected}
-                className={`w-full px-2 py-1 text-xs font-bold border text-center transition-all
+                className={`w-full px-1 py-0.5 text-xs font-bold border text-center transition-all
                   ${
                     selected && !isOutOfStock
                       ? 'border-gray-400 bg-white text-black'
@@ -248,8 +248,8 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
                 {size}
                 
                 {isOutOfStock ? (
-                  <div className="text-[8px] bg-red-600 text-white px-0.5 font-semibold mt-1">SOLD</div>
-                ) :(<div className="text-[8px] uppercase font-bold mt-1">
+                  <div className="text-[8px] bg-red-600 text-white font-semibold mt-0.5">SOLD</div>
+                ) :(<div className="text-[8px] uppercase font-bold mt-0.5">
                   Stock
                 </div>)
               }
@@ -262,7 +262,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
       {/* Selected Sizes with Scroll */}
     {selectedSizes.length > 0 && (
   <div className="pt-4 border-t border-gray-700">
-    <h4 className="text-md font-semibold mb-3">{SelectedSize} Selected Sizes</h4>
+    <h4 className="text-md font-semibold mb-5">{SelectedSize} Selected Sizes</h4>
 
     <div className="flex gap-2 overflow-x-auto  scroll-smooth no-scrollbar">
       {selectedSizes.map((sel) => {
@@ -374,12 +374,12 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
         {productVariants.every(v => v.stock === 0) ? (
           // Out of stock UI - only show when ALL sizes are out of stock
           <>
-            <div className="text-center py-4 border border-red-500 bg-red-500/10 rounded-md mb-3">
-              <p className="text-red-400 font-semibold text-lg mb-2">Product currently out of stock</p>
+            <div className="text-center bg-red-600 rounded-none mb-3 mt-4 py-0.5">
+              <p className="text-white font-semibold text-lg mb-2">Product currently out of stock</p>
             </div>
             <Link 
               to="/" 
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-3 rounded-none font-poppins font-semibold text-xl text-center block transition-colors"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-1 rounded-none font-poppins font-semibold text-xl text-center block transition-colors"
             >
               Continue Shopping
             </Link>
@@ -399,6 +399,9 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
               <ProductPlaceOrder
                 product={product}
                 selectedSizes={selectedSizes.map((s) => s.size)}
+                  selectedSizes={selectedSizes.map((s) => s.size)}
+              quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
+           
                 variant="secondary"
                 className="w-full rounded-none border-l border-gray-800 font-semibold text-lg bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
               />
@@ -409,8 +412,8 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
 
       {/* Delivery & Return Section */}
     {/* Delivery & Return Section */}
-<div className="p-1 w-full bg-gradient-to-br from-black via-gray-900 to-black shadow-lg border border-gray-600 mt-4">
-  <h3 className="text-md font-semibold text-yellow-300 mb-2 pl-3">Delivery & Returns</h3>
+<div className="p-1 w-full bg-gradient-to-br from-black via-gray-900 to-black shadow-lg border border-gray-600 mt-6">
+  <h3 className="text-md font-semibold text-yellow-300 mb-2 mt-1 pl-3">Delivery & Returns</h3>
   <div className="space-y-3 p-3 pt-0">
     <div className="flex items-center gap-2">
       <input
@@ -434,7 +437,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
     </div>
 
     {pincodeChecked && pincodeResult && (
-      <div className="text-[8px] mt-2 ">
+      <div className="text-[9px] mt-2 ">
         <p className={`font-semibold ${pincodeResult.isServiceable ? 'text-green-400' : 'text-red-400'}`}>
           {pincodeResult.message}
         </p>

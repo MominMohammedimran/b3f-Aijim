@@ -48,7 +48,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
 
   return (
     <div className="mb-6">
-      <h3 className="font-medium mb-2">Select a Shipping Address</h3>
+      <h3 className="font-semibold text-sm mb-2">Select a Shipping Address</h3>
 
       <RadioGroup
         value={useNewAddress ? 'new' : selectedAddressId || ''}
@@ -61,6 +61,20 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
         }}
         className="space-y-2"
       >
+         <Label
+          htmlFor="address-new"
+          className={`border p-3 rounded-none cursor-pointer block hover:bg-gray-600 ${
+            useNewAddress ? 'border-blue-500 bg-gray-800 text-white ' : 'border-gray-200'
+          }`}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="new" id="address-new" />
+            <div>
+              <div className="font-medium">Use a new address</div>
+              <div className="text-sm text-gray-400 mt-1">Add a new shipping address</div>
+            </div>
+          </div>
+        </Label>
         {addresses.map((address) => (
           <Label
             key={address.id}
@@ -126,20 +140,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
         ))}
 
         {/* New Address Option */}
-        <Label
-          htmlFor="address-new"
-          className={`border p-3 rounded-none cursor-pointer block hover:bg-gray-600 ${
-            useNewAddress ? 'border-blue-500 bg-gray-800 text-white ' : 'border-gray-200'
-          }`}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="new" id="address-new" />
-            <div>
-              <div className="font-medium">Use a new address</div>
-              <div className="text-sm text-gray-400 mt-1">Add a new shipping address</div>
-            </div>
-          </div>
-        </Label>
+       
       </RadioGroup>
     </div>
   );

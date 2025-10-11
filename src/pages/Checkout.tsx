@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp ,Loader2} from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import { toast } from 'sonner';
 import { supabase } from '../integrations/supabase/client';
@@ -37,8 +37,10 @@ const CollapsibleSection = ({
   title,
   children,
   defaultOpen = true,
+  size,
 }: {
   title: string;
+  size?:string;
   children: React.ReactNode;
   defaultOpen?: boolean;
 }) => {
@@ -295,14 +297,14 @@ const Checkout = () => {
           <Link to="/cart" className="mr-4">
             <ArrowLeft size={24} className="text-foreground hover:text-primary transition-colors" />
           </Link>
-          <h1 className="text-2xl font-bold uppercase tracking-wider">CHECKOUT</h1>
+          <h1 className="text-xl font-semibold uppercase tracking-wider">CHECKOUT</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3  rounded-none ">
           {/* Left Section */}
           <div className="lg:col-span-2 rounded-none ">
-            <CollapsibleSection title="Shipping Details" defaultOpen>
-              {!addressesLoading && addresses.length > 0 && (
+            <CollapsibleSection title="Shipping Details"   defaultOpen>
+             {!addressesLoading && addresses.length > 0 && (
                 <SavedAddresses
                   addresses={addresses}
                   selectedAddressId={selectedAddressId}
@@ -313,6 +315,7 @@ const Checkout = () => {
                   onEditAddress={handleEditAddress}
                 />
 )}
+
 
               {(useNewAddress || addresses.length === 0 || addressesLoading) && (
                 <AddressForm
@@ -335,16 +338,18 @@ const Checkout = () => {
           </div>
 
           {/* Right Sidebar */}
-          <div className="lg:col-span-1 rounded-none ">
+          <div className=" rounded-none ">
             {/* Coupon Section */}
             <CollapsibleSection title="Apply Coupon" defaultOpen={false}>
               <CouponSection
+              className='h-auto'
                 cartTotal={totalPrice}
                 onCouponApplied={handleCouponApplied}
                 onCouponRemoved={handleCouponRemoved}
                 appliedCoupon={appliedCoupon || undefined}
               />
             </CollapsibleSection>
+
 
             {/* Reward Points Section */}
             <CollapsibleSection title="Reward Points" defaultOpen={false}>

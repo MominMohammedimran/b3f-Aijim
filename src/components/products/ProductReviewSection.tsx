@@ -127,7 +127,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-1 ">
         <div>
           <h3 className="text-md font-semibold">Customer Reviews</h3>
           <div className="  mt-1">
@@ -135,7 +135,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
               {[1, 2, 3, 4, 5].map((star) => (
                 <UserRound
                   key={star}
-                  className={`h-5 w-5 ${
+                  className={`h-4 w-4 ${
                     star <= Math.round(averageRating)
                       ? 'text-yellow-400 fill-current'
                       : 'text-gray-300'
@@ -150,11 +150,12 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
         </div>
         
         <Button
+        size='sm'
           variant="outline"
           onClick={() => setShowWriteReview(!showWriteReview)}
-          className="flex items-center gap-2"
+          className="flex items-center text-sm font-semibold gap-1"
         >
-          <Plus className="h-4 w-3" />
+         
           Write Review
         </Button>
       </div>
@@ -164,7 +165,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
 
       {/* Write Review Form */}
       {showWriteReview && (
-        <div className="border rounded-lg p-4 space-y-4">
+        <div className="border rounded-lg p-2 space-y-4">
           <h4 className="font-medium">Write Your Review</h4>
           
           <div>

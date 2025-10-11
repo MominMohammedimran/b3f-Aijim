@@ -71,7 +71,7 @@ const ProductPlaceOrder: React.FC<ProductPlaceOrderProps> = ({
       toast.success(`${product.name} added to cart`);
       
       // Clear existing cart items before proceeding to checkout
-      await clearCart();
+      
       
       // Redirect straight to checkout instead of cart
       navigate('/checkout');

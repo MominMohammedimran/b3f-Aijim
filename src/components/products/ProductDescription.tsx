@@ -66,7 +66,7 @@ Only a few pieces available – once sold out, they’re gone for good.
 
   return (
     <div className="mt-4 p-4 border border-gray-700 rounded-md bg-gradient-to-b from-black via-gray-900 to-black shadow-[0_0_20px_rgba(255,255,255,0.08)] hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all duration-300">
-      <h3 className="text-lg sm:text-xl font-semibold text-yellow-400 uppercase tracking-wide mb-2">
+      <h3 className="text-lg  font-semibold text-yellow-400 uppercase tracking-wide mb-2">
         Product Details
       </h3>
 
@@ -81,7 +81,7 @@ Only a few pieces available – once sold out, they’re gone for good.
               onClick={() => toggleSection(i)}
               className="flex justify-between items-center w-full text-left"
             >
-              <span className="text-yellow-400 font-semibold underline underline-offset-4 decoration-yellow-400 text-[15px] uppercase tracking-wide">
+              <span className="text-yellow-400 text-sm font-semibold underline underline-offset-4 decoration-yellow-400 text-[15px] uppercase tracking-wide">
                 {section.title}
               </span>
               {openSections[i] ? (
@@ -99,12 +99,12 @@ Only a few pieces available – once sold out, they’re gone for good.
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="mt-2 text-sm sm:text-base text-gray-200 leading-relaxed space-y-2"
+                  className="mt-2 text-sm font-medium text-gray-200 leading-relaxed space-y-1"
                 >
                   {section.content.map((line, j) => (
                     <p
                       key={j}
-                      className="text-gray-300 font-medium flex items-start gap-2"
+                      className="text-gray-300  text-sm font-medium flex items-start gap-1.5"
                     >
                        {line}
                     </p>
