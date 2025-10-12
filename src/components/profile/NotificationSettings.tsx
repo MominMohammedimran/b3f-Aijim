@@ -8,8 +8,7 @@ const NotificationSettings = () => {
     isSupported,
     isSubscribed,
     isLoading,
-    subscribeToNotifications,
-    unsubscribeFromNotifications,
+    
     sendTestNotification,
   } = usePushNotifications();
 
@@ -61,17 +60,7 @@ const NotificationSettings = () => {
           </Button>
         </div>
 
-        {isSubscribed && (
-          <div className="pt-4 border-t border-border">
-            <Button
-              onClick={sendTestNotification}
-              variant="outline"
-              className="w-full"
-            >
-              Send Test Notification
-            </Button>
-          </div>
-        )}
+      
       </CardContent>
     </Card>
   );

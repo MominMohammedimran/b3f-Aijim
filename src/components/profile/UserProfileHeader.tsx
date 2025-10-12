@@ -101,7 +101,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
         </div>
 
-       {/* <div className="mt-4 md:mt-0">
+        <div className="mt-4 md:mt-0">
           <Button
             variant="destructive"
             onClick={handleSignOut}
@@ -111,19 +111,8 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
             <LogOut className="h-4 w-4 mr-2" />
             {signingOut || localSigningOut ? 'Signing Out...' : 'Log Out'}
           </Button>
-        </div>*/}
-        <div className='mt-2'>
-         {!isInstalled && canInstall && (
-        <Button
-          onClick={installApp}
-          className="bg-yellow-400 text-black hover:bg-yellow-500 font-semibold"
-        >
-          📱 Install AIJIM App
-        </Button>
-      )}
-
-      
-      </div>
+        </div>
+        
       </div>
     </div>
   );

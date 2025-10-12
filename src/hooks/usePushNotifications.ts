@@ -1,10 +1,12 @@
+// usePushNotifications.ts
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+// PUT your VAPID public key here (URL-safe base64)
 const VAPID_PUBLIC_KEY = 'BEZyguY1rRxan4xEdlHZ21O5x1XXZHS96WlokPAswM6TzeS7WdGzwTN1V4Tr3JLKN56iAZFZw3TJSIYNO7pvfi8';
 
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
   const rawData = window.atob(base64);
@@ -15,124 +17,107 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray;
 }
 
-export const usePushNotifications = () => {
+export const usePushNotifications = (autoPrompt = false) => {
   const [isSupported, setIsSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check if push notifications are supported
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       setIsSupported(true);
-      registerServiceWorker();
+      init();
     }
   }, []);
 
-  const registerServiceWorker = async () => {
+  const init = async () => {
     try {
       const reg = await navigator.serviceWorker.register('/service-worker.js');
       setRegistration(reg);
-      
-      // Check if already subscribed
-      const subscription = await reg.pushManager.getSubscription();
-      setIsSubscribed(!!subscription);
-    } catch (error) {
-      console.error('Service Worker registration failed:', error);
+
+      const sub = await reg.pushManager.getSubscription();
+      setIsSubscribed(Boolean(sub));
+
+      // optional auto prompt on first visit
+      if (autoPrompt && Notification.permission === 'default') {
+        // small delay so it doesn't trigger right on page load UX-wise
+        setTimeout(() => requestPermissionAndSubscribe(reg), 1200);
+      }
+    } catch (err) {
+      console.error('SW register failed', err);
     }
   };
 
-  const subscribeToNotifications = async () => {
-    if (!registration) {
-      toast.error('Service worker not registered');
+  const requestPermissionAndSubscribe = async (reg?: ServiceWorkerRegistration) => {
+    const regInstance = reg || registration;
+    if (!regInstance) {
+      toast.error('Service worker not ready');
       return;
     }
-
     setIsLoading(true);
-
     try {
-      // Request notification permission
       const permission = await Notification.requestPermission();
-
       if (permission !== 'granted') {
         toast.error('Notification permission denied');
-        setIsLoading(false);
         return;
       }
 
-      // Subscribe to push notifications
-      const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
-      const subscription = await registration.pushManager.subscribe({
+      if (!VAPID_PUBLIC_KEY) {
+        toast.error('VAPID public key missing on frontend. Add it to env.');
+        console.error('VAPID_PUBLIC_KEY is empty');
+        return;
+      }
+
+      const sub = await regInstance.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: applicationServerKey as BufferSource,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
       });
 
-      // Get current user
+      // optional: if user signed in, attach user_id
       const { data: { user } } = await supabase.auth.getUser();
 
-      if (!user) {
-        toast.error('Please sign in to enable notifications');
-        setIsLoading(false);
-        return;
-      }
+      const payload = {
+        user_id: user?.id ?? null,
+        endpoint: (sub as any).endpoint,
+        subscription: sub.toJSON(),
+        created_at: new Date().toISOString(),
+      };
 
-      // Save subscription to Supabase
-      const subscriptionData = subscription.toJSON();
-      
+      // upsert by endpoint
       const { error } = await supabase
         .from('push_subscribers')
-        .upsert([{
-          user_id: user.id,
-          subscription: subscriptionData as any,
-          endpoint: subscription.endpoint,
-        }], {
-          onConflict: 'endpoint'
-        });
+        .upsert([payload], { onConflict: 'endpoint' });
 
       if (error) {
-        console.error('Error saving subscription:', error);
-        toast.error('Failed to save notification settings');
+        console.error('Failed to save subscription to DB', error);
+        toast.error('Failed to save subscription');
       } else {
         setIsSubscribed(true);
-        toast.success('Notifications enabled!', {
-          description: 'You will now receive updates from AIJIM',
-        });
+        toast.success('Notifications enabled!');
       }
-    } catch (error) {
-      console.error('Error subscribing to push notifications:', error);
-      toast.error('Failed to enable notifications');
+    } catch (err) {
+      console.error('subscribe error', err);
+      toast.error('Could not subscribe to notifications');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const unsubscribeFromNotifications = async () => {
+  const unsubscribe = async () => {
     if (!registration) return;
-
     setIsLoading(true);
-
     try {
-      const subscription = await registration.pushManager.getSubscription();
-
-      if (subscription) {
-        await subscription.unsubscribe();
-
-        // Remove from database
-        const { error } = await supabase
-          .from('push_subscribers')
-          .delete()
-          .eq('endpoint', subscription.endpoint);
-
-        if (error) {
-          console.error('Error removing subscription:', error);
-        }
-
-        setIsSubscribed(false);
-        toast.success('Notifications disabled');
+      const sub = await registration.pushManager.getSubscription();
+      if (sub) {
+        await sub.unsubscribe();
+        // delete from DB (by endpoint)
+        await supabase.from('push_subscribers').delete().eq('endpoint', (sub as any).endpoint);
       }
-    } catch (error) {
-      console.error('Error unsubscribing:', error);
-      toast.error('Failed to disable notifications');
+      setIsSubscribed(false);
+      toast.success('Notifications disabled');
+    } catch (err) {
+      console.error('unsubscribe error', err);
+      toast.error('Failed to unsubscribe');
     } finally {
       setIsLoading(false);
     }
@@ -140,22 +125,23 @@ export const usePushNotifications = () => {
 
   const sendTestNotification = async () => {
     try {
-      const { error } = await supabase.functions.invoke('send-push-notification', {
-        body: {
-          title: 'Test Notification',
-          body: 'This is a test notification from AIJIM!',
-          icon: '/aijim-uploads/aijim-192.png',
-        },
+      // Call server function/endpoint that sends the push via web-push (server will use VAPID keys)
+      const res = await fetch('/api/send-notification-test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Test — AIJIM',
+          body: 'This is a test push notification',
+          url: '/',
+        }),
       });
 
-      if (error) {
-        toast.error('Failed to send test notification');
-      } else {
-        toast.success('Test notification sent!');
-      }
-    } catch (error) {
-      console.error('Error sending test notification:', error);
-      toast.error('Failed to send test notification');
+      const json = await res.json();
+      if (res.ok) toast.success(`Sent: ${json.sent || 0}`);
+      else toast.error(json.error || 'Failed to send test');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to call send endpoint');
     }
   };
 
@@ -163,8 +149,8 @@ export const usePushNotifications = () => {
     isSupported,
     isSubscribed,
     isLoading,
-    subscribeToNotifications,
-    unsubscribeFromNotifications,
+    subscribe: () => requestPermissionAndSubscribe(),
+    unsubscribe,
     sendTestNotification,
   };
 };
