@@ -101,7 +101,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
         </div>
 
-        <div className="mt-4 md:mt-0">
+       {/* <div className="mt-4 md:mt-0">
           <Button
             variant="destructive"
             onClick={handleSignOut}
@@ -111,7 +111,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
             <LogOut className="h-4 w-4 mr-2" />
             {signingOut || localSigningOut ? 'Signing Out...' : 'Log Out'}
           </Button>
-        </div>
+        </div>*/}
         <div className='mt-2'>
          {!isInstalled && canInstall && (
         <Button
@@ -122,11 +122,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
         </Button>
       )}
 
-      {isInstalled && (
-        <p className="text-green-400 font-medium mt-4">
-          ✅ App already installed on your device.
-        </p>
-      )}
+      
       </div>
       </div>
     </div>

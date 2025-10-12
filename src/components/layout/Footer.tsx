@@ -1,9 +1,11 @@
 import React from "react";
 import { Link,useNavigate } from "react-router-dom";
-import { Instagram, Mail, Facebook, Twitter,Truck,HandCoins } from "lucide-react";
+import { Instagram, Mail, Facebook, Twitter,Truck,HandCoins,Download } from "lucide-react";
 import Marquee from "react-fast-marquee"
-
+import{usePWAInstall} from '@/hooks/usePWAInstall'
+import InstallAppButton from '../InstallAppButton'
 const Footer = () => {
+  const navigate=useNavigate();
   const footerSections = [
     {
       title: "ABOUT",
@@ -25,7 +27,7 @@ const Footer = () => {
     
     
   ];
-  const navigate=useNavigate();
+ 
 
   return (
     <footer className="bg-black w-full not-italic h-auto mt-3 mb-20 pb-5 text-gray-300 border-t border-gray-800">
@@ -76,6 +78,9 @@ const Footer = () => {
               >
                 <Mail className="h-5 w-5" />
               </a>
+            
+            <InstallAppButton/>
+            
             </div>
             <div className="border-b w-full border-gray-800 text-center  mt-5 ">
           <p className="w-full text-[12px] lg:text-[18px] text-white font-medium">
@@ -83,7 +88,9 @@ const Footer = () => {
             Made with love in India
           </p>
         </div>
+
           </div>
+
            
 
           {/* Quick Links */}
@@ -116,9 +123,7 @@ const Footer = () => {
           
           ))}
           </div>
-          
 
-          {/* Newsletter */}
           
             
         

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Settings, Gift, Shield, History, MapPin } from 'lucide-react';
+import { User, Settings, Gift, Shield, History, MapPin, Bell } from 'lucide-react';
 import ProfileSettings from './ProfileSettings';
 import PasswordReset from './PasswordReset';
 import RewardsSection from './RewardsSection';
 import OrderHistory from './OrderHistory';
 import AccountSettings from './AccountSettings';
 import AddressManagement from './AddressManagement';
+import NotificationSettings from './NotificationSettings';
 import ResetPassword from '../../pages/ResetPassword'
 
 const ProfileTabs = () => {
@@ -16,7 +17,7 @@ const ProfileTabs = () => {
   return (
     <div className="w-full max-w-4xl ">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full m-auto grid-cols-4 mb-10 bg-gray-800 rounded-3xl p-1 ">
+        <TabsList className="grid w-full m-auto grid-cols-5 mb-10 bg-gray-800 rounded-3xl p-1 ">
          
         
          {/* <TabsTrigger
@@ -57,6 +58,14 @@ const ProfileTabs = () => {
          >
            <MapPin size={16} />
            <span className="hidden sm:inline">Addresses</span>
+         </TabsTrigger>
+         
+         <TabsTrigger
+           value="notifications"
+          className="flex items-center gap-2 text-sm px-1 py-2 font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+         >
+           <Bell size={16} />
+           <span className="hidden sm:inline">Notifications</span>
          </TabsTrigger>
           
         </TabsList>
@@ -143,6 +152,10 @@ const ProfileTabs = () => {
               <OrderHistory />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="notifications" className="mt-6">
+          <NotificationSettings />
         </TabsContent>
       </Tabs>
     </div>

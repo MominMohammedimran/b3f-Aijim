@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import ChatbaseAIWidget from '../ui/ChatbaseAIWidget';
 import StructuredData from '../seo/StructuredData';
+import InstallAppButton from '../InstallAppButton';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,16 +16,16 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
     name: "AIJIM",
     url: "https://aijm.shop",
     logo: "https://aijim.shop/logo.png",
-    description: "Premium Oversized Tees @Affordable.",
+    description: "Premium fashion and apparel including oversized tees, hoodies and trendy clothing with great discounts.",
     contactPoint: {
-      telephone: "+91-XXXXXXXXXX",
+      email: "aijim.official@gmail.com",
       contactType: "Customer Service",
       areaServed: "India"
     },
     sameAs: [
-    
+      "https://facebook.com/aijim",
       "https://instagram.com/aijim.shop",
-     
+      "https://twitter.com/aijim"
     ]
   };
 
@@ -47,7 +48,8 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
         {children}
       </main>
       {!hideFooter && <Footer />}
-      
+      <ChatbaseAIWidget />
+    
     </div>
   );
 };

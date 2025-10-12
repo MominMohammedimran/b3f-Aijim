@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductImageProps {
@@ -18,9 +18,12 @@ const ProductImage: React.FC<ProductImageProps> = ({
   const [open, setOpen] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const [doubleTap, setDoubleTap] = useState<number | null>(null);
+  const [scale, setScale] = useState(1);
+  const [lastScale, setLastScale] = useState(1);
   const touchStart = useRef<number | null>(null);
+  const pinchDistance = useRef<number | null>(null);
 
-  // 🌀 Auto-slide (only on mobile)
+  // 🌀 Auto-slide for mobile only
   useEffect(() => {
     const timer = setInterval(() => {
       if (!open && window.innerWidth < 1024) {
@@ -30,24 +33,52 @@ const ProductImage: React.FC<ProductImageProps> = ({
     return () => clearInterval(timer);
   }, [imgs.length, open]);
 
-  // 👆 Swipe Handling
+  // 👆 Swipe
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStart.current = e.touches[0].clientX;
+    if (e.touches.length === 1) {
+      touchStart.current = e.touches[0].clientX;
+    } else if (e.touches.length === 2) {
+      // start pinch
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      pinchDistance.current = dist;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchDistance.current) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const newScale = Math.min(Math.max((dist / pinchDistance.current) * lastScale, 1), 3);
+      setScale(newScale);
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length < 2) {
+      setLastScale(scale);
+      pinchDistance.current = null;
+    }
     if (touchStart.current === null) return;
     const delta = e.changedTouches[0].clientX - touchStart.current;
-    if (delta > 50) prev();
-    else if (delta < -50) next();
+    if (Math.abs(delta) > 50 && scale === 1) {
+      if (delta > 50) prev();
+      else next();
+    }
     touchStart.current = null;
   };
 
-  // 🔁 Double Tap Zoom on Mobile
+  // 🔁 Double Tap Zoom
   const handleDoubleTap = () => {
     const now = Date.now();
     if (doubleTap && now - doubleTap < 300) {
       setZoomed((z) => !z);
+      setScale(zoomed ? 1 : 2);
+      setLastScale(zoomed ? 1 : 2);
     } else {
       setDoubleTap(now);
     }
@@ -60,7 +91,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
     <>
       {/* 🖼 Main Container */}
       <div className="w-full relative">
-        {/* 💻 Grid for Large Screens (2-column layout) */}
+        {/* 💻 Large Screen Grid */}
         <div className="hidden lg:grid grid-cols-2 gap-0">
           {imgs.map((img, i) => (
             <div
@@ -84,6 +115,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
         <div
           className="lg:hidden relative h-[70vh] overflow-hidden"
           onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onClick={handleDoubleTap}
         >
@@ -92,20 +124,29 @@ const ProductImage: React.FC<ProductImageProps> = ({
               key={idx}
               src={imgs[idx]}
               alt={name}
-              initial={{ scale: 1, x: 0 }}
-             
-              transition={{
-                duration: zoomed ? 0.7 : 4,
-                ease: zoomed ? "easeOut" : "easeInOut",
-              }}
-              className={`absolute inset-0 w-full h-full object-cover select-none ${
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className={`absolute inset-0 w-full h-full object-cover select-none transform ${
                 zoomed ? "cursor-zoom-out" : "cursor-zoom-in"
               }`}
-              onDoubleClick={() => setZoomed((z) => !z)}
+              style={{
+                transform: `scale(${scale})`,
+                transition: "transform 0.2s ease-out",
+              }}
             />
           </AnimatePresence>
 
-          {/* 🔢 Image Counter */}
+          {/* 🔍 Zoom Icon */}
+          <button
+            onClick={() => setOpen(true)}
+            className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-full shadow hover:bg-white transition"
+          >
+            <ZoomIn className="text-black" size={18} />
+          </button>
+
+          {/* 🔢 Counter */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 text-white text-xs px-3 py-1 rounded">
             {idx + 1} / {imgs.length}
           </div>
@@ -116,23 +157,30 @@ const ProductImage: React.FC<ProductImageProps> = ({
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+            className="fixed inset-0 z-50 bg-black flex items-center justify-center touch-none overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
-            <img
+            <motion.img
               src={imgs[idx]}
               alt={`zoom-${idx}`}
               className="max-w-[95vw] max-h-[90vh] object-contain select-none"
+              style={{
+                transform: `scale(${scale})`,
+                transition: "transform 0.2s ease-out",
+              }}
             />
 
-            {/* Image Counter */}
+            {/* Counter */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-4 py-1 rounded">
               {idx + 1} / {imgs.length}
             </div>
 
-            {/* Arrows (only in zoom mode) */}
+            {/* Arrows */}
             {imgs.length > 1 && (
               <>
                 <button
@@ -150,9 +198,14 @@ const ProductImage: React.FC<ProductImageProps> = ({
               </>
             )}
 
-            {/* Close Button */}
+            {/* Close */}
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                setZoomed(false);
+                setScale(1);
+                setLastScale(1);
+              }}
               className="absolute top-6 right-6 bg-red-600 hover:bg-red-700 p-2 rounded-full shadow"
             >
               <X size={22} className="text-white" />

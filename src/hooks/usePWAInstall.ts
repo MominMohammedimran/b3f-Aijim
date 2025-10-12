@@ -3,36 +3,51 @@ import { useEffect, useState } from "react";
 export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [canInstall, setCanInstall] = useState(false);
 
   useEffect(() => {
-    const handler = (e: any) => {
-      // Prevent Chrome from showing its mini-infobar
+    // Detect if app is already installed
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone === true;
+    setIsInstalled(isStandalone);
+
+    // Listen for install prompt
+    const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      setCanInstall(true);
     };
 
-    window.addEventListener("beforeinstallprompt", handler);
+    // When app installed successfully
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setCanInstall(false);
+      setDeferredPrompt(null);
+    };
 
-    // Check if already installed
-    window.addEventListener("appinstalled", () => setIsInstalled(true));
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
 
   const installApp = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      alert("Install not available yet — please refresh the page once.");
+      return;
+    }
 
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === "accepted") {
-      console.log("PWA installation accepted ✅");
-    } else {
-      console.log("PWA installation dismissed ❌");
+      setDeferredPrompt(null);
+      setCanInstall(false);
     }
-    setDeferredPrompt(null);
   };
 
-  return { canInstall: !!deferredPrompt, installApp, isInstalled };
+  return { installApp, canInstall, isInstalled };
 }
