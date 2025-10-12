@@ -1,118 +1,81 @@
-import React, { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Settings, Gift, Shield, History, MapPin, Bell } from 'lucide-react';
-import ProfileSettings from './ProfileSettings';
-import PasswordReset from './PasswordReset';
-import RewardsSection from './RewardsSection';
-import OrderHistory from './OrderHistory';
-import AccountSettings from './AccountSettings';
-import AddressManagement from './AddressManagement';
-import NotificationSettings from './NotificationSettings';
-import ResetPassword from '../../pages/ResetPassword'
+import React, { useState } from "react";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  User,
+  Settings,
+  Gift,
+  Shield,
+  MapPin,
+  Bell,
+  History,
+} from "lucide-react";
+import ProfileSettings from "./ProfileSettings";
+import PasswordReset from "./PasswordReset";
+import RewardsSection from "./RewardsSection";
+import AccountSettings from "./AccountSettings";
+import AddressManagement from "./AddressManagement";
+import NotificationSettings from "./NotificationSettings";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const ProfileTabs = () => {
-  const [activeTab, setActiveTab] = useState('rewards');
+  const [activeTab, setActiveTab] = useState("rewards");
 
   return (
-    <div className="w-full max-w-4xl ">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full m-auto grid-cols-5 mb-10 bg-gray-800 rounded-3xl p-1 ">
-         
-        
-         {/* <TabsTrigger
-            value="settings"
-            className="flex items-center gap-2 text-sm px-1 py-2 rounded-lg transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-           >
-            <Settings size={16} />
-            <span className="hidden sm:inline">Settings</span>
-          </TabsTrigger> */}
-         
+    <div className="w-full max-w-4xl text-white">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="w-full"
+      >
+        <TabsList className="grid w-full m-auto grid-cols-5 mb-10 bg-gray-800 rounded-3xl p-1">
           <TabsTrigger
             value="rewards"
-          className="flex items-center gap-2 text-sm px-1 py-2  font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-           >
+            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+          >
             <Gift size={16} />
             <span className="hidden sm:inline">Rewards</span>
           </TabsTrigger>
 
-
-           
           <TabsTrigger
-           value="security"
-          className="flex items-center gap-2 text-sm px-1 py-2 font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-         >
-           <Shield size={16} />
-           <span className="hidden sm:inline">Security</span>
-         </TabsTrigger>
-         <TabsTrigger
-                     value="profile"
-                     className="flex items-center gap-2 text-sm px-1 py-2 font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-                   >
-                     <User size={16} />
-                     <span className="hidden sm:inline">Profile</span>
-                   </TabsTrigger>
-         <TabsTrigger
-           value="addresses"
-          className="flex items-center gap-2 text-sm px-1 py-2 font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-         >
-           <MapPin size={16} />
-           <span className="hidden sm:inline">Addresses</span>
-         </TabsTrigger>
-         
-         <TabsTrigger
-           value="notifications"
-          className="flex items-center gap-2 text-sm px-1 py-2 font-bold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-         >
-           <Bell size={16} />
-           <span className="hidden sm:inline">Notifications</span>
-         </TabsTrigger>
-          
+            value="security"
+            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+          >
+            <Shield size={16} />
+            <span className="hidden sm:inline">Security</span>
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="profile"
+            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+          >
+            <User size={16} />
+            <span className="hidden sm:inline">Profile</span>
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="addresses"
+            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+          >
+            <MapPin size={16} />
+            <span className="hidden sm:inline">Addresses</span>
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="notifications"
+            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+          >
+            <Bell size={16} />
+            <span className="hidden sm:inline">Notifications</span>
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="profile" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User size={20} />
-                Profile Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 mt-0 border-gray-800">
-              <ProfileSettings />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="settings" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings size={20} />
-                Account Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AccountSettings />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="security" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield size={20} />
-                Security Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0 border-gray-800">
-              <PasswordReset />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="rewards" className="mt-6">
+        {/* Rewards Tab */}
+        <TabsContent value="rewards">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -120,13 +83,44 @@ const ProfileTabs = () => {
                 Rewards & Points
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0 border-gray-800">
+            <CardContent>
               <RewardsSection />
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="addresses" className="mt-6">
+        {/* Security Tab */}
+        <TabsContent value="security">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield size={20} />
+                Security Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PasswordReset />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Profile Tab */}
+        <TabsContent value="profile">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User size={20} />
+                Profile Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProfileSettings />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Addresses Tab */}
+        <TabsContent value="addresses">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -134,27 +128,14 @@ const ProfileTabs = () => {
                 My Addresses
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0 border-gray-800">
+            <CardContent>
               <AddressManagement />
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="orders" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <History size={20} />
-                Order History
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <OrderHistory />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="notifications" className="mt-6">
+        {/* Notifications Tab */}
+        <TabsContent value="notifications">
           <NotificationSettings />
         </TabsContent>
       </Tabs>
