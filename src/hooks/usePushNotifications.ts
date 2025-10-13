@@ -19,98 +19,90 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 export const usePushNotifications = () => {
   const [isSupported, setIsSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [registration, setRegistration] =
-    useState<ServiceWorkerRegistration | null>(null);
+  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // ✅ Register service worker and auto-ask permission
   useEffect(() => {
-    const setupPush = async () => {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        console.warn('🚫 Push not supported');
-        return;
-      }
-
+    const initPush = async () => {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
       setIsSupported(true);
 
       try {
-        console.log('🔄 Registering service worker...');
         const reg = await navigator.serviceWorker.register('/service-worker.js');
-
-        await navigator.serviceWorker.ready; // ✅ Wait until it's active
-
-        console.log('✅ Service worker ready:', reg);
+        await navigator.serviceWorker.ready;
         setRegistration(reg);
 
-        const sub = await reg.pushManager.getSubscription();
-        setIsSubscribed(!!sub);
+        const existingSub = await reg.pushManager.getSubscription();
 
-        if (!sub) {
-          console.log('🔔 Requesting notification permission...');
+        if (!existingSub) {
+          console.log('🔔 No existing subscription found — requesting permission...');
           const permission = await Notification.requestPermission();
           if (permission === 'granted') {
-            console.log('✅ Permission granted. Subscribing user...');
             await subscribeToNotifications(reg);
           } else {
-            console.log('⚠️ Notification permission not granted:', permission);
+            console.log('⚠️ Notification permission denied');
           }
         } else {
-          console.log('🔗 User already subscribed to push notifications.');
+          console.log('✅ Found existing subscription — syncing to Supabase...');
+          await saveSubscription(existingSub);
+          setIsSubscribed(true);
         }
-      } catch (error) {
-        console.error('❌ Error setting up push notifications:', error);
+      } catch (err) {
+        console.error('Push setup failed:', err);
       }
     };
 
-    setupPush();
+    initPush();
   }, []);
 
-  // ✅ Subscribe user and save to Supabase
   const subscribeToNotifications = async (reg?: ServiceWorkerRegistration) => {
     try {
       setIsLoading(true);
+      const regToUse = reg || registration;
+      if (!regToUse) return toast.error('Service Worker not ready');
 
-      const registrationToUse = reg || registration;
-      if (!registrationToUse) {
-        toast.error('Service worker not ready');
-        return;
-      }
-
-      console.log('📩 Subscribing to push...');
-      const sub = await registrationToUse.pushManager.subscribe({
+      const sub = await regToUse.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
       });
 
-      console.log('✅ Subscription created:', sub.endpoint);
-
-      const { data: { user } } = await supabase.auth.getUser();
-
-      const subscriptionData = JSON.parse(JSON.stringify(sub.toJSON()));
-
-      const { error } = await supabase
-        .from('push_subscribers')
-        .upsert([
-          {
-            user_id: user?.id || null,
-            endpoint: sub.endpoint,
-            subscription: subscriptionData,
-          },
-        ], { onConflict: 'endpoint' });
-
-      if (error) {
-        console.error('❌ Failed to save subscription to Supabase:', error);
-        toast.error('Failed to save subscription');
-      } else {
-        setIsSubscribed(true);
-        toast.success('✅ Notifications enabled!');
-        console.log('✅ Subscription saved in Supabase');
-      }
+      await saveSubscription(sub);
+      setIsSubscribed(true);
+      toast.success('Notifications enabled!');
     } catch (err) {
-      console.error('❌ Push subscription error:', err);
+      console.error('Push subscription failed:', err);
       toast.error('Failed to enable notifications');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // ✅ Always sync to Supabase, even if already subscribed
+  const saveSubscription = async (sub: PushSubscription) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const subJson = JSON.parse(JSON.stringify(sub.toJSON()));
+
+      const { error } = await supabase
+        .from('push_subscribers')
+        .upsert(
+          [
+            {
+              user_id: user?.id || null,
+              endpoint: sub.endpoint,
+              subscription: subJson,
+            },
+          ],
+          { onConflict: 'endpoint' }
+        );
+
+      if (error) {
+        console.error('❌ Error syncing subscription:', error);
+      } else {
+        console.log('✅ Subscription synced with Supabase');
+      }
+    } catch (err) {
+      console.error('❌ Failed to save subscription:', err);
     }
   };
 
