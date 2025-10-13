@@ -1,213 +1,163 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const VAPID_PUBLIC_KEY = 'BEZyguY1rRxan4xEdlHZ21O5x1XXZHS96WlokPAswM6TzeS7WdGzwTN1V4Tr3JLKN56iAZFZw3TJSIYNO7pvfi8';
-const VAPID_PRIVATE_KEY_RAW = 'jn9XyRZj2hJzaaXw497GpBk2UZ23XenxRyO9JIaR5vg';
-const VAPID_SUBJECT = 'mailto:aijim.official@gmail.com';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const VAPID_PUBLIC_KEY = "BDzuk_ZfPRI35ntZhosL6y7uCtje2I6D6oXVufJLcOMYT__Zr5gIGhIl-WMcA08ahCMbfwyXfpEDOLVYIXNW37c";
+const VAPID_PRIVATE_KEY_RAW = "iNbCh4OGOrrE5pswZS5GUEMXuVCpmg-kqjzb5sfGOP0";
+const VAPID_SUBJECT = "mailto:aijim.official@gmail.com";
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type"
 };
-// Base64 URL encode/decode helpers
+// --- Helper functions ---
 function base64UrlEncode(data) {
   const base64 = btoa(String.fromCharCode(...data));
-  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 function base64UrlDecode(base64url) {
-  const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-  const padding = '='.repeat((4 - base64.length % 4) % 4);
+  const base64 = base64url.replace(/-/g, "+").replace(/_/g, "/");
+  const padding = "=".repeat((4 - base64.length % 4) % 4);
   const binary = atob(base64 + padding);
   return new Uint8Array([
     ...binary
-  ].map((char)=>char.charCodeAt(0)));
+  ].map((c)=>c.charCodeAt(0)));
 }
-// Generate JWT for VAPID
 async function generateVAPIDToken(audience) {
   const header = {
-    typ: 'JWT',
-    alg: 'ES256'
+    typ: "JWT",
+    alg: "ES256"
   };
-  const exp = Math.floor(Date.now() / 1000) + 12 * 60 * 60; // 12 hours
+  const exp = Math.floor(Date.now() / 1000) + 12 * 60 * 60;
   const payload = {
     aud: audience,
-    exp: exp,
+    exp,
     sub: VAPID_SUBJECT
   };
   const encoder = new TextEncoder();
   const headerB64 = base64UrlEncode(encoder.encode(JSON.stringify(header)));
   const payloadB64 = base64UrlEncode(encoder.encode(JSON.stringify(payload)));
-  const unsignedToken = `${headerB64}.${payloadB64}`;
-  // Import VAPID private key
-  const privateKeyBytes = base64UrlDecode(VAPID_PRIVATE_KEY_RAW);
-  const privateKey = await crypto.subtle.importKey('raw', privateKeyBytes, {
-    name: 'ECDSA',
-    namedCurve: 'P-256'
+  const unsigned = `${headerB64}.${payloadB64}`;
+  // ✅ Import private key as JWK instead of pkcs8/raw
+  const jwk = {
+    kty: "EC",
+    crv: "P-256",
+    d: VAPID_PRIVATE_KEY_RAW,
+    x: "PO6T9l89Ejfme1mGiwvrLu4K2N7YjoPqhdW58ktw4xg',",
+    y: "T__Zr5gIGhIl-WMcA08ahCMbfwyXfpEDOLVYIXNW37c",
+    ext: true
+  };
+  const key = await crypto.subtle.importKey("jwk", jwk, {
+    name: "ECDSA",
+    namedCurve: "P-256"
   }, false, [
-    'sign'
+    "sign"
   ]);
-  // Sign the token
   const signature = await crypto.subtle.sign({
-    name: 'ECDSA',
-    hash: 'SHA-256'
-  }, privateKey, encoder.encode(unsignedToken));
-  const signatureB64 = base64UrlEncode(new Uint8Array(signature));
-  return `${unsignedToken}.${signatureB64}`;
+    name: "ECDSA",
+    hash: "SHA-256"
+  }, key, encoder.encode(unsigned));
+  const sigB64 = base64UrlEncode(new Uint8Array(signature));
+  return `${unsigned}.${sigB64}`;
 }
-// Send push notification using Web Push Protocol
+// --- Send Push Notification ---
 async function sendPushNotification(subscription, payload) {
   try {
     const endpoint = new URL(subscription.endpoint);
     const audience = `${endpoint.protocol}//${endpoint.host}`;
-    // Generate VAPID JWT token
     const vapidToken = await generateVAPIDToken(audience);
-    // For FCM endpoints, we send the payload as JSON directly
-    const isFCM = endpoint.host.includes('fcm.googleapis.com');
+    const isFCM = endpoint.host.includes("fcm.googleapis.com");
     const headers = {
-      'TTL': '86400',
-      'Authorization': `vapid t=${vapidToken}, k=${VAPID_PUBLIC_KEY}`
+      TTL: "86400",
+      Authorization: `vapid t=${vapidToken}, k=${VAPID_PUBLIC_KEY}`,
+      "Content-Type": isFCM ? "application/json" : "application/octet-stream"
     };
-    let body;
-    if (isFCM) {
-      // FCM accepts JSON payload directly
-      headers['Content-Type'] = 'application/json';
-      const encoder = new TextEncoder();
-      body = encoder.encode(payload);
-    } else {
-      // For other push services, use encrypted payload
-      headers['Content-Type'] = 'application/octet-stream';
-      headers['Content-Encoding'] = 'aes128gcm';
-      const encoder = new TextEncoder();
-      body = encoder.encode(payload);
-    }
-    console.log(`Sending to ${isFCM ? 'FCM' : 'other'} endpoint:`, endpoint.host);
-    // Send the push notification
     const response = await fetch(subscription.endpoint, {
-      method: 'POST',
-      headers: headers,
-      body: body
+      method: "POST",
+      headers,
+      body: new TextEncoder().encode(payload)
     });
-    if (response.status === 410 || response.status === 404) {
-      console.log('Subscription expired or invalid:', response.status);
-      return false;
+    // Only treat 404 or 410 as expired
+    if (response.status === 404 || response.status === 410) {
+      console.warn("❌ Subscription expired:", subscription.endpoint);
+      return "expired";
     }
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Push send failed:', response.status, errorText);
-      return false;
+      const text = await response.text();
+      console.error(`⚠️ Push failed (${response.status}) for ${endpoint.host}: ${text}`);
+      return "failed";
     }
-    console.log('Push sent successfully');
-    return true;
-  } catch (error) {
-    console.error('Error sending push notification:', error);
-    return false;
+    console.log(`✅ Push sent: ${endpoint.host}`);
+    return "success";
+  } catch (err) {
+    console.error("Error sending push notification:", err);
+    return "failed";
   }
 }
+// --- Main handler ---
 serve(async (req)=>{
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: corsHeaders
     });
   }
   try {
-    const supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
-    // Get notification payload from request
+    const supabase = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "");
     const { title, body, icon, badge, data, actions, tag, requireInteraction, userId } = await req.json();
-    console.log('Sending push notification:', {
-      title,
-      body,
-      userId
-    });
-    // Fetch subscriptions - if userId provided, send only to that user, otherwise to all
-    let query = supabaseClient.from('push_subscribers').select('*');
-    if (userId) {
-      query = query.eq('user_id', userId);
-      console.log('Targeting specific user:', userId);
-    } else {
-      console.log('Broadcasting to all subscribers');
-    }
-    const { data: subscriptions, error: fetchError } = await query;
-    if (fetchError) {
-      console.error('Error fetching subscriptions:', fetchError);
+    let query = supabase.from("push_subscribers").select("*");
+    if (userId) query = query.eq("user_id", userId);
+    const { data: subs, error } = await query;
+    if (error || !subs?.length) {
       return new Response(JSON.stringify({
-        error: 'Failed to fetch subscriptions'
+        error: "No subscriptions",
+        count: 0
       }), {
         headers: {
           ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
-        status: 500
+          "Content-Type": "application/json"
+        }
       });
     }
-    if (!subscriptions || subscriptions.length === 0) {
-      console.log('No subscriptions found');
-      return new Response(JSON.stringify({
-        message: 'No subscriptions found',
-        sent: 0
-      }), {
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
-        status: 200
-      });
-    }
-    console.log(`Found ${subscriptions.length} subscription(s)`);
-    // Prepare notification payload
     const notificationData = {
-      title: title || 'AIJIM',
-      body: body || 'You have a new notification',
-      icon: icon || '/aijim-uploads/aijim-192.png',
-      badge: badge || '/aijim-uploads/aijim-192.png',
+      title: title || "AIJIM",
+      body: body || "You have a new notification",
+      icon: icon || "/aijim-uploads/aijim-192.png",
+      badge: badge || "/aijim-uploads/aijim-192.png",
       data: data || {},
       actions: actions || [],
-      tag: tag || 'default',
+      tag: tag || "default",
       requireInteraction: requireInteraction || false
     };
     const payloadString = JSON.stringify(notificationData);
-    // Send notifications
     let sentCount = 0;
-    const expiredEndpoints = [];
-    for (const sub of subscriptions){
-      const subscription = sub.subscription;
-      const sent = await sendPushNotification(subscription, payloadString);
-      if (sent) {
-        sentCount++;
-        console.log(`Successfully sent to endpoint: ${sub.endpoint.substring(0, 50)}...`);
-      } else {
-        expiredEndpoints.push(sub.endpoint);
-        console.log(`Failed/expired endpoint: ${sub.endpoint.substring(0, 50)}...`);
-      }
+    const expired = [];
+    for (const sub of subs){
+      const result = await sendPushNotification(sub.subscription, payloadString);
+      if (result === "success") sentCount++;
+      else if (result === "expired") expired.push(sub.endpoint);
     }
-    // Remove expired subscriptions
-    if (expiredEndpoints.length > 0) {
-      const { error: deleteError } = await supabaseClient.from('push_subscribers').delete().in('endpoint', expiredEndpoints);
-      if (deleteError) {
-        console.error('Error removing expired subscriptions:', deleteError);
-      } else {
-        console.log(`Removed ${expiredEndpoints.length} expired subscription(s)`);
-      }
+    // Delete only expired ones
+    if (expired.length) {
+      const { error: delErr } = await supabase.from("push_subscribers").delete().in("endpoint", expired);
+      if (delErr) console.error("❌ Failed deleting expired subscriptions:", delErr);
+      else console.log(`🗑 Removed ${expired.length} expired subscriptions`);
     }
-    console.log(`Notification sent successfully: ${sentCount}/${subscriptions.length}`);
     return new Response(JSON.stringify({
       success: true,
       sent: sentCount,
-      expired: expiredEndpoints.length,
-      total: subscriptions.length
+      expired: expired.length,
+      total: subs.length
     }), {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/json'
-      },
-      status: 200
+        "Content-Type": "application/json"
+      }
     });
   } catch (error) {
-    console.error('Error in send-push-notification function:', error);
+    console.error("💥 Edge function crash:", error);
     return new Response(JSON.stringify({
       error: error.message
     }), {
       headers: {
         ...corsHeaders,
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
       status: 500
     });
