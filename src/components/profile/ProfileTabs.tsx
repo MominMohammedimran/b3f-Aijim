@@ -32,7 +32,7 @@ const ProfileTabs = () => {
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="grid w-full m-auto grid-cols-5 mb-10 bg-gray-800 rounded-3xl p-1">
+        <TabsList className="grid w-full m-auto grid-cols-4 mb-10 bg-gray-800 rounded-3xl p-1">
           <TabsTrigger
             value="rewards"
             className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
@@ -65,14 +65,14 @@ const ProfileTabs = () => {
             <span className="hidden sm:inline">Addresses</span>
           </TabsTrigger>
 
-          <TabsTrigger
+         {/* <TabsTrigger
             value="notifications"
             className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
           >
             <Bell size={16} />
             <span className="hidden sm:inline">Notifications</span>
           </TabsTrigger>
-        </TabsList>
+        </TabsList>*/}
 
         {/* Rewards Tab */}
         <TabsContent value="rewards">
@@ -134,10 +134,10 @@ const ProfileTabs = () => {
           </Card>
         </TabsContent>
 
-        {/* Notifications Tab */}
+        {/* Notifications Tab 
         <TabsContent value="notifications">
           <NotificationSettings />
-        </TabsContent>
+        </TabsContent>*/}
       </Tabs>
     </div>
   );

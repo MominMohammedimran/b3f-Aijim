@@ -19,7 +19,7 @@ function App() {
     initializeSecurity();
 
     // ✅ Register Service Worker and handle updates automatically
-    if ('serviceWorker' in navigator) {
+    {/*if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker
           .register('/service-worker.js')
@@ -96,7 +96,7 @@ function App() {
           }, 1800);
         });
       });
-    }
+    }*/}
 
     // Simulated initial loading
     const timer = setTimeout(() => setLoading(false), 1200);

@@ -225,8 +225,8 @@ const AdminSettings = () => {
               </CardContent>
             </Card>
 
-            {/* Push Notification Sender */}
-            <AdminNotificationSender />
+            {/* Push Notification Sender 
+            <AdminNotificationSender />*/}
 
             {/* Coupon Management Section */}
             <div className="md:col-span-2">

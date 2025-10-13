@@ -100,10 +100,10 @@ const ProfileSettings = () => {
   }
 
   return (
-    <div className="w-full ">
-      <Card>
+    <div className="w-full rounded-none  ">
+      <Card className='border-none'>
 
-        <CardContent className="p-1  border-gray-800">
+        <CardContent className="p-1 border-none rounded-none ">
           <form onSubmit={handleSubmit} className="space-y-0">
             <div className="grid grid-cols-2 gap-4">
               {/*<div>

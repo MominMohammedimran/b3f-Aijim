@@ -63,8 +63,8 @@ export default function PasswordReset() {
   };
 
   return (
-    <div className="w-full bg-gray-900 text-white p-2 rounded-lg shadow-md space-y-6">
-      <h2 className="text-xl font-semibold text-center">Reset Your Password</h2>
+    <div className="w-full  text-white p-2 rounded-none shadow-md space-y-6">
+      <h2 className="text-lg font-semibold text-center">Reset Your Password</h2>
 
       {step === 'request' && (
         <form onSubmit={handleSendOTP} className="space-y-4">

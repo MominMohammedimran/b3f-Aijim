@@ -81,9 +81,9 @@ const RewardsSection = () => {
   };
 
   return (
-    <div className="space-y-4 p-6 pl-0 pr-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-2xl">
+    <div className="w-full space-y-4  pl-0 pr-0  shadow-2xl">
       {/* Header */}
-      <div className="flex p-4 pl-0 justify-between items-center">
+      <div className="flex w-full pl-0 justify-between items-center">
         <h2 className="text-xl font-extrabold bg-gradient-to-r from-yellow-400 to-green-400 bg-clip-text text-transparent">
         Rewards
         </h2>
@@ -96,7 +96,7 @@ const RewardsSection = () => {
       </div>
 
       {/* Reward Card */}
-      <div className=" p-3 border border-gray-700 shadow-lg ">
+      <div className=" p-1 border shadow-lg ">
         <div className="flex justify-between items-center">
           <div>
             <p className="text-xs text-gray-300">Available Points</p>
@@ -121,7 +121,7 @@ const RewardsSection = () => {
         </div>
 
         {/* Info */}
-        <div className="mt-6 bg-gray-900/60 p-1  border border-gray-700">
+        <div className="mt-6  p-1 ">
           <p className="text-xs text-yellow-300 mb-1">💰 Use points as cash! at checkout.</p>
           <p className="text-xs text-gray-300">1 Point = ₹1. Minimum 70 points required.</p>
         </div>
@@ -157,9 +157,9 @@ const RewardsSection = () => {
           {orders.map((order) => (
             <Card
               key={order.id}
-              className="rounded-none bg-gradient-to-r from-gray-800/70 to-gray-900/70 border border-gray-700 shadow hover:shadow-green-400/10 transition"
+              className="rounded-none  border border-gray-700 shadow hover:shadow-green-400/10 transition"
             >
-              <CardContent className="p-4">
+              <CardContent className="p-1">
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-white font-medium">{order.order_number}</p>

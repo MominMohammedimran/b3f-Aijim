@@ -79,7 +79,7 @@ const Footer = () => {
                 <Mail className="h-5 w-5" />
               </a>
             
-            <InstallAppButton/>
+            {/*<InstallAppButton/>*/}
             
             </div>
             <div className="border-b w-full border-gray-800 text-center  mt-5 ">
