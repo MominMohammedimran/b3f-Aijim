@@ -174,7 +174,7 @@ const AddressManagement = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-2">
       {!showAddForm && (
         <Button 
           onClick={handleAddNew}
@@ -186,7 +186,7 @@ const AddressManagement = () => {
       )}
       
       {showAddForm ? (
-        <div className="bg-muted/50 p-6 rounded-lg mb-6">
+        <div className="bg-muted/50 p-2 rounded-lg mb-6">
           <h3 className="font-medium mb-4">
             {editingAddress ? 'Edit Address' : 'Add New Address'}
           </h3>
@@ -300,7 +300,7 @@ const AddressManagement = () => {
           {addresses.map((address) => (
             <div 
               key={address.id}
-              className={`border rounded-none p-4 transition-colors ${
+              className={`border rounded-none p-1 transition-colors ${
                 address.is_default ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
               }`}
             >

@@ -83,8 +83,8 @@ const RewardsSection = () => {
   return (
     <div className="space-y-4 p-6 pl-0 pr-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-2xl">
       {/* Header */}
-      <div className="flex p-4 justify-between items-center">
-        <h2 className="text-2xl font-extrabold bg-gradient-to-r from-yellow-400 to-green-400 bg-clip-text text-transparent">
+      <div className="flex p-4 pl-0 justify-between items-center">
+        <h2 className="text-xl font-extrabold bg-gradient-to-r from-yellow-400 to-green-400 bg-clip-text text-transparent">
         Rewards
         </h2>
         <button
@@ -99,14 +99,14 @@ const RewardsSection = () => {
       <div className=" p-3 border border-gray-700 shadow-lg ">
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-sm text-gray-300">Available Points</p>
+            <p className="text-xs text-gray-300">Available Points</p>
             <div className="flex items-center space-x-2">
               <Award className="text-yellow-400 drop-shadow-glow" />
-              <span className="text-4xl font-bold text-white">{rewardPoints}</span>
+              <span className="text-xl font-bold text-white">{rewardPoints}</span>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-300">Next Reward at</p>
+            <p className="text-xs text-gray-300">Next Reward at</p>
             <p className="text-2xl font-semibold text-gray-200">{nextRewardLevel} pts</p>
           </div>
         </div>
@@ -121,8 +121,8 @@ const RewardsSection = () => {
         </div>
 
         {/* Info */}
-        <div className="mt-6 bg-gray-900/60 p-2  border border-gray-700">
-          <p className="text-sm text-yellow-300 mb-1">💰 Use points as cash! at checkout.</p>
+        <div className="mt-6 bg-gray-900/60 p-1  border border-gray-700">
+          <p className="text-xs text-yellow-300 mb-1">💰 Use points as cash! at checkout.</p>
           <p className="text-xs text-gray-300">1 Point = ₹1. Minimum 70 points required.</p>
         </div>
 
@@ -151,7 +151,7 @@ const RewardsSection = () => {
       </div>
 
       {/* Orders */}
-      <div className="p-4">
+      <div className="p-2">
         <h3 className="text-xl font-semibold text-white mb-3"> Orders & Rewards</h3>
         <div className="space-y-4">
           {orders.map((order) => (

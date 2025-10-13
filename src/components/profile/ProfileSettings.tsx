@@ -103,7 +103,7 @@ const ProfileSettings = () => {
     <div className="w-full ">
       <Card>
 
-        <CardContent className="p-2  border-gray-800">
+        <CardContent className="p-1  border-gray-800">
           <form onSubmit={handleSubmit} className="space-y-0">
             <div className="grid grid-cols-2 gap-4">
               {/*<div>
@@ -219,7 +219,7 @@ const ProfileSettings = () => {
                 disabled
                 className="bg-gray-800 font-medium"
               />
-              <p className="text-sm font-medium italic text-white mt-2  mb-5">
+              <p className="text-sm font-medium text-white mt-2  mb-5">
                 Email cannot be changed
               </p>
             </div>
