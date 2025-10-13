@@ -18,76 +18,87 @@ function App() {
   useEffect(() => {
     initializeSecurity();
 
+    // ✅ Register Service Worker and handle updates automatically
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker
           .register('/service-worker.js')
           .then((registration) => {
-            console.log('✅ Service Worker registered:', registration);
+            console.log('✅ Service Worker registered');
 
-            // Listen for updates to the Service Worker
+            // 🔹 Watch for new SW versions being installed
             registration.onupdatefound = () => {
               const newWorker = registration.installing;
-              if (newWorker) {
-                newWorker.onstatechange = () => {
-                  if (
-                    newWorker.state === 'installed' &&
-                    navigator.serviceWorker.controller
-                  ) {
-                    console.log('🆕 New Service Worker detected. Preparing to update...');
+              if (!newWorker) return;
 
-                    // Notify user and prepare reload
-                    toast.info('Refreshing to latest version...', {
-                      duration: 2500,
-                      position: 'top-right',
-                    });
+              newWorker.onstatechange = () => {
+                if (
+                  newWorker.state === 'installed' &&
+                  navigator.serviceWorker.controller
+                ) {
+                  console.log('🆕 New Service Worker detected — preparing to activate.');
 
-                    const scheduleReload = () => {
-                      const connection = (navigator as any).connection;
-                      const goodNetwork =
-                        !connection ||
-                        connection.effectiveType === '4g' ||
-                        connection.downlink > 1.5;
+                  // Notify user visually
+                  toast.info('Updating to the latest version...', {
+                    duration: 3000,
+                    position: 'top-right',
+                  });
 
-                      if (goodNetwork && document.visibilityState === 'visible') {
-                        console.log('♻️ Triggering update...');
-                        newWorker.postMessage({ type: 'SKIP_WAITING' });
-                      } else {
-                        console.log('⏳ Waiting for idle or better network...');
-                        setTimeout(scheduleReload, 5000);
-                      }
-                    };
+                  const attemptActivation = () => {
+                    const connection = (navigator as any).connection;
+                    const isGoodNetwork =
+                      !connection ||
+                      connection.effectiveType === '4g' ||
+                      connection.downlink > 1.5;
 
-                    if ('requestIdleCallback' in window) {
-                      (window as any).requestIdleCallback(scheduleReload, {
-                        timeout: 8000,
-                      });
+                    // Only activate when online & page visible
+                    if (
+                      navigator.onLine &&
+                      isGoodNetwork &&
+                      document.visibilityState === 'visible'
+                    ) {
+                      console.log('♻️ Activating new Service Worker...');
+                      newWorker.postMessage({ type: 'SKIP_WAITING' });
                     } else {
-                      setTimeout(scheduleReload, 8000);
+                      console.log('⏳ Waiting for good network or active tab...');
+                      setTimeout(attemptActivation, 4000);
                     }
+                  };
+
+                  if ('requestIdleCallback' in window) {
+                    (window as any).requestIdleCallback(attemptActivation, {
+                      timeout: 7000,
+                    });
+                  } else {
+                    setTimeout(attemptActivation, 7000);
                   }
-                };
-              }
+                }
+              };
             };
           })
-          .catch((err) =>
-            console.error('❌ Service Worker registration failed:', err)
-          );
+          .catch((err) => {
+            console.error('❌ Service Worker registration failed:', err);
+            toast.error('Failed to register service worker', {
+              position: 'top-right',
+            });
+          });
 
-        // When the new Service Worker takes control
+        // 🔹 Listen when a new SW takes control
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           console.log('✅ New Service Worker activated — refreshing...');
-          toast.success('App updated! Reloading...', {
-            duration: 1500,
+          toast.success('AIJIM updated! Reloading...', {
+            duration: 1800,
             position: 'top-right',
           });
+
           setTimeout(() => {
             window.location.reload();
-          }, 1500);
+          }, 1800);
         });
       });
     }
 
+    // Simulated initial loading
     const timer = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(timer);
   }, []);

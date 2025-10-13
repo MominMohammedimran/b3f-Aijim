@@ -34,8 +34,11 @@ const AdminNotificationSender = () => {
         console.error('Error sending notification:', error);
         toast.error('Failed to send notification');
       } else {
-        toast.success(`Notification sent to ${data.sent} user(s)`, {
-          description: data.expired > 0 ? `${data.expired} expired subscriptions removed` : undefined,
+        toast.success(`Sent successfully to ${data.sent}/${data.total} users`, {
+          description:
+            data.expired > 0
+              ? `${data.expired} expired subscriptions removed`
+              : 'Notification delivered to active subscribers.',
         });
         setTitle('');
         setBody('');
@@ -49,9 +52,9 @@ const AdminNotificationSender = () => {
   };
 
   return (
-    <Card>
+    <Card className="border border-gray-700 bg-card">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-lg font-semibold">
           <Bell className="h-5 w-5" />
           Send Push Notification
         </CardTitle>
@@ -78,8 +81,8 @@ const AdminNotificationSender = () => {
             rows={3}
           />
         </div>
-        <Button 
-          onClick={handleSendNotification} 
+        <Button
+          onClick={handleSendNotification}
           disabled={sending || !title.trim() || !body.trim()}
           className="w-full bg-blue-600 hover:bg-blue-700"
         >
