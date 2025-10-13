@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
-import { Toaster, toast } from 'sonner';
+import { Toaster } from 'sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AuthProvider } from './context/AuthContext';
 import CartProvider from './context/CartContext';
@@ -18,94 +18,41 @@ function App() {
   useEffect(() => {
     initializeSecurity();
 
-    // ✅ Register Service Worker and handle updates automatically
-    {/*if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/service-worker.js')
-          .then((registration) => {
-            console.log('✅ Service Worker registered');
+    // 🧹 Automatically remove old Service Workers and Caches
+    const cleanupOldCachesAndSW = async () => {
+      try {
+        // Unregister all service workers
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          for (const registration of registrations) {
+            await registration.unregister();
+            console.log('🧹 Unregistered Service Worker:', registration.scope);
+          }
+        }
 
-            // 🔹 Watch for new SW versions being installed
-            registration.onupdatefound = () => {
-              const newWorker = registration.installing;
-              if (!newWorker) return;
+        // Delete all caches
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          for (const cacheName of cacheNames) {
+            await caches.delete(cacheName);
+            console.log('🗑 Deleted Cache:', cacheName);
+          }
+        }
 
-              newWorker.onstatechange = () => {
-                if (
-                  newWorker.state === 'installed' &&
-                  navigator.serviceWorker.controller
-                ) {
-                  console.log('🆕 New Service Worker detected — preparing to activate.');
+        console.log('✅ All service workers and caches cleared');
+      } catch (err) {
+        console.error('❌ Error clearing service workers/caches:', err);
+      }
+    };
 
-                  // Notify user visually
-                  toast.info('Updating to the latest version...', {
-                    duration: 3000,
-                    position: 'top-right',
-                  });
+    cleanupOldCachesAndSW();
 
-                  const attemptActivation = () => {
-                    const connection = (navigator as any).connection;
-                    const isGoodNetwork =
-                      !connection ||
-                      connection.effectiveType === '4g' ||
-                      connection.downlink > 1.5;
-
-                    // Only activate when online & page visible
-                    if (
-                      navigator.onLine &&
-                      isGoodNetwork &&
-                      document.visibilityState === 'visible'
-                    ) {
-                      console.log('♻️ Activating new Service Worker...');
-                      newWorker.postMessage({ type: 'SKIP_WAITING' });
-                    } else {
-                      console.log('⏳ Waiting for good network or active tab...');
-                      setTimeout(attemptActivation, 4000);
-                    }
-                  };
-
-                  if ('requestIdleCallback' in window) {
-                    (window as any).requestIdleCallback(attemptActivation, {
-                      timeout: 7000,
-                    });
-                  } else {
-                    setTimeout(attemptActivation, 7000);
-                  }
-                }
-              };
-            };
-          })
-          .catch((err) => {
-            console.error('❌ Service Worker registration failed:', err);
-            toast.error('Failed to register service worker', {
-              position: 'top-right',
-            });
-          });
-
-        // 🔹 Listen when a new SW takes control
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          console.log('✅ New Service Worker activated — refreshing...');
-          toast.success('AIJIM updated! Reloading...', {
-            duration: 1800,
-            position: 'top-right',
-          });
-
-          setTimeout(() => {
-            window.location.reload();
-          }, 1800);
-        });
-      });
-    }*/}
-
-    // Simulated initial loading
+    // Simulated preloader delay
     const timer = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) {
-    return <Preloader onComplete={() => setLoading(false)} />;
-  }
+  if (loading) return <Preloader onComplete={() => setLoading(false)} />;
 
   return (
     <div className="bg-black min-h-screen">
