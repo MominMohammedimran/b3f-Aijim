@@ -1,12 +1,10 @@
-// usePushNotifications.ts
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-// PUT your VAPID public key here (URL-safe base64)
 const VAPID_PUBLIC_KEY = 'BEZyguY1rRxan4xEdlHZ21O5x1XXZHS96WlokPAswM6TzeS7WdGzwTN1V4Tr3JLKN56iAZFZw3TJSIYNO7pvfi8';
 
-function urlBase64ToUint8Array(base64String: string) {
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
   const rawData = window.atob(base64);
@@ -17,107 +15,137 @@ function urlBase64ToUint8Array(base64String: string) {
   return outputArray;
 }
 
-export const usePushNotifications = (autoPrompt = false) => {
+export const usePushNotifications = () => {
   const [isSupported, setIsSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+  const [permissionRequested, setPermissionRequested] = useState(false);
 
   useEffect(() => {
+    // Check if push notifications are supported
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       setIsSupported(true);
-      init();
+      registerServiceWorker();
     }
   }, []);
 
-  const init = async () => {
+  // Auto-request permission on first visit
+  useEffect(() => {
+    if (!isSupported || permissionRequested) return;
+    
+    const hasAskedBefore = localStorage.getItem('pushPermissionAsked');
+    
+    if (!hasAskedBefore && Notification.permission === 'default') {
+      // Delay auto-request by 3 seconds for better UX
+      const timer = setTimeout(() => {
+        setPermissionRequested(true);
+        localStorage.setItem('pushPermissionAsked', 'true');
+        subscribeToNotifications();
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isSupported, permissionRequested]);
+
+  const registerServiceWorker = async () => {
     try {
       const reg = await navigator.serviceWorker.register('/service-worker.js');
       setRegistration(reg);
-
-      const sub = await reg.pushManager.getSubscription();
-      setIsSubscribed(Boolean(sub));
-
-      // optional auto prompt on first visit
-      if (autoPrompt && Notification.permission === 'default') {
-        // small delay so it doesn't trigger right on page load UX-wise
-        setTimeout(() => requestPermissionAndSubscribe(reg), 1200);
-      }
-    } catch (err) {
-      console.error('SW register failed', err);
+      
+      // Check if already subscribed
+      const subscription = await reg.pushManager.getSubscription();
+      setIsSubscribed(!!subscription);
+    } catch (error) {
+      console.error('Service Worker registration failed:', error);
     }
   };
 
-  const requestPermissionAndSubscribe = async (reg?: ServiceWorkerRegistration) => {
-    const regInstance = reg || registration;
-    if (!regInstance) {
-      toast.error('Service worker not ready');
+  const subscribeToNotifications = async () => {
+    if (!registration) {
+      toast.error('Service worker not registered');
       return;
     }
+
     setIsLoading(true);
+
     try {
+      // Request notification permission
       const permission = await Notification.requestPermission();
+
       if (permission !== 'granted') {
         toast.error('Notification permission denied');
+        setIsLoading(false);
         return;
       }
 
-      if (!VAPID_PUBLIC_KEY) {
-        toast.error('VAPID public key missing on frontend. Add it to env.');
-        console.error('VAPID_PUBLIC_KEY is empty');
-        return;
-      }
-
-      const sub = await regInstance.pushManager.subscribe({
+      // Subscribe to push notifications
+      const applicationServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+      const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+        applicationServerKey: applicationServerKey as BufferSource,
       });
 
-      // optional: if user signed in, attach user_id
+      // Get current user (optional - supports guest users)
       const { data: { user } } = await supabase.auth.getUser();
 
-      const payload = {
-        user_id: user?.id ?? null,
-        endpoint: (sub as any).endpoint,
-        subscription: sub.toJSON(),
-        created_at: new Date().toISOString(),
-      };
-
-      // upsert by endpoint
+      // Save subscription to Supabase (works for both logged-in and guest users)
+      const subscriptionData = subscription.toJSON();
+      
       const { error } = await supabase
         .from('push_subscribers')
-        .upsert([payload], { onConflict: 'endpoint' });
+        .upsert([{
+          user_id: user?.id || null, // Allow null for guest users
+          subscription: subscriptionData as any,
+          endpoint: subscription.endpoint,
+        }], {
+          onConflict: 'endpoint'
+        });
 
       if (error) {
-        console.error('Failed to save subscription to DB', error);
-        toast.error('Failed to save subscription');
+        console.error('Error saving subscription:', error);
+        toast.error('Failed to save notification settings');
       } else {
         setIsSubscribed(true);
-        toast.success('Notifications enabled!');
+        toast.success('Notifications enabled!', {
+          description: 'You will now receive updates from AIJIM',
+        });
       }
-    } catch (err) {
-      console.error('subscribe error', err);
-      toast.error('Could not subscribe to notifications');
+    } catch (error) {
+      console.error('Error subscribing to push notifications:', error);
+      toast.error('Failed to enable notifications');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const unsubscribe = async () => {
+  const unsubscribeFromNotifications = async () => {
     if (!registration) return;
+
     setIsLoading(true);
+
     try {
-      const sub = await registration.pushManager.getSubscription();
-      if (sub) {
-        await sub.unsubscribe();
-        // delete from DB (by endpoint)
-        await supabase.from('push_subscribers').delete().eq('endpoint', (sub as any).endpoint);
+      const subscription = await registration.pushManager.getSubscription();
+
+      if (subscription) {
+        await subscription.unsubscribe();
+
+        // Remove from database
+        const { error } = await supabase
+          .from('push_subscribers')
+          .delete()
+          .eq('endpoint', subscription.endpoint);
+
+        if (error) {
+          console.error('Error removing subscription:', error);
+        }
+
+        setIsSubscribed(false);
+        toast.success('Notifications disabled');
       }
-      setIsSubscribed(false);
-      toast.success('Notifications disabled');
-    } catch (err) {
-      console.error('unsubscribe error', err);
-      toast.error('Failed to unsubscribe');
+    } catch (error) {
+      console.error('Error unsubscribing:', error);
+      toast.error('Failed to disable notifications');
     } finally {
       setIsLoading(false);
     }
@@ -125,23 +153,22 @@ export const usePushNotifications = (autoPrompt = false) => {
 
   const sendTestNotification = async () => {
     try {
-      // Call server function/endpoint that sends the push via web-push (server will use VAPID keys)
-      const res = await fetch('/api/send-notification-test', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: 'Test — AIJIM',
-          body: 'This is a test push notification',
-          url: '/',
-        }),
+      const { error } = await supabase.functions.invoke('send-push-notification', {
+        body: {
+          title: 'Test Notification',
+          body: 'This is a test notification from AIJIM!',
+          icon: '/aijim-uploads/aijim-192.png',
+        },
       });
 
-      const json = await res.json();
-      if (res.ok) toast.success(`Sent: ${json.sent || 0}`);
-      else toast.error(json.error || 'Failed to send test');
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to call send endpoint');
+      if (error) {
+        toast.error('Failed to send test notification');
+      } else {
+        toast.success('Test notification sent!');
+      }
+    } catch (error) {
+      console.error('Error sending test notification:', error);
+      toast.error('Failed to send test notification');
     }
   };
 
@@ -149,8 +176,8 @@ export const usePushNotifications = (autoPrompt = false) => {
     isSupported,
     isSubscribed,
     isLoading,
-    subscribe: () => requestPermissionAndSubscribe(),
-    unsubscribe,
+    subscribeToNotifications,
+    unsubscribeFromNotifications,
     sendTestNotification,
   };
 };

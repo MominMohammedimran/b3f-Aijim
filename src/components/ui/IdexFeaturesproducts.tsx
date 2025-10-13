@@ -58,25 +58,21 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
             <h3 className="text-white text-left font-semibold text-xs leading-tight line-clamp-2 ml-1">
               {product.name}
             </h3>
-            <div className="flex items-center mt-1 pl-2 gap-4  ">
-              {discount && (
-                <span className="text-gray-400 text-xs line-through font-semibold">
-                  ₹{product.originalPrice}
-                </span>
-              )}
-              <span className="text-white text-sm font-semibold">₹{product.price}</span>
-              {/*<span
-                className={`ml-auto text-[10px] px-1 py-0.5 rounded ${
-                  inStock
-                    ? 'bg-white text-black font-bold'
-                    : 'bg-red-600 font-bold text-white'
-                }`}
-              >
-                {inStock ? 'Stock' : 'Sold'}
-              </span>*/}
-            </div>
-        
-          </div>
+              <div className="flex items-center justify-evenly mt-1 gap-2 text-sm ">
+                          {discount && (
+                            <span className="text-gray-400 line-through font-semibold">
+                              ₹{product.originalPrice}
+                            </span>
+                          )}
+                          <span className="text-white text-[17px] font-semibold">₹{product.price}</span>
+                        </div>
+                        {product.rating && (
+                          <div className="flex items-center justify-center gap-1 mt-1">
+                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                            <span className="text-yellow-400 text-xs font-semibold">{product.rating}</span>
+                          </div>
+                        )}
+                      </div>
         </div>
 
         {/* Back Side */}
@@ -112,15 +108,21 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
               </button>
             </div>
           </div>
-          <div className="p-2 pl-3 pr-3 gap-2px bg-gray-900 border-x border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <span className="text-white font-bold">₹{product.price}</span>
-              {sizes.length > 0 && (
-                <span className="text-gray-300 text-xs">
-                 {sizes.map(s => s.size).join(', ')}
-                </span>
-              )}
-            </div>
+           <div className="flex items-center justify-evenly mt-1 gap-2 text-sm ">
+                       {discount && (
+                         <span className="text-gray-400 line-through font-semibold">
+                           ₹{product.originalPrice}
+                         </span>
+                       )}
+                       <span className="text-white text-[17px] font-semibold">₹{product.price}</span>
+                     </div>
+                     {product.rating && (
+                       <div className="flex items-center justify-center gap-1 mt-1">
+                         <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                         <span className="text-yellow-400 text-xs font-semibold">{product.rating}</span>
+                       </div>
+                     )}
+                   </div>
           </div>
         </div>
       </div>

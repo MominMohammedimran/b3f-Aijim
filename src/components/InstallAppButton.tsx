@@ -87,7 +87,8 @@ const InstallAppButton = () => {
         onClick={handleInstallClick}
         className="p-2 rounded-full bg-gray-800 hover:bg-yellow-500 text-white hover:text-black transition-all duration-300 transform hover:-translate-y-1"
               >
-        <Download className="w-5 h-5"  />
+        
+        APP
       
       </motion.button>
     </AnimatePresence>

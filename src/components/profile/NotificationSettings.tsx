@@ -1,15 +1,7 @@
-import { useEffect, useState } from "react";
-import { Bell, BellOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { toast } from "sonner";
-import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { Bell, BellOff } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 
 const NotificationSettings = () => {
   const {
@@ -21,46 +13,16 @@ const NotificationSettings = () => {
     sendTestNotification,
   } = usePushNotifications();
 
-  const [permissionStatus, setPermissionStatus] = useState<NotificationPermission>(
-    Notification.permission
-  );
-
-  useEffect(() => {
-    // Update state whenever permission changes (on some browsers)
-    if ("permissions" in navigator && (navigator as any).permissions?.query) {
-      (navigator as any)
-        .permissions.query({ name: "notifications" })
-        .then((permissionStatusObj: any) => {
-          permissionStatusObj.onchange = () => {
-            setPermissionStatus(Notification.permission);
-          };
-        });
-    }
-  }, []);
-
-  const requestPermission = async () => {
-    const permission = await Notification.requestPermission();
-    setPermissionStatus(permission);
-
-    if (permission === "granted") {
-      toast.success("Notifications allowed! You can enable them now.");
-    } else if (permission === "denied") {
-      toast.error("Permission denied. Please allow notifications in browser settings.");
-    } else {
-      toast.message("You can enable notifications later.");
-    }
-  };
-
   if (!isSupported) {
     return (
-      <Card className="border-border bg-card text-center">
+      <Card className="border-border bg-card">
         <CardHeader>
-          <CardTitle className="flex items-center justify-center gap-2 text-gray-400">
+          <CardTitle className="flex items-center gap-2">
             <BellOff className="w-5 h-5" />
             Push Notifications
           </CardTitle>
-          <CardDescription className="text-gray-500">
-            Your browser does not support push notifications.
+          <CardDescription>
+            Push notifications are not supported in your browser
           </CardDescription>
         </CardHeader>
       </Card>
@@ -68,90 +30,63 @@ const NotificationSettings = () => {
   }
 
   return (
-    <Card className="border border-gray-800 bg-gray-900 text-white">
+    <Card className="border-border bg-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Bell className="w-5 h-5 text-yellow-400" />
+          <Bell className="w-5 h-5" />
           Push Notifications
         </CardTitle>
-        <CardDescription className="text-gray-400">
-          Control when you receive updates about orders and offers.
+        <CardDescription>
+          Get notified about order updates, new products, and special offers
         </CardDescription>
       </CardHeader>
-
-      <CardContent className="space-y-6">
-        {permissionStatus === "default" && (
-          <div className="flex flex-col items-center gap-4 text-center">
-            <p className="text-gray-300">
-              This app would like to send you notifications. Please allow permission first.
-            </p>
-            <Button
-              className="bg-yellow-400 text-black hover:bg-yellow-500"
-              onClick={requestPermission}
-            >
-              Allow Notifications
-            </Button>
-          </div>
-        )}
-
-        {permissionStatus === "denied" && (
-          <div className="text-center">
-            <p className="text-red-400 font-medium">
-              Permission denied — notifications won’t work.
-            </p>
-            <p className="text-sm text-gray-400 mt-1">
-              Please enable notifications manually in your browser settings.
-            </p>
-          </div>
-        )}
-
-        {permissionStatus === "granted" && (
-          <>
-            <div className="flex items-center justify-between border-b border-gray-700 pb-3">
+      <CardContent className="space-y-4">
+        {isSubscribed ? (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
+              <Bell className="w-5 h-5 text-green-600 dark:text-green-400" />
               <div>
-                <p className="font-semibold">
-                  {isSubscribed ? "Notifications Enabled" : "Notifications Disabled"}
+                <p className="font-medium text-green-900 dark:text-green-100">
+                  Notifications Enabled
                 </p>
-                <p className="text-sm text-gray-400">
-                  {isSubscribed
-                    ? "You’ll receive updates automatically."
-                    : "Click below to enable notifications."}
+                <p className="text-sm text-green-700 dark:text-green-300">
+                  You will receive push notifications
                 </p>
               </div>
-
+            </div>
+            
+            <div className="pt-4 border-t border-border">
               <Button
-                onClick={
-                  isSubscribed
-                    ? unsubscribeFromNotifications
-                    : subscribeToNotifications
-                }
-                disabled={isLoading}
-                className={`px-5 font-semibold ${
-                  isSubscribed
-                    ? "bg-red-600 hover:bg-red-700"
-                    : "bg-yellow-400 hover:bg-yellow-500 text-black"
-                }`}
+                onClick={sendTestNotification}
+                variant="outline"
+                className="w-full"
               >
-                {isLoading
-                  ? "Processing..."
-                  : isSubscribed
-                  ? "Disable"
-                  : "Enable"}
+                Send Test Notification
               </Button>
             </div>
-
-            {isSubscribed && (
-              <div className="flex justify-end">
-                <Button
-                  onClick={sendTestNotification}
-                  variant="outline"
-                  className="text-xs border-gray-600 hover:bg-gray-800"
-                >
-                  Send Test Notification
-                </Button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-4 bg-muted rounded-lg">
+              <BellOff className="w-5 h-5 text-muted-foreground" />
+              <div>
+                <p className="font-medium text-foreground">
+                  Notifications Disabled
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Enable to receive updates about orders and offers
+                </p>
               </div>
-            )}
-          </>
+            </div>
+            
+            <Button
+              onClick={subscribeToNotifications}
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? 'Enabling...' : 'Enable Notifications'}
+            </Button>
+          </div>
         )}
       </CardContent>
     </Card>
