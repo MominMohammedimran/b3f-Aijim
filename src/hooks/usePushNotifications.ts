@@ -27,27 +27,38 @@ export const usePushNotifications = () => {
   useEffect(() => {
     const setupPush = async () => {
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        console.warn('Push not supported');
+        console.warn('🚫 Push not supported');
         return;
       }
+
       setIsSupported(true);
 
       try {
+        console.log('🔄 Registering service worker...');
         const reg = await navigator.serviceWorker.register('/service-worker.js');
+
+        await navigator.serviceWorker.ready; // ✅ Wait until it's active
+
+        console.log('✅ Service worker ready:', reg);
         setRegistration(reg);
 
         const sub = await reg.pushManager.getSubscription();
         setIsSubscribed(!!sub);
 
         if (!sub) {
-          // Ask for permission immediately
+          console.log('🔔 Requesting notification permission...');
           const permission = await Notification.requestPermission();
           if (permission === 'granted') {
+            console.log('✅ Permission granted. Subscribing user...');
             await subscribeToNotifications(reg);
+          } else {
+            console.log('⚠️ Notification permission not granted:', permission);
           }
+        } else {
+          console.log('🔗 User already subscribed to push notifications.');
         }
       } catch (error) {
-        console.error('Error setting up push:', error);
+        console.error('❌ Error setting up push notifications:', error);
       }
     };
 
@@ -58,18 +69,24 @@ export const usePushNotifications = () => {
   const subscribeToNotifications = async (reg?: ServiceWorkerRegistration) => {
     try {
       setIsLoading(true);
+
       const registrationToUse = reg || registration;
       if (!registrationToUse) {
         toast.error('Service worker not ready');
         return;
       }
 
+      console.log('📩 Subscribing to push...');
       const sub = await registrationToUse.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
       });
 
+      console.log('✅ Subscription created:', sub.endpoint);
+
       const { data: { user } } = await supabase.auth.getUser();
+
+      const subscriptionData = JSON.parse(JSON.stringify(sub.toJSON()));
 
       const { error } = await supabase
         .from('push_subscribers')
@@ -77,19 +94,20 @@ export const usePushNotifications = () => {
           {
             user_id: user?.id || null,
             endpoint: sub.endpoint,
-            subscription: sub.toJSON(),
+            subscription: subscriptionData,
           },
         ], { onConflict: 'endpoint' });
 
       if (error) {
-        console.error('Failed to save push subscription:', error);
+        console.error('❌ Failed to save subscription to Supabase:', error);
         toast.error('Failed to save subscription');
       } else {
         setIsSubscribed(true);
-        toast.success('Notifications enabled!');
+        toast.success('✅ Notifications enabled!');
+        console.log('✅ Subscription saved in Supabase');
       }
     } catch (err) {
-      console.error('Push subscription error:', err);
+      console.error('❌ Push subscription error:', err);
       toast.error('Failed to enable notifications');
     } finally {
       setIsLoading(false);
