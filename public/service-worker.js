@@ -1,5 +1,5 @@
 // Service Worker for PWA and Push Notifications
-const CACHE_NAME = 'aijim-store-v2';
+const CACHE_NAME = `aijim-store-v2.02`;
 const urlsToCache = [
   '/',
   '/index.html',

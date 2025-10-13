@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -14,84 +14,91 @@ const InstallAppButton = () => {
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
-    const installed = localStorage.getItem('isInstalled') === 'true';
-    setIsInstalled(installed);
+    const checkInstallationStatus = () => {
+      const installed = localStorage.getItem('isInstalled') === 'true';
+      const isStandalone =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        (window.navigator as any).standalone === true;
 
-    // Check if running as PWA
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    if (isStandalone || installed) {
-      setIsInstalled(true);
-      localStorage.setItem('isInstalled', 'true');
-      return;
-    }
+      if (isStandalone || installed) {
+        setIsInstalled(true);
+        setShowButton(false);
+        localStorage.setItem('isInstalled', 'true');
+      } else {
+        setIsInstalled(false);
+      }
+    };
 
-    // Listen for beforeinstallprompt event
+    checkInstallationStatus();
+
+    // Listen for beforeinstallprompt event (Chrome, Edge, etc.)
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      const event = e as BeforeInstallPromptEvent;
+      setDeferredPrompt(event);
       setShowButton(true);
+      console.log('📲 beforeinstallprompt event captured');
+    };
+
+    // Listen for appinstalled event
+    const handleAppInstalled = () => {
+      console.log('✅ PWA Installed!');
+      toast.success('AIJIM installed successfully!');
+      setIsInstalled(true);
+      setShowButton(false);
+      localStorage.setItem('isInstalled', 'true');
+      setDeferredPrompt(null);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) {
-      // Fallback for browsers without install prompt
       toast.info('Install AIJIM', {
-        description: 'To install this app:\n1. Tap the menu button (⋮)\n2. Select "Add to Home screen"\n3. Follow the prompts',
-        duration: 8000,
+        description:
+          'To install manually:\n1️⃣ Tap the browser menu (⋮)\n2️⃣ Select "Add to Home screen"\n3️⃣ Follow the prompts',
+        duration: 9000,
       });
       return;
     }
 
-    // Show the install prompt
-    await deferredPrompt.prompt();
+    deferredPrompt.prompt();
 
-    // Wait for the user's response
     const { outcome } = await deferredPrompt.userChoice;
-
     if (outcome === 'accepted') {
       toast.success('App installed successfully!', {
-        description: 'AIJIM has been added to your home screen.',
+        description: 'AIJIM is now on your home screen.',
       });
       localStorage.setItem('isInstalled', 'true');
       setIsInstalled(true);
       setShowButton(false);
     } else {
-      toast.info('Installation cancelled', {
-        description: 'You can install the app anytime from your browser menu.',
+      toast.info('Installation dismissed', {
+        description: 'You can install it later from your browser menu.',
       });
     }
 
-    // Clear the deferred prompt
     setDeferredPrompt(null);
   };
 
-  if (isInstalled || !showButton) {
-    return null;
-  }
+  // Don’t render button if already installed or not installable
+  if (isInstalled || !showButton) return null;
 
   return (
-    <AnimatePresence>
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.3 }}
-        onClick={handleInstallClick}
-        className="p-2 rounded-full bg-gray-800 hover:bg-yellow-500 text-white hover:text-black transition-all duration-300 transform hover:-translate-y-1"
-              >
-        
-        APP
-      
-      </motion.button>
-    </AnimatePresence>
+    <Button
+      onClick={handleInstallClick}
+      className="p-3 rounded-full bg-gray-800 hover:bg-yellow-500 text-white hover:text-black transition-all duration-300 transform hover:-translate-y-1"
+               title="Install AIJIM App"
+    >
+      <Download className="w-5 h-5" />
+    </Button>
   );
 };
 

@@ -14,11 +14,13 @@ const ProductDetailsPage = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
 const seo = useSEO('/product/details/:productId');
+
   useEffect(() => {
     if (!productId) return;
 
     // Always load product from mock data for now
     const foundProduct = products.find((p) => p.code=== productId);
+    
 
     if (foundProduct) {
       setProduct(foundProduct);
