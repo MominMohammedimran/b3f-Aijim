@@ -34,12 +34,16 @@ const AdminNotificationSender = () => {
         console.error('Error sending notification:', error);
         toast.error('Failed to send notification');
       } else {
-        toast.success(`Sent successfully to ${data.sent}/${data.total} users`, {
-          description:
-            data.expired > 0
-              ? `${data.expired} expired subscriptions removed`
-              : 'Notification delivered to active subscribers.',
-        });
+        const sent = data?.sent ?? 0;
+const expired = data?.expired ?? 0;
+
+toast.success(`Notification sent to ${sent} user${sent === 1 ? '' : 's'}`, {
+  description:
+    expired > 0
+      ? `${expired} expired subscription${expired === 1 ? '' : 's'} removed.`
+      : 'Notification delivered to active subscribers.',
+});
+
         setTitle('');
         setBody('');
       }
