@@ -71,8 +71,8 @@ const ProfileTabs = () => {
           >
             <Bell size={16} />
             <span className="hidden sm:inline">Notifications</span>
-          </TabsTrigger>
-        </TabsList>*/}
+          </TabsTrigger>*/}
+        </TabsList>
 
         {/* Rewards Tab */}
         <TabsContent value="rewards">

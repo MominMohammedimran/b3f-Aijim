@@ -18,49 +18,43 @@ function App() {
   useEffect(() => {
     initializeSecurity();
 
-    /**
-     * 🧹 1. Cleanup old Service Workers and Caches
-     */
+    /** 🧹 1. Cleanup old Service Workers and caches **/
     const cleanupSW = async () => {
       try {
         if ("serviceWorker" in navigator) {
           const regs = await navigator.serviceWorker.getRegistrations();
           for (const reg of regs) {
             await reg.unregister();
-            console.log("🧹 Unregistered SW:", reg.scope);
+            console.log("🧹 Unregistered old SW:", reg.scope);
           }
         }
         if ("caches" in window) {
           const names = await caches.keys();
           for (const name of names) {
             await caches.delete(name);
-            console.log("🗑 Deleted Cache:", name);
+            console.log("🗑 Deleted cache:", name);
           }
         }
-      } catch (e) {
-        console.error("❌ Cleanup failed:", e);
+      } catch (err) {
+        console.error("❌ Cleanup failed:", err);
       }
     };
 
-    /**
-     * ⚙️ 2. Register new Service Worker (auto-refresh when updated)
-     */
+    /** ⚙️ 2. Register new Service Worker (auto-refresh on update) **/
     const registerSW = async () => {
       if (!("serviceWorker" in navigator)) return;
 
       try {
         const reg = await navigator.serviceWorker.register("/service-worker.js");
-        console.log("✅ Registered Service Worker:", reg);
+        console.log("✅ Registered SW:", reg);
 
         reg.onupdatefound = () => {
           const newSW = reg.installing;
           if (!newSW) return;
+
           newSW.onstatechange = () => {
-            if (
-              newSW.state === "installed" &&
-              navigator.serviceWorker.controller
-            ) {
-              toast.info("New version found. Updating...");
+            if (newSW.state === "installed" && navigator.serviceWorker.controller) {
+              toast.info("New version available. Updating...");
               newSW.postMessage({ type: "SKIP_WAITING" });
             }
           };
@@ -75,16 +69,13 @@ function App() {
       }
     };
 
-    /**
-     * 🚫 3. Disable Chrome Download Options & Dev Tools Shortcuts
-     */
+    /** 🚫 3. Disable Chrome download options & DevTools **/
     const disableDownloads = () => {
       const preventContext = (e: MouseEvent) => e.preventDefault();
       const preventKeys = (e: KeyboardEvent) => {
-        // Disable Ctrl+S, Ctrl+U, Ctrl+Shift+I, F12
+        // Disable Ctrl+S, Ctrl+U, Ctrl+Shift+I/J/P, F12
         if (
-          (e.ctrlKey &&
-            ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase())) ||
+          (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase())) ||
           e.key === "F12"
         ) {
           e.preventDefault();
@@ -95,7 +86,7 @@ function App() {
       document.addEventListener("contextmenu", preventContext);
       document.addEventListener("keydown", preventKeys);
 
-      // Disable selection and dragging
+      // Disable text selection and dragging
       document.body.style.userSelect = "none";
       document.body.style.webkitUserDrag = "none";
       document.body.style.webkitTouchCallout = "none";
@@ -106,7 +97,7 @@ function App() {
       };
     };
 
-    // Run tasks
+    // Execute setup
     cleanupSW().then(registerSW);
     disableDownloads();
 

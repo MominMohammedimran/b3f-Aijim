@@ -300,7 +300,7 @@ const AddressManagement = () => {
           {addresses.map((address) => (
             <div 
               key={address.id}
-              className={`border rounded-none p-1 transition-colors ${
+              className={`border-b rounded-none p-1 transition-colors ${
                 address.is_default ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
               }`}
             >
