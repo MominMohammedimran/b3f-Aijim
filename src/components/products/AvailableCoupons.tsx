@@ -20,10 +20,11 @@ const AvailableCoupons: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("coupons")
         .select("id, code, discount_type, discount_value, valid_to, valid_from")
         .eq("active", true);
+      if (error) console.error("Error loading coupons:", error);
       setCoupons(data || []);
     })();
   }, []);
@@ -58,20 +59,23 @@ const AvailableCoupons: React.FC = () => {
         )}
       </button>
 
-      {/* Dropdown scrollable area */}
+      {/* Scrollable dropdown */}
       {expanded && (
         <div
-          className="mt-3 max-h-40 overflow-y-auto pr-2 space-y-3 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent scroll-smooth"
+          className="mt-3 max-h-56 overflow-y-auto rounded-md border border-gray-800 bg-black/50 
+                     p-2 space-y-3 scrollbar-thin scrollbar-thumb-yellow-500/60 scrollbar-track-gray-900/40"
         >
           {coupons.length === 0 ? (
-            <p className="text-gray-400 text-sm">No coupons available.</p>
+            <p className="text-gray-400 text-sm text-center py-4">
+              No coupons available.
+            </p>
           ) : (
             coupons.map((c) => (
               <div
                 key={c.id}
-                className="flex justify-between items-center border border-gray-700 p-2 rounded-md"
+                className="flex justify-between items-center border border-gray-700 p-3 rounded-md hover:bg-gray-800/60 transition-colors"
               >
-                <div>
+                <div className="flex flex-col">
                   <p className="font-semibold text-yellow-400 text-sm">{c.code}</p>
                   <p className="text-xs font-semibold text-gray-300">{formatDiscount(c)}</p>
                   <p className="text-xs font-semibold text-gray-500">
@@ -86,7 +90,7 @@ const AvailableCoupons: React.FC = () => {
                 <Button
                   size="sm"
                   onClick={() => copy(c.code)}
-                  className="bg-yellow-500 hover:bg-yellow-400 text-black text-xs"
+                  className="bg-yellow-500 hover:bg-yellow-400 text-black text-xs px-3 py-1"
                 >
                   {copied === c.code ? "Copied!" : "Copy"}
                 </Button>

@@ -342,7 +342,7 @@ const Checkout = () => {
             {/* Coupon Section */}
             <CollapsibleSection title="Apply Coupon" defaultOpen={false}>
               <CouponSection
-              className='h-auto'
+            
                 cartTotal={totalPrice}
                 onCouponApplied={handleCouponApplied}
                 onCouponRemoved={handleCouponRemoved}

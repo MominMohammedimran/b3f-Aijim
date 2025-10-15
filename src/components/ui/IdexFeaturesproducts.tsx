@@ -13,6 +13,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
     averageRating: 0,
     reviewCount: 0,
   });
+  const [currentImage, setCurrentImage] = useState(0);
 
   const sizes = Array.isArray(product.variants) ? product.variants : [];
   const totalStock = sizes.reduce(
@@ -28,12 +29,12 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
       )
     : 0;
 
-  const backImage =
-    product.images && product.images.length > 1
-      ? product.images[1]
-      : product.image;
+  const images =
+    Array.isArray(product.images) && product.images.length > 0
+      ? product.images
+      : [product.image];
 
-  // ✅ Fetch review stats for this product
+  // ✅ Fetch review stats
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -61,6 +62,15 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
 
     if (product.id) fetchReviews();
   }, [product.id]);
+
+  // ✅ Auto carousel logic for back side
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 2000); // Change every 2 seconds
+    return () => clearInterval(interval);
+  }, [images.length]);
 
   return (
     <div
@@ -127,23 +137,28 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
           </div>
         </div>
 
-        {/* ---------- BACK ---------- */}
-        <div className="flip-card-back rounded-none">
-          <div className="relative aspect-[4/5] overflow-hidden bg-gray-900 border border-gray-200">
-            <img
-              src={backImage}
-              alt={`${product.name} - Back view`}
-              className={`w-full h-full object-cover ${
-                inStock ? "" : "grayscale opacity-70"
-              }`}
-            />
+        {/* ---------- BACK (Carousel) ---------- */}
+        <div className="flip-card-back rounded-none relative aspect-[4/5] overflow-hidden bg-gray-900 border border-gray-200">
+          <div className="relative w-full h-full">
+            {images.map((img, i) => (
+              <img
+                key={i}
+                src={img}
+                alt={`${product.name}-${i}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  i === currentImage ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
 
+            {/* Discount Badge */}
             {pct > 0 && (
               <span className="absolute top-1 right-0 bg-red-600 text-white text-[8px] px-1 py-0 font-bold animate-bounce z-10">
                 {pct}% OFF
               </span>
             )}
 
+            {/* Stock Status */}
             <span
               className={`rounded-none ${
                 inStock
@@ -154,7 +169,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
               {inStock ? "Stock" : "Sold"}
             </span>
 
-            {/* ✅ Rating badge also on back */}
+            {/* Rating badge */}
             {reviewStats.reviewCount > 0 && (
               <div className="absolute bottom-0 left-0 bg-black/60 backdrop-blur-sm px-2 py-[2px] flex items-center gap-1 text-yellow-400 text-[10px] font-semibold rounded-tr-md">
                 <Star className="w-3 h-3 fill-yellow-400" />
@@ -165,6 +180,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
               </div>
             )}
 
+            {/* View Product Button */}
             <button className="absolute bottom-4 w-full bg-blue-600 hover:bg-blue-900 text-white text-xs font-bold py-2 px-1 rounded transition-colors">
               View Product
             </button>
