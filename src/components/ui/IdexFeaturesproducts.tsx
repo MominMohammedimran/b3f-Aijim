@@ -162,7 +162,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
             <span
               className={`rounded-none ${
                 inStock
-                  ? "absolute top-5 right-0 text-[8px] uppercase px-1 py-0 bg-white text-black font-bold"
+                  ? "absolute top-5 right-0 text-[8px] hidden uppercase px-1 py-0 bg-white text-black font-bold"
                   : "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white"
               }`}
             >
@@ -180,13 +180,13 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
               </div>
             )}
 
-            {/* View Product Button */}
+            {/* View Product Button 
             <button className="absolute bottom-4 w-full bg-blue-600 hover:bg-blue-900 text-white text-xs font-bold py-2 px-1 rounded transition-colors">
               View Product
-            </button>
+            </button>*/}
           </div>
 
-          <div className="flex items-center justify-evenly mt-1 gap-2 text-sm">
+          {/*<div className="flex items-center justify-evenly mt-1 gap-2 text-sm">
             {discount && (
               <span className="text-gray-400 line-through font-semibold">
                 ₹{product.originalPrice}
@@ -195,7 +195,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
             <span className="text-white text-[17px] font-semibold">
               ₹{product.price}
             </span>
-          </div>
+          </div>*/}
         </div>
       </div>
     </div>

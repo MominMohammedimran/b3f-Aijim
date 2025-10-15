@@ -15,16 +15,15 @@ interface Coupon {
 
 const AvailableCoupons: React.FC = () => {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("coupons")
         .select("id, code, discount_type, discount_value, valid_to, valid_from")
         .eq("active", true);
-      if (error) console.error("Error loading coupons:", error);
       setCoupons(data || []);
     })();
   }, []);
@@ -42,60 +41,65 @@ const AvailableCoupons: React.FC = () => {
   };
 
   return (
-    <div className="p-4 bg-muted-background border border-gray-700 rounded-none">
+    <div className="mt-3 w-full  border border-gray-700 rounded-none overflow-hidden shadow-md">
       {/* Header */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex justify-between items-center w-full"
+        className="flex justify-between items-center w-full p-3  border-b border-gray-700 "
       >
         <div className="flex items-center gap-2">
-          <Ticket className="w-5 h-5 text-yellow-400" />
-          <h3 className="text-md font-semibold text-yellow-400">Available Coupons</h3>
+          <Ticket className="w-4 h-4 text-yellow-400" />
+          <h3 className="text-sm font-semibold text-yellow-400 uppercase tracking-wide">
+            Available Coupons
+          </h3>
         </div>
         {expanded ? (
-          <ChevronUp className="w-5 h-5 text-gray-400" />
+          <ChevronUp className="w-4 h-4 text-gray-400" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-gray-400" />
+          <ChevronDown className="w-4 h-4 text-gray-400" />
         )}
       </button>
 
-      {/* Scrollable dropdown */}
+      {/* Scrollable content */}
       {expanded && (
-        <div
-          className="mt-3 max-h-56 overflow-y-auto rounded-md border border-gray-800 bg-black/50 
-                     p-2 space-y-3 scrollbar-thin scrollbar-thumb-yellow-500/60 scrollbar-track-gray-900/40"
-        >
+        <div className="max-h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent scroll-smooth p-3 ">
           {coupons.length === 0 ? (
             <p className="text-gray-400 text-sm text-center py-4">
               No coupons available.
             </p>
           ) : (
-            coupons.map((c) => (
-              <div
-                key={c.id}
-                className="flex justify-between items-center border border-gray-700 p-3 rounded-md hover:bg-gray-800/60 transition-colors"
-              >
-                <div className="flex flex-col">
-                  <p className="font-semibold text-yellow-400 text-sm">{c.code}</p>
-                  <p className="text-xs font-semibold text-gray-300">{formatDiscount(c)}</p>
-                  <p className="text-xs font-semibold text-gray-500">
-                    Valid till{" "}
-                    {new Date(c.valid_to).toLocaleDateString("en-US", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </p>
-                </div>
-                <Button
-                  size="sm"
-                  onClick={() => copy(c.code)}
-                  className="bg-yellow-500 hover:bg-yellow-400 text-black text-xs px-3 py-1"
+            <div className="space-y-3">
+              {coupons.map((c) => (
+                <div
+                  key={c.id}
+                  className="flex justify-between items-center border border-gray-700 p-3 rounded-none hover:bg-[#222] transition-all"
                 >
-                  {copied === c.code ? "Copied!" : "Copy"}
-                </Button>
-              </div>
-            ))
+                  <div>
+                    <p className="font-semibold text-yellow-400 text-sm uppercase tracking-wider">
+                      {c.code}
+                    </p>
+                    <p className="text-xs text-gray-300 font-medium">
+                      {formatDiscount(c)}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Valid till{" "}
+                      {new Date(c.valid_to).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => copy(c.code)}
+                    className="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-semibold px-3 py-1 rounded"
+                  >
+                    {copied === c.code ? "Copied!" : "Copy"}
+                  </Button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       )}

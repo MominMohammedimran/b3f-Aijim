@@ -341,6 +341,7 @@ const Checkout = () => {
           <div className=" rounded-none ">
             {/* Coupon Section */}
             <CollapsibleSection title="Apply Coupon" defaultOpen={false}>
+            <div className='h-auto '>
               <CouponSection
             
                 cartTotal={totalPrice}
@@ -348,6 +349,7 @@ const Checkout = () => {
                 onCouponRemoved={handleCouponRemoved}
                 appliedCoupon={appliedCoupon || undefined}
               />
+              </div>
             </CollapsibleSection>
 
 

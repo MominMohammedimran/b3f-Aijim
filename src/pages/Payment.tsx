@@ -161,42 +161,45 @@ const Payment = () => {
           </div>
 
           {/*shipping Address */}
-          <div className="bg-gray-900 text-white p-4 rounded-none shadow-md border border-gray-700">
-      <h3 className="text-md font-semibold mb-3 border-b border-gray-700 pb-2 leading-relaxed">
-        Shipping Address used for this Order
-      </h3>
-      <div className="space-y-1 font-semibold text-xs">
-        {/* Full Name */}
-        <p className="text-gray-300 ">
-          <span className="font-semibold text-white">Name - </span>
-          {shippingAddress.fullName || `${shippingAddress.firstName} ${shippingAddress.lastName}`}
-        </p>
-        
-        {/* Address */}
-        <p className="line-clamp-1 text-gray-300">
-          <span className="font-semibold text-white">Address - </span>
-          {shippingAddress.address}, {shippingAddress.city}, - {shippingAddress.zipCode}
-        </p>
-        
-        {/* Country */}
-        <p className="text-gray-300">
-          <span className="font-semibold text-white">Country - </span>
-          {shippingAddress.country}
-        </p>
-        
-        {/* Phone */}
-        <p className="text-gray-300">
-          <span className="font-semibold text-white">Phone - </span>
-          {shippingAddress.phone}
-        </p>
-        
-        {/* Email */}
-        <p className="text-gray-300">
-          <span className="font-semibold text-white">Email - </span>
-          {shippingAddress.email}
-        </p>
-      </div>
-    </div>
+      <div className="bg-gray-900 text-white p-4 rounded-none shadow-md border border-gray-700">
+  <h3 className="text-sm font-semibold mb-3 border-b border-gray-700 pb-2 leading-relaxed">
+    Shipping Address used for this Order
+  </h3>
+
+  <p className="text-xs leading-relaxed text-gray-300 font-semibold">
+    {shippingAddress.firstName || shippingAddress.lastName ? (
+      <>
+        <span className="text-white font-semibold">
+          {shippingAddress.firstName} {shippingAddress.lastName}
+        </span>
+        ,{" "}
+      </>
+    ) : null}
+
+    {shippingAddress.address && <>{shippingAddress.address}, </>}
+    {shippingAddress.city && <>{shippingAddress.city}, </>}
+    {shippingAddress.state && <>{shippingAddress.state}, </>}
+    {shippingAddress.zipCode && <>- {shippingAddress.zipCode}, </>}
+    {shippingAddress.country && <>{shippingAddress.country}</>},
+
+    {/* Optional contact info */}
+    {shippingAddress.phone && (
+      <>
+        {" "}
+        <span className="text-yellow-400 font-semibold">📞</span>{" "}
+        {shippingAddress.phone}
+      </>
+    )},
+    {shippingAddress.email && (
+      <>
+        {" "}
+        <span className="text-yellow-400 font-semibold">✉️</span>{" "}
+        {shippingAddress.email}
+      </>
+    )}
+  </p>
+</div>
+
 
           {/* Right: Secure Payment Info */}
           <div className="space-y-6">

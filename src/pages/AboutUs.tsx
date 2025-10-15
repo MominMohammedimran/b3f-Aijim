@@ -56,11 +56,11 @@ const AboutUs = () => {
                   className="group bg-card border border-border rounded-lg p-4 shadow-glow hover:shadow-glow-strong transition-all duration-300 hover:scale-105"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 text-white bg-white border-2 border-accent rounded-lg flex items-center justify-center group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300">
-                      <Icon size={15} className="text-accent group-hover:text-accent-foreground" />
+                    <div className="w-10 h-10 text-white bg-white border-2 border-accent rounded-lg flex items-center justify-center group-hover:bg-accent group-hover:text-yellow-500 transition-all duration-300">
+                      <Icon size={15} className="text-accent group-hover:text-yellow-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
+                      <h3 className="text-xl font-semibold text-foreground mb-1 group-hover:text-yellow-500 transition-colors">
                         {value.title}
                       </h3>
                       <p className="text-foreground/80 not-italic text-xs font-semibold leading-snug">
@@ -104,7 +104,7 @@ const AboutUs = () => {
                 CRAFTED WITH <span className="text-foreground text-black">PRECISION</span>
               </h2>
               <div className="w-full h-1 bg-white mb-2"></div>
-              <div className="space-y-0 text-foreground/90 font-semibold not-italic text-sm leading-snug">
+              <div className="space-y-0 text-foreground/90 font-semibold not-italic text-sm leading-tight">
                 <p>
                   Every AIJIM piece undergoes rigorous quality control. From fabric selection to final stitching, 
                   we maintain the highest standards of craftsmanship.

@@ -10,7 +10,7 @@ const RefundReturnPolicyNew = () => {
     {
       icon: Package,
       title: 'REQUEST RETURN',
-      description: 'Contact us within 30 days of delivery to initiate a return request.',
+      description: 'Contact us within 5-7 days of delivery to initiate a return request.',
       color: 'text-white'
     },
     {
@@ -37,7 +37,7 @@ const RefundReturnPolicyNew = () => {
     {
       id: 'timeframe',
       question: 'What is the return timeframe?',
-      answer: 'You have 7 days from the delivery date to initiate a return. Items must be in original condition with tags attached.'
+      answer: 'You have 5-7 days from the delivery date to initiate a return. Items must be in original condition with tags attached.'
     },
     {
       id: 'condition',
