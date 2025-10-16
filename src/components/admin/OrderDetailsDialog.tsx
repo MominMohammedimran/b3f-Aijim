@@ -28,6 +28,11 @@ interface AdminOrder {
     zip_code?: string;
     country?: string;
   };
+   coupon_code?:string ;
+   coupon_code_discount:number;
+    reward_points_used?: number;
+    reward_points_used_available:number;
+  reward_points_earned?: number;
   payment_method?: string;
   cancellation_reason?: string;
 }
@@ -110,15 +115,12 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
             ))}
           </div>
 
-          <OrderDesignDownload 
-            items={order.items} 
-            orderNumber={order.order_number} 
-          />
+          
           
           {/* Order details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <h3 className="font-medium">Payment Information</h3>
+              <h3 className="font-medium text-red-400 underline">Payment Information</h3>
               <p className="text-sm">Status: <span className="font-medium">{order.status}</span></p>
               <p className="text-sm">Method: <span className="font-medium">{order.payment_method || 'Not specified'}</span></p>
               <p className="text-sm">Total: <span className="font-medium">{formatCurrency(order.total)}</span></p>
@@ -133,8 +135,8 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
             <div className="space-y-2">
               {order.shipping_address && (
                 <>
-                  <h3 className="font-medium">Shipping Address</h3>
-                   <h3 className="font-medium">{order.shipping_address.fullName || order.shipping_address.name || ''}</h3>
+                  <h3 className="font-medium text-yellow-400 underline">Shipping Address</h3>
+                   <p className="font-medium">{order.shipping_address.fullName || order.shipping_address.name || ''}</p>
                   <p className="text-sm">{order.shipping_address.email || ''}</p>
                   <p className="text-sm">{order.shipping_address.address || order.shipping_address.street || ''}</p>
                   <p className="text-sm">{`${order.shipping_address.city || ''}, ${order.shipping_address.state || ''} ${order.shipping_address.zipCode || order.shipping_address.zip_code || ''}`}</p>
@@ -142,6 +144,26 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
                 </>
               )}
             </div>
+              <div className="space-y-1">
+              {order.coupon_code && (
+                <>
+                  <h3 className="font-medium text-yellow-400 underline">Coupon Code used </h3>
+                   <p className="font-medium">code - {order.coupon_code|| ''}</p>
+                  <p className="font-medium">discount - {order.coupon_code_discount|| 0}</p>
+                 
+                </>
+              )}
+            </div>
+            <div className='space-y-1'>
+              {order.reward_points_used &&(
+                <>
+                <h3 className="font-medium text-yellow-400 underline">Reward Points used </h3>
+                <p className='font-medium'> points available - {order.reward_points_used_available||0}</p>
+                <p className='font-medium'>used - {order.reward_points_used||0}</p>
+                </>
+              )}
+              </div>
+
           </div>
           
           {/* Status management */}

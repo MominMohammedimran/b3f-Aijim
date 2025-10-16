@@ -48,6 +48,7 @@ const AdminOrders: React.FC = () => {
     fetchOrders();
   }, []);
 
+  
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -73,11 +74,13 @@ const AdminOrders: React.FC = () => {
           payment_status: order.payment_status,
           reward_points_earned: order.reward_points_earned || 0,
           coupon_code:order.coupon_code?.code||"",
-          reward_points_used:order.reward_points_used?.points||0,
+          coupon_code_discount:order.coupon_code?.discount_amount||0,
+          reward_points_used:order.reward_points_used?.value_used||0,
+          reward_points_used_available:order.reward_points?.points||0,
           delivery_fee:order.delivery_fee||0,
           
         }));
-        
+
         setOrders(transformedOrders);
       }
     } catch (error) {
@@ -107,6 +110,7 @@ const AdminOrders: React.FC = () => {
         const emailToSend = shipping?.email || updatedOrder.user_email;
 
         if (emailToSend && emailToSend !== 'N/A') {
+          
           try {
             await sendOrderStatusEmail({
               orderId: updatedOrder.order_number,
@@ -127,9 +131,12 @@ const AdminOrders: React.FC = () => {
               },
               paymentMethod: updatedOrder.payment_method,
               couponCode:updatedOrder.coupon_code?.code||"",
-              rewardPointsUsed:updatedOrder.reward_points_used?.points||0,
+              couponDiscount:updatedOrder.coupon_code?.discount_amount||0,
+              rewardPointsUsed:updatedOrder.reward_points_used?.value_used||0,
               deliveryFee:updatedOrder.delivery_fee,
             });
+            
+            
            
           } catch (emailError) {
             console.error('Failed to send status update email:', emailError);
@@ -221,54 +228,9 @@ const AdminOrders: React.FC = () => {
     window.URL.revokeObjectURL(url);
   };
 
-  const downloadPreviewImage = async (order: Order) => {
-    try {
-      // Ensure items is an array before using array methods
-      const items = Array.isArray(order.items) ? order.items : [];
-      // Find custom printed items with preview images
-      const customItems = items.filter((item: any) => 
-        item.name?.toLowerCase().includes('custom printed') && 
-        (item.metadata?.previewImage || item.metadata?.designData)
-      );
+  
 
-      if (!customItems || customItems.length === 0) {
-        toast.error('No preview images found for this order');
-        return;
-      }
-
-      for (const item of customItems) {
-        const previewUrl = item.metadata?.previewImage || item.metadata?.designData?.previewUrl;
-        
-        if (previewUrl) {
-          // Create a temporary link and trigger download
-          const link = document.createElement('a');
-          link.href = previewUrl;
-          link.download = `${order.order_number}_${item.name.replace(/\s+/g, '_')}_preview.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      }
-
-      toast.success('Preview images downloaded');
-    } catch (error) {
-      console.error('Error downloading preview images:', error);
-      toast.error('Failed to download preview images');
-    }
-  };
-
-  const hasCustomPrinted = (order: Order) => {
-    // Ensure items is an array before using array methods
-    const items = Array.isArray(order.items) ? order.items : [];
-    return items.some((item: any) => 
-      item.name?.toLowerCase().includes('custom printed') ||
-      item.name?.toLowerCase().includes('custom') ||
-      item.metadata?.designData ||
-      item.metadata?.printType === 'custom' ||
-      item.metadata?.previewImage
-    );
-  };
-
+ 
   const filteredOrders = orders.filter(order =>
     order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
     order.user_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -379,23 +341,9 @@ const AdminOrders: React.FC = () => {
                             onClick={() => handleViewOrder(order)}
                             className="h-8 w-8 p-0"
                           >
-                            <Eye size={14} />
+                            <Eye size={14} /> Update 
                           </Button>
-                          <AdminOrderDownload order={order} />
-                          {hasCustomPrinted(order) && (
-                            <>
-                              <AdminDownloadDesign order={order} />
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => downloadPreviewImage(order)}
-                                className="text-xs px-2 py-1 h-8"
-                                title="Download Preview Image"
-                              >
-                                Preview
-                              </Button>
-                            </>
-                          )}
+                        
                           {order.status !== 'delivered' && (
                             <Button
                               variant="outline"

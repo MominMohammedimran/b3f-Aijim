@@ -12,7 +12,8 @@ export interface OrderEmailData {
   totalAmount: number;
   shippingAddress?: any;
   paymentMethod?: string; 
-  couponCode?:string;
+  couponCode:string;
+  couponDiscount:number;
   deliveryFee?:number;
   rewardPointsUsed:number;// razorpay / cod etc.
 }
@@ -34,7 +35,7 @@ export const sendOrderStatusEmail = async (
       toast.error('No valid customer email to send status update');
       return false;
     }
-
+    
     const loadingToast = toast.loading('📧 Sending order email...');
     
 
@@ -50,6 +51,7 @@ export const sendOrderStatusEmail = async (
         paymentMethod: orderData.paymentMethod,
         emailType: 'status_update',
         couponCode:orderData.couponCode,
+        couponDiscount:orderData.couponDiscount,
         rewardPointsUsed:orderData.rewardPointsUsed,
         deliveryFee:orderData.deliveryFee,
       }
@@ -62,7 +64,7 @@ export const sendOrderStatusEmail = async (
       toast.error(`Failed to send status email: ${error.message}`);
       return false;
     }
-
+console.log(orderData);
     toast.success(`✅ Email sent to ${orderData.customerEmail}`);
  
     return true;
@@ -91,6 +93,7 @@ export async function notifyOrderStatusChange(
   },
   paymentMethod?: string,
   couponCode?:string,
+  couponDiscount?:number,
  rewardPointsUsed?:number, 
  deliveryFee?:number,
 
@@ -105,6 +108,7 @@ export async function notifyOrderStatusChange(
     shippingAddress,
     paymentMethod,
     couponCode,
+    couponDiscount,
     rewardPointsUsed,
     deliveryFee,
   };
@@ -128,7 +132,6 @@ export const sendOrderConfirmationEmail = async (
     }
 
     const loadingToast = toast.loading('📧 Sending confirmation email...');
-
     const { data, error } = await supabase.functions.invoke('send-order-notification', {
       body: {
         orderId: orderData.orderId,
@@ -141,11 +144,11 @@ export const sendOrderConfirmationEmail = async (
         paymentMethod: orderData.paymentMethod,
         emailType: 'confirmation',
           couponCode:orderData.couponCode,
+          couponDiscount:orderData.couponDiscount,
         rewardPointsUsed:orderData.rewardPointsUsed,
         deliveryFee:orderData.deliveryFee,
       }
     });
-
     toast.dismiss(loadingToast);
 
     if (error) {

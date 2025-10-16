@@ -100,7 +100,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
             <span
               className={`rounded-none ${
                 inStock
-                  ? "absolute top-5 right-0 text-[8px] uppercase px-1 py-0 hidden bg-white text-black font-bold"
+                  ? "absolute top-5 right-0 hidden text-[8px] uppercase px-1 py-0 hidden bg-white text-black font-bold"
                   : "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white"
               }`}
             >
@@ -162,7 +162,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
             <span
               className={`rounded-none ${
                 inStock
-                  ? "absolute top-5 right-0 text-[8px] hidden uppercase px-1 py-0 bg-white text-black font-bold"
+                  ? "absolute top-5 right-0 hidden text-[8px] hidden uppercase px-1 py-0 bg-white text-black font-bold"
                   : "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg uppercase px-3 py-0 bg-red-600 font-semibold text-white"
               }`}
             >

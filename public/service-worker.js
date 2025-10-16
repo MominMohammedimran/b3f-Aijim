@@ -1,5 +1,5 @@
 // --- AIJIM Service Worker (Auto Updating) ---
-const CACHE_NAME = `aijim-cache-v-1.02-${Date.now()}`;
+const CACHE_NAME = `aijim-cache-v-1.03-${Date.now()}`;
 const CORE_ASSETS = ["/", "/index.html", "/favicon.ico"];
 
 self.addEventListener("install", (event) => {

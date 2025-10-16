@@ -146,7 +146,10 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
             orderItems: orderItems,
             totalAmount: totalAmount,
             shippingAddress: shippingAddress,
-            paymentMethod: 'razorpay'
+            paymentMethod: 'razorpay',
+            couponCode:couponCode,
+        couponDiscount:couponDiscount,
+        rewardPointsUsed:rewardPointsUsed,
           };
 
           const emailSent = await sendOrderStatusUpdateEmail(emailData);
