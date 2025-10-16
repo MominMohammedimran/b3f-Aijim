@@ -10,8 +10,8 @@
     "build": "vite build && npm run generate:sitemap",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
-  },
+    "preview": "vite preview",
+     },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",

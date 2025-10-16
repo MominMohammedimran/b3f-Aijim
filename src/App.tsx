@@ -9,6 +9,7 @@ import { ActiveProductProvider } from "./context/ActiveProductContext";
 import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
+import { cleanupServiceWorkers } from "./utils/cleanup-sw";
 
 const queryClient = new QueryClient();
 
@@ -18,91 +19,42 @@ function App() {
   useEffect(() => {
     initializeSecurity();
 
-    /** 🧹 1. Cleanup old Service Workers and caches **/
-    const cleanupSW = async () => {
-      try {
-        if ("serviceWorker" in navigator) {
-          const regs = await navigator.serviceWorker.getRegistrations();
-          for (const reg of regs) {
-            await reg.unregister();
-            console.log("🧹 Unregistered old SW:", reg.scope);
-          }
-        }
-        if ("caches" in window) {
-          const names = await caches.keys();
-          for (const name of names) {
-            await caches.delete(name);
-            console.log("🗑 Deleted cache:", name);
-          }
-        }
-      } catch (err) {
-        console.error("❌ Cleanup failed:", err);
-      }
-    };
+    /** 🧹 Remove all service workers and caches **/
+    cleanupServiceWorkers();
 
-    /** ⚙️ 2. Register new Service Worker (auto-refresh on update) **/
-    const registerSW = async () => {
-      if (!("serviceWorker" in navigator)) return;
-
-      try {
-        const reg = await navigator.serviceWorker.register("/service-worker.js");
-        console.log("✅ Registered SW:", reg);
-
-        reg.onupdatefound = () => {
-          const newSW = reg.installing;
-          if (!newSW) return;
-
-          newSW.onstatechange = () => {
-            if (newSW.state === "installed" && navigator.serviceWorker.controller) {
-              toast.info("New version available. Updating...");
-              newSW.postMessage({ type: "SKIP_WAITING" });
-            }
-          };
-        };
-
-        navigator.serviceWorker.addEventListener("controllerchange", () => {
-          toast.success("App updated! Reloading...");
-          setTimeout(() => window.location.reload(), 1500);
-        });
-      } catch (err) {
-        console.error("SW registration failed:", err);
-      }
-    };
-
-    /** 🚫 3. Disable Chrome download options & DevTools **/
-    const disableDownloads = () => {
-      const preventContext = (e: MouseEvent) => e.preventDefault();
-      const preventKeys = (e: KeyboardEvent) => {
-        // Disable Ctrl+S, Ctrl+U, Ctrl+Shift+I/J/P, F12
+    /** 🚫 Disable right-click, inspect & download **/
+    const disableDevTools = () => {
+      const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+      const handleKeyDown = (e: KeyboardEvent) => {
         if (
-          (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase())) ||
-          e.key === "F12"
+          e.key === "F12" ||
+          (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase()))
         ) {
           e.preventDefault();
           toast.warning("Action disabled for security");
         }
       };
 
-      document.addEventListener("contextmenu", preventContext);
-      document.addEventListener("keydown", preventKeys);
+      document.addEventListener("contextmenu", handleContextMenu);
+      document.addEventListener("keydown", handleKeyDown);
 
-      // Disable text selection and dragging
       document.body.style.userSelect = "none";
       document.body.style.webkitUserDrag = "none";
       document.body.style.webkitTouchCallout = "none";
 
       return () => {
-        document.removeEventListener("contextmenu", preventContext);
-        document.removeEventListener("keydown", preventKeys);
+        document.removeEventListener("contextmenu", handleContextMenu);
+        document.removeEventListener("keydown", handleKeyDown);
       };
     };
 
-    // Execute setup
-    cleanupSW().then(registerSW);
-    disableDownloads();
+    const cleanup = disableDevTools();
 
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => {
+      cleanup();
+      clearTimeout(timer);
+    };
   }, []);
 
   if (loading) return <Preloader onComplete={() => setLoading(false)} />;

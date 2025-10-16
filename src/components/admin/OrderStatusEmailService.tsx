@@ -64,7 +64,6 @@ export const sendOrderStatusEmail = async (
       toast.error(`Failed to send status email: ${error.message}`);
       return false;
     }
-console.log(orderData);
     toast.success(`✅ Email sent to ${orderData.customerEmail}`);
  
     return true;
