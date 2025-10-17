@@ -79,16 +79,13 @@ const AvailableCoupons: React.FC = () => {
           {coupons.map((c) => (
             <div
               key={c.id}
-              className="min-w-[220px] border border-gray-700 bg-[#111] rounded-none p-3 flex flex-col justify-between hover:bg-[#1a1a1a] transition-all"
+              className="min-w-auto  border border-gray-200 bg-[#111] rounded-none p-3 flex gap-5  hover:bg-[#1a1a1a] transition-all"
             >
-              <div>
+              <div className="">
                 <p className="font-semibold text-yellow-400 text-sm uppercase tracking-wider mb-1">
                   {c.code}
                 </p>
-                <p className="text-xs text-gray-300 font-medium mb-1">
-                  {formatDiscount(c)}
-                </p>
-                <p className="text-[11px] text-gray-300">
+              <p className="text-[11px] text-gray-300">
                   Valid till{" "}
                   {new Date(c.valid_to).toLocaleDateString("en-US", {
                     day: "numeric",
@@ -96,18 +93,16 @@ const AvailableCoupons: React.FC = () => {
                     year: "numeric",
                   })}
                 </p>
+              
               </div>
+                <div>
+                    <p className="text-xs px-1 text-gray-800 bg-white font-medium mb-1">
+                  {formatDiscount(c)}
+                </p>
+                
+                </div>
 
-              <Button
-                size="sm"
-                onClick={() => handleCopy(c.code)}
-                disabled={copied === c.code}
-                className={`mt-3 text-xs font-semibold px-3 py-1 rounded bg-yellow-400 text-black hover:bg-yellow-300 ${
-                  copied === c.code ? "opacity-70 cursor-not-allowed" : ""
-                }`}
-              >
-                {copied === c.code ? "Copied!" : "Copy"}
-              </Button>
+              
             </div>
           ))}
         </div>

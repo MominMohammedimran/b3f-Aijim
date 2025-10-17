@@ -262,7 +262,7 @@ const getPaymentStatusText = (status: string) => {
 
         {/* Status & Rewards */}
         <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-3 mb-6">
-          <div className="p-2 grid items-center border-b md:border-r border-gray-800">
+          <div className="p-2 grid w-full items-center border-b md:border-r border-gray-800">
             <span className="font-semibold text-md   text-blue-900 mb-1  text-center">
               Payment Status -<span className="w-full font-semibold  text-red-500 text-center ">
              "{getPaymentStatusText(order.payment_status)}"
@@ -287,7 +287,7 @@ const getPaymentStatusText = (status: string) => {
           </div>
 
       
-            <div className="p-2 grid items-center border-b w-full md:border-r border-gray-800">
+            <div className="p-2 grid w-full items-center border-b w-full md:border-r border-gray-800">
               <span className="font-semibold text-md w-full     text-green-800 mb-1 text-center ">Order Status -
                  <span className=" w-full text-red-500 font-semibold text-center ">
                  &nbsp;"{getOrderStatusText(order.status)}"
@@ -303,7 +303,7 @@ const getPaymentStatusText = (status: string) => {
             </div>
          
 
-          <div className="p-2  grid items-center border-b  border-gray-800 ">
+          <div className="p-2 w-full  grid items-center border-b  border-gray-800 ">
              <div className=' w-full m-auto pt-1  '> 
             <p className="text-sm font-semibold text-center text-black">
               Reward Points Used -{' '}

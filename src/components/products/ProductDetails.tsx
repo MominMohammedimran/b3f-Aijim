@@ -237,10 +237,10 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
                 className={`w-full  py-1.5 text-xs mb-1  font-bold border text-center transition-all
                   ${
                     selected && !isOutOfStock
-                      ? 'border-gray-400 bg-white text-black'
+                      ? 'border-gray-400 bg-yellow-500 text-black'
                       : isOutOfStock && !selected
-                      ? 'border-gray-600 bg-black font-semibold text-gray-200 line-through cursor-not-allowed '
-                      : 'border-gray-400 hover:border-yellow-400  text-white'
+                      ? 'border-gray-600 bg-black font-semibold text-red-500 text-gray-200 line-through cursor-not-allowed '
+                      : 'border-gray-400 hover:border-yellow-400 bg-white text-black'
                   }`}
               >
                 {size}
