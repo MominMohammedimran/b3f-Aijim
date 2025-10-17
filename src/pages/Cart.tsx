@@ -365,7 +365,7 @@ const Cart = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-semibold text-sm uppercase">Shipping</span>
-                  <span>{deliveryFee === 0 ? <span className="line-through text-sm uppercase font-semibold text-lg text-gray-200">Free Delivery</span> : `- ₹${deliveryFee}`}</span>
+                  <span>{deliveryFee === 0 ? <span className="line-through text-sm uppercase font-semibold text-lg text-gray-200">Free Delivery</span> : `+ ₹${deliveryFee}`}</span>
                 </div>
                 <div className="border-t pb-4">
                   <div className="flex justify-between font-semibold">

@@ -92,74 +92,77 @@ const AdminOrders: React.FC = () => {
   };
 
   const handleStatusUpdate = async (orderId: string, newStatus: string) => {
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .update({
-          status: newStatus,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', orderId);
+  try {
+    const { error } = await supabase
+      .from('orders')
+      .update({
+        status: newStatus,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', orderId);
 
-      if (error) throw error;
+    if (error) throw error;
 
-      const updatedOrder = orders.find(order => order.id === orderId);
+    const updatedOrder = orders.find(order => order.id === orderId);
 
-      if (updatedOrder) {
-        const shipping = updatedOrder.shipping_address;
-        const emailToSend = shipping?.email || updatedOrder.user_email;
+    if (updatedOrder) {
+      const shipping = updatedOrder.shipping_address;
+      const emailToSend = shipping?.email || updatedOrder.user_email;
 
-        if (emailToSend && emailToSend !== 'N/A') {
-          
-          try {
-            await sendOrderStatusEmail({
-              orderId: updatedOrder.order_number,
-              customerEmail: emailToSend,
-              customerName: shipping?.name || shipping?.fullName || 'Customer',
-              status: newStatus,
-              orderItems: updatedOrder.items || [],
-              totalAmount: updatedOrder.total || 0,
-              shippingAddress: {
-                name: shipping?.fullName || shipping?.name || 'Customer',
-                phone: shipping?.phone || '',
-                email: emailToSend,
-                address: shipping?.address || '',
-                city: shipping?.city || '',
-                state: shipping?.state || '',
-                zipCode: shipping?.zipCode || '',
-                country: shipping?.country || ''
-              },
-              paymentMethod: updatedOrder.payment_method,
-              couponCode:updatedOrder.coupon_code?.code||"",
-              couponDiscount:updatedOrder.coupon_code?.discount_amount||0,
-              rewardPointsUsed:updatedOrder.reward_points_used?.value_used||0,
-              deliveryFee:updatedOrder.delivery_fee,
-            });
-            
-            
-           
-          } catch (emailError) {
-            console.error('Failed to send status update email:', emailError);
-            toast.error('Status updated but failed to send email notification');
-          }
-        } else {
-          toast.warning('⚠️ No email found for this customer');
+      if (emailToSend && emailToSend !== 'N/A') {
+        try {
+          // 📴 Temporarily disabled email sending
+          /*
+          await sendOrderStatusEmail({
+            orderId: updatedOrder.order_number,
+            customerEmail: emailToSend,
+            customerName: shipping?.name || shipping?.fullName || 'Customer',
+            status: newStatus,
+            orderItems: updatedOrder.items || [],
+            totalAmount: updatedOrder.total || 0,
+            shippingAddress: {
+              name: shipping?.fullName || shipping?.name || 'Customer',
+              phone: shipping?.phone || '',
+              email: emailToSend,
+              address: shipping?.address || '',
+              city: shipping?.city || '',
+              state: shipping?.state || '',
+              zipCode: shipping?.zipCode || '',
+              country: shipping?.country || ''
+            },
+            paymentMethod: updatedOrder.payment_method,
+            couponCode: updatedOrder.coupon_code?.code || "",
+            couponDiscount: updatedOrder.coupon_code?.discount_amount || 0,
+            rewardPointsUsed: updatedOrder.reward_points_used?.value_used || 0,
+            deliveryFee: updatedOrder.delivery_fee,
+          });
+          console.log(updatedOrder);
+          */
+
+          console.log('✉️ Email sending disabled (skipped sendOrderStatusEmail)');
+        } catch (emailError) {
+          console.error('Failed to send status update email:', emailError);
+          toast.error('Status updated but failed to send email notification');
         }
+      } else {
+        toast.warning('⚠️ No email found for this customer');
       }
-
-      // Update state locally
-      setOrders(prev =>
-        prev.map(order =>
-          order.id === orderId ? { ...order, status: newStatus } : order
-        )
-      );
-
-      toast.success('✅ Order status updated');
-    } catch (err) {
-      console.error('❌ Error updating status:', err);
-      toast.error('Failed to update order status');
     }
-  };
+
+    // ✅ Update local state
+    setOrders(prev =>
+      prev.map(order =>
+        order.id === orderId ? { ...order, status: newStatus } : order
+      )
+    );
+
+    toast.success('✅ Order status updated');
+  } catch (err) {
+    console.error('❌ Error updating status:', err);
+    toast.error('Failed to update order status');
+  }
+};
+
 
   const handlePaymentUpdate = (order: Order) => {
     setSelectedOrderForPayment(order);

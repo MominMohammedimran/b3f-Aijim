@@ -228,28 +228,26 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
           
           return (
             <div key={size} className="relative">
-              {selected && !isOutOfStock && (
-                <div className="absolute top-1 right-1 bg-blue-600 text-white text-[9px] px-0.3 rounded">✓</div>
-              )}
+              
             
 
               <button
                 onClick={() => toggleSize(size)}
                 disabled={isOutOfStock && !selected}
-                className={`w-full px-1 py-0.5 text-xs font-bold border text-center transition-all
+                className={`w-full  py-1.5 text-xs mb-1  font-bold border text-center transition-all
                   ${
                     selected && !isOutOfStock
                       ? 'border-gray-400 bg-white text-black'
                       : isOutOfStock && !selected
-                      ? 'border-gray-600 bg-black text-gray-200 cursor-not-allowed '
+                      ? 'border-gray-600 bg-black font-semibold text-gray-200 line-through cursor-not-allowed '
                       : 'border-gray-400 hover:border-yellow-400  text-white'
                   }`}
               >
                 {size}
                 
                 {isOutOfStock ? (
-                  <div className="text-[8px] bg-red-600 text-white font-semibold mt-0.5">SOLD</div>
-                ) :(<div className="text-[8px] uppercase font-bold mt-0.5">
+                  <div className="text-[8px] bg-red-600 hidden text-white font-semibold mt-0.5">SOLD</div>
+                ) :(<div className="text-[8px] hidden uppercase font-bold mt-0.5">
                   Stock
                 </div>)
               }

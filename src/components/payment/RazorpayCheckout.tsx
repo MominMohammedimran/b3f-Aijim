@@ -222,7 +222,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
           points: appliedPoints.points,
           value_used: appliedPoints.discount || appliedPoints.points
         } : null,
-        reward_points_earned: Math.floor(finalTotal / 100),
+        reward_points_earned: 0,
         discount_applied: couponDiscount + pointsDiscount
       };
 
@@ -446,7 +446,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
                       )}
                       <div className="flex justify-between">
                         <span className="font-semibold uppercase text-sm">Shipping</span>
-                        <span>{deliveryFee === 0 ? <span className="line-through font-semibold text-sm text-gray-200">Free Delivery</span> : `- ₹${deliveryFee}`}</span>
+                        <span>{deliveryFee === 0 ? <span className="line-through font-semibold text-sm text-gray-200">Free Delivery</span> : `+ ₹${deliveryFee}`}</span>
                       </div>
                       <div className="border-t pb-2">
                         <div className="flex justify-between font-semibold">

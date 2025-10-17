@@ -283,9 +283,9 @@ const Checkout = () => {
   };
 
   const subtotal = totalPrice;
-  const couponDiscount = appliedCoupon?.discount || 0;
-  const pointsDiscount = appliedPoints?.discount || 0;
-  const totalDiscount = couponDiscount + pointsDiscount;
+  const couponDiscount = Math.floor(appliedCoupon?.discount || 0);
+  const pointsDiscount = Math.floor(appliedPoints?.discount || 0);
+  const totalDiscount = Math.floor(couponDiscount + pointsDiscount);
   const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
 
   return (
@@ -399,10 +399,20 @@ const Checkout = () => {
                   <span className='font-bold'>{formatPrice(totalPrice)}</span>
                 </div>
                 {appliedCoupon && (
-                  <div className="flex justify-between items-center text-primary">
+                  <div className="flex space-y-0 justify-between items-center text-primary">
                     <span className='font-bold text-sm uppercase tracking-wider'>COUPON</span>
-                    <span className='font-bold'>-{formatPrice(couponDiscount)}</span>
+                    <span className='font-bold'>- {formatPrice(couponDiscount)} </span>
                   </div>
+                  
+                  
+                )}
+                 {appliedCoupon && (
+                  <div className="flex justify-between items-center text-primary">
+                    <span className='font-bold text-xs text-yellow-500 uppercase tracking-wider'>Applied Coupon</span>
+                    <span className='font-bold text-xs  text-yellow-500'> {appliedCoupon.code} </span>
+                  </div>
+                  
+                  
                 )}
                 {appliedPoints && (
                   <div className="flex justify-between items-center text-primary">
@@ -416,7 +426,7 @@ const Checkout = () => {
                     {deliveryFee === 0 ? (
                       <span className="text-primary">FREE</span>
                     ) : (
-                      `₹${deliveryFee}`
+                      `+ ₹${deliveryFee}`
                     )}
                   </span>
                 </div>

@@ -38,7 +38,7 @@ export const sendOrderStatusEmail = async (
     
     const loadingToast = toast.loading('📧 Sending order email...');
     
-
+console.log(orderData)
     const { data, error } = await supabase.functions.invoke('send-order-notification', {
       body: {
         orderId: orderData.orderId,

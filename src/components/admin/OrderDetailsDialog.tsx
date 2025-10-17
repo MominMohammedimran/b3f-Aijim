@@ -41,7 +41,9 @@ interface OrderDetailsDialogProps {
   order: AdminOrder;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onStatusUpdate: (orderId: string, status: string, reason?: string) => void;
+  onStatusUpdate: (orderId: string, status: string, reason?: string,
+   
+  ) => void;
   onDeleteOrder?: () => void;
 }
 
@@ -167,11 +169,21 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
           </div>
           
           {/* Status management */}
-          <OrderStatusActions 
-            orderId={order.id} 
-            currentStatus={order.status}
-            onStatusUpdate={onStatusUpdate}
-          />
+           <OrderStatusActions
+          orderId={order.id}
+          currentStatus={order.status}
+          userEmail={order.user_email}
+          orderNumber={order.order_number}
+          orderItems={order.items}
+          totalAmount={order.total}
+          shippingAddress={order.shipping_address}
+          couponCode={order.coupon_code}
+          couponDiscount={order.coupon_code_discount}
+          rewardPointsUsed={order.reward_points_used}
+          onStatusUpdate={onStatusUpdate}
+        />
+
+
         </div>
       </DialogContent>
     </Dialog>
