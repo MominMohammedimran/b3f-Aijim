@@ -276,13 +276,16 @@ const OrderHistory = () => {
                         </Button>
                       )}
                     </div>
-                    <p className='text-xs text-gray-400 mt-1'>
-                      Placed on {new Date(order.created_at).toLocaleDataString('en-us',{
-                        weekday:'long',
-                      year:'numeric',
-                    month:'long',
-                  day:'numeric',                     })}
-                    </p>
+                   <p className="text-xs text-gray-400">
+  Placed on{" "}
+  {new Date(order.created_at).toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })}
+</p>
+
                   </div>
                 );
               })}
