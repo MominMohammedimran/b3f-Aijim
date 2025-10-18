@@ -159,3 +159,48 @@ export const sendOrderConfirmationEmail = async (
     return false;
   }
 };
+
+export const sendReturnConfirmationEmail = async (
+  orderData: OrderEmailData
+): Promise<boolean> => {
+  try {
+   
+
+    if (
+      !orderData.customerEmail ||
+      orderData.customerEmail === 'N/A' ||
+      orderData.customerEmail.trim() === ''
+    ) {
+      toast.error('No valid customer email for confirmation');
+      return false;
+    }
+
+    const loadingToast = toast.loading('📧 Sending retur or payment confirmation email...');
+    const { data, error } = await supabase.functions.invoke('send-return-payment-notification', {
+      body: {
+        orderId: orderData.orderId,
+        customerEmail: orderData.customerEmail.trim(),
+        customerName: orderData.customerName || 'Customer',
+        status:orderData.status ,
+        orderItems: orderData.orderItems || [],
+        totalAmount: orderData.totalAmount,
+        
+        emailType: 'status_update',
+        
+      }
+    });
+    toast.dismiss(loadingToast);
+
+    if (error) {
+      toast.error(`Confirmation email failed: ${error.message}`);
+      return false;
+    }
+
+    toast.success(`✅ Confirmation sent to ${orderData.customerEmail}`);
+    return true;
+  } catch (error) {
+    console.error('💥 Confirmation email error:', error);
+    toast.error('❌ Failed to send confirmation email');
+    return false;
+  }
+};

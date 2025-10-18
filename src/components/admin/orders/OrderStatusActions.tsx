@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { sendOrderStatusEmail, sendOrderConfirmationEmail } from "@/components/admin/OrderStatusEmailService";
+import { sendReturnConfirmationEmail } from "@/components/admin/OrderStatusEmailService";
 
 interface OrderStatusActionsProps {
   orderId: string;
@@ -64,7 +64,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
     setIsUpdating(true);
 
     try {
-      // 🧠 1️⃣ Update Supabase
+      // 1️⃣ Update order in Supabase
       const updateData: any = {
         status: selectedStatus,
         status_note: cancellationReason,
@@ -78,40 +78,40 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
       const { error } = await supabase.from("orders").update(updateData).eq("id", orderId);
       if (error) throw error;
 
-      // 🧠 2️⃣ Send relevant email
-      if (userEmail && userEmail !== "N/A") {
-        const emailData = {
-          orderId: orderNumber || orderId,
-          customerEmail: userEmail,
-          customerName: shippingAddress?.name || shippingAddress?.fullName || "Customer",
-          status: selectedStatus,
-          orderItems,
-          totalAmount,
-          shippingAddress,
-          paymentMethod: "razorpay",
-          couponCode,
-          couponDiscount,
-          rewardPointsUsed,
-          deliveryFee,
-        };
+      // 2️⃣ Handle email notifications — only for return or payment refund statuses
+      const returnStatuses = [
+        "return-acpt",
+        "return-pcs",
+        "return-pkd",
+        "return-wh",
+        "payment-rf",
+        "payment-rf-ss",
+      ];
 
+      if (userEmail && returnStatuses.includes(selectedStatus)) {
         try {
-          if (["processing", "confirmed", "shipped", "delivered"].includes(selectedStatus)) {
-            // ✅ For these statuses, only confirmation email
-            await sendOrderConfirmationEmail(emailData);
-            console.log(`📦 Confirmation email sent for status: ${selectedStatus}`);
-          } else {
-            // ✅ For others, send normal status update email
-            await sendOrderStatusEmail(emailData);
-            console.log(`📧 Status email sent for status: ${selectedStatus}`);
-          }
+          await sendReturnConfirmationEmail({
+            orderId: orderNumber || orderId,
+            customerEmail: userEmail,
+            customerName: shippingAddress?.name || shippingAddress?.fullName || "Customer",
+            status: selectedStatus,
+            orderItems,
+            totalAmount,
+            shippingAddress,
+            paymentMethod: "razorpay",
+            couponCode,
+            couponDiscount,
+            rewardPointsUsed,
+            deliveryFee,
+          });
+          console.log("✅ Return confirmation email sent");
         } catch (err) {
-          console.error("Email send failed:", err);
+          console.error("❌ Failed to send return confirmation email:", err);
           toast.warning("Status updated but failed to send email");
         }
       }
 
-      // 🧠 3️⃣ Notify parent + toast
+      // 3️⃣ Notify parent + show toast
       onStatusUpdate(orderId, selectedStatus, cancellationReason);
       toast.success("Order status updated successfully");
     } catch (err) {
@@ -127,6 +127,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
       <h3 className="font-medium">Update Order Status</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Status Selector */}
         <div>
           <Label htmlFor="status">Status</Label>
           <Select value={selectedStatus} onValueChange={handleStatusChange}>
@@ -150,6 +151,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
           </Select>
         </div>
 
+        {/* AWB Field */}
         {showCourierFields && (
           <div>
             <Label htmlFor="awb">AWB Number</Label>
@@ -162,6 +164,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
           </div>
         )}
 
+        {/* Cancellation Reason */}
         {showCancellationReason && (
           <div className="md:col-span-2">
             <Label htmlFor="reason">Cancellation Reason</Label>
