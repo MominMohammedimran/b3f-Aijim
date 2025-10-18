@@ -77,7 +77,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-center text-lg font-medium">Enter verification code</h2>
+      <h2 className="text-center text-gray-400 text-lg font-medium">Enter verification code</h2>
       <p className="text-center text-sm text-gray-200">
         We've sent a 6-digit code to your email
       </p>
