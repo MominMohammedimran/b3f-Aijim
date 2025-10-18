@@ -6,7 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { sendReturnConfirmationEmail } from "@/components/admin/OrderStatusEmailService";
+import {
+  sendOrderConfirmationEmail,
+  sendReturnConfirmationEmail,
+  sendOrderStatusEmail,
+} from "@/components/admin/OrderStatusEmailService";
 
 interface OrderStatusActionsProps {
   orderId: string;
@@ -20,7 +24,7 @@ interface OrderStatusActionsProps {
   couponCode?: string;
   couponDiscount?: number;
   rewardPointsUsed?: number;
-  deliveryFee: number;
+  deliveryFee?: number;
 }
 
 const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
@@ -62,9 +66,8 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
     }
 
     setIsUpdating(true);
-
     try {
-      // 1️⃣ Update order in Supabase
+      // 🧠 Update Supabase
       const updateData: any = {
         status: selectedStatus,
         status_note: cancellationReason,
@@ -78,42 +81,45 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
       const { error } = await supabase.from("orders").update(updateData).eq("id", orderId);
       if (error) throw error;
 
-      // 2️⃣ Handle email notifications — only for return or payment refund statuses
-      const returnStatuses = [
-        "return-acpt",
-        "return-pcs",
-        "return-pkd",
-        "return-wh",
-        "payment-rf",
-        "payment-rf-ss",
-      ];
+      // ✅ Decide which email function to call
+      if (userEmail && userEmail !== "N/A") {
+        const emailPayload = {
+          orderId: orderNumber || orderId,
+          customerEmail: userEmail,
+          customerName: shippingAddress?.name || shippingAddress?.fullName || "Customer",
+          status: selectedStatus,
+          orderItems,
+          totalAmount,
+          shippingAddress,
+          paymentMethod: "razorpay",
+          couponCode,
+          couponDiscount,
+          rewardPointsUsed,
+          deliveryFee,
+        };
 
-      if (userEmail && returnStatuses.includes(selectedStatus)) {
         try {
-          await sendReturnConfirmationEmail({
-            orderId: orderNumber || orderId,
-            customerEmail: userEmail,
-            customerName: shippingAddress?.name || shippingAddress?.fullName || "Customer",
-            status: selectedStatus,
-            orderItems,
-            totalAmount,
-            shippingAddress,
-            paymentMethod: "razorpay",
-            couponCode,
-            couponDiscount,
-            rewardPointsUsed,
-            deliveryFee,
-          });
-          console.log("✅ Return confirmation email sent");
-        } catch (err) {
-          console.error("❌ Failed to send return confirmation email:", err);
+          if (["processing", "confirmed", "shipped", "delivered"].includes(selectedStatus)) {
+            await sendOrderConfirmationEmail(emailPayload);
+            console.log("📦 Order confirmation email sent");
+          } else if (
+            ["return-acpt", "return-pcs", "return-pkd", "return-wh", "payment-rf", "payment-rf-ss"].includes(selectedStatus)
+          ) {
+            await sendReturnConfirmationEmail(emailPayload);
+            console.log("🔁 Return/refund email sent");
+          } else {
+            await sendOrderStatusEmail(emailPayload);
+            console.log("📧 Generic status email sent");
+          }
+        } catch (emailErr) {
+          console.error("Email sending failed:", emailErr);
           toast.warning("Status updated but failed to send email");
         }
       }
 
-      // 3️⃣ Notify parent + show toast
+      // ✅ Update local UI
       onStatusUpdate(orderId, selectedStatus, cancellationReason);
-      toast.success("Order status updated successfully");
+      toast.success("✅ Order status updated successfully");
     } catch (err) {
       console.error("❌ Error updating status:", err);
       toast.error("Failed to update order status");
@@ -127,7 +133,6 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
       <h3 className="font-medium">Update Order Status</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Status Selector */}
         <div>
           <Label htmlFor="status">Status</Label>
           <Select value={selectedStatus} onValueChange={handleStatusChange}>
@@ -145,13 +150,12 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
               <SelectItem value="return-pcs">Return Processing</SelectItem>
               <SelectItem value="return-pkd">Return Picked</SelectItem>
               <SelectItem value="return-wh">Returned to Warehouse</SelectItem>
-              <SelectItem value="payment-rf">Payment Initiated</SelectItem>
-              <SelectItem value="payment-rf-ss">Payment Successful</SelectItem>
+              <SelectItem value="payment-rf">Payment Refund Initiated</SelectItem>
+              <SelectItem value="payment-rf-ss">Payment Refund Successful</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* AWB Field */}
         {showCourierFields && (
           <div>
             <Label htmlFor="awb">AWB Number</Label>
@@ -164,7 +168,6 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
           </div>
         )}
 
-        {/* Cancellation Reason */}
         {showCancellationReason && (
           <div className="md:col-span-2">
             <Label htmlFor="reason">Cancellation Reason</Label>
