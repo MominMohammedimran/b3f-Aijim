@@ -277,7 +277,7 @@ const OrderHistory = () => {
                       )}
                     </div>
                     <p className='text-xs text-gray-400 mt-1'>
-                      Placed on {new Date(order.created_at).toLocaleDataStrig('en-us',{
+                      Placed on {new Date(order.created_at).toLocaleDataString('en-us',{
                         weekday:'long',
                       year:'numeric',
                     month:'long',
