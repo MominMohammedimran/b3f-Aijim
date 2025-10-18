@@ -1,14 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '../../components/admin/AdminLayout';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Shield, Trash2, Eye } from 'lucide-react';
+import { Shield, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import ModernAdminLayout from '../../components/admin/ModernAdminLayout';
+
 interface Profile {
   id: string;
   email: string;
@@ -22,13 +21,13 @@ interface Profile {
 
 interface UserWithOrders extends Profile {
   orderCount: number;
+  totalSpent: number;
 }
 
 const AdminProfiles = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const queryClient = useQueryClient();
 
-  // Fetch profiles with order counts
   const {
     data: profiles = [],
     isLoading,
@@ -38,38 +37,34 @@ const AdminProfiles = () => {
     queryKey: ['profiles'],
     queryFn: fetchProfilesWithOrders,
     retry: 2,
-    staleTime: 1000 * 60, // 1 minute
+    staleTime: 1000 * 60,
   });
 
   async function fetchProfilesWithOrders(): Promise<UserWithOrders[]> {
     try {
-      // Fetch all profiles including those registered through auth
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('id, email, first_name, last_name, created_at, display_name, phone, reward_points')
         .order('created_at', { ascending: false });
-        
-      if (profilesError) {
-        console.error('Error fetching profiles:', profilesError);
-        throw profilesError;
-      }
 
-      if (!profilesData || profilesData.length === 0) {
-        return [];
-      }
+      if (profilesError) throw profilesError;
+      if (!profilesData?.length) return [];
 
-      // Fetch order counts for each user
       const profilesWithOrders = await Promise.all(
         profilesData.map(async (profile) => {
-          const { count } = await supabase
+          const { data: orders, count } = await supabase
             .from('orders')
-            .select('*', { count: 'exact', head: true })
+            .select('total', { count: 'exact' })
             .eq('user_id', profile.id);
+
+          // Calculate total spent for this user
+          const totalSpent = orders?.reduce((sum, o) => sum + (o.total || 0), 0) || 0;
 
           return {
             ...profile,
-            orderCount: count || 0
-          } as UserWithOrders;
+            orderCount: count || 0,
+            totalSpent,
+          };
         })
       );
 
@@ -82,21 +77,12 @@ const AdminProfiles = () => {
   }
 
   const handleDeleteProfile = async (profileId: string, userName: string) => {
-    if (!confirm(`Are you sure you want to delete ${userName}? This action cannot be undone.`)) {
-      return;
-    }
+    if (!confirm(`Are you sure you want to delete ${userName}? This action cannot be undone.`)) return;
 
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', profileId);
+      const { error } = await supabase.from('profiles').delete().eq('id', profileId);
+      if (error) throw error;
 
-      if (error) {
-        console.error('Error deleting profile:', error);
-        throw error;
-      }
-      
       queryClient.invalidateQueries({ queryKey: ['adminProfiles'] });
       refetch();
       toast.success('Profile deleted successfully');
@@ -106,22 +92,26 @@ const AdminProfiles = () => {
     }
   };
 
-  const filteredProfiles = profiles.filter(profile => 
-    profile.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    `${profile.first_name} ${profile.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProfiles = profiles.filter(
+    (profile) =>
+      profile.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${profile.first_name} ${profile.last_name}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Calculate total revenue from all users
+  const totalRevenue = filteredProfiles.reduce((sum, user) => sum + (user.totalSpent || 0), 0);
+
   return (
-     <ModernAdminLayout title="Users">
+    <ModernAdminLayout title="Users">
       <div className="container mx-auto px-4 py-8 mt-10">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Customer Profiles</h1>
+          <h1 className="text-2xl font-bold text-white">Customer Profiles</h1>
           <Button variant="outline" className="flex items-center gap-2" onClick={() => refetch()}>
             <Shield size={16} />
             <span>Refresh Profiles</span>
           </Button>
         </div>
-        
+
         <div className="mb-6">
           <Input
             placeholder="Search by name or email..."
@@ -130,7 +120,7 @@ const AdminProfiles = () => {
             className="max-w-md"
           />
         </div>
-        
+
         {isLoading ? (
           <div className="flex justify-center items-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -146,23 +136,25 @@ const AdminProfiles = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredProfiles.map(profile => (
-              <Card key={profile.id} className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg">
-                      {profile.first_name || profile.display_name || 'No Name'} {profile.last_name || ''}
-                    </h3>
-                    <p className="text-muted-foreground">{profile.email}</p>
-                    <div className="flex gap-4 text-sm text-muted-foreground">
-                      <span>Orders: {profile.orderCount}</span>
-                      <span>Joined: {new Date(profile.created_at).toLocaleDateString()}</span>
-                      {profile.phone && <span>Phone: {profile.phone}</span>}
-                      {profile.reward_points && <span>Points: {profile.reward_points}</span>}
+          <>
+            <div className="space-y-4">
+              {filteredProfiles.map((profile) => (
+                <Card key={profile.id} className="p-4 bg-gray-900 border border-gray-700 rounded-none shadow-md">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg text-white">
+                        {profile.first_name || profile.display_name || 'No Name'} {profile.last_name || ''}
+                      </h3>
+                      <p className="text-gray-400 text-sm">{profile.email}</p>
+                      <div className="flex flex-wrap gap-4 text-xs sm:text-sm text-gray-300 mt-2">
+                        <span>📦 Orders: <strong>{profile.orderCount}</strong></span>
+                        <span>💰 Total Spent: <strong>₹{profile.totalSpent.toLocaleString()}</strong></span>
+                        <span>🗓 Joined: {new Date(profile.created_at).toLocaleDateString()}</span>
+                        {profile.phone && <span>📞 {profile.phone}</span>}
+                        {profile.reward_points && <span>⭐ Points: {profile.reward_points}</span>}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
+
                     <Button
                       variant="destructive"
                       size="sm"
@@ -173,10 +165,17 @@ const AdminProfiles = () => {
                       Delete
                     </Button>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              ))}
+            </div>
+
+            {/* 🧾 Total Revenue Summary */}
+            <div className="mt-8 p-4 bg-gray-800 text-center rounded-none border border-gray-700 shadow-inner">
+              <h2 className="text-lg font-semibold text-yellow-400">
+                Total Revenue from All Customers: ₹{totalRevenue.toLocaleString()}
+              </h2>
+            </div>
+          </>
         )}
       </div>
     </ModernAdminLayout>

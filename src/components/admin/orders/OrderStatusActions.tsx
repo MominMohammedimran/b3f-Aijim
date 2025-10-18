@@ -20,6 +20,7 @@ interface OrderStatusActionsProps {
   couponCode?: string;
   couponDiscount?: number;
   rewardPointsUsed?: number;
+  deliveryFee:number;
 }
 
 const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
@@ -33,7 +34,8 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
   shippingAddress,
   couponCode,
   couponDiscount,
-  rewardPointsUsed
+  rewardPointsUsed,
+  deliveryFee,
 }) => {
   const [selectedStatus, setSelectedStatus] = useState(currentStatus);
   const [cancellationReason, setCancellationReason] = useState("");
@@ -91,6 +93,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
             couponCode,
             couponDiscount,
             rewardPointsUsed,
+            deliveryFee,
           });
 
           console.log("✅ Status email sent");
@@ -131,10 +134,10 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
               <SelectItem value="cancelled">Cancelled</SelectItem>
               <SelectItem value="return-acpt">Return Accepted</SelectItem>
               <SelectItem value="return-pcs">Return Processing</SelectItem>
-              <SelectItem value="return-pcd">Return Picked</SelectItem>
+              <SelectItem value="return-pkd">Return Picked</SelectItem>
               <SelectItem value="return-wh">Returned to Warehouse</SelectItem>
               <SelectItem value="payment-rf">Payment Initiated</SelectItem>
-              <SelectItem value="payment-rf-s">Payment Successful</SelectItem>
+              <SelectItem value="payment-rf-ss">Payment Successful</SelectItem>
             </SelectContent>
           </Select>
         </div>

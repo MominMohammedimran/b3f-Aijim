@@ -35,6 +35,7 @@ interface AdminOrder {
   reward_points_earned?: number;
   payment_method?: string;
   cancellation_reason?: string;
+  delivery_fee?:number;
 }
 
 interface OrderDetailsDialogProps {
@@ -180,6 +181,7 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
           couponCode={order.coupon_code}
           couponDiscount={order.coupon_code_discount}
           rewardPointsUsed={order.reward_points_used}
+          deliveryFee={order.delivery_fee}
           onStatusUpdate={onStatusUpdate}
         />
 

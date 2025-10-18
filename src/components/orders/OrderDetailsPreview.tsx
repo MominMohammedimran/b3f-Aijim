@@ -100,10 +100,10 @@ useEffect(() => {
     case 'delivered':
     case 'return-acpt':
     case 'return-pcs':
-    case 'return-pcd':
+    case 'return-pkd':
     case 'return-wh':
     case 'payment-rf':
-    case 'payment-rf-s':
+    case 'payment-rf-ss':
       case 'cancelled':
       return status.charAt(0).toUpperCase() + status.slice(1);
     default:
@@ -117,7 +117,7 @@ const getPaymentStatusText = (status: string) => {
     case 'pending':
     case 'refunded':
     case 'cancelled':
-    case 'refund successfull':
+    case 'refund-ss':
       return status.charAt(0).toUpperCase() + status.slice(1);
     default:
       return 'pending';
@@ -186,7 +186,7 @@ const getPaymentStatusText = (status: string) => {
           <div className="flex w-ful justify-between">
 
           <h4 className="font-semibold text-gray-200 ">Order Items</h4>
-           { (order.payment_status==="paid")&&( 
+           { (order.payment_status!="pending"||order.payment_status!='failed')&&( 
             <Link
               to={`/track-order/${order.order_number}`}
               state={{ order }}
@@ -263,16 +263,16 @@ const getPaymentStatusText = (status: string) => {
         {/* Status & Rewards */}
         <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-3 mb-6">
           <div className="p-2 grid w-full items-center border-b md:border-r border-gray-800">
-            <span className="font-semibold text-md   text-blue-900 mb-1  text-center">
+            <span className="font-semibold text-sm   text-black mb-1  text-center">
               Payment Status -<span className="w-full font-semibold  text-red-500 text-center ">
              "{getPaymentStatusText(order.payment_status)}"
             </span>
             </span>
-            <p className="text-sm text-gray-800 leading-snug  font-semibold text-center mb-2 ">
+            <p className="text-xs text-gray-800 leading-snug  font-semibold text-center mb-2 ">
               #Note - {order.payment_method || 'N/A'} 
             </p>
            
-            {!['cancelled','paid'].includes(order.payment_status) && (
+            {!['cancelled','paid','refuded','refund-ss'].includes(order.payment_status) && (
                      <div className="flex gap-2">
                      <Button
                  onClick={() => handleRetryPayment(order)}
@@ -288,14 +288,14 @@ const getPaymentStatusText = (status: string) => {
 
       
             <div className="p-2 grid w-full items-center border-b w-full md:border-r border-gray-800">
-              <span className="font-semibold text-md w-full     text-green-800 mb-1 text-center ">Order Status -
+              <span className="font-semibold  w-full   text-sm  text-black mb-1 text-center ">Order Status -
                  <span className=" w-full text-red-500 font-semibold text-center ">
                  &nbsp;"{getOrderStatusText(order.status)}"
               </span>
               </span>
              
               
-              <p className="text-sm text-gray-800 leading-snug  font-semibold text-center mb-2">
+              <p className="text-xs text-gray-800 leading-snug  font-semibold text-center mb-2">
                 #Note - {order.status_note || 'N/A'}
               </p>
               

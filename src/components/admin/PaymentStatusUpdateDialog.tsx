@@ -106,7 +106,7 @@ const PaymentStatusUpdateDialog: React.FC<PaymentStatusUpdateDialogProps> = ({
                 <SelectItem value="failed">Failed</SelectItem>
                 <SelectItem value="refunded">Refunded</SelectItem>
                 <SelectItem value="cancelled">Cancelled</SelectItem>
-                <SelectItem value="refund successfull">Refund Successfull</SelectItem>
+                <SelectItem value="refund-ss">Refund Successfull</SelectItem>
 
               </SelectContent>
             </Select>

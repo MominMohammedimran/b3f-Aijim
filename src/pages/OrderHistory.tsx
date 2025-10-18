@@ -184,33 +184,41 @@ const OrderHistory = () => {
                 }
 
                 return (
-                  <div key={order.id} className="bg-gray-800 p-4 rounded-none shadow-md">
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="font-bold text-lg text-white">{order.order_number}</h4>
-                     {order.status === 'cancelled' && (
-  <span className="bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded-none">
-    Cancelled
-  </span>
-)}
+                <div key={order.id} className="bg-gray-800 p-4 rounded-none shadow-md">
+  {/* Header */}
+  <div className=" bg-gray-800 p-4 pb-1 rounded-none shadow-md border border-gray-700">
+  {/* Left: Order Info */}
+  <div>
+    <h4 className="font-bold text-lg text-white tracking-wide">{order.order_number}</h4>
+    
+  </div>
+  {/* Right: Status Section */}
+  <div className="flex text-xs sm:items-center gap-2 sm:gap-3 mt-1 mb-1">
+    {/* Payment Status */}
+    <div className="flex items-center gap-1">
+      <span className=" font-semibold text-[10px] text-gray-300 uppercase">Payment -</span>
+      <span className="bg-red-600 text-[10px]  text-white  font-semibold px-2 rounded-sm shadow-sm uppercase tracking-wide">
+        {order.payment_status || "N/A"}
+      </span>
+    </div>
 
-{order.payment_status === 'pending' && order.status !== 'cancelled' && (
-  <span className="bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded-none">
-    Not Paid
-  </span>
-)}
-{order.payment_status === 'paid' && order.status !== 'cancelled' && (
-  <span className="bg-yellow-400 text-black text-xs font-semibold px-2 py-1 rounded-none">
-     Paid
-  </span>
-)}
+    {/* Divider (only on desktop) */}
+    <span className="hidden sm:inline text-gray-600">|</span>
 
-{order.status === 'delivered' && (
-  <span className="bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-none">
-    Delivered
-  </span>
-)}
+    {/* Order Status */}
+    <div className="flex items-center gap-1">
+      <span className=" font-semibold text-[10px] text-gray-300 uppercase">Status -</span>
+      <span className="bg-yellow-400 text-[10px] text-black  font-semibold px-2 rounded-sm shadow-sm uppercase tracking-wide">
+        {order.status || "Unknown"}
+      </span>
+    </div>
+  </div>
+ 
 
-                    </div>
+</div>
+
+  
+
 
                     {order.items.map((item, idx) => (
                       <div key={idx} className="flex gap-3 mb-2 bg-gray-900 p-2 rounded-none">
@@ -268,6 +276,13 @@ const OrderHistory = () => {
                         </Button>
                       )}
                     </div>
+                    <p className='text-xs text-gray-400 mt-1'>
+                      Placed on {new Date(order.created_at).toLocaleDataStrig('en-us',{
+                        weekday:'long',
+                      year:'numeric',
+                    month:'long',
+                  day:'numeric',                     })}
+                    </p>
                   </div>
                 );
               })}
