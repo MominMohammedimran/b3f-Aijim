@@ -196,8 +196,8 @@ const OrderHistory = () => {
   <div className="flex text-xs sm:items-center gap-2 sm:gap-3 mt-1 mb-1">
     {/* Payment Status */}
     <div className="flex items-center gap-1">
-      <span className=" font-semibold text-[10px] text-gray-300 uppercase">Payment -</span>
-      <span className="bg-red-600 text-[10px]  text-white  font-semibold px-2 rounded-sm shadow-sm uppercase tracking-wide">
+      <span className=" font-semibold text-[8px] text-gray-300 uppercase">Payment -</span>
+      <span className="bg-red-600 text-[8px]  text-white  font-semibold px-2 rounded-sm shadow-sm uppercase tracking-wide">
         {order.payment_status || "N/A"}
       </span>
     </div>
@@ -207,8 +207,8 @@ const OrderHistory = () => {
 
     {/* Order Status */}
     <div className="flex items-center gap-1">
-      <span className=" font-semibold text-[10px] text-gray-300 uppercase">Status -</span>
-      <span className="bg-yellow-400 text-[10px] text-black  font-semibold px-2 rounded-sm shadow-sm uppercase tracking-wide">
+      <span className=" font-semibold text-[8px] text-gray-300 uppercase">Status -</span>
+      <span className="bg-yellow-400 text-[8px] text-black  font-semibold px-2 rounded-sm shadow-sm uppercase tracking-wide">
         {order.status || "Unknown"}
       </span>
     </div>

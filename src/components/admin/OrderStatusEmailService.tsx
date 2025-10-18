@@ -131,21 +131,17 @@ export const sendOrderConfirmationEmail = async (
     }
 
     const loadingToast = toast.loading('📧 Sending confirmation email...');
-    const { data, error } = await supabase.functions.invoke('send-order-notification', {
+    const { data, error } = await supabase.functions.invoke('send-order-confirmation', {
       body: {
         orderId: orderData.orderId,
         customerEmail: orderData.customerEmail.trim(),
         customerName: orderData.customerName || 'Customer',
-        status: 'confirmed',
+        status:orderData.status ,
         orderItems: orderData.orderItems || [],
         totalAmount: orderData.totalAmount,
-        shippingAddress: orderData.shippingAddress,
-        paymentMethod: orderData.paymentMethod,
-        emailType: 'confirmation',
-          couponCode:orderData.couponCode,
-          couponDiscount:orderData.couponDiscount,
-        rewardPointsUsed:orderData.rewardPointsUsed,
-        deliveryFee:orderData.deliveryFee,
+        
+        emailType: 'status_update',
+        
       }
     });
     toast.dismiss(loadingToast);

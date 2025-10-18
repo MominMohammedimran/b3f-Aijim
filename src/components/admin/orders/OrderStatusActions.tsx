@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { sendOrderStatusEmail } from "@/components/admin/OrderStatusEmailService";
+import { sendOrderStatusEmail, sendOrderConfirmationEmail } from "@/components/admin/OrderStatusEmailService";
 
 interface OrderStatusActionsProps {
   orderId: string;
@@ -20,7 +20,7 @@ interface OrderStatusActionsProps {
   couponCode?: string;
   couponDiscount?: number;
   rewardPointsUsed?: number;
-  deliveryFee:number;
+  deliveryFee: number;
 }
 
 const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
@@ -78,32 +78,40 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
       const { error } = await supabase.from("orders").update(updateData).eq("id", orderId);
       if (error) throw error;
 
-      // 🧠 2️⃣ Send Email Notification
+      // 🧠 2️⃣ Send relevant email
       if (userEmail && userEmail !== "N/A") {
-        try {
-          await sendOrderStatusEmail({
-            orderId: orderNumber || orderId,
-            customerEmail: userEmail,
-            customerName: shippingAddress?.name || shippingAddress?.fullName || "Customer",
-            status: selectedStatus,
-            orderItems,
-            totalAmount,
-            shippingAddress,
-            paymentMethod: "razorpay",
-            couponCode,
-            couponDiscount,
-            rewardPointsUsed,
-            deliveryFee,
-          });
+        const emailData = {
+          orderId: orderNumber || orderId,
+          customerEmail: userEmail,
+          customerName: shippingAddress?.name || shippingAddress?.fullName || "Customer",
+          status: selectedStatus,
+          orderItems,
+          totalAmount,
+          shippingAddress,
+          paymentMethod: "razorpay",
+          couponCode,
+          couponDiscount,
+          rewardPointsUsed,
+          deliveryFee,
+        };
 
-          console.log("✅ Status email sent");
+        try {
+          if (["processing", "confirmed", "shipped", "delivered"].includes(selectedStatus)) {
+            // ✅ For these statuses, only confirmation email
+            await sendOrderConfirmationEmail(emailData);
+            console.log(`📦 Confirmation email sent for status: ${selectedStatus}`);
+          } else {
+            // ✅ For others, send normal status update email
+            await sendOrderStatusEmail(emailData);
+            console.log(`📧 Status email sent for status: ${selectedStatus}`);
+          }
         } catch (err) {
           console.error("Email send failed:", err);
           toast.warning("Status updated but failed to send email");
         }
       }
 
-      // 🧠 3️⃣ Notify parent + Toast
+      // 🧠 3️⃣ Notify parent + toast
       onStatusUpdate(orderId, selectedStatus, cancellationReason);
       toast.success("Order status updated successfully");
     } catch (err) {
