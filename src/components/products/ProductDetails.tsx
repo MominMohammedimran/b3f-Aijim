@@ -239,7 +239,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
                     selected && !isOutOfStock
                       ? 'border-gray-400 bg-white text-black'
                       : isOutOfStock && !selected
-                      ? 'border-gray-600 bg-black font-semibold text-red-500 text-gray-200 line-through cursor-not-allowed '
+                      ? 'border-gray-600 bg-black font-semibold text-white text-gray-200 line-through cursor-not-allowed '
                       : 'border-gray-400  bg-white/90 text-black'
                   }`}
               >

@@ -206,7 +206,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
                 setScale(1);
                 setLastScale(1);
               }}
-              className="absolute top-6 right-6 bg-red-600 hover:bg-red-700 p-2 rounded-full shadow"
+              className="absolute top-6 right-6 bg-red-600 hover:bg-red-700 p-2 rounded-none shadow"
             >
               <X size={22} className="text-white" />
             </button>

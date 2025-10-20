@@ -175,7 +175,7 @@ export const sendReturnConfirmationEmail = async (
       return false;
     }
 
-    const loadingToast = toast.loading('📧 Sending retur or payment confirmation email...');
+    const loadingToast = toast.loading('📧 Sending return/refund confirmation email...');
     const { data, error } = await supabase.functions.invoke('send-return-payment-notification', {
       body: {
         orderId: orderData.orderId,
