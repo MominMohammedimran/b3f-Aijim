@@ -23,28 +23,40 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({ mode = 'signin' }
   };
 
   const handleSignIn = async (data: { email: string; password: string }) => {
-    setLoading(true);
-    try {
-      const { data: authData, error } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
+  setLoading(true);
+  try {
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
-      if (error) {
-        throw error;
+    if (error) {
+      // Customize error message
+      if (error.message.toLowerCase().includes('invalid login credentials')) {
+        toast.error('Invalid email or password. Please try again.');
+      } else if (error.message.toLowerCase().includes('email not confirmed')) {
+        toast.error('Please verify your email before signing in.');
+      } else {
+        toast.error(error.message || 'Failed to sign in');
       }
-
-      if (authData.user) {
-        toast.success('Signed in successfully!');
-        navigate('/');
-      }
-    } catch (error: any) {
-      console.error('Sign in error:', error);
-      toast.error(error.message || 'Failed to sign in');
-    } finally {
-      setLoading(false);
+      throw error;
     }
-  };
+
+    if (authData.user) {
+      toast.success('Signed in successfully!');
+      navigate('/');
+    }
+  } catch (error: any) {
+    console.error('Sign in error:', error);
+    // Avoid duplicate toasts
+    if (!error.message?.toLowerCase().includes('invalid login credentials')) {
+      toast.error(error.message || 'Failed to sign in');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="flex justify-center pb-10 bg-gray-50 px-4 sm:px-4 lg:px-4">

@@ -97,7 +97,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, product }) => 
             WhatsApp
           </Button>
 
-          <Button
+          {/*<Button
             onClick={handleTelegramShare}
             className="flex items-center justify-center gap-2 py-3 sm:py-2 text-sm sm:text-xs font-semibold rounded-lg 
               bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-500 
@@ -105,7 +105,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, product }) => 
           >
             <Send className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
             Telegram
-          </Button>
+          </Button>*/}
 
           <Button
             onClick={handleCopyLink}

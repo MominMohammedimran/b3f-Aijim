@@ -66,7 +66,7 @@ const ProfileTabs = () => {
   data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
 >
   <MapPin size={16} />
-  <span className="text-[10px] sm:text-[12px]">Addresses</span>
+  <span className="text-[10px] sm:text-[12px]">Adress</span>
 </TabsTrigger>
 
 
