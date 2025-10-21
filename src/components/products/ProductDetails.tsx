@@ -227,32 +227,74 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
           
           
           return (
-            <div key={size} className="relative">
-              
-            
+           <div key={size} className="relative flex flex-col items-center">
+  <button
+    onClick={() => toggleSize(size)}
+    disabled={isOutOfStock && !selected}
+    className={`w-full py-1.5 text-xs mb-1 font-bold border text-center transition-all duration-300 rounded-sm relative overflow-hidden
+      ${
+        selected && !isOutOfStock
+          ? "border-gray-400 bg-white text-black "
+          : isOutOfStock
+          ? "border-gray-700 bg-black text-white line-through font-semibold cursor-not-allowed opacity-100"
+          : "border-gray-400 bg-white/90 text-black  "
+      }`}
+  >
+    {size}
+  </button>
 
-              <button
-                onClick={() => toggleSize(size)}
-                disabled={isOutOfStock && !selected}
-                className={`w-full  py-1.5 text-xs mb-1  font-bold border text-center transition-all
-                  ${
-                    selected && !isOutOfStock
-                      ? 'border-gray-400 bg-white text-black'
-                      : isOutOfStock && !selected
-                      ? 'border-gray-600 bg-black font-semibold text-white text-gray-200 line-through cursor-not-allowed '
-                      : 'border-gray-400  bg-white/90 text-black'
-                  }`}
-              >
-                {size}
-                
-                {isOutOfStock ? (
-                  <div className="text-[8px] bg-red-600 hidden text-white font-semibold mt-0.5">SOLD</div>
-                ) :(<div className="text-[8px] hidden uppercase font-bold mt-0.5">
-                  Stock
-                </div>)
-              }
-              </button>
-            </div>
+  {/* Stock Indicator */}
+  {isOutOfStock ? (
+    <div className="text-[8px] font-bold hidden uppercase tracking-wide bg-gradient-to-r from-red-600 to-red-800 text-white w-full text-center py-0.5 rounded-sm shadow-[0_0_8px_rgba(220,38,38,0.6)]">
+      SOLD OUT
+    </div>
+  ) : (
+    (() => {
+      const stockLevel = variant?.stock ?? 0;
+      const maxStock = 10; // 🔸 You can adjust this as your logic
+      const percentage = Math.min((stockLevel / maxStock) * 100, 100);
+      const stockLabel =
+        percentage < 30
+          ? "Low Stock"
+          : percentage < 70
+          ? "Available"
+          : "In Stock";
+
+      const color =
+        percentage < 30
+          ? "bg-red-500"
+          : percentage < 70
+          ? "bg-yellow-400"
+          : "bg-green-500";
+
+      return (
+        <div className="w-full hidden text-center mt-0.5">
+          <div
+            className="h-1 rounded-full bg-gray-800 overflow-hidden w-full relative"
+            title={`Stock: ${stockLevel}`}
+          >
+            <div
+              className={`${color} h-1 rounded-full transition-all duration-500`}
+              style={{ width: `${percentage}%` }}
+            ></div>
+          </div>
+          <span
+            className={`text-[8px] uppercase font-semibold tracking-wide ${
+              percentage < 30
+                ? "text-red-400"
+                : percentage < 70
+                ? "text-yellow-400"
+                : "text-green-400"
+            }`}
+          >
+            {stockLabel}
+          </span>
+        </div>
+      );
+    })()
+  )}
+</div>
+
           );
         })} 
       </div>

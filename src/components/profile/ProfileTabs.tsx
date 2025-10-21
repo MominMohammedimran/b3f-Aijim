@@ -30,40 +30,45 @@ const ProfileTabs = () => {
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
-        className="w-full"
+        className="w-full "
       >
-        <TabsList className="grid w-full m-auto grid-cols-4 mb-10 bg-gray-800 rounded-3xl p-1">
+        <TabsList className="grid w-full h-auto m-auto grid-cols-4 mb-10 bg-gray-800 rounded-3xl">
           <TabsTrigger
-            value="rewards"
-            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-          >
-            <Gift size={16} />
-            <span className="hidden sm:inline">Rewards</span>
-          </TabsTrigger>
+  value="rewards"
+  className="flex  sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-2 font-semibold rounded-3xl transition-all 
+  data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+>
+  <Gift size={14} />
+  <span className="text-[10px] sm:text-[12px]">Rewards</span>
+</TabsTrigger>
 
-          <TabsTrigger
-            value="security"
-            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-          >
-            <Shield size={16} />
-            <span className="hidden sm:inline">Security</span>
-          </TabsTrigger>
+<TabsTrigger
+  value="security"
+  className="flex  sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-2 font-semibold rounded-3xl transition-all 
+  data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+>
+  <Shield size={14} />
+  <span className="text-[10px] sm:text-[12px]">Security</span>
+</TabsTrigger>
 
-          <TabsTrigger
-            value="profile"
-            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-          >
-            <User size={16} />
-            <span className="hidden sm:inline">Profile</span>
-          </TabsTrigger>
+<TabsTrigger
+  value="profile"
+  className="flex  sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-2 font-semibold rounded-3xl transition-all 
+  data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+>
+  <User size={14} />
+  <span className="text-[10px] sm:text-[12px]">Profile</span>
+</TabsTrigger>
 
-          <TabsTrigger
-            value="addresses"
-            className="flex items-center gap-2 text-sm px-1 py-2 font-semibold rounded-3xl transition-all data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
-          >
-            <MapPin size={16} />
-            <span className="hidden sm:inline">Addresses</span>
-          </TabsTrigger>
+<TabsTrigger
+  value="addresses"
+  className="flex  sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 py-2 font-semibold rounded-3xl transition-all 
+  data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
+>
+  <MapPin size={16} />
+  <span className="text-[10px] sm:text-[12px]">Addresses</span>
+</TabsTrigger>
+
 
          {/* <TabsTrigger
             value="notifications"

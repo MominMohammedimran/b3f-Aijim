@@ -185,13 +185,13 @@ const ProductImage: React.FC<ProductImageProps> = ({
               <>
                 <button
                   onClick={prev}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                  className="absolute left-1 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
                 >
                   <ChevronLeft size={32} />
                 </button>
                 <button
                   onClick={next}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
                 >
                   <ChevronRight size={32} />
                 </button>
@@ -206,7 +206,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
                 setScale(1);
                 setLastScale(1);
               }}
-              className="absolute top-6 right-6 bg-red-600 hover:bg-red-700 p-2 rounded-none shadow"
+              className="absolute top-1 right-3  p-2 rounded-none shadow"
             >
               <X size={22} className="text-white" />
             </button>

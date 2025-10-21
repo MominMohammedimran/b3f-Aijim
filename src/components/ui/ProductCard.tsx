@@ -120,21 +120,22 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
           </div>
 
           {/* ---------- Product Info ---------- */}
-          <div className="p-0 pl-1 pt-2 bg-[#111] border-x border-b border-gray-800">
-            <h3 className="text-white text-left font-semibold text-xs leading-tight line-clamp-2 ml-1">
-              {product.name}
-            </h3>
-            <div className="flex items-center mt-1 ml-2 gap-2 text-xs ">
-              {discount && (
-                <span className="text-gray-400 line-through font-semibold">
-                  ₹{product.originalPrice}
-                </span>
-              )}
-              <span className="text-white text-sm font-semibold">
-                ₹{product.price}
-              </span>
-            </div>
-          </div>
+         {/* ---------- Product Info ---------- */}
+                  <div className="p-0 pl-1 pt-2 bg-[#111] border-x border-b border-gray-800">
+                    <h3 className="text-white text-left font-semibold text-xs lg:text-sm leading-tight line-clamp-2 ml-1">
+                      {product.name}
+                    </h3>
+                    <div className="flex items-center lg:justify-center lg:gap-5 mt-1 ml-2 gap-2 text-xs lg:text-sm ">
+                      {discount && (
+                        <span className="text-gray-400  line-through font-semibold">
+                          ₹{product.originalPrice}
+                        </span>
+                      )}
+                      <span className="text-white text-sm lg:text-md font-semibold">
+                        ₹{product.price}
+                      </span>
+                    </div>
+                  </div>
         </div>
 
         {/* ---------- BACK (Carousel) ---------- */}
@@ -147,7 +148,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
                 alt={`${product.name}-${i}`}
                 className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
                   i === currentImage ? "opacity-100" : "opacity-0"
-                }`}
+                } ${inStock ? "" : "grayscale opacity-70"}`}
               />
             ))}
 
