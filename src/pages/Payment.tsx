@@ -186,14 +186,14 @@ const Payment = () => {
     {shippingAddress.phone && (
       <>
         {" "}
-        <span className="text-yellow-400 font-medium">📞</span>{" "}
+        <span className="text-yellow-400 font-medium">Phone no - </span>{" "}
         {shippingAddress.phone}
       </>
     )},
     {shippingAddress.email && (
       <>
         {" "}
-        <span className="text-yellow-400 font-medium">✉️</span>{" "}
+        <span className="text-yellow-400 font-medium">Email - </span>{" "}
         {shippingAddress.email}
       </>
     )}

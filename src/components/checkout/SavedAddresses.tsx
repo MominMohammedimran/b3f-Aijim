@@ -37,9 +37,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
 
   return (
     <div className="mb-6">
-      <h3 className="font-semibold text-sm mb-4 text-white uppercase tracking-wide">
-        Shipping Address
-      </h3>
+     
 
       {/* --- Saved Addresses List --- */}
       <div className="space-y-3">
@@ -55,8 +53,8 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
               whileHover={{ scale: 1.01 }}
               className={`border p-4 rounded-none cursor-pointer transition-all duration-300 ${
                 isSelected
-                  ? "border-yellow-400 bg-gray-900 text-yellow-300 shadow-lg shadow-yellow-800/20"
-                  : "border-gray-700 bg-black hover:bg-gray-900 text-white"
+                  ? "border-yellow-400 bg-none text-yellow-300 shadow-lg shadow-yellow-800/20"
+                  : "border-gray-700 bg-none text-white"
               }`}
             >
               <div className="flex justify-between items-start gap-2">
@@ -129,8 +127,8 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
         }}
         className={`border p-2 mt-2 rounded-none cursor-pointer block transition-all duration-300 ${
           useNewAddress
-            ? "border-yellow-400 bg-gray-900 text-white shadow-md"
-            : "border-gray-700 bg-black hover:bg-gray-900 text-white"
+            ? "border-yellow-400 bg-black text-white shadow-md"
+            : "border-gray-700 bg-none hover:bg-gray-900 text-white"
         }`}
       >
         <p className="text-xs font-semibold">Use a New Address</p>
