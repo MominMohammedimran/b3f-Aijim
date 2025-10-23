@@ -78,7 +78,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
     (pointsToUse / Math.min(availablePoints, cartTotal)) * 100;
 
   return (
-    <div className="w-full mb-5 border border-gray-700 rounded-md bg-gradient-to-b from-gray-950 via-black to-gray-900 p-4 shadow-[0_0_10px_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300">
+    <div className="w-full mb-5 p-2 bg-none border border-gray-700 rounded-none transition-all duration-300">
       {/* Header */}
       <div className="flex items-center justify-start gap-2 border-b border-gray-700 pb-2 mb-3">
         <Gift className="text-yellow-400 w-5 h-5" />
@@ -102,7 +102,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="bg-yellow-900/10 border border-yellow-500/40 rounded-md p-3"
+            className=" border border-yellow-500/40 rounded-none p-2"
           >
             <div className="flex justify-between items-center text-sm text-gray-200">
               <div>
@@ -114,9 +114,9 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
               </div>
               <Button
                 variant="outline"
-                size="sm"
+                size="xs"
                 onClick={handleRemovePoints}
-                className="border-none text-red-400 hover:text-red-500 bg-transparent hover:bg-red-500/10"
+                className="border-none rounded-none px-1.5 py-1 font-semibold text-white hover:text-white bg-red-500 hover:bg-red-600"
               >
                 Remove
               </Button>

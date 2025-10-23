@@ -157,31 +157,31 @@ const AddressForm: React.FC<AddressFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="firstName" className="text-sm font-semibold">First Name *</Label>
+          <Label htmlFor="firstName" className="text-xs font-semibold">First Name *</Label>
           <Input
             id="firstName"
             value={formData.firstName}
             onChange={(e) => handleChange('firstName', e.target.value)}
             placeholder="First Name"
             required
-            className="font-semibold text-gray-100"
+            className="font-semibold text-xs text-gray-100"
           />
         </div>
         <div>
-          <Label htmlFor="lastName" className="text-sm font-semibold">Last Name *</Label>
+          <Label htmlFor="lastName" className="text-xs font-semibold">Last Name *</Label>
           <Input
             id="lastName"
             value={formData.lastName}
             onChange={(e) => handleChange('lastName', e.target.value)}
             placeholder="Last Name"
             required
-            className="font-semibold text-gray-100"
+            className="font-semibold text-xs  text-gray-100"
           />
         </div>
       </div>
 
       <div>
-        <Label htmlFor="phone" className="text-sm font-semibold">Phone *</Label>
+        <Label htmlFor="phone" className="text-xs font-semibold">Phone *</Label>
         <Input
           id="phone"
           type="tel"
@@ -191,15 +191,15 @@ const AddressForm: React.FC<AddressFormProps> = ({
           pattern="[0-9]{10}"
           maxLength={10}
           required
-          className="font-semibold text-gray-100"
+          className="font-semibold text-xs text-gray-100"
         />
-        <p className="text-[11px] lowercase font-semibold text-yellow-400 tracking-[1px] mt-1 leading-snug">
+        <p className="text-[9px] lowercase font-semibold text-yellow-400 tracking-[1px] mt-1 leading-snug">
           Enter a valid <span className=" font-semibold tracking-[1px] text-white">10-digit mobile number</span> to receive OTP & Calls for verification and delivery updates.
         </p>
       </div>
 
       <div>
-        <Label htmlFor="address" className="text-sm font-semibold">Address *</Label>
+        <Label htmlFor="address" className="text-xs font-semibold">Address *</Label>
         <Input
           id="address"
           value={formData.address}
@@ -207,34 +207,34 @@ const AddressForm: React.FC<AddressFormProps> = ({
           placeholder="Full Address"
           minLength={10}
           required
-          className="font-semibold text-gray-100"
+          className="font-semibold text-xs text-gray-100"
         />
-        <p className="text-[11px] tracking-[1px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
-          Please enter a correct and complete address to ensure smooth and timely delivery.
+        <p className="text-[9px] tracking-[1px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
+          Please enter a correct & complete address to ensure smooth and timely delivery.
         </p>
       </div>
 
       <div>
-        <Label htmlFor="city" className="text-sm font-semibold">City *</Label>
+        <Label htmlFor="city" className="text-xs font-semibold">City *</Label>
         <Input
           id="city"
           value={formData.city}
           onChange={(e) => handleChange('city', e.target.value)}
           placeholder="City"
           required
-          className="font-semibold text-gray-100 "
+          className="font-semibold text-xs text-gray-100 "
         />
       </div>
 
       <div>
-        <Label htmlFor="state" className="text-sm font-bold">State *</Label>
+        <Label htmlFor="state" className="text-xs font-semibold">State *</Label>
         <Select value={formData.state} onValueChange={(value) => handleChange('state', value)}>
-          <SelectTrigger className=" text-sm font-bold  text-gray-100">
+          <SelectTrigger className=" text-xs font-semibold  text-gray-100">
             <SelectValue placeholder="-- Select State --" />
           </SelectTrigger>
           <SelectContent>
             {indianStates.map((state) => (
-              <SelectItem className="font-bold"key={state} value={state}>
+              <SelectItem className="font-semibold text-xs"key={state} value={state}>
                 {state}
               </SelectItem>
             ))}
@@ -243,7 +243,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="zipCode" className="text-sm font-semibold">PIN Code *</Label>
+        <Label htmlFor="zipCode" className="text-xs font-semibold">PIN Code *</Label>
         <Input
           id="zipCode"
           value={formData.zipCode}
@@ -260,10 +260,10 @@ const AddressForm: React.FC<AddressFormProps> = ({
           pattern="[0-9]{6}"
           maxLength={6}
           required
-          className="font-semibold text-gray-100"
+          className="font-semibold text-xs text-gray-100"
         />
         {checkingPincode && (
-          <p className="text-[11px] font-semibold text-blue-400 mt-1">Checking serviceability...</p>
+          <p className="text-[9px] font-semibold text-yellow-400 mt-1">Checking serviceability...</p>
         )}
         {pincodeValidation && (
           <p className={`text-[11px] font-semibold mt-1 ${pincodeValidation.isServiceable ? 'text-green-400' : 'text-red-400'}`}>
@@ -271,19 +271,19 @@ const AddressForm: React.FC<AddressFormProps> = ({
           </p>
         )}
         {!pincodeValidation && !checkingPincode && (
-          <p className="text-[11px] lowercase tracking-[1px] font-semibold text-yellow-400 mt-1">Enter a valid 6-digit Indian PIN code</p>
+          <p className="text-[9px] lowercase tracking-[1px] font-semibold text-yellow-400 mt-1">Enter a valid 6-digit Indian PIN code</p>
         )}
       </div>
 
       <div>
-        <Label htmlFor="country" className="text-sm font-semibold">Country</Label>
+        <Label htmlFor="country" className="text-xs font-semibold">Country</Label>
         <Input
           id="country"
           value="India"
           readOnly
           className="font-semibold bg-gray-100 text-gray-800"
         />
-        <p className="text-[11px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
+        <p className="text-[9px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
           Currently deliver available <span className="font-semibold text-white">India</span> only
         </p>
       </div>

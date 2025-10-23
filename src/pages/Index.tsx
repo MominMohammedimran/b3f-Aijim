@@ -119,7 +119,7 @@ const seo = useSEO('/');
         
           {/*<HeroSlider />/*}
 
-          {/* 🔥 Hot Selling */}
+          {/* 🔥 Hot Selling 
       <div className="mb-4 mt-4 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black
 
  p-4 pl-0 pr-0 shadow-md">
@@ -138,7 +138,7 @@ const seo = useSEO('/');
           className="animate-fade-in"
           style={{ animationDelay: `${i * 0.08}s` }}
         >
-          {/* ✅ Fixed Aspect Ratio */}
+
           <div className="w-full  relative h-[290px]  bg-gray-900 overflow-hidden shadow-lg relative">
             <img
               src={product.image} // adjust to your actual field
@@ -164,11 +164,11 @@ const seo = useSEO('/');
               Shop Now
             </Link>
             
-          </div>*/}
+          </div>}
         </div>
       ))}
   </div>
-</div>
+</div>}/*}
 
 
 

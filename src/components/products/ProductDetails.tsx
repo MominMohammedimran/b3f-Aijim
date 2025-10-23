@@ -234,7 +234,7 @@ const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selected
     className={`w-full py-1.5 text-xs mb-1 font-bold border text-center transition-all duration-300 rounded-sm relative overflow-hidden
       ${
         selected && !isOutOfStock
-          ? "border-gray-400 bg-white text-black "
+          ? "border-gray-400 bg-white border-yellow-400 text-black "
           : isOutOfStock
           ? "border-gray-700 bg-black text-white line-through font-semibold cursor-not-allowed opacity-100"
           : "border-gray-400 bg-white/90 text-black  "

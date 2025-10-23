@@ -115,12 +115,12 @@ const Payment = () => {
             {/* Applied Discounts Section */}
             {(appliedCoupon || rewardPointsUsed > 0) && (
               <div className="bg-gray-800 shadow-sm border p-4">
-                <h3 className="text-lg font-semibold text-white mb-3">Applied Discounts</h3>
-                <div className="space-y-2 text-sm">
+                <h3 className="text-md font-semibold text-white mb-3">Applied Discounts</h3>
+                <div className="space-y-0.5 text-sm">
                   {appliedCoupon && (
                     <div className="flex justify-between  items-center">
-                      <span className="text-gray-200 font-semibold tracking-[2px]">Coupon Applied - {' '} 
-                        <span className="underline font-semibold text-md text-yellow-400">
+                      <span className="text-gray-200 font-medium tracking-[2px]">Coupon Applied - {' '} 
+                        <span className="underline font-medium text-md text-yellow-400">
                       {appliedCoupon.code}
                       </span>
                       </span>
@@ -128,8 +128,8 @@ const Payment = () => {
                   )}
                   {rewardPointsUsed > 0 && (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-200 font-semibold tracking-[2px]">Reward Points Used - {' '}
-                         <span className="text-yellow-300 text-md font-semibold underline">
+                      <span className="text-gray-200 font-medium tracking-[2px]">Reward Points Used - {' '}
+                         <span className="text-yellow-300 text-md font-medium underline">
                       
                       {rewardPointsUsed}</span></span>
 
@@ -141,7 +141,7 @@ const Payment = () => {
 
             {/* Payment Gateway */}
             <div className="bg-gray-800 shadow-sm border">
-              <h2 className="text-2xl text-yellow-400 border-b border-gray-100 font-semibold text-center pt-3 mb-2">Payment Summary </h2>
+              <h2 className="text-lg text-yellow-400 border-b border-gray-100 font-semibold text-center pt-3 mb-2">Payment Summary </h2>
 
               {/* Razorpay Checkout */}
               <div>
@@ -163,13 +163,13 @@ const Payment = () => {
           {/*shipping Address */}
       <div className="bg-gray-900 text-white p-4 rounded-none shadow-md border border-gray-700">
   <h3 className="text-sm font-semibold mb-3 border-b border-gray-700 pb-2 leading-relaxed">
-    Shipping Address used for this Order
+    Shipping Address Used - Order
   </h3>
 
   <p className="text-xs leading-relaxed text-gray-300 font-semibold">
     {shippingAddress.firstName || shippingAddress.lastName ? (
       <>
-        <span className="text-white font-semibold">
+        <span className="text-yellow-400 uppercase font-semibold">
           {shippingAddress.firstName} {shippingAddress.lastName}
         </span>
         ,{" "}
@@ -186,14 +186,14 @@ const Payment = () => {
     {shippingAddress.phone && (
       <>
         {" "}
-        <span className="text-yellow-400 font-semibold">📞</span>{" "}
+        <span className="text-yellow-400 font-medium">📞</span>{" "}
         {shippingAddress.phone}
       </>
     )},
     {shippingAddress.email && (
       <>
         {" "}
-        <span className="text-yellow-400 font-semibold">✉️</span>{" "}
+        <span className="text-yellow-400 font-medium">✉️</span>{" "}
         {shippingAddress.email}
       </>
     )}
@@ -204,9 +204,9 @@ const Payment = () => {
           {/* Right: Secure Payment Info */}
           <div className="space-y-6">
             <div className="bg-gray-800 p-4">
-              <h3 className="font-medium text-white mb-2">Secure Payment with Razorpay:</h3>
-              <ul className="text-sm text-white list-disc font-semibold list-inside space-y-1">
-                <li className="font-semibold uppercase">256‑bit SSL encryption</li>
+              <h3 className="font-medium text-sm text-yellow-500 mb-2">Secure Payment with Razorpay </h3>
+              <ul className="text-xs text-white list-disc font-semibold list-inside space-y-1">
+                <li className="font-semibold uppercase ">256‑bit SSL encryption</li>
                 <li className="font-semibold uppercase">PCI DSS compliant</li>
                 <li className="font-semibold uppercase">Multiple payment options</li>
                 <li className="font-semibold uppercase">Instant payment confirmation</li>

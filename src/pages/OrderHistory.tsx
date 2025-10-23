@@ -196,14 +196,14 @@ const OrderHistory = () => {
                           />
                           <div className="flex-1">
                             <p className="text-sm font-semibold line-clamp-2">{item.name}</p>
-                            <div className='flex items-center gap-2  flex-wrap '>
+                            <div className='flex items-center gap-4  flex-wrap '>
                             {item.sizes?.map((s, j) => (
                               
                               <p
                                 key={j}
-                                className="text-[11px] text-gray-400 font-medium mt-1"
+                                className="text-[11px] text-gray-200 font-medium mt-1"
                               >
-                                Size: <b>{s.size}</b> - Qty: <b>{s.quantity}</b> |
+                                 <b>{s.size}</b> x <b>{s.quantity}</b> 
                               </p>
                             ))}
                             </div>

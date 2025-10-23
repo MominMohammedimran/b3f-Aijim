@@ -77,9 +77,9 @@ const location = useLocation();
 
 
 //{points: 75, discount: 75} {code: 'WELCOME10', discount: 29.9}//
- const couponDiscount = appliedCoupon?.discount || 0;
-  const pointsDiscount = appliedPoints?.discount || 0;
-  const totalDiscount = couponDiscount + pointsDiscount;
+ const couponDiscount = Math.floor(appliedCoupon?.discount || 0);
+  const pointsDiscount =Math.floor( appliedPoints?.discount || 0);
+  const totalDiscount = Math.floor(couponDiscount + pointsDiscount);
   const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
   const handleRewardPointsChange = (value: number) => {
     if (value < 100 && value > 0) {
