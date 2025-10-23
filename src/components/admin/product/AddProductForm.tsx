@@ -118,7 +118,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductAdded, onClose
         .insert([productData]);
 
       if (error) {
-        console.error('Error adding product:', error);
+      // console.error('Error adding product:', error);
         throw error;
       }
 
@@ -126,7 +126,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onProductAdded, onClose
       onProductAdded();
       onClose();
     } catch (error) {
-      console.error('Error adding product:', error);
+     // console.error('Error adding product:', error);
       toast.error('Failed to add product');
     } finally {
       setLoading(false);

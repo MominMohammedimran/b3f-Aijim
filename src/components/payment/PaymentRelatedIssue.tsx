@@ -93,7 +93,7 @@ const generatePaymentIssueId = () => {
       .upload(fileName, screenshot, { upsert: true });
 
     if (uploadError) {
-      console.error('Upload error:', uploadError);
+     // console.error('Upload error:', uploadError);
       return '';
     }
 
@@ -144,7 +144,7 @@ const generatePaymentIssueId = () => {
       .maybeSingle();
 
     if (error) {
-      console.error('Error submitting issue:', error);
+     // console.error('Error submitting issue:', error);
       toast.error('Failed to submit issue. Please try again.');
     } else {
       setExistingIssues(updatedIssues);

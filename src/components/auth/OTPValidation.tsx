@@ -44,7 +44,7 @@ const OTPValidation: React.FC<OTPValidationProps> = ({
     try {
       await onVerify(otp);
     } catch (error) {
-      console.error('OTP verification error:', error);
+     // console.error('OTP verification error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -60,7 +60,7 @@ const OTPValidation: React.FC<OTPValidationProps> = ({
       setResendTimeout(60);
       setCanResend(false);
     } catch (error) {
-      console.error('Failed to resend OTP:', error);
+    //  console.error('Failed to resend OTP:', error);
       toast.error('Failed to send new verification code');
     } finally {
       setIsSubmitting(false);

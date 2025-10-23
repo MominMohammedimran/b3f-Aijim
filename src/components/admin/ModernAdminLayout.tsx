@@ -66,7 +66,7 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
       setOrdersNum(count || 0);
     } catch (error) {
       toast.error('Unable to fetch order count');
-      console.error(error);
+     // console.error(error);
       setOrdersNum(0); // fallback
     }
   };
@@ -94,7 +94,7 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
       toast.success('Signed out successfully');
       navigate('/admin/login');
     } catch (error) {
-      console.error('Error signing out:', error);
+      //console.error('Error signing out:', error);
       toast.error('Failed to sign out');
     }
   };

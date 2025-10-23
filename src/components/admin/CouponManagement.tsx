@@ -50,7 +50,7 @@ const CouponManagement = () => {
       if (error) throw error;
       setCoupons(data || []);
     } catch (error) {
-      console.error('Error loading coupons:', error);
+     // console.error('Error loading coupons:', error);
       toast.error('Failed to load coupons');
     } finally {
       setLoading(false);
@@ -92,7 +92,7 @@ const CouponManagement = () => {
       });
       loadCoupons();
     } catch (error: any) {
-      console.error('Error adding coupon:', error);
+     // console.error('Error adding coupon:', error);
       toast.error('Failed to add coupon: ' + (error?.message || 'Unknown error'));
     } finally {
       setAdding(false);
@@ -115,7 +115,7 @@ const CouponManagement = () => {
       toast.success('Coupon deleted successfully');
       loadCoupons();
     } catch (error: any) {
-      console.error('Error deleting coupon:', error);
+     // console.error('Error deleting coupon:', error);
       toast.error('Failed to delete coupon: ' + (error?.message || 'Unknown error'));
     }
   };
@@ -132,7 +132,7 @@ const CouponManagement = () => {
       toast.success(`Coupon ${!currentStatus ? 'activated' : 'deactivated'} successfully`);
       loadCoupons();
     } catch (error: any) {
-      console.error('Error updating coupon status:', error);
+      //console.error('Error updating coupon status:', error);
       toast.error('Failed to update coupon status');
     }
   };

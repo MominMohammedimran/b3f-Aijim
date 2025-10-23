@@ -37,13 +37,13 @@ export const sendOrderConfirmationEmail = async (orderData: OrderEmailData) => {
     });
 
     if (error) {
-      console.error('Error sending order confirmation email:', error);
+      //console.error('Error sending order confirmation email:', error);
       throw error;
     }
     
    return { success: true, data };
   } catch (error: any) {
-    console.error('Failed to send order confirmation email:', error);
+    //console.error('Failed to send order confirmation email:', error);
     return { success: false, error: error.message };
   }
 };
@@ -67,13 +67,13 @@ export const sendOrderStatusUpdateEmail = async (orderData: OrderEmailData) => {
     });
 
     if (error) {
-      console.error('Error sending order status update email:', error);
+      //console.error('Error sending order status update email:', error);
       throw error;
     }
     
      return { success: true, data };
   } catch (error: any) {
-    console.error('Failed to send order status update email:', error);
+   // console.error('Failed to send order status update email:', error);
     return { success: false, error: error.message };
   }
 };

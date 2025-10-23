@@ -68,7 +68,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
       toast.success('Sign up successful!');
       navigate('/');
     } catch (error: any) {
-      console.error('Verification error:', error);
+     // console.error('Verification error:', error);
       toast.error(error.message || 'Invalid verification code');
     } finally {
       setIsSubmitting(false);

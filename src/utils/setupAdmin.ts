@@ -20,11 +20,11 @@ export const initializeAdminSetup = async () => {
         .maybeSingle();
       
       // If no error, table exists
-      if (!tableError) {
+     {/*} if (!tableError) {
         console.log('Admin table exists');
       } else {
         console.log('Admin table may not exist, manual creation might be required');
-      }
+      }*/}
     } catch (error) {
       console.log('Error checking admin table:', error);
     }

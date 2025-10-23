@@ -80,7 +80,7 @@ const ProductCustomizer: React.FC<ProductCustomizerProps> = ({ product }) => {
       const totalItems = selectedSizes.reduce((sum, size) => sum + (quantities[size] || 1), 0);
       toast.success(`Added ${totalItems} items to cart!`);
     } catch (error) {
-      console.error('Error adding to cart:', error);
+     // console.error('Error adding to cart:', error);
       toast.error('Failed to add to cart.');
     }
   };

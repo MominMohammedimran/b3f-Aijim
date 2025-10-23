@@ -40,7 +40,7 @@ const GeneralSettingsForm: React.FC = () => {
         setSettings(prev => ({ ...prev, ...data }));
       }
     } catch (error) {
-      console.error('Error fetching settings:', error);
+  //    console.error('Error fetching settings:', error);
       toast.error('Failed to load settings');
     } finally {
       setLoading(false);
@@ -64,7 +64,7 @@ const GeneralSettingsForm: React.FC = () => {
       
       toast.success('Settings updated successfully');
     } catch (error) {
-      console.error('Error updating settings:', error);
+     //console.error('Error updating settings:', error);
       toast.error('Failed to update settings');
     } finally {
       setSaving(false);

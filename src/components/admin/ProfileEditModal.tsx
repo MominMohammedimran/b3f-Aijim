@@ -72,7 +72,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         .select('*');
 
       if (error) {
-        console.error('Profile update error:', error);
+        //console.error('Profile update error:', error);
         throw error;
       }
 
@@ -85,17 +85,18 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         .eq('id', profile.id)
         .single();
 
-      if (verifyError) {
+     {/* if (verifyError) {
         console.error('Verification error:', verifyError);
       } else {
         console.log('Verified reward points in database:', verifyData.reward_points);
       }
+      */}
 
       toast.success('Profile updated successfully');
       onProfileUpdated();
       onOpenChange(false);
     } catch (error: any) {
-      console.error('Error updating profile:', error);
+     // console.error('Error updating profile:', error);
       toast.error('Failed to update profile: ' + error.message);
     } finally {
       setLoading(false);

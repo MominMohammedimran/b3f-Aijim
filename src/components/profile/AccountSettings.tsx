@@ -46,7 +46,7 @@ const AccountSettings = () => {
     try {
       // In a real app, you'd fetch user settings from database
       // For now, we'll use default settings
-      console.log('Settings loaded for user:', currentUser.id);
+     // console.log('Settings loaded for user:', currentUser.id);
     } catch (error) {
       console.error('Error loading settings:', error);
     }
@@ -65,7 +65,7 @@ const AccountSettings = () => {
       // For now, we'll just show success message
       toast.success('Settings saved successfully!');
     } catch (error) {
-      console.error('Error saving settings:', error);
+     // console.error('Error saving settings:', error);
       toast.error('Failed to save settings');
     } finally {
       setLoading(false);
@@ -80,7 +80,7 @@ const AccountSettings = () => {
       toast.error('Account deletion is not available in demo mode');
       setShowDeleteConfirm(false);
     } catch (error) {
-      console.error('Error deleting account:', error);
+     // console.error('Error deleting account:', error);
       toast.error('Failed to delete account');
     }
   };

@@ -48,7 +48,7 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
       
       return razorpayOrder;
     } catch (error) {
-      console.error('Error creating Razorpay order:', error);
+     // console.error('Error creating Razorpay order:', error);
       toast.error('Failed to create payment order');
       return null;
     }
@@ -111,7 +111,7 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
       toast.success("Payment successful! Order confirmed.");
       navigate(`/orders/${orderId}`);
     } catch (err) {
-      console.error(err);
+      //console.error(err);
       toast.error("Failed to update order after payment.");
     } finally {
       setLoading(false);

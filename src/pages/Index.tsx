@@ -94,7 +94,7 @@ const seo = useSEO('/');
 
       setProducts(transformed);
     } catch (err) {
-      console.error('Error fetching products:', err);
+    // console.error('Error fetching products:', err);
     } finally {
       setLoading(false);
     }

@@ -30,7 +30,7 @@ export const loadRazorpayScript = (): Promise<boolean> => {
       // Timeout after 10 seconds
       setTimeout(() => {
         clearInterval(checkScriptLoaded);
-        console.error('Timed out waiting for Razorpay script to load');
+      //  console.error('Timed out waiting for Razorpay script to load');
         resolve(false);
       }, 10000);
       
@@ -50,7 +50,7 @@ export const loadRazorpayScript = (): Promise<boolean> => {
     };
     
     script.onerror = () => {
-      console.error('Failed to load Razorpay script');
+     // console.error('Failed to load Razorpay script');
       isScriptLoading = false;
       resolve(false);
     };

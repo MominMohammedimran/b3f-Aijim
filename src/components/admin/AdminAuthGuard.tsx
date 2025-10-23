@@ -33,7 +33,7 @@ const AdminAuthGuard: React.FC<AdminAuthGuardProps> = ({ children }) => {
         setIsAdmin(true);
         
       } catch (error: any) {
-        console.error('Admin auth check error:', error);
+       // console.error('Admin auth check error:', error);
         setError('Authentication failed');
         toast.error('Authentication error');
         navigate('/admin/login');

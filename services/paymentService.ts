@@ -52,7 +52,7 @@ export const createOrder = async (orderData: OrderData) => {
 
     return data;
   } catch (error) {
-    console.error('Error creating order:', error);
+    //console.error('Error creating order:', error);
     throw error;
   }
 };
@@ -70,7 +70,7 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
 
     return data;
   } catch (error) {
-    console.error('Error updating order status:', error);
+   // console.error('Error updating order status:', error);
     throw error;
   }
 };

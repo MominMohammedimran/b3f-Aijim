@@ -115,7 +115,7 @@ const AdminDashboard: React.FC = () => {
 
       setRecentOrders(recentOrdersData || []);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+     // console.error('Error fetching dashboard data:', error);
       toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);

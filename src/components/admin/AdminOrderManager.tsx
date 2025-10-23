@@ -94,7 +94,7 @@ export default function AdminOrderManager() {
 
       setPaymentIssues(mappedData);
     } catch (error) {
-      console.error('Error fetching payment issues:', error);
+     // console.error('Error fetching payment issues:', error);
       toast({
         title: "Error",
         description: "Failed to fetch payment issues",
@@ -142,7 +142,7 @@ export default function AdminOrderManager() {
       
       setOrderIssues(mappedData);
     } catch (error) {
-      console.error('Error fetching order issues:', error);
+    //  console.error('Error fetching order issues:', error);
       toast({
         title: "Error",
         description: "Failed to fetch order issues",

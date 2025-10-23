@@ -43,7 +43,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
       if (error) throw error;
       setAvailablePoints(data?.reward_points || 0);
     } catch (error) {
-      console.error("Error fetching reward points:", error);
+      //console.error("Error fetching reward points:", error);
       toast.error("Failed to load reward points");
     }
   };

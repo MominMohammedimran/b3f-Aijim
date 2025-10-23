@@ -34,7 +34,7 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
         toast.success('Redirecting to Google...');
         if (onSuccess) onSuccess();
       } catch (error: any) {
-        console.error('Google sign-in error:', error);
+     //   console.error('Google sign-in error:', error);
         toast.error(error.message || 'Failed to sign in with Google');
         setLoading(false);
       }

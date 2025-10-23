@@ -69,7 +69,7 @@ export async function onRequestPost(context) {
 
     if (!emailResponse.ok) {
       const errorText = await emailResponse.text();
-      console.error('SMTP service error:', errorText);
+     // console.error('SMTP service error:', errorText);
       
       // Fallback: return success but log the error
       return new Response(JSON.stringify({ 
@@ -92,7 +92,7 @@ export async function onRequestPost(context) {
     });
 
   } catch (error) {
-    console.error('Email function error:', error);
+   // console.error('Email function error:', error);
     
     return new Response(JSON.stringify({ 
       error: 'Internal server error',

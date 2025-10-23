@@ -55,7 +55,7 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
         .upload(filePath, uploadFile);
 
       if (error) {
-        console.error('Upload error:', error);
+       // console.error('Upload error:', error);
         toast({ title: "Upload Error", description: error.message });
         return adminImageUrl;
       }
@@ -67,7 +67,7 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
 
       return publicUrl;
     } catch (error) {
-      console.error('Upload error:', error);
+    // console.error('Upload error:', error);
       toast({ title: "Upload Failed", description: "Failed to upload image" });
       return adminImageUrl;
     } finally {
@@ -116,7 +116,7 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
       toast({ title: "Success", description: "Order issue response updated successfully" });
       onUpdate();
     } catch (error) {
-      console.error('Error updating order issue:', error);
+     // console.error('Error updating order issue:', error);
       toast({ title: "Error", description: "Failed to update order issue response" });
     } finally {
       setIsSubmitting(false);

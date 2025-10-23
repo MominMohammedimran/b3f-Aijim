@@ -55,7 +55,7 @@ export default function PaymentIssueResponseForm({ issue, onUpdate }: PaymentIss
       .upload(filePath, uploadFile);
 
     if (error) {
-      console.error('Upload error:', error);
+      //console.error('Upload error:', error);
       return adminImageUrl; // fallback to previous URL if upload fails
     }
 
@@ -66,7 +66,7 @@ export default function PaymentIssueResponseForm({ issue, onUpdate }: PaymentIss
 
     return publicUrl;
   } catch (error) {
-    console.error('Upload error:', error);
+   // console.error('Upload error:', error);
     return adminImageUrl;
   } finally {
     setUploading(false);
@@ -124,7 +124,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     onUpdate();
   } catch (error) {
-    console.error('Error updating payment issue:', error);
+//console.error('Error updating payment issue:', error);
     toast({
       title: "Error",
       description: "Failed to update payment issue response",

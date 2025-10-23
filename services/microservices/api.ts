@@ -46,7 +46,7 @@ export class ApiService {
       
       return await response.json() as T;
     } catch (error) {
-      console.error(`GET request failed: ${error}`);
+     // console.error(`GET request failed: ${error}`);
       throw error;
     }
   }
@@ -66,7 +66,7 @@ export class ApiService {
       
       return await response.json() as T;
     } catch (error) {
-      console.error(`POST request failed: ${error}`);
+    //  console.error(`POST request failed: ${error}`);
       throw error;
     }
   }
@@ -86,7 +86,7 @@ export class ApiService {
       
       return await response.json() as T;
     } catch (error) {
-      console.error(`PUT request failed: ${error}`);
+    //  console.error(`PUT request failed: ${error}`);
       throw error;
     }
   }
@@ -105,7 +105,7 @@ export class ApiService {
       
       return await response.json() as T;
     } catch (error) {
-      console.error(`DELETE request failed: ${error}`);
+     // console.error(`DELETE request failed: ${error}`);
       throw error;
     }
   }
@@ -128,7 +128,7 @@ export class EdgeFunctionApiService extends ApiService {
       if (error) throw error;
       return data as T;
     } catch (error) {
-      console.error(`EdgeFunction GET request failed: ${error}`);
+     // console.error(`EdgeFunction GET request failed: ${error}`);
       throw error;
     }
   }
@@ -143,7 +143,7 @@ export class EdgeFunctionApiService extends ApiService {
       if (error) throw error;
       return data as T;
     } catch (error) {
-      console.error(`EdgeFunction POST request failed: ${error}`);
+     // console.error(`EdgeFunction POST request failed: ${error}`);
       throw error;
     }
   }

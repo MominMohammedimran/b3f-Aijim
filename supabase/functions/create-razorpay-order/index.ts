@@ -25,16 +25,16 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log('=== Starting Razorpay Order Creation ===');
+   // console.log('=== Starting Razorpay Order Creation ===');
     
     const requestBody: RequestBody = await req.json();
-    console.log('Request body received:', requestBody);
+   // console.log('Request body received:', requestBody);
 
     const { amount, currency, receipt, orderItems, customerInfo } = requestBody;
 
     // Validate required fields
     if (!amount || !currency || !receipt || !customerInfo) {
-      console.error('Missing required fields');
+    //  console.error('Missing required fields');
       return new Response(JSON.stringify({ 
         success: false,
         error: 'Missing required fields: amount, currency, receipt, customerInfo' 
@@ -48,11 +48,11 @@ Deno.serve(async (req) => {
     const RAZORPAY_KEY_ID = Deno.env.get("RAZORPAY_KEY_ID");
     const RAZORPAY_KEY_SECRET = Deno.env.get("RAZORPAY_KEY_SECRET");
 
-    console.log('Environment check:', {
+  {/* console.log('Environment check:', {
       hasRazorpayKeyId: !!RAZORPAY_KEY_ID,
       hasRazorpayKeySecret: !!RAZORPAY_KEY_SECRET,
       razorpayKeyId: RAZORPAY_KEY_ID ? `${RAZORPAY_KEY_ID.substring(0, 8)}...` : 'missing'
-    });
+    });*/}
 
     if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
       console.error('Missing Razorpay environment variables');
@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
       }
     };
 
-    console.log('Creating Razorpay order with payload:', orderPayload);
+   // console.log('Creating Razorpay order with payload:', orderPayload);
 
     const razorpayResponse = await fetch('https://api.razorpay.com/v1/orders', {
       method: 'POST',
@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
 
     if (!razorpayResponse.ok) {
       const errorText = await razorpayResponse.text();
-      console.error('Razorpay API error:', errorText);
+      //console.error('Razorpay API error:', errorText);
       return new Response(JSON.stringify({ 
         success: false,
         error: `Payment gateway error: ${errorText}` 
@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
     }
 
     const razorpayOrder = await razorpayResponse.json();
-    console.log('Razorpay order created successfully:', razorpayOrder.id);
+   // console.log('Razorpay order created successfully:', razorpayOrder.id);
 
     // Return success response
     const responseData = {
@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
       receipt: receipt
     };
 
-    console.log('Sending success response:', responseData);
+  //  console.log('Sending success response:', responseData);
 
     return new Response(JSON.stringify(responseData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

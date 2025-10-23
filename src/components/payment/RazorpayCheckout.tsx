@@ -123,15 +123,15 @@ const location = useLocation();
          
           toast.success('Order confirmed! Confirmation email sent.');
         } else {
-          console.warn('⚠️ Order confirmation email failed to send');
+        //  console.warn('⚠️ Order confirmation email failed to send');
           toast.warning('Order confirmed but failed to send confirmation email');
         }
       } else {
-        console.warn('⚠️ No email address available for confirmation');
+        //console.warn('⚠️ No email address available for confirmation');
         toast.warning('Order confirmed but no email address provided');
       }
     } catch (emailError) {
-      console.error('Error sending confirmation email:', emailError);
+      {/*console.error('Error sending confirmation email:', emailError);*/}
       toast.error('Order confirmed but failed to send confirmation email');
     }
   };
@@ -158,13 +158,13 @@ const location = useLocation();
         body: adminNotificationData
       });
 
-      if (error) {
+     {/* if (error) {
         console.error('Failed to send admin notification:', error);
       } else {
         console.log('✅ Admin notification sent successfully');
-      }
+      }*/}
     } catch (error) {
-      console.error('Error sending admin notification:', error);
+     // console.error('Error sending admin notification:', error);
     }
   };
 
@@ -234,7 +234,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         .single();
 
       if (dbError) {
-        console.error('Database error:', dbError);
+       // console.error('Database error:', dbError);
         throw new Error('Failed to create order');
       }
 
@@ -260,7 +260,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
 
      
       if (orderError) {
-        console.error('Supabase function error:', orderError);
+       // console.error('Supabase function error:', orderError);
         
         // Better error handling for different error types
         if (orderError.message?.includes('RAZORPAY_KEY_ID') || 
@@ -277,7 +277,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
       }
 
       if (!orderResponse?.success || !orderResponse?.order_id) {
-        console.error('Invalid order response:', orderResponse);
+      //  console.error('Invalid order response:', orderResponse);
         throw new Error('Invalid response from payment service');
       }
 
@@ -310,7 +310,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         paymentData.customerInfo.email,
         paymentData.customerInfo.contact,
         async (paymentId, orderId, signature) => {
-          console.log('Payment successful:', { paymentId, orderId, signature });
+       {/*}   console.log('Payment successful:', { paymentId, orderId, signature });*/}
           
           // Update order with payment details
           try {
@@ -332,7 +332,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
 
            
           } catch (updateError) {
-            console.error('❌ Failed to update order payment status:', updateError);
+          ////  console.error('❌ Failed to update order payment status:', updateError);
           }
           
           // Update inventory immediately when payment is successful
@@ -344,7 +344,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
             });
            
           } catch (inventoryError) {
-            console.error('❌ Failed to update inventory:', inventoryError);
+          //  console.error('❌ Failed to update inventory:', inventoryError);
             // Don't fail the payment process if inventory update fails
           }
           
@@ -362,7 +362,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
 
       
     } catch (error: any) {
-      console.error('Payment process error:', error);
+      //console.error('Payment process error:', error);
       
       let errorMessage = 'Failed to process payment. Please try again.';
       

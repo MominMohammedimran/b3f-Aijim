@@ -75,7 +75,7 @@ export const makePayment = async (
       
       // Set up error handling for Razorpay
       rzpInstance.on('payment.failed', function (response: any) {
-        console.error('Payment failed:', response.error);
+      //  console.error('Payment failed:', response.error);
         onCancel();
       });
       
@@ -84,11 +84,11 @@ export const makePayment = async (
       
      
     } catch (error) {
-      console.error('Error initializing Razorpay:', error);
+    // console.error('Error initializing Razorpay:', error);
       throw new Error('Failed to initialize payment gateway. Please try again.');
     }
   } catch (error) {
-    console.error('Error in makePayment:', error);
+   // console.error('Error in makePayment:', error);
     throw error;
   }
 };

@@ -37,12 +37,12 @@ const InstallAppButton = () => {
       const event = e as BeforeInstallPromptEvent;
       setDeferredPrompt(event);
       setShowButton(true);
-      console.log('📲 beforeinstallprompt event captured');
+ 
     };
 
     // Listen for appinstalled event
     const handleAppInstalled = () => {
-      console.log('✅ PWA Installed!');
+  
       toast.success('AIJIM installed successfully!');
       setIsInstalled(true);
       setShowButton(false);

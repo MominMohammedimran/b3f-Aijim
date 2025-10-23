@@ -233,7 +233,7 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
                     };
                     
                     img.onerror = () => {
-                      console.warn('Failed to load image:', element.src);
+                     // console.warn('Failed to load image:', element.src);
                       elementsProcessed++;
                       if (elementsProcessed === totalElements) {
                         finishCanvas();
@@ -258,7 +258,7 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
               finishCanvas();
             }
           } catch (error) {
-            console.error('Error processing design data:', error);
+            //console.error('Error processing design data:', error);
             finishCanvas();
           }
         } else {
@@ -288,7 +288,7 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
             };
             
             img.onerror = () => {
-              console.warn('Failed to load preview image');
+             // console.warn('Failed to load preview image');
               finishCanvas();
             };
             
@@ -323,7 +323,7 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
         description: 'High-resolution template with shipping details ready'
       });
     } catch (error) {
-      console.error('Error creating design preview:', error);
+    //  console.error('Error creating design preview:', error);
       toast.error('Failed to create design preview');
     }
   };
@@ -351,7 +351,7 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
       
       toast.success(`Downloaded ${designItems.length} design previews!`);
     } catch (error) {
-      console.error('Error downloading all designs:', error);
+      //console.error('Error downloading all designs:', error);
       toast.error('Failed to download all files');
     }
   };

@@ -45,12 +45,12 @@ Aijim Team`
     });
 
     if (!response.ok) {
-      console.error('Error sending order notification email:', await response.text());
+    //  console.error('Error sending order notification email:', await response.text());
       return false;
     }
 return true;
   } catch (error) {
-    console.error('Error in sendOrderNotificationEmail:', error);
+//console.error('Error in sendOrderNotificationEmail:', error);
     return false;
   }
 };
@@ -82,7 +82,7 @@ export const createRazorpayOrder = async (orderData: {
 
     return await response.json();
   } catch (error) {
-    console.error('Error creating Razorpay order:', error);
+   // console.error('Error creating Razorpay order:', error);
     throw error;
   }
 };
@@ -110,7 +110,7 @@ export const sendNotification = async (payload: any): Promise<boolean> => {
 
     return true;
   } catch (error) {
-    console.error('Error in sendNotification:', error);
+    //console.error('Error in sendNotification:', error);
     return false;
   }
 };

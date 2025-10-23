@@ -71,7 +71,7 @@ const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
       if (error) throw error;
       setCustomers(data || []);
     } catch (error) {
-      console.error('Error fetching customers:', error);
+      //console.error('Error fetching customers:', error);
       toast.error('Failed to load customers');
     }
   };
@@ -87,7 +87,7 @@ const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
       if (error) throw error;
       setProducts(data || []);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      //console.error('Error fetching products:', error);
       toast.error('Failed to load products');
     }
   };
@@ -190,7 +190,7 @@ const CreateOrderDialog: React.FC<CreateOrderDialogProps> = ({
         status: 'processing'
       });
     } catch (error) {
-      console.error('Error creating order:', error);
+     // console.error('Error creating order:', error);
       toast.error('Failed to create order');
     } finally {
       setLoading(false);

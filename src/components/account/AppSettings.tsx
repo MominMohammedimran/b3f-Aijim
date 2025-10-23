@@ -100,7 +100,7 @@ const AppSettings = () => {
       
       toast.success('Password updated successfully');
     } catch (error: any) {
-      console.error('Failed to update password:', error);
+      //console.error('Failed to update password:', error);
       toast.error(error.message || 'Failed to update password');
     } finally {
       setIsSubmitting(false);

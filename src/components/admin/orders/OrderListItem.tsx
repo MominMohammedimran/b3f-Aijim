@@ -47,7 +47,7 @@ const OrderListItem = ({ order, onView, onStatusUpdate, onDelete }: OrderListIte
       onStatusUpdate(order.id, 'delivered');
       toast.success('Order marked as delivered');
     } catch (error) {
-      console.error('Failed to update order status:', error);
+      //console.error('Failed to update order status:', error);
       toast.error('Failed to update order status');
     } finally {
       setUpdating(false);

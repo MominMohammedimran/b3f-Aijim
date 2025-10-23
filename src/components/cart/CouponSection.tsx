@@ -94,7 +94,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         toast.error(result.message);
       }
     } catch (error) {
-      console.error("Error applying coupon:", error);
+  //    console.error("Error applying coupon:", error);
       setMessage("Failed to validate coupon. Please try again.");
       setMessageType("error");
       toast.error("Failed to validate coupon. Please try again.");

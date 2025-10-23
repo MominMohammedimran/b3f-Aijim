@@ -81,7 +81,7 @@ const AdminEmailVerification: React.FC<AdminEmailVerificationProps> = ({
       toast.success('Email verified successfully');
       onVerified();
     } catch (error: any) {
-      console.error('Verification error:', error);
+      //console.error('Verification error:', error);
       toast.error(error.message || 'Failed to verify email');
     } finally {
       setLoading(false);
@@ -102,7 +102,7 @@ const AdminEmailVerification: React.FC<AdminEmailVerificationProps> = ({
       
       toast.success('Verification email sent again');
     } catch (error: any) {
-      console.error('Error resending code:', error);
+     // console.error('Error resending code:', error);
       toast.error(error.message || 'Failed to resend verification code');
     } finally {
       setResendLoading(false);

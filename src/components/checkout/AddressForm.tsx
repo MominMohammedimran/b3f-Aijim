@@ -146,7 +146,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
       setSaving(false);
      
     } catch (error: any) {
-      console.error('Error saving/updating address:', error);
+     // console.error('Error saving/updating address:', error);
       toast.error(editingAddress ? 'Failed to update address' : 'Failed to save address');
     } finally {
       setSaving(false);

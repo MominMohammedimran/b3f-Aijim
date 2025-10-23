@@ -27,13 +27,13 @@ export const sendOrderNotificationEmail = async (orderData: OrderNotificationDat
     });
 
     if (error) {
-      console.error('Error sending order notification email:', error);
+      //console.error('Error sending order notification email:', error);
       return false;
     }
 
    return true;
   } catch (error) {
-    console.error('Error in sendOrderNotificationEmail:', error);
+    //console.error('Error in sendOrderNotificationEmail:', error);
     return false;
   }
 };
@@ -61,7 +61,7 @@ export const sendNotification = async (payload: any): Promise<boolean> => {
 
     return true;
   } catch (error) {
-    console.error('Error in sendNotification:', error);
+  //  console.error('Error in sendNotification:', error);
     return false;
   }
 };

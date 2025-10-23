@@ -38,7 +38,7 @@ const AddressSettings = () => {
         const parsedAddresses = JSON.parse(savedAddresses);
         setAddresses(parsedAddresses);
       } catch (error) {
-        console.error('Error parsing saved addresses:', error);
+       // console.error('Error parsing saved addresses:', error);
       }
     }
   }, []);

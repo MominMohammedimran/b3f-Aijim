@@ -72,11 +72,11 @@ useEffect(() => {
             state: prev.state || state,
           }));
         } catch (err) {
-          console.error('Reverse geocoding failed:', err);
+         // console.error('Reverse geocoding failed:', err);
         }
       },
       (error) => {
-        console.warn('Geolocation permission denied or unavailable.', error);
+        //console.warn('Geolocation permission denied or unavailable.', error);
       },
       {
         enableHighAccuracy: true,

@@ -75,7 +75,7 @@ const AdminDownloadDesign: React.FC<AdminDownloadDesignProps> = ({ order }) => {
               }
             }
           } catch (objError) {
-            console.error('Error rendering object:', objError);
+            //console.error('Error rendering object:', objError);
           }
         }
       }
@@ -96,7 +96,7 @@ const AdminDownloadDesign: React.FC<AdminDownloadDesignProps> = ({ order }) => {
       }, 'image/png');
       
     } catch (error) {
-      console.error('Error downloading design:', error);
+      //console.error('Error downloading design:', error);
       toast.error('Failed to download design');
     }
   };
@@ -124,7 +124,7 @@ const AdminDownloadDesign: React.FC<AdminDownloadDesignProps> = ({ order }) => {
             try {
               designData = JSON.parse(designData);
             } catch (parseError) {
-              console.error('Error parsing design data:', parseError);
+          //    console.error('Error parsing design data:', parseError);
               continue;
             }
           }
@@ -147,7 +147,7 @@ const AdminDownloadDesign: React.FC<AdminDownloadDesignProps> = ({ order }) => {
       }
       
     } catch (error) {
-      console.error('Error in handleDownloadDesign:', error);
+    //  console.error('Error in handleDownloadDesign:', error);
       toast.error('Failed to download designs');
     }
   };

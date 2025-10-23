@@ -60,7 +60,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
 
     window.location.href = data.short_url; // redirect to Razorpay-hosted payment page
   } catch (error) {
-    console.error('Payment error:', error);
+   // console.error('Payment error:', error);
     toast.error('Unable to create Razorpay payment link');
     onError();
   } finally {

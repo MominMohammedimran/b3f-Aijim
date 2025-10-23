@@ -43,7 +43,7 @@ const AdminOTPForm: React.FC<AdminOTPFormProps> = ({
     try {
       await onVerify(otp);
     } catch (error) {
-      console.error('OTP verification error:', error);
+     // console.error('OTP verification error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -58,7 +58,7 @@ const AdminOTPForm: React.FC<AdminOTPFormProps> = ({
       setResendTimeout(60);
       setCanResend(false);
     } catch (error) {
-      console.error('Failed to resend OTP:', error);
+     // console.error('Failed to resend OTP:', error);
     } finally {
       setIsSubmitting(false);
     }

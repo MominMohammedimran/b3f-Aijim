@@ -74,7 +74,7 @@ const PaymentStatusUpdateDialog: React.FC<PaymentStatusUpdateDialogProps> = ({
       onUpdate();
       onClose();
     } catch (error) {
-      console.error('Error updating payment status:', error);
+    //  console.error('Error updating payment status:', error);
       toast.error('Failed to update payment status');
     } finally {
       setUpdating(false);

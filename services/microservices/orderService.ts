@@ -39,7 +39,7 @@ export const createOrderInMicroservice = async (orderData: any) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error creating order in microservice:', error);
+   // console.error('Error creating order in microservice:', error);
     throw error;
   }
 };

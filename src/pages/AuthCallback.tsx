@@ -71,7 +71,7 @@ const AuthCallback = () => {
               }
             } catch (profileError) {
               // Continue even if profile creation has an error
-              console.error('Error creating/checking profile:', profileError);
+            //  console.error('Error creating/checking profile:', profileError);
             }
           }
           
@@ -94,7 +94,7 @@ const AuthCallback = () => {
         // Default redirect to home
         navigate('/');
       } catch (err: any) {
-        console.error('Auth callback error:', err);
+       // console.error('Auth callback error:', err);
         toast.error('Authentication error');
         setError(err.message || 'Authentication failed');
         

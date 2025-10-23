@@ -20,7 +20,7 @@ const ProductInventory = () => {
       try {
         await fetchProductInventory();
          } catch (error) {
-        console.error('Error loading inventory:', error);
+       // console.error('Error loading inventory:', error);
         toast.error('Failed to load inventory');
       } finally {
         setLoading(false);
@@ -106,7 +106,7 @@ const ProductInventory = () => {
         await fetchProductInventory();
       } else {
         toast.error('❌ Failed to update inventory - please try again');
-        console.error('Update inventory returned false');
+     //   console.error('Update inventory returned false');
         
         // Revert local changes
         setLocalInventory((prev: any) => ({
@@ -118,7 +118,7 @@ const ProductInventory = () => {
         }));
       }
     } catch (error: any) {
-      console.error('Error saving inventory:', error);
+     // console.error('Error saving inventory:', error);
       toast.error(`❌ Failed to save: ${error?.message || 'Unknown error'}`);
       
       // Revert local changes

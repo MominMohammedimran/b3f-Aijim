@@ -58,7 +58,7 @@ const SavedAddressSelector: React.FC<SavedAddressSelectorProps> = ({
 
       setSavedAddresses(mappedAddresses);
     } catch (error) {
-      console.error('Error fetching addresses:', error);
+    //  console.error('Error fetching addresses:', error);
       toast.error('Failed to load saved addresses');
     } finally {
       setLoading(false);

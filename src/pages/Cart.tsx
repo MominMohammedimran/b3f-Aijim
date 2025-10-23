@@ -87,7 +87,7 @@ const Cart = () => {
       
       setProductStocks(stocks);
     } catch (error) {
-      console.error('Error fetching product stocks:', error);
+     // console.error('Error fetching product stocks:', error);
     } finally {
       setStocksLoading(false);
     }
@@ -146,7 +146,7 @@ const Cart = () => {
           lastOrderCount = currentOrderCount;
         }
       } catch (error) {
-        console.error('Error checking orders:', error);
+      //  console.error('Error checking orders:', error);
       }
     };
 

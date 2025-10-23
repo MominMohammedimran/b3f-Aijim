@@ -59,7 +59,7 @@ export default function OrderRelatedIssue() {
         .maybeSingle();
 
       if (fetchError) {
-        console.error('Error fetching order:', fetchError);
+       // console.error('Error fetching order:', fetchError);
         toast.error('Error submitting order issue. Please try again.');
         setSubmitting(false);
         return;
@@ -99,7 +99,7 @@ export default function OrderRelatedIssue() {
         .eq('order_number', orderId);
 
       if (error) {
-        console.error('Error submitting order issue:', error);
+      //  console.error('Error submitting order issue:', error);
         toast.error('Error submitting order issue. Please try again.');
       } else {
         setSubmittedData(formData);
@@ -116,7 +116,7 @@ export default function OrderRelatedIssue() {
         });
       }
     } catch (error) {
-      console.error('Error:', error);
+     // console.error('Error:', error);
       toast.error('Error submitting order issue. Please try again.');
     } finally {
       setSubmitting(false);
@@ -142,7 +142,7 @@ export default function OrderRelatedIssue() {
         setExistingIssues([]);
       }
     } catch (error) {
-      console.error('Error fetching existing issues:', error);
+     // console.error('Error fetching existing issues:', error);
       setExistingIssues([]);
     }
   };

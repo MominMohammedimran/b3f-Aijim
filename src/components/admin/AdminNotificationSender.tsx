@@ -31,7 +31,7 @@ const AdminNotificationSender = () => {
       });
 
       if (error) {
-        console.error('Error sending notification:', error);
+       // console.error('Error sending notification:', error);
         toast.error('Failed to send notification');
       } else {
         const sent = data?.sent ?? 0;
@@ -48,7 +48,7 @@ toast.success(`Notification sent to ${sent} user${sent === 1 ? '' : 's'}`, {
         setBody('');
       }
     } catch (error) {
-      console.error('Error sending notification:', error);
+     // console.error('Error sending notification:', error);
       toast.error('Failed to send notification');
     } finally {
       setSending(false);

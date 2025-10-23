@@ -161,7 +161,7 @@ const Checkout = () => {
           }));
         }
       } catch (err) {
-        console.error('Profile fetch error:', err);
+       // console.error('Profile fetch error:', err);
       }
     };
 
@@ -275,7 +275,7 @@ const Checkout = () => {
 
       toast.success('Shipping details saved');
     } catch (error) {
-      console.error('Error in checkout:', error);
+  //    console.error('Error in checkout:', error);
       toast.error('Failed to process checkout');
     } finally {
       setIsLoading(false);

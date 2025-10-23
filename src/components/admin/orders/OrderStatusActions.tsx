@@ -101,18 +101,18 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
         try {
           if (["processing", "confirmed", "shipped", "delivered"].includes(selectedStatus)) {
             await sendOrderConfirmationEmail(emailPayload);
-            console.log("📦 Order confirmation email sent");
+           {/* console.log("📦 Order confirmation email sent");*/}
           } else if (
             ["return-acpt", "return-pcs", "return-pkd", "return-wh", "payment-rf", "payment-rf-ss"].includes(selectedStatus)
           ) {
             await sendReturnConfirmationEmail(emailPayload);
-            console.log("🔁 Return/refund email sent");
+          {/*  console.log("🔁 Return/refund email sent");*/}
           } else {
             await sendOrderStatusEmail(emailPayload);
-            console.log("📧 Generic status email sent");
+           {/* console.log("📧 Generic status email sent");*/}
           }
         } catch (emailErr) {
-          console.error("Email sending failed:", emailErr);
+        //  console.error("Email sending failed:", emailErr);
           toast.warning("Status updated but failed to send email");
         }
       }
@@ -121,7 +121,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
       onStatusUpdate(orderId, selectedStatus, cancellationReason);
       toast.success("✅ Order status updated successfully");
     } catch (err) {
-      console.error("❌ Error updating status:", err);
+     // console.error("❌ Error updating status:", err);
       toast.error("Failed to update order status");
     } finally {
       setIsUpdating(false);

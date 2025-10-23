@@ -98,7 +98,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
         try {
           await supabase.from('carts').delete().eq('user_id', currentUser.id);
         } catch (error) {
-          console.error('Error clearing cart during sign out:', error);
+         // console.error('Error clearing cart during sign out:', error);
         }
       }
       
@@ -114,7 +114,7 @@ const popupMessage = "🔥 Flat ₹200 off on orders above ₹999!";
       toast.success('Signed out successfully');
       navigate('/');
     } catch (error) {
-      console.error('Error signing out:', error);
+   //   console.error('Error signing out:', error);
       toast.error('Failed to sign out');
     }
   };

@@ -41,7 +41,7 @@ const ContactUs = () => {
         toast.error("Failed to send message. Please try again.");
       }
     } catch (err) {
-      console.error(err);
+    //  console.error(err);
       toast.error("Network error. Please try again later.");
     } finally {
       setLoading(false);

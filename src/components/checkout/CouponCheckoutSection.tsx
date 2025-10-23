@@ -56,7 +56,7 @@ const CouponCheckoutSection: React.FC<CouponCheckoutSectionProps> = ({
         toast.error(result.message);
       }
     } catch (error) {
-      console.error('Error applying coupon:', error);
+    //  console.error('Error applying coupon:', error);
       setMessage('Failed to apply coupon');
       setMessageType('error');
       toast.error('Failed to apply coupon');

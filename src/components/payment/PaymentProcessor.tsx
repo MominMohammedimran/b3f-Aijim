@@ -37,17 +37,17 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
     if (emailData.customerEmail && emailData.customerEmail !== 'N/A') {
       try {
         const emailSent = await sendOrderConfirmationEmail(emailData);
-        if (emailSent) {
+      {/*  if (emailSent) {
           console.log('✅ Confirmation email sent successfully');
         } else {
           console.warn('⚠️ Confirmation email failed to send');
-        }
+        }*/}
       } catch (emailError) {
-        console.error('Failed to send confirmation email:', emailError);
+       // console.error('Failed to send confirmation email:', emailError);
         toast.error('Payment successful but failed to send confirmation email');
       }
     } else {
-      console.warn('⚠️ No valid email address for confirmation');
+     // console.warn('⚠️ No valid email address for confirmation');
       toast.warning('Payment successful but no email address provided for confirmation');
     }
     

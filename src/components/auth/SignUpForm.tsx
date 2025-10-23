@@ -64,7 +64,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess }) => {
       });
 
       if (error) {
-        console.error('OTP send error:', error);
+     //  console.error('OTP send error:', error);
         toast.error('Failed to send OTP. Please try again.');
         return;
       }
@@ -73,7 +73,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess }) => {
       toast.success('OTP sent to your email!');
       setShowOTP(true);
     } catch (error: any) {
-      console.error('OTP generation error:', error);
+    //  console.error('OTP generation error:', error);
       toast.error('Failed to send OTP');
     } finally {
       setLoading(false);
@@ -106,7 +106,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess }) => {
         if (onSuccess) onSuccess();
       }
     } catch (error: any) {
-      console.error('Account creation error:', error);
+   //   console.error('Account creation error:', error);
       toast.error(error.message || 'Failed to create account');
       throw error;
     }
@@ -127,14 +127,14 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSuccess }) => {
       });
 
       if (error) {
-        console.error('OTP resend error:', error);
+       // console.error('OTP resend error:', error);
         toast.error('Failed to resend OTP. Please try again.');
         return;
       }
 
       toast.success('New OTP sent to your email!');
     } catch (error: any) {
-      console.error('OTP resend error:', error);
+    //  console.error('OTP resend error:', error);
       toast.error('Failed to resend OTP');
     }
   };

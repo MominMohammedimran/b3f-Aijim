@@ -102,7 +102,7 @@ export async function onRequestPost(context) {
       { headers: { 'Content-Type': 'application/json' } }
     );
   } catch (err) {
-    console.error('❌ create-order error:', err);
+   // console.error('❌ create-order error:', err);
     return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 }

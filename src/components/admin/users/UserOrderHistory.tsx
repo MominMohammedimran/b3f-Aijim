@@ -31,7 +31,7 @@ const fetchUserOrderHistory = async (userId: string) => {
     if (error) throw error;
     return data || [];
   } catch (error) {
-    console.error('Error fetching user order history:', error);
+   // console.error('Error fetching user order history:', error);
     throw error;
   }
 };

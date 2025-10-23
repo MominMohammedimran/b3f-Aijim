@@ -52,7 +52,7 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
       onMainImageChange(url);
       toast.success('Main image uploaded successfully');
     } catch (error) {
-      console.error('Error uploading image:', error);
+     // console.error('Error uploading image:', error);
       toast.error('Failed to upload image');
     } finally {
       setUploading(false);
@@ -70,7 +70,7 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
       onAdditionalImagesChange([...additionalImages, ...urls]);
       toast.success('Additional images uploaded successfully');
     } catch (error) {
-      console.error('Error uploading images:', error);
+     // console.error('Error uploading images:', error);
       toast.error('Failed to upload images');
     } finally {
       setUploading(false);

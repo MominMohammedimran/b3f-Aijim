@@ -82,7 +82,7 @@ const AdminSignUpForm = () => {
       toast.success('Admin account created successfully!');
       navigate('/admin/login');
     } catch (error: any) {
-      console.error('Admin signup error:', error);
+     // console.error('Admin signup error:', error);
       toast.error(error.message || 'Failed to create admin account');
     } finally {
       setLoading(false);

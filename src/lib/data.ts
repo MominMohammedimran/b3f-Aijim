@@ -18,7 +18,7 @@ function parseSizes(raw: any): { size: string; stock: number }[] {
         stock: Number(v.stock),
       }));
   } catch (err) {
-    console.warn('❌ Failed to parse sizes:', err, raw);
+ //   console.warn('❌ Failed to parse sizes:', err, raw);
     return [];
   }
 }
@@ -28,7 +28,7 @@ async function fetchProductsOnce(): Promise<Product[]> {
 
   const { data, error } = await supabase.from('products').select('*');
   if (error) {
-    console.error('❌ Supabase fetch error:', error);
+  //  console.error('❌ Supabase fetch error:', error);
     return [];
   }
 

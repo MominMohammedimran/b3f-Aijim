@@ -31,14 +31,14 @@ export const sendOrderStatusEmail = async (
       orderData.customerEmail === 'N/A' ||
       orderData.customerEmail.trim() === ''
     ) {
-      console.warn('❌ No valid customer email provided:', orderData.customerEmail);
+     // console.warn('❌ No valid customer email provided:', orderData.customerEmail);
       toast.error('No valid customer email to send status update');
       return false;
     }
     
     const loadingToast = toast.loading('📧 Sending order email...');
     
-console.log(orderData)
+
     const { data, error } = await supabase.functions.invoke('send-order-notification', {
       body: {
         orderId: orderData.orderId,
@@ -60,7 +60,7 @@ console.log(orderData)
     toast.dismiss(loadingToast);
 
     if (error) {
-      console.error('❌ Supabase function error:', error);
+     // console.error('❌ Supabase function error:', error);
       toast.error(`Failed to send status email: ${error.message}`);
       return false;
     }
@@ -68,7 +68,7 @@ console.log(orderData)
  
     return true;
   } catch (error) {
-    console.error('💥 Failed to send status email:', error);
+    //console.error('💥 Failed to send status email:', error);
     toast.error('❌ Failed to send status email');
     return false;
   }
@@ -154,7 +154,7 @@ export const sendOrderConfirmationEmail = async (
     toast.success(`✅ Confirmation sent to ${orderData.customerEmail}`);
     return true;
   } catch (error) {
-    console.error('💥 Confirmation email error:', error);
+  //  console.error('💥 Confirmation email error:', error);
     toast.error('❌ Failed to send confirmation email');
     return false;
   }
@@ -199,7 +199,7 @@ export const sendReturnConfirmationEmail = async (
     toast.success(`✅ Confirmation sent to ${orderData.customerEmail}`);
     return true;
   } catch (error) {
-    console.error('💥 Confirmation email error:', error);
+    //console.error('💥 Confirmation email error:', error);
     toast.error('❌ Failed to send confirmation email');
     return false;
   }

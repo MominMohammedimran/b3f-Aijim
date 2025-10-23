@@ -54,7 +54,7 @@ const UserDetailsDialog: React.FC<UserDetailsDialogProps> = ({
       toast.success('User details updated successfully');
       onOpenChange(false);
     } catch (error) {
-      console.error('Error updating user:', error);
+      //console.error('Error updating user:', error);
       toast.error('Failed to update user details');
     } finally {
       setSaving(false);

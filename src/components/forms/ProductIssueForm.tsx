@@ -67,7 +67,7 @@ const ProductIssueForm: React.FC<ProductIssueFormProps> = ({ orderNumber, onSubm
 
       return signedUrlData.signedUrl;
     } catch (error) {
-      console.error('Upload error:', error);
+     // console.error('Upload error:', error);
       toast({
         title: "Upload Error",
         description: "Failed to upload image. Please try again.",
@@ -145,7 +145,7 @@ const ProductIssueForm: React.FC<ProductIssueFormProps> = ({ orderNumber, onSubm
       onSubmit?.();
 
     } catch (error) {
-      console.error('Submit error:', error);
+  //    console.error('Submit error:', error);
       toast({
         title: "Error",
         description: "Failed to submit issue. Please try again.",

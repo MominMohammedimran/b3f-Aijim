@@ -16,7 +16,7 @@ const AdminHeader = () => {
       toast.success('Signed out successfully');
       navigate('/admin/signin');
     } catch (error) {
-      console.error('Error signing out:', error);
+    //  console.error('Error signing out:', error);
       toast.error('Failed to sign out');
     }
   };

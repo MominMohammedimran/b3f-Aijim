@@ -45,7 +45,7 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product, onSave, onCa
         .single();
 
       if (error) {
-        console.error('Error fetching variants:', error);
+       // console.error('Error fetching variants:', error);
         return;
       }
 

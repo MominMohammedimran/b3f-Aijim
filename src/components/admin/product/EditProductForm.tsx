@@ -165,7 +165,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
         .eq('id', product.id);
 
       if (error) {
-        console.error('Error updating product:', error);
+       // console.error('Error updating product:', error);
         throw error;
       }
 
@@ -173,7 +173,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
       onProductUpdated();
       onClose();
     } catch (error) {
-      console.error('Error updating product:', error);
+    //  console.error('Error updating product:', error);
       toast.error('Failed to update product');
     } finally {
       setLoading(false);

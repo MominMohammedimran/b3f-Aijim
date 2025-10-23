@@ -41,7 +41,7 @@ const RewardPointsUpdateDialog: React.FC<RewardPointsUpdateDialogProps> = ({
       onUpdate();
       onClose();
     } catch (error) {
-      console.error('Error updating reward points:', error);
+     // console.error('Error updating reward points:', error);
       toast.error('Failed to update reward points');
     } finally {
       setLoading(false);

@@ -86,7 +86,7 @@ useEffect(() => {
       setOrder(null); // single order, so just clear it
       toast.success('Order removed');
     } catch (err) {
-      console.error(err);
+    //  console.error(err);
       toast.error('Failed to remove order');
     }
   };

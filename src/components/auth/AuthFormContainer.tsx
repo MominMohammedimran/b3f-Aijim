@@ -47,7 +47,7 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({ mode = 'signin' }
       navigate('/');
     }
   } catch (error: any) {
-    console.error('Sign in error:', error);
+  //  console.error('Sign in error:', error);
     // Avoid duplicate toasts
     if (!error.message?.toLowerCase().includes('invalid login credentials')) {
       toast.error(error.message || 'Failed to sign in');

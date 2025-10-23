@@ -63,7 +63,7 @@ const ProductSizeManager: React.FC<ProductSizeManagerProps> = ({
       onInventoryUpdate(productId, inventory);
       toast.success('Inventory updated successfully');
     } catch (error) {
-      console.error('Error saving inventory:', error);
+     // console.error('Error saving inventory:', error);
       toast.error('Failed to save inventory');
     } finally {
       setLoading(false);

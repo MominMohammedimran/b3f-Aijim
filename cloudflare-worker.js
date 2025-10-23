@@ -157,7 +157,7 @@ export default {
       return newResponse;
 
     } catch (error) {
-      console.error('Proxy error:', error);
+     //console.error('Proxy error:', error);
       
       return new Response(JSON.stringify({ 
         error: 'Proxy Error', 

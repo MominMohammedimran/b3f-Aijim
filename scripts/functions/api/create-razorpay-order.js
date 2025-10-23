@@ -53,7 +53,7 @@ export async function onRequestPost(context) {
 
     if (!razorpayResponse.ok) {
       const errorText = await razorpayResponse.text();
-      console.error('Razorpay API error:', errorText);
+    //  console.error('Razorpay API error:', errorText);
       throw new Error(`Razorpay API error: ${errorText}`);
     }
 
@@ -90,7 +90,7 @@ export async function onRequestPost(context) {
 
     if (!supabaseResponse.ok) {
       const errorText = await supabaseResponse.text();
-      console.error('Supabase error:', errorText);
+    //  console.error('Supabase error:', errorText);
       throw new Error(`Supabase error: ${errorText}`);
     }
 
@@ -108,7 +108,7 @@ export async function onRequestPost(context) {
     });
 
   } catch (error) {
-    console.error('Error in create-razorpay-order:', error);
+   // console.error('Error in create-razorpay-order:', error);
     
     return new Response(JSON.stringify({ 
       error: error.message || 'Failed to create order',
