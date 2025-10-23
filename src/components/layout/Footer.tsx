@@ -1,5 +1,6 @@
 import React from "react";
 import { Link,useNavigate } from "react-router-dom";
+import  {motion }from 'framer-motion';
 import { Instagram, Mail, Facebook, Twitter,Truck,HandCoins,Download } from "lucide-react";
 import Marquee from "react-fast-marquee"
 import{usePWAInstall} from '@/hooks/usePWAInstall'
@@ -11,8 +12,8 @@ const Footer = () => {
       title: "ABOUT",
       links: [
         { name: "Our Story", href: "/about-us" },
-        { name: "Privacy Policy", href: "/privacy-policy" },
-         { name: "Customer Care", href: "/contact-us" },
+     //   { name: "Privacy Policy", href: "/privacy-policy" },
+         { name: "Contact Us", href: "/contact-us" },
       ],
     },
     {
@@ -20,8 +21,8 @@ const Footer = () => {
       links: [
         { name: "Terms & Condition", href: "/terms-conditions" },
         { name: "Cancellation & Returns", href: "/cancellation-refund" },
-        { name: "Shipping Info", href: "/shipping-delivery" },
-        {name:"Track Orders",href:"/orders"},
+        //{ name: "Shipping Info", href: "/shipping-delivery" },
+       // {name:"Track Orders",href:"/orders"},
       ],
     },
     
@@ -94,35 +95,53 @@ const Footer = () => {
            
 
           {/* Quick Links */}
-          <div className="grid grid-cols-2 ">
-          {footerSections.map((section) => (
-           
-            <div key={section.title} >
-              <h3 className="text-sm lg:text-md font-semibold underline cursor-text uppercase tracking-widest text-white mb-0">
-                {section.title}
-              </h3>
-              <ul className="space-y-0">
-                {section.links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      to={link.href}
-                      onClick={()=>{
-                        window.scrollTo({
-                          top:0,
-                          behavior:'smooth'
-                        })
-                      }}
-                      className="text-xs lg:text-sm text-white/90 font-semibold  hover:text-yellow-400 transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
           
-          ))}
-          </div>
+    <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-10 w-full mt-8 px-4 sm:px-6">
+      {footerSections.map((section, index) => (
+        <motion.div
+          key={section.title}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: index * 0.2, ease: "easeOut" }}
+          viewport={{ once: true }}
+          className="group relative flex flex-col items-center space-y-1 text-center sm:text-left"
+        >
+          {/* --- Section Title --- */}
+          <h3 className="text-lg sm:text-xl font-semiboldbold tracking-[3px] uppercase text-ceter text-white/95 transition-all duration-300 group-hover:text-yellow-400">
+            {section.title}
+          </h3>
+
+          {/* --- Accent Line --- */}
+          <div className="h-[1.5px] w-16 bg-gradient-to-r from-yellow-500 to-transparent mb-2 rounded-full"></div>
+
+          {/* --- Section Links --- */}
+          <ul className="flex flex-col items-center pt-2 space-y-2  mt-2 w-full">
+            {section.links.map((link: any) => (
+              <li key={link.name} className="w-full">
+                <Link
+                  to={link.href}
+                  onClick={() =>
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    })
+                  }
+                  className="relative inline-block text-[15px] font-medium text-white/80 hover:text-yellow-400 transition-all duration-300 group/link"
+                >
+                  {link.name}
+                  <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-yellow-400 transition-all duration-300 group-hover/link:w-full"></span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {/* --- Divider between columns --- */}
+          <div className="hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 h-24 w-[1px] bg-gradient-to-b from-transparent via-gray-700 to-transparent"></div>
+        </motion.div>
+      ))}
+    </div>
+
+
 
           
             
