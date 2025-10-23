@@ -416,7 +416,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
                   Size - {s.size} | Qty - {s.quantity}
                 </p>
               </div>
-              <span className="text-lg font-semibold text-white">
+              <span className="text-mdgit  font-semibold text-white">
                 ₹{item.price * s.quantity}
               </span>
             </div>
