@@ -1,179 +1,262 @@
-import React, { useState } from 'react';
-import Layout from '@/components/layout/Layout';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Shield, Cookie, Users, FileText, Eye, Lock, Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from "react";
+import Layout from "@/components/layout/Layout";
+import { Link } from "react-router-dom";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  ArrowLeft,
+  ArrowUp,
+  Shield,
+  Cookie,
+  Users,
+  FileText,
+  Eye,
+  Lock,
+  Globe,
+} from "lucide-react";
+import { motion } from "framer-motion";
 
 const PrivacyPolicy = () => {
-  const [activeSection, setActiveSection] = useState('introduction');
+  const [activeSection, setActiveSection] = useState("introduction");
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showTopBtn, setShowTopBtn] = useState(false);
 
   const sections = [
-    { id: 'introduction', title: 'Introduction', icon: Shield },
-    { id: 'data-collection', title: 'Information We Collect', icon: Eye },
-    { id: 'data-usage', title: 'How We Use Your Information', icon: FileText },
-    { id: 'cookies', title: 'Cookies & Tracking', icon: Cookie },
-    { id: 'third-party', title: 'Third-Party Disclosure', icon: Globe },
-    { id: 'data-security', title: 'Data Security', icon: Lock },
-    { id: 'user-rights', title: 'Your Rights', icon: Users },
+    { id: "introduction", title: "Introduction", icon: Shield },
+    { id: "data-collection", title: "Information We Collect", icon: Eye },
+    { id: "data-usage", title: " Your Information", icon: FileText },
+    { id: "cookies", title: "Cookies & Tracking", icon: Cookie },
+    { id: "third-party", title: "Third-Party Disclosure", icon: Globe },
+    { id: "data-security", title: "Data Security", icon: Lock },
+    { id: "user-rights", title: "Your Rights", icon: Users },
   ];
 
-  const scrollToSection = (sectionId: string) => {
-    setActiveSection(sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const height =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+      setScrollProgress((scrollTop / height) * 100);
+      setShowTopBtn(scrollTop > 500);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToSection = (id: string) => {
+    setActiveSection(id);
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <Layout>
-      <div className="min-h-screen bg-background">
+      <div className="relative min-h-screen bg-black text-white">
+        {/* Scroll Progress */}
+        <div
+          className="fixed top-0 left-0 h-[3px] bg-yellow-400 z-50 transition-all duration-200"
+          style={{ width: `${scrollProgress}%` }}
+        />
+
         {/* Header */}
-        <div className="container-custom pt-20 pb-1">
-          <div className="flex items-center mb-3">
-            <Link to="/" className="mr-4 text-muted-foreground hover:text-foreground transition-colors">
+        <div className="container-custom pt-20 pb-8">
+          <div className="flex items-center gap-4 mb-2">
+            <Link
+              to="/"
+              className="text-gray-400 hover:text-yellow-400 transition-colors"
+            >
               <ArrowLeft size={24} />
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-foreground tracking-tight">PRIVACY POLICY</h1>
-              <p className="text-muted-foreground font-semibold ">Last Updated: Sept 27, 2025</p>
+              <h1 className="text-2xl font-semibold uppercase tracking-wider">
+                Privacy Policy
+              </h1>
+              <p className="text-xs text-gray-400 font-semibold">
+                Last Updated: Sept 27, 2025
+              </p>
             </div>
           </div>
+          <div className="h-[2px] bg-yellow-400 w-full rounded-full mt-2"></div>
         </div>
 
-        <div className="container-custom">
-          <div className="grid lg:grid-cols-4 gap-8">
-            {/* Desktop Navigation */}
-            <div className="hidden lg:block">
-              <div className="sticky top-24 bg-card border border-border rounded-lg p-6 shadow-glow">
-                <h3 className="font-bold text-foreground mb-4 uppercase text-sm tracking-wide">Quick Navigation</h3>
-                <nav className="space-y-2">
-                  {sections.map((section) => {
-                    const Icon = section.icon;
-                    return (
-                      <button
-                        key={section.id}
-                        onClick={() => scrollToSection(section.id)}
-                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
-                          activeSection === section.id
-                            ? 'bg-accent text-accent-foreground font-bold shadow-glow'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                        }`}
-                      >
-                        <Icon size={16} />
-                        <span className="text-xs font-semibold leading-tight">{section.title}</span>
-                      </button>
-                    );
-                  })}
-                </nav>
-              </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="lg:col-span-3 space-y-8">
-              {/* Mobile Accordion View */}
-             
-
-              {/* Desktop Full Content */}
-              <div className="block space-y-12">
-                {sections.map((section) => {
-                  const Icon = section.icon;
+        {/* Main Section */}
+        <div className="container-custom flex flex-col lg:flex-row gap-10">
+          {/* Left Navigation */}
+          <aside className="lg:w-72">
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 sticky top-24 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+              <h3 className="text-lg font-semibold text-yellow-400 mb-4 uppercase tracking-wide">
+                Sections
+              </h3>
+              <nav className="space-y-2">
+                {sections.map((s) => {
+                  const Icon = s.icon;
                   return (
-                    <section key={section.id} id={section.id} className="scroll-mt-24">
-                      <div className="bg-card border border-border rounded-lg p-2 shadow-glow">
-                        <div    className="flex items-center gap-4 mb-6">
-                          <div className="w-12 h-12 bg-foreground border-2 border-accent rounded-lg flex items-center justify-center">
-                            <Icon size={24} className="text-accent" />
-                          </div>
-                          <div>
-                            <h2 
-                            className="text-xl font-bold text-foreground uppercase tracking-wide">{section.title}</h2>
-                            <div className="w-full h-1 bg-accent mt-2"></div>
-                          </div>
-                        </div>
-
-                        {/* Section Content */}
-                        <div className="text-foregroud/70 text-xs font-semibold space-y-4  leading-tight">
-                          {section.id === 'introduction' && (
-                            <p>
-                              Aijim ("we," "our," or "us") is committed to protecting your privacy.
-                              This Privacy Policy explains how we collect, use, disclose, and safeguard your information
-                              when you visit our website and use our services.
-                            </p>
-                          )}
-
-                          {section.id === 'data-collection' && (
-                            <ul className="list-disc pl-6 space-y-2">
-                              <li>Personal Data - Name, email, phone, billing & shipping address, payment info</li>
-                              <li>Order Information - Products purchased, order history, preferences</li>
-                              <li>Usage Data - Browsing history, search queries, site interactions</li>
-                              <li>Device Information - IP, browser type, OS, device identifiers</li>
-                            </ul>
-                          )}
-
-                          {section.id === 'data-usage' && (
-                            <ul className="list-disc pl-6 space-y-2">
-                              <li>To process and fulfill your orders</li>
-                              <li>To manage your account and provide customer support</li>
-                              <li>To communicate about your orders or account</li>
-                              <li>To personalize your experience and improve services</li>
-                              <li>To analyze usage trends & optimize performance</li>
-                              <li>To detect and prevent fraud</li>
-                              <li>To comply with legal obligations</li>
-                            </ul>
-                          )}
-
-                          {section.id === 'cookies' &&(
-                            <p>
-                              We use cookies and similar tracking technologies to monitor website activity and store
-                              certain information. You can disable cookies in your browser, but this may affect
-                              functionality.
-                            </p>
-                          )}
-
-                          {section.id === 'third-party' && (
-                            <ul className="list-disc pl-6 space-y-2">
-                              <li>Service providers who operate our business</li>
-                              <li>Payment processors to complete transactions</li>
-                              <li>Shipping partners to deliver orders</li>
-                              <li>When required by law or to protect our rights</li>
-                            </ul>
-                          )}
-
-                          {section.id === 'data-security' && (
-                            <p>
-                              We implement industry-standard measures to protect your personal information.
-                              However, no method of transmission or storage is 100% secure, so we cannot guarantee absolute protection.
-                            </p>
-                          )}
-
-                          {section.id === 'user-rights' && (
-                            <ul className="list-disc pl-6 space-y-2">
-                              <li>The right to access, correct, or update your personal data</li>
-                              <li>The right to delete your personal information</li>
-                              <li>The right to object to or restrict processing</li>
-                              <li>The right to data portability</li>
-                            </ul>
-                          )}
-                        </div>
-                      </div>
-                    </section>
+                    <button
+                      key={s.id}
+                      onClick={() => scrollToSection(s.id)}
+                      className={`w-full flex items-start gap-3 px-3 py-2 text-sm rounded-none transition-all ${
+                        activeSection === s.id
+                          ? "bg-yellow-400 text-black font-semibold"
+                          : "text-gray-300 hover:bg-gray-800 hover:text-yellow-400"
+                      }`}
+                    >
+                      <Icon size={18} />
+                      {s.title}
+                    </button>
                   );
                 })}
-              </div>
-
-              {/* Contact Section */}
-             
+              </nav>
             </div>
-          </div>
+          </aside>
+
+          {/* Right Content */}
+          <main className="flex-1 space-y-10">
+            {sections.map((s, idx) => {
+              const Icon = s.icon;
+              const fadeIn = {
+                initial: { opacity: 0, y: 40 },
+                whileInView: { opacity: 1, y: 0 },
+                transition: { duration: 0.5, delay: idx * 0.05 },
+                viewport: { once: true },
+              };
+
+              return (
+                <motion.section
+                  key={s.id}
+                  id={s.id}
+                  {...fadeIn}
+                  className="bg-gray-900 border border-gray-800 rounded-none p-3 shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+                >
+                  <div className="flex items-start mb-3">
+                    <Icon className="text-yellow-400 mr-3" size={26} />
+                    <h2 className="text-xl font-bold uppercase tracking-wide">
+                      {s.title}
+                    </h2>
+                  </div>
+                  <div className="h-[1px] w-full bg-yellow-400 mb-4"></div>
+
+                  {/* Content */}
+                  <div className="text-gray-300 text-sm leading-relaxed font-semibold space-y-3">
+                    {s.id === "introduction" && (
+                      <p>
+                        At AIJIM, we respect your privacy and value your trust.
+                        This policy explains how we handle your data when you
+                        visit our website or use our services. By accessing our
+                        platform, you agree to the terms described here.
+                      </p>
+                    )}
+
+                    {s.id === "data-collection" && (
+                      <ul className="list-disc list-inside ml-4 space-y-1">
+                        <li>
+                          <strong>Personal Info:</strong> Name, email, phone,
+                          shipping/billing address.
+                        </li>
+                        <li>
+                          <strong>Order Details:</strong> Items purchased, order
+                          history, and preferences.
+                        </li>
+                        <li>
+                          <strong>Usage Data:</strong> Search queries and page
+                          visits for performance tracking.
+                        </li>
+                        <li>
+                          <strong>Device Info:</strong> IP, browser type, and
+                          OS.
+                        </li>
+                      </ul>
+                    )}
+
+                    {s.id === "data-usage" && (
+                      <ul className="list-disc list-inside ml-4 space-y-1">
+                        <li>To process and deliver your orders.</li>
+                        <li>To provide customer support and updates.</li>
+                        <li>To enhance user experience and optimize content.</li>
+                        <li>To prevent fraud and ensure security.</li>
+                        <li>To comply with legal obligations.</li>
+                      </ul>
+                    )}
+
+                    {s.id === "cookies" && (
+                      <p>
+                        We use cookies and similar tools to personalize your
+                        experience and analyze traffic. You can manage or delete
+                        cookies via your browser settings, but certain site
+                        features may not function properly.
+                      </p>
+                    )}
+
+                    {s.id === "third-party" && (
+                      <ul className="list-disc list-inside ml-4 space-y-1">
+                        <li>
+                          Third-party service providers assisting in operations.
+                        </li>
+                        <li>
+                          Payment processors ensuring secure transactions.
+                        </li>
+                        <li>
+                          Shipping partners handling product deliveries.
+                        </li>
+                        <li>
+                          Legal authorities when required by law.
+                        </li>
+                      </ul>
+                    )}
+
+                    {s.id === "data-security" && (
+                      <p>
+                        We use SSL encryption and strict internal policies to
+                        protect your personal information. While no system is
+                        entirely invulnerable, we continuously update our
+                        safeguards against unauthorized access.
+                      </p>
+                    )}
+
+                    {s.id === "user-rights" && (
+                      <ul className="list-disc list-inside ml-4 space-y-1">
+                        <li>
+                          You can request access, correction, or deletion of
+                          your personal data.
+                        </li>
+                        <li>You can opt out of promotional emails anytime.</li>
+                        <li>
+                          You can request data portability or restriction of
+                          processing.
+                        </li>
+                        <li>
+                          For any privacy concerns, contact us at{" "}
+                          <span className="text-yellow-400 font-semibold">
+                          aijim.official@gmail.com
+                          </span>
+                          .
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+                </motion.section>
+              );
+            })}
+          </main>
         </div>
-      </div> 
+
+        {/* Footer */}
+        <div className="text-center font-semibold py-10 text-gray-200 text-xs">
+          © {new Date().getFullYear()} AIJIM. All Rights Reserved.
+        </div>
+
+        {/* Back to Top 
+        {showTopBtn && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-6 right-6 z-50 bg-yellow-400 text-black p-3 rounded-full shadow-lg hover:bg-yellow-300 transition-transform duration-300 hover:scale-110"
+          >
+            <ArrowUp size={20} />
+          </button>
+        )}*/}
+      </div>
     </Layout>
   );
 };

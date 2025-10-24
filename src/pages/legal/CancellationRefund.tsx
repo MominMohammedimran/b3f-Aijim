@@ -235,12 +235,12 @@ const RefundReturnPolicyNew = () => {
               >
                 EMAIL US
               </a>
-              <a 
+              {/*<a 
                 href="tel:+915551234567"
                 className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors shadow-glow"
               >
                 CALL US
-              </a>
+              </a>*/}
             </div>
           </div>
         </div>

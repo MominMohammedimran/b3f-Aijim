@@ -1,143 +1,163 @@
-import React from 'react';
-import Layout from '@/components/layout/Layout';
-import { Target, Heart, Leaf, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import Layout from "@/components/layout/Layout";
+import { Target, Heart, Leaf, Users } from "lucide-react";
+import { motion } from "framer-motion";
 
 const AboutUs = () => {
   const values = [
     {
       icon: Target,
-      title: 'BRAND STORY',
-      description: 'Born from the streets, AIJIM represents the fusion of urban culture and premium craftsmanship. We create clothing that speaks to the bold, the fearless, and the authentic.'
+      title: "Our Story",
+      description:
+        "Born from the streets, AIJIM blends urban culture with premium craftsmanship — made for the bold, the fearless, and the authentic.",
     },
     {
       icon: Heart,
-      title: 'MISSION',
-      description: 'To redefine streetwear by creating premium, comfortable clothing that empowers individuals to express their unique style and confidence.'
+      title: "Our Mission",
+      description:
+        "We aim to redefine streetwear by crafting elevated essentials that inspire individuality, comfort, and self-expression.",
     },
     {
       icon: Leaf,
-      title: 'SUSTAINABILITY',
-      description: 'We are committed to sustainable fashion practices, using eco-friendly materials and ethical manufacturing processes to reduce our environmental impact.'
+      title: "Sustainability",
+      description:
+        "From eco-conscious materials to ethical production, we move with purpose — ensuring style never comes at the planet’s cost.",
     },
     {
       icon: Users,
-      title: 'COMMUNITY',
-      description: 'AIJIM is more than a brand - it\'s a community of like-minded individuals who value authenticity, creativity, and self-expression.'
-    }
+      title: "The Community",
+      description:
+        "AIJIM is more than a label — it’s a collective of creators, thinkers, and doers shaping the culture of tomorrow.",
+    },
   ];
 
   return (
     <Layout>
-      <div className="min-h-screen bg-background py-12 mt-10">
-        
-        {/* Hero Section */}
-        
+      <div className="min-h-screen bg-black text-white overflow-hidden">
+        {/* --- HERO SECTION --- */}
+        <section className="relative h-[50vh] flex flex-col p-2 justify-center items-center text-center px-4 bg-[url('/aijim-uploads/aijim.svg')] bg-fit bg-center">
+          <div className="absolute inset-0 bg-black/60" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative z-10"
+          >
+            <h1 className="text-4xl md:text-6xl font-extrabold tracking-widest uppercase text-white">
+              We Are <span className="text-yellow-400">AIJIM</span>
+            </h1>
+            <p className="mt-4 text-lg font-medium text-gray-200 max-w-xl mx-auto leading-snug">
+              Premium streetwear crafted with purpose, passion, and precision.
+            </p>
+          </motion.div>
+        </section>
 
-        {/* Values Grid */}
-        <div className="container-custom ">
-           <div className="animate-fade-in  py-5 mt-2 mb-4 ">
-              <h1 className="text-2xl md:text-3xl text-center font-bold text-foreground mb-0 tracking-tight">
-                WE ARE <span className="text-accent  font-black text-foreground">AIJIM</span>
-              </h1>
-              <div className="w-full h-2 bg-accent mx-0 mb-1 bg-white animate-pulse"></div>
-              <p className="text-md md:text-lg not-italic text-center text-foreground max-w-3xl mx-auto font-semibold leading-relaxed">
-                Defining streetwear for the <span className="text-accent text-foreground font-semibold">fearless</span>,
-                <br />creating fashion for the <span className="text-accent text-foreground font-semibold">authentic</span>.
-              </p>
-            </div>
-
-          <div className="grid md:grid-cols-2 gap-2 max-w-6xl mx-auto">
-            {values.map((value, index) => {
-              const Icon = value.icon;
+        {/* --- VALUES SECTION --- */}
+        <section className="py-8 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-black via-gray-950 to-black">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-5 uppercase tracking-wider">
+            What Defines Us
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {values.map((v, i) => {
+              const Icon = v.icon;
               return (
-                <div 
-                  key={index}
-                  className="group bg-card border border-border rounded-lg p-4 shadow-glow hover:shadow-glow-strong transition-all duration-300 hover:scale-105"
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white/5 border border-gray-800 rounded-none p-3 backdrop-blur-md hover:scale-[1.03] transition-all duration-500 hover:border-yellow-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]"
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 text-white bg-white border-2 border-accent rounded-lg flex items-center justify-center group-hover:bg-accent group-hover:text-yellow-500 transition-all duration-300">
-                      <Icon size={15} className="text-accent group-hover:text-yellow-500" />
+                  <div className="flex flex-col items-start gap-4">
+                    <div className='flex flex-wrap items-center gap-5'>
+                    <div className="p-2 rounded-lg bg-yellow-400/20 border border-yellow-500">
+                      <Icon className="text-yellow-400" size={22} />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-foreground mb-1 group-hover:text-yellow-500 transition-colors">
-                        {value.title}
-                      </h3>
-                      <p className="text-foreground/80 not-italic text-xs font-semibold leading-snug">
-                        {value.description}
-                      </p>
+                    <h3 className="text-xl font-semibold uppercase tracking-wide">
+                      {v.title}
+                    </h3>
                     </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      {v.description}
+                    </p>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
-        </div>
+        </section>
 
-        {/* Brand Philosophy */}
-        {/*<div className="bg-card border-y border-border py-16">
-          <div className="container-custom">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
-                PREMIUM STREETWEAR. <span className="text-foregroungd font-semibold">AUTHENTIC STYLE.</span>
+        {/* --- CRAFT SECTION --- */}
+        <section className="relative bg-gradient-to-t from-black via-gray-900 to-black py-2 px-3 md:px-8 lg:px-16">
+          <div className="grid md:grid-cols-2 gap-6 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-4"
+            >
+              <h2 className="text-xl md:text-2xl text-yellow-400 font-semibold uppercase tracking-snug">
+                Crafted with Precision
               </h2>
-              <div className="w-24 h-1 bg-accent mx-auto mb-8"></div>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                Every piece we create is a statement. From the carefully selected fabrics to the precision 
-                of our cuts, AIJIM represents the perfect intersection of street culture and premium quality. 
-                We don't just make clothes; we craft experiences, emotions, and expressions of individuality.
+              <p className="text-gray-300 text-sm md:text-base font-medium leading-relaxed">
+                Each AIJIM piece undergoes rigorous inspection — from fabric
+                sourcing to the final stitch. We design with intention, ensuring
+                every detail speaks of authenticity, durability, and luxury.
               </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Founded by creators who understand the pulse of the streets, AIJIM is for those who refuse 
-                to compromise on quality or authenticity. We believe that great design should be accessible, 
-                sustainable, and most importantly, true to the culture that inspires it.
-              </p>
-            </div>
-          </div>
-        </div>/*}
+            </motion.div>
 
-        {/* Craft Section */}
-        <div className="container-custom py-16">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-xl font-bold text-foreground mb-1">
-                CRAFTED WITH <span className="text-foreground text-black">PRECISION</span>
-              </h2>
-              <div className="w-full h-1 bg-white mb-2"></div>
-              <div className="space-y-0 text-foreground/90 font-semibold not-italic text-sm leading-tight">
-                <p>
-                  Every AIJIM piece undergoes rigorous quality control. From fabric selection to final stitching, 
-                  we maintain the highest standards of craftsmanship.
-                
-                
-                  Our design team draws inspiration from global street culture, urban architecture, and 
-                  contemporary art to create pieces that are both timeless and cutting-edge.
-                
-                  We work with skilled artisans who share our passion for excellence, ensuring that every 
-                  garment meets our exacting standards for comfort, durability, and style.
-                </p>
-              </div>
-            </div>
-            
-            <div className="space-y-6 not-italic ">
-              <div className="bg-card border border-border rounded-lg p-6   shadow-glow">
-                <h4 className="font-bold text-foreground mb-2">PREMIUM MATERIALS</h4>
-                <p className="text-sm text-foreground/90">100% organic cotton, sustainable fabrics, and premium blends</p>
-              </div>
-              <div className="bg-card border border-border rounded-lg p-6 shadow-glow">
-                <h4 className="font-bold text-foreground mb-2">ETHICAL PRODUCTION</h4>
-                <p className="text-sm text-foreground/90">Fair wages, safe working conditions, and transparent supply chains</p>
-              </div>
-              <div className="bg-card border border-border rounded-lg p-6 shadow-glow">
-                <h4 className="font-bold text-foreground mb-2">QUALITY ASSURANCE</h4>
-                <p className="text-sm text-foreground/90">Multiple quality checks at every stage of production</p>
-              </div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="grid gap-6"
+            >
+              {[
+                {
+                  title: "Premium Fabrics",
+                  desc: "Only the finest organic cottons and sustainable materials make it into our collections.",
+                },
+                {
+                  title: "Ethical Production",
+                  desc: "We believe great fashion shouldn’t come at the cost of people or the planet.",
+                },
+                {
+                  title: "Quality Assurance",
+                  desc: "Each drop goes through multiple quality checks to ensure unmatched craftsmanship.",
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="bg-white/5 border border-gray-800 rounded-none p-5 hover:border-yellow-400 transition-all"
+                >
+                  <h4 className="font-bold text-lg text-white mb-1">
+                    {item.title}
+                  </h4>
+                  <p className="text-gray-400 text-sm">{item.desc}</p>
+                </div>
+              ))}
+            </motion.div>
           </div>
-        </div>
+        </section>
 
-        {/* CTA Section */}
-      
+        {/* --- CTA --- 
+        <section className="text-center py-16 bg-black border-t border-gray-800">
+          <motion.h3
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-2xl md:text-3xl font-semibold text-white mb-4"
+          >
+            Join the <span className="text-yellow-400">AIJIM</span> Movement
+          </motion.h3>
+          <p className="text-gray-400 text-sm mb-6">
+            Be the first to access exclusive drops, limited editions, and
+            insider updates.
+          </p>
+          <button className="bg-yellow-400 text-black px-6 py-3 rounded-full font-semibold hover:bg-yellow-300 transition-all">
+            Explore Collection
+          </button>
+        </section>*/}
       </div>
     </Layout>
   );
