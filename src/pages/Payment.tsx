@@ -178,7 +178,7 @@ const Payment = () => {
 
     {shippingAddress.address && <>{shippingAddress.address}, </>}
     {shippingAddress.city && <>{shippingAddress.city}, </>}
-    {shippingAddress.state && <>{shippingAddress.state}, </>}
+    {shippingAddress.state && <>{shippingAddress.state} </>}
     {shippingAddress.zipCode && <>- {shippingAddress.zipCode}, </>}
     {shippingAddress.country && <>{shippingAddress.country}</>},
 

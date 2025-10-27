@@ -107,9 +107,9 @@ const ProfileSettings = () => {
           <form onSubmit={handleSubmit} className="space-y-0">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="first_name">First Name</Label>
+                <Label htmlFor="first_name"  className="text-sm">First Name</Label>
                 <Input
-
+                className="text-sm"
                 
                   id="first_name"
                   name="first_name"
@@ -119,25 +119,27 @@ const ProfileSettings = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="last_name">Last Name</Label>
+                <Label htmlFor="last_name"  className="text-sm">Last Name</Label>
                 <Input
                   id="last_name"
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleChange}
                   placeholder="Enter your last name"
+                   className="text-sm"
                 />
               </div>
             </div>
             
             <div className="mb-1">
-              <Label htmlFor="display_name">Display Name</Label>
+              <Label htmlFor="display_name"  className="text-sm">Display Name</Label>
               <Input
                 id="display_name"
                 name="display_name"
                 value={formData.display_name}
                 onChange={handleChange}
                 placeholder="Enter your display name"
+                 className="text-sm"
               />
             </div>
            {/* 
@@ -212,14 +214,14 @@ const ProfileSettings = () => {
             </div>*/}
 
             <div className="mb-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email"  className="text-sm"> Email</Label>
               <Input
                 id="email"
                 value={currentUser?.email || ''}
                 disabled
-                className="bg-gray-800 font-medium"
+                className="bg-gray-800 text-sm font-medium"
               />
-              <p className="text-sm font-medium text-white mt-2  mb-5">
+              <p className="text-sm font-semimedium text-white mt-2  mb-5">
                 Email cannot be changed
               </p>
             </div>

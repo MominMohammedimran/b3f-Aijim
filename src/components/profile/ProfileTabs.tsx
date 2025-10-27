@@ -66,7 +66,7 @@ const ProfileTabs = () => {
   data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
 >
   <MapPin size={16} />
-  <span className="text-[10px] sm:text-[12px]">Adress</span>
+  <span className="text-[10px] sm:text-[12px]">Address</span>
 </TabsTrigger>
 
 
@@ -83,7 +83,7 @@ const ProfileTabs = () => {
         <TabsContent value="rewards">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <Gift size={20} />
                 Rewards & Points
               </CardTitle>
@@ -98,7 +98,7 @@ const ProfileTabs = () => {
         <TabsContent value="security">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <Shield size={20} />
                 Security Settings
               </CardTitle>
@@ -113,7 +113,7 @@ const ProfileTabs = () => {
         <TabsContent value="profile">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg leading-relaxed tracking-relaxed">
                 <User size={20} />
                 Profile Information
               </CardTitle>
@@ -128,7 +128,7 @@ const ProfileTabs = () => {
         <TabsContent value="addresses">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <MapPin size={20} />
                 My Addresses
               </CardTitle>

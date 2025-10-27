@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Address } from "@/hooks/useAddresses";
 import { Button } from "@/components/ui/button";
-import { Edit /*, Trash2, Loader2*/ } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { Edit } from "lucide-react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 interface SavedAddressesProps {
   addresses: Address[];
@@ -37,8 +38,6 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
 
   return (
     <div className="mb-6">
-     
-
       {/* --- Saved Addresses List --- */}
       <div className="space-y-3">
         {addresses.map((address) => {
@@ -53,21 +52,33 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
               whileHover={{ scale: 1.01 }}
               className={`border p-4 rounded-none cursor-pointer transition-all duration-300 ${
                 isSelected
-                  ? "border-yellow-400 bg-none text-yellow-300 shadow-lg shadow-yellow-800/20"
-                  : "border-gray-700 bg-none text-white"
+                  ? "border-yellow-400 text-yellow-300 shadow-lg shadow-yellow-800/20"
+                  : "border-gray-700 text-white"
               }`}
             >
               <div className="flex justify-between items-start gap-2">
-                {/* --- Left: Address Info (Now Full Display) --- */}
+                {/* --- Left: Address Info --- */}
                 <div className="flex-1">
-                  <div className="font-semibold text-sm text-yellow-400 underline flex items-center gap-2 mb-1">
-                    {address.first_name}
-                    {address.is_default && (
-                      <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded">
-                        Default
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-sm text-yellow-400 underline">
+                        {address.first_name}
+                      </span>
+                      {address.is_default && (
+                        <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded">
+                          Default
+                        </span>
+                      )}
+                    </div>
+
+                    {/* --- Right: Selected Tag --- */}
+                    {isSelected && (
+                      <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded-none font-semibold tracking-wide">
+                        Selected
                       </span>
                     )}
                   </div>
+
                   <p className="text-xs text-gray-300 font-medium">
                     {address.street}
                   </p>
@@ -79,43 +90,25 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                   </p>
                 </div>
 
-                {/* --- Right: Action Buttons (Commented Out for Now) --- */}
-                {/*
-                <div className="flex items-center gap-2 ml-3">
-                  {onEditAddress && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => handleEdit(address, e)}
-                      className="p-2 h-8 w-8 rounded-full bg-white text-black hover:bg-yellow-400 hover:text-black transition-all"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  )}
-                  {onDeleteAddress && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => handleDelete(address.id, e)}
-                      disabled={deletingId === address.id}
-                      className="p-2 h-8 w-8 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all"
-                    >
-                      {deletingId === address.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4" />
-                      )}
-                    </Button>
-                  )}
-                </div>
-                */}
+                {/* --- Optional Edit (commented for now)
+                {onEditAddress && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => handleEdit(address, e)}
+                    className="p-2 h-8 w-8 rounded-full bg-white text-black hover:bg-yellow-400 hover:text-black transition-all"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                )} */}
               </div>
             </motion.div>
           );
         })}
       </div>
+
+    
 
       {/* --- Use New Address Section --- */}
       <motion.div
@@ -125,7 +118,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
           setHasUserSelected(true);
           onUseNewAddress();
         }}
-        className={`border p-2 mt-2 rounded-none cursor-pointer block transition-all duration-300 ${
+        className={`border p-2 mt-3 rounded-none cursor-pointer block transition-all duration-300 ${
           useNewAddress
             ? "border-yellow-400 bg-black text-white shadow-md"
             : "border-gray-700 bg-none hover:bg-gray-900 text-white"
@@ -136,9 +129,19 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
           Add a new shipping address below
         </p>
       </motion.div>
-
-      {/* --- New Address Form Animation --- */}
-     
+        {/* --- Profile Info Message --- */}
+      <p className="text-[11px] text-gray-400 mt-3 text-center font-medium">
+        To <span className="text-yellow-400 font-semibold">edit</span> or{" "}
+        <span className="text-yellow-400 font-semibold">remove</span> an address,
+        visit {" "}
+        <Link
+          to="/profile"
+          className="text-yellow-400 underline hover:text-yellow-300"
+        >
+          Profile 
+        </Link>
+        .
+      </p>
     </div>
   );
 };

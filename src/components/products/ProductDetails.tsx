@@ -1,22 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Loader2, Share, ChevronDown, ChevronUp,XCircle, Trash2 ,ShoppingCart} from 'lucide-react';
-
-import {Link} from 'react-router-dom';
-import { Product } from '@/lib/types';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import ReactMarkdown from 'react-markdown';
-import { useCart } from '@/context/CartContext';
-import { useProductInventory } from '@/hooks/useProductInventory';
-import ProductQuantitySelector from './ProductQuantitySelector';
-import ProductActionButtons from './ProductActionButtons';
-import ProductPlaceOrder from './ProductPlaceOrder';
-import ShareModal from './ShareModal';
-import LiveViewingCounter from './LiveViewingCounter';
-import AvailableCoupons from './AvailableCoupons';
-import ProductDescription from './ProductDescription';
-import { validatePincode } from '@/utils/pincodeService';
-import ProductImageGallery from './ProductImageGallery';
+import React, { useState, useEffect, useMemo } from "react";
+import { Loader2, Share } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Product } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useCart } from "@/context/CartContext";
+import { useProductInventory } from "@/hooks/useProductInventory";
+import ProductActionButtons from "./ProductActionButtons";
+import ProductPlaceOrder from "./ProductPlaceOrder";
+import ShareModal from "./ShareModal";
+import LiveViewingCounter from "./LiveViewingCounter";
+import AvailableCoupons from "./AvailableCoupons";
+import ProductDescription from "./ProductDescription";
+import { validatePincode } from "@/utils/pincodeService";
 
 interface SizeWithQuantity {
   size: string;
@@ -25,18 +21,15 @@ interface SizeWithQuantity {
 
 export interface ProductDetailsProps {
   product: Product;
-  allowMultipleSizes?: boolean;
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleSizes = true }) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [selectedSizes, setSelectedSizes] = useState<SizeWithQuantity[]>([]);
-  const [removingSize, setRemovingSize] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showSizeChart,setShowSizeChart]=useState(false);
-
-  const { cartItems, removeSizeFromCart } = useCart();
+  const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
 
+  // --- Prepare variants ---
   const productVariants = useMemo(() => {
     return Array.isArray(product.variants)
       ? product.variants.map((v) => ({
@@ -44,17 +37,19 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
           stock: Number(v.stock) || 0,
         }))
       : [];
-  }, [product.sizes]);
+  }, [product.variants]);
 
-  const availableSizes = productVariants.map((v) => v.size);
-
+  // --- Sync sizes from cart ---
   useEffect(() => {
     const cartItem = cartItems.find((c) => c.product_id === product.id);
     if (cartItem) {
-      setSelectedSizes(cartItem.sizes.map((s) => ({ size: s.size, quantity: s.quantity })));
+      setSelectedSizes(
+        cartItem.sizes.map((s) => ({ size: s.size, quantity: s.quantity }))
+      );
     }
   }, [cartItems, product.id]);
 
+  // --- Toggle / Change Size ---
   const toggleSize = (size: string) => {
     const stock = productVariants.find((v) => v.size === size)?.stock ?? 0;
     const already = selectedSizes.some((s) => s.size === size);
@@ -63,452 +58,286 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, allowMultipleS
       already ? prev.filter((s) => s.size !== size) : [...prev, { size, quantity: 1 }]
     );
   };
-  const discountPercent = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0;
-  const changeQuantity = (size: string, q: number) =>
+
+  const changeQuantity = (size: string, q: number) => {
     setSelectedSizes((prev) =>
       prev.map((s) => (s.size === size ? { ...s, quantity: q } : s))
     );
-    
-
-  const removeSizeFromCartOnly = async (size: string) => {
-    setRemovingSize(size);
-    const cartItem = cartItems.find((c) => c.product_id === product.id);
-    if (cartItem) {
-      await removeSizeFromCart(cartItem.id, size);
-      toast.success(`Size ${size} removed from cart`);
-      setSelectedSizes((prev) => prev.filter((s) => s.size !== size));
-    }
-    setRemovingSize(null);
   };
-const [pincode, setPincode] = useState("");
-const [pincodeResult, setPincodeResult] = useState<{isServiceable: boolean; message: string} | null>(null);
-const [pincodeChecked, setPincodeChecked] = useState(false);
-const [loadingPincode, setLoadingPincode] = useState(false);
-let SelectedSize;
-const getSizeRecommendation = (size: string) => {
-  switch (size) {
-    case "S":
-      return "Regular size S → Aijim size XS";
-    case "XS":
-      return "Regular size XS → Aijim size XS";
-    case "M":
-      return "Regular size M → Aijim size S";
-    case "L":
-      return "Regular size L → Aijim size M";
-    case "XL":
-      return "Regular size XL → Aijim size L";
-    case "XXL":
-      return "Regular size XXL → Aijim size XXL";
-    default:
-      return null;
-  }
-};
 
-const checkPincode = async () => {
-  if (!pincode) return;
-  setLoadingPincode(true);
-  setPincodeChecked(true);
+  const discountPercent = product.originalPrice
+    ? Math.round(
+        ((product.originalPrice - product.price) / product.originalPrice) * 100
+      )
+    : 0;
 
-  try {
-    const result = await validatePincode(pincode);
-    setPincodeResult({
-      isServiceable: result.isServiceable,
-      message: result.message
-    });
-  } catch (err) {
-    console.error("Error checking pincode:", err);
-    setPincodeResult({
-      isServiceable: false,
-      message: 'Unable to verify PIN code. Please try again.'
-    });
-  }
+  const totalPrice = selectedSizes.reduce(
+    (sum, s) => sum + s.quantity * product.price,
+    0
+  );
 
-  setLoadingPincode(false);
-};
+  // --- Pincode ---
+  const [pincode, setPincode] = useState("");
+  const [pincodeResult, setPincodeResult] = useState<{
+    isServiceable: boolean;
+    message: string;
+  } | null>(null);
+  const [pincodeChecked, setPincodeChecked] = useState(false);
+  const [loadingPincode, setLoadingPincode] = useState(false);
 
+  const checkPincode = async () => {
+    if (!pincode) {
+      toast.error("Please enter a valid pincode");
+      return;
+    }
+    setLoadingPincode(true);
+    setPincodeChecked(true);
+    try {
+      const result = await validatePincode(pincode);
+      setPincodeResult({
+        isServiceable: result.isServiceable,
+        message: result.message,
+      });
+    } catch {
+      setPincodeResult({
+        isServiceable: false,
+        message: "Unable to verify PIN code. Please try again later.",
+      });
+    }
+    setLoadingPincode(false);
+  };
 
-
-  const totalPrice = selectedSizes.reduce((sum, s) => sum + s.quantity * product.price, 0);
-const activeRecommendation=selectedSizes.length>0?getSizeRecommendation(selectedSizes[selectedSizes.length-1].size):null;
   if (inventoryLoading)
     return (
       <div className="flex justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+        <Loader2 className="w-6 h-6 animate-spin text-yellow-400" />
       </div>
     );
 
-  
-    
-
-
   return (
-    <div className="relative bg-[#0b0b0b] text-white rounded-md p-1 px-2 md:p-3 shadow-lg">
-      {/* Brand + Share */}
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold uppercase tracking-wide text-white">AIJIM</span>
-        <Button variant="ghost" size="icon" onClick={() => setShowShareModal(true)}>
-          <Share className="w-8 h-8 z-10 text-[15px] text-gray-100" />
+    <div className="relative bg-[#0b0b0b] text-white rounded-md shadow-lg">
+      {/* --- Header --- */}
+      <div className="flex items-center justify-between px-4 pt-3">
+        <span className="text-sm font-semibold uppercase tracking-wide">
+          AIJIM
+        </span>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setShowShareModal(true)}
+        >
+          <Share className="w-5 h-5 text-gray-200" />
         </Button>
       </div>
 
-      {/* Name + Price */}
-      <div className="flex flex-col mt-1 mb-1 sm:gap-4 justify-between items-start gap-2">
-        <h2 className="text-lg font-semibold text-white">{product.name}</h2>
-      <div className="flex items-center font-semibold gap-3">
-  {product.originalPrice && product.originalPrice > product.price && (
-    <span className="text-md font-semibold text-gray-400 line-through">
-      ₹{product.originalPrice}
-    </span>
-  )}
-  <span className="text-lg  font-semibold  text-gray-100">
-    ₹{product.price}
-  </span>
-  {discountPercent > 0 && (
-            <span className="text-[9px] bg-red-600 items-last text-white px-1 py-0.5  font-bold">
+      {/* --- Product Info --- */}
+      <div className="px-4 mt-2">
+        <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
+        <div className="flex items-center gap-2 mb-2">
+          {product.originalPrice && product.originalPrice > product.price && (
+            <span className="text-md text-gray-400 line-through">
+              ₹{product.originalPrice}
+            </span>
+          )}
+          <span className="text-xl font-bold text-yellow-300">
+            ₹{product.price}
+          </span>
+          {discountPercent > 0 && (
+            <span className="text-[10px] bg-red-600 text-white px-1 py-0.5 rounded">
               {discountPercent}% OFF
             </span>
           )}
-           
-</div>
-
-      </div>
-
-      {/* Live Viewing Counter */}
-      <LiveViewingCounter productId={product.id} />
-      {activeRecommendation&&(
-      <div className="flex gap-2 items-center">
-        <h2 className=" text-xs font-semibold  text-white text-left">
-          {activeRecommendation}
-          </h2>
-          <button onClick={()=>
-          setShowSizeChart(true)}
-          className="text-xs font-medium  px-1 border border-gray-400"
-          >
-          Size chart
-          </button>
-          </div>
-      )}
-      {showSizeChart && (
-  <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-    <div className="bg-white p-4 rounded-none max-w-lg w-full relative">
-      {/* Close Button */}
-      <button
-        onClick={() => setShowSizeChart(false)}
-        className="absolute top-2 right-2 text-gray-900 hover:text-black"
-      >
-        ✕
-      </button>
-
-      {/* Title */}
-      <h2 className="text-lg font-bold mb-3 text-center">Size Chart</h2>
-
-      {/* Image */}
-      <img
-        src="/aijim-uploads/sizechart.jpg" // <-- replace with your actual size chart image path
-        alt="Size Chart"
-        className="w-full h-auto"
-      />
-    </div>
-  </div>
-)}
-
-
-      {/* Sizes */}
-      <h4 className="text-lg font-semibold mt-3 mb-3">Select Size</h4>
-      <div className="grid grid-cols-4 md:grid-cols-5 gap-2">
-        {availableSizes.map((size) => {
-          const variant = productVariants.find((v) => v.size === size);
-          const stock = variant?.stock ?? 0;
-          const selected = selectedSizes.some((s) => s.size === size);
-          const inCart = cartItems.find((c) => c.product_id === product.id)?.sizes.some((s) => s.size === size);
-          const isOutOfStock = stock === 0;
-          
-          
-          return (
-           <div key={size} className="relative flex flex-col items-center">
-  <button
-    onClick={() => toggleSize(size)}
-    disabled={isOutOfStock && !selected}
-    className={`w-full py-1.5 text-xs mb-1 font-bold border text-center transition-all duration-300 rounded-sm relative overflow-hidden
-      ${
-        selected && !isOutOfStock
-          ? "border-gray-400 bg-white border-yellow-400 text-black "
-          : isOutOfStock
-          ? "border-gray-700 bg-black text-white line-through font-semibold cursor-not-allowed opacity-100"
-          : "border-gray-400 bg-white/90 text-black  "
-      }`}
-  >
-    {size}
-  </button>
-
-  {/* Stock Indicator */}
-  {isOutOfStock ? (
-    <div className="text-[8px] font-bold hidden uppercase tracking-wide bg-gradient-to-r from-red-600 to-red-800 text-white w-full text-center py-0.5 rounded-sm shadow-[0_0_8px_rgba(220,38,38,0.6)]">
-      SOLD OUT
-    </div>
-  ) : (
-    (() => {
-      const stockLevel = variant?.stock ?? 0;
-      const maxStock = 10; // 🔸 You can adjust this as your logic
-      const percentage = Math.min((stockLevel / maxStock) * 100, 100);
-      const stockLabel =
-        percentage < 30
-          ? "Low Stock"
-          : percentage < 70
-          ? "Available"
-          : "In Stock";
-
-      const color =
-        percentage < 30
-          ? "bg-red-500"
-          : percentage < 70
-          ? "bg-yellow-400"
-          : "bg-green-500";
-
-      return (
-        <div className="w-full hidden text-center mt-0.5">
-          <div
-            className="h-1 rounded-full bg-gray-800 overflow-hidden w-full relative"
-            title={`Stock: ${stockLevel}`}
-          >
-            <div
-              className={`${color} h-1 rounded-full transition-all duration-500`}
-              style={{ width: `${percentage}%` }}
-            ></div>
-          </div>
-          <span
-            className={`text-[8px] uppercase font-semibold tracking-wide ${
-              percentage < 30
-                ? "text-red-400"
-                : percentage < 70
-                ? "text-yellow-400"
-                : "text-green-400"
-            }`}
-          >
-            {stockLabel}
-          </span>
         </div>
-      );
-    })()
-  )}
-</div>
-
-          );
-        })} 
       </div>
 
-      {/* Selected Sizes with Scroll */}
-    {selectedSizes.length > 0 && (
-  <div className="pt-4 border-t border-gray-700">
-    <h4 className="text-md font-semibold mb-5">{SelectedSize} Selected Sizes</h4>
+      <LiveViewingCounter productId={product.id} />
 
-    <div className="flex gap-2 overflow-x-auto  scroll-smooth no-scrollbar">
-      {selectedSizes.map((sel) => {
-        const maxStock = productVariants.find((v) => v.size === sel.size)?.stock ?? 0;
-        const cartItem = cartItems.find((c) => c.product_id === product.id);
-        const cartSizeInfo = cartItem?.sizes.find((s) => s.size === sel.size);
-        const inCartQty = cartSizeInfo?.quantity;
-        const isRemoving = removingSize === sel.size;
-      
-        return (
-          <div
-            key={sel.size}
-            className="min-w-[120px]  p-1 text-gray-100 border border-white  text-xs bg-gradient-to-br from-black via-gray-900 to-black  flex-shrink-0"
-          >
-            {/* Size & Remove2
-            <div className="flex justify-between py-1 items-center mb-0">
-              <span className="font-bold flex  uppercase justify-between p-2  w-full text-center bg-black text-white py-0.5">
-                Size -
-                 {' '} {sel.size}
-                   <button
-                onClick={() => toggleSize(sel.size)}
-                disabled={isRemoving}
-                className="text-white font-bold px-1 bg-red-500 mr-1  hover:text-red-400"
-                title="Unselect"
-              >
-                X
-              </button>
-              </span>
-            
-            </div>
-            */}
-
-            {/* Quantity Controls */}
-            <div className="flex items-center justify-between p-1  pb-0">
-              <span className="font-bold uppercase text-lg ">{sel.size}</span>
+      {/* --- Sizes --- */}
+      <div className="px-4">
+        <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
+        <div className="grid grid-cols-4 md:grid-cols-5 gap-2">
+          {productVariants.map(({ size, stock }) => {
+            const selected = selectedSizes.some((s) => s.size === size);
+            const isOutOfStock = stock === 0;
+            return (
               <button
-                disabled={sel.quantity <= 1}
-                onClick={() => changeQuantity(sel.size, sel.quantity - 1)}
-                className="px-1.5 py-0 text-lg font-bold hover:bg-gray-200 hover:text-black text-white rounded transition duration-200"
-              >
-                −
-              </button>
-              <span className="text-gray-200 text-lg font-bold">{sel.quantity}</span>
-              <button
-                disabled={sel.quantity >= maxStock}
-                onClick={() => changeQuantity(sel.size, sel.quantity + 1)}
-                className={`px-1.5 py-0 text-lg font-bold rounded transition duration-200 ${
-                  sel.quantity >= maxStock 
-                    ? 'text-gray-500 cursor-not-allowed opacity-50' 
-                    : 'hover:bg-gray-200 hover:text-black text-white'
+                key={size}
+                onClick={() => toggleSize(size)}
+                disabled={isOutOfStock}
+                className={`w-full py-1.5 text-xs font-bold border rounded-sm transition-all ${
+                  selected
+                    ? "bg-white text-black underline border-2  border-blue-400"
+                    : isOutOfStock
+                    ? "bg-black text-white line-through border-gray-700 cursor-not-allowed"
+                    : " text-white underline border-gray-200"
                 }`}
               >
-                +
+                {size}
               </button>
-              {/*<button 
-               onClick={() => toggleSize(sel.size)}
-                disabled={isRemoving}
-                className="text-white font-bold px-1 bg-red-500 mr-1  hover:text-red-400"
-                title="Unselect"
+            );
+          })}
+        </div>
+      </div>
+
+      {/* --- Selected Sizes --- */}
+      {selectedSizes.length > 0 && (
+        <div className="px-4 pt-4 border-t border-gray-700 mt-3">
+          <h4 className="text-md font-semibold mb-3">Selected Sizes</h4>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {selectedSizes.map((sel) => {
+              const variant = productVariants.find((v) => v.size === sel.size);
+              const maxStock = variant?.stock ?? 0;
+              const cartItem = cartItems.find((c) => c.product_id === product.id);
+              const cartSizeInfo = cartItem?.sizes.find(
+                (s) => s.size === sel.size
+              );
+              const inCartQty = cartSizeInfo?.quantity ?? 0;
+              const isLocked = inCartQty >= maxStock;
+
+              return (
+                <div
+                  key={sel.size}
+                  className="min-w-[110px] p-2 border border-gray-500 bg-gradient-to-br from-black via-gray-900 to-black rounded-sm"
                 >
-                  X
-                  </button>*/}
-
-
-            </div>
-
-            {/* Cart Info & Delete */}
-           
-              {inCartQty && (
-                <div className='flex justify-between items-center mt-1'>
-                <span className="font-bold w-full uppercase   text-yellow-500   text-center   ">
-                  In Cart - {inCartQty}
-                </span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold uppercase text-lg  mr-2">
+                      {sel.size}
+                    </span>
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        disabled={sel.quantity <= 1 || isLocked}
+                        onClick={() =>
+                          changeQuantity(sel.size, sel.quantity - 1)
+                        }
+                        className={`px-1.5 py-0 text-lg font-bold rounded ${
+                          sel.quantity <= 1 || isLocked
+                            ? "text-gray-500 cursor-not-allowed opacity-50"
+                            : "hover:bg-gray-200 hover:text-black text-white"
+                        }`}
+                      >
+                        −
+                      </button>
+                      <span className="text-gray-200 text-lg font-sewmibold">
+                        {sel.quantity}
+                      </span>
+                      <button
+                        disabled={sel.quantity >= maxStock || isLocked}
+                        onClick={() =>
+                          changeQuantity(sel.size, sel.quantity + 1)
+                        }
+                        className={`px-1.5 py-0 text-lg font-bold rounded ${
+                          sel.quantity >= maxStock || isLocked
+                            ? "text-gray-500 cursor-not-allowed opacity-50"
+                            : "hover:bg-gray-200 hover:text-black text-white"
+                        }`}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  {inCartQty>0 && (
+                  <p className="text-[10px] text-center text-yellow-400 font-semibold">
+                    In Cart - {inCartQty} Qty
+                    
+                  </p>)}
                 </div>
-              )}
-              {/*inCartQty && (
-                <button
-                  className="text-gray-100 bg-red-500 px-1 py-1 hover:text-gray-200 mr-1 "
-                  title="Remove from cart"
-                  onClick={() => removeSizeFromCartOnly(sel.size)}
-                  disabled={isRemoving}
-                >
-                  {isRemoving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 size={14} />}
-                </button>
-              )*/}
-            
+              );
+            })}
           </div>
-        );
-      })}
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
-      {/*total price */}
-   
-         {totalPrice> 0 && (
-             <div className="flex justify-evenly mt-5 ">
-            <span className="text-2xl  items-center text-white  font-SpaceGrotesk font-semibold">
-              Total price &nbsp;: &nbsp; <span className='text-yellow-400  font-semibold underline'> ₹{totalPrice}</span>
-            </span>
-             </div>
+      {/* --- Total --- */}
+      {totalPrice > 0 && (
+        <div className="flex justify-center mt-4">
+          <span className="text-xl font-semibold">
+            Total Amount :{" "}
+            <span className="text-yellow-400 underline">₹{totalPrice}</span>
+          </span>
+        </div>
+      )}
 
-          )}
-  
-       
- 
-       {/* Actions */}
-      <div className=" mb-1 rounded-none  mt-1">
-        {productVariants.every(v => v.stock === 0) ? (
-          // Out of stock UI - only show when ALL sizes are out of stock
-          <>
-            <div className="text-center bg-red-600 rounded-none mb-3 mt-4 py-0.5">
-              <p className="text-white font-semibold text-lg mb-2">Product currently out of stock</p>
-            </div>
-            <Link 
-              to="/" 
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-1 rounded-none font-poppins font-semibold text-xl text-center block transition-colors"
-            >
-              Continue Shopping
-            </Link>
-          </>
-        ) : (
-          // In stock UI - show when ANY size has stock
-          <div className='w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 left-0 right-0 z-10 items-center justify-center '>
-            <ProductActionButtons
-              product={product}
-              className="w-full rounded-none text-lg "
-              selectedSizes={selectedSizes.map((s) => s.size)}
-              quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
-            />
-            
-            {/* Place Order Button */}
-            
-              <ProductPlaceOrder
-                product={product}
-                selectedSizes={selectedSizes.map((s) => s.size)}
-                  selectedSizes={selectedSizes.map((s) => s.size)}
-              quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
+      {/* --- Sticky Bottom Action Bar --- */}
+     <div className='w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 left-0 right-0 z-10 items-center justify-center '>
            
-                variant="secondary"
-                className="w-full rounded-none border-l border-gray-800 font-semibold text-lg bg-gray-200 text-black hover:text-gray-700 hover:bg-gray-200"
-              />
-          
+ <ProductActionButtons 
+          product={product}
+          selectedSizes={selectedSizes.map((s) => s.size)}
+          quantities={selectedSizes.reduce(
+            (acc, s) => ({ ...acc, [s.size]: s.quantity }),
+            {}
+          )}
+          className="w-1/2 lg:w-full rounded-none text-base font-semibold"
+        />
+        <ProductPlaceOrder
+          product={product}
+          selectedSizes={selectedSizes.map((s) => s.size)}
+          quantities={selectedSizes.reduce(
+            (acc, s) => ({ ...acc, [s.size]: s.quantity }),
+            {}
+          )}
+          variant="secondary"
+          className="w-1/2 lg:w-full rounded-none border border-gray-700 font-semibold text-base bg-yellow-400 text-black hover:bg-yellow-300"
+        />
+      </div>
+
+      {/* --- Delivery Section --- */}
+      <div className="p-4  bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none m-4 mt-4" >
+        <h3 className="text-md font-semibold text-yellow-300 mb-2">
+          Delivery & Returns
+        </h3>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              maxLength={6}
+              inputMode="numeric"
+              placeholder="Enter PIN Code"
+              value={pincode}
+              onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
+              className="w-80 flex-1 text-xs px-1 py-1.5 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 font-semibold focus:ring-1 focus:ring-yellow-400 outline-none"
+            />
+            <button
+              onClick={checkPincode}
+              disabled={loadingPincode}
+              className="px-2 py-1.5 bg-yellow-500 text-xs text-black font-semibold rounded-none hover:bg-yellow-400 disabled:opacity-50"
+            >
+              {loadingPincode ? "Checking..." : "Check"}
+            </button>
           </div>
-        )}
+
+          {pincodeChecked && pincodeResult && (
+            <p
+              className={`text-[10px] font-semibold ${
+                pincodeResult.isServiceable
+                  ? "text-green-400"
+                  : "text-red-400"
+              }`}
+            >
+              {pincodeResult.message}
+            </p>
+          )}
+
+          <div className="text-xs text-gray-300 font-medium">
+            <p>• Easy 7-day returns on eligible items</p>
+            <p>• No Cash on Delivery available</p>
+            <Link
+              to="/cancellation-refund"
+              className="text-yellow-400 hover:text-yellow-300 underline block mt-1"
+            >
+              View Cancellation & Refund Policy →
+            </Link>
+          </div>
+        </div>
       </div>
 
-      {/* Delivery & Return Section */}
-    {/* Delivery & Return Section */}
-<div className="p-1 w-full bg-gradient-to-br from-black via-gray-900 to-black shadow-lg border border-gray-600 mt-6">
-  <h3 className="text-md font-semibold text-yellow-300 mb-2 mt-1 pl-3">Delivery & Returns</h3>
-  <div className="space-y-3 p-3 pt-0">
-    <div className="flex items-center gap-2">
-      <input
-        type="text"
-        maxLength={6} // restrict to 6 digits
-        pattern="[0-9]*"
-        inputMode="numeric"
-        placeholder="pincode"
-        value={pincode}
-        onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))} // allow only digits
-        className="flex-1 text-md px-3 w-full bg-gray-700 font-semibold border border-gray-600  text-white placeholder-gray-400  focus:border-transparent"
-      />
-      <button
-  onClick={checkPincode}
-  disabled={loadingPincode}
-  className="px-2 py-0 bg-yellow-500 text-md text-black font-semibold hover:bg-yellow-400 transition-colors disabled:opacity-50"
->
-  {loadingPincode ? "Checking..." : "Check"}
-</button>
-
-    </div>
-
-    {pincodeChecked && pincodeResult && (
-      <div className="text-[9px] mt-2 ">
-        <p className={`font-semibold ${pincodeResult.isServiceable ? 'text-green-400' : 'text-red-400'}`}>
-          {pincodeResult.message}
-        </p>
+      {/* --- Description + Coupons --- */}
+      <div className="px-4 pb-4">
+        <ProductDescription desc={product.description} />
+        <AvailableCoupons />
       </div>
-    )}
 
-    <div className="text-xs text-gray-300 mt-3 font-semibold">
-      <p className="font-medium">• Easy 7-day returns</p>
-      <p className="font-medium">• No cash on delivery </p>
-    </div>
-    <div className="border-t border-gray-600 pt-1">
-      <Link
-        to="/cancellation-refund"
-        className="text-yellow-400 hover:text-yellow-300 underline text-xs font-semibold"
-      >
-        View Return Policy →
-      </Link>
-    </div>
-  </div>
-</div>
-
-      {/* Available Coupons */}
-     
-     
-
-      {/* Description */}
-        <ProductDescription desc={product.description}/>
-         <AvailableCoupons />
-      
-
-      {/* Share Modal */}
+      {/* --- Share Modal --- */}
       <ShareModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}

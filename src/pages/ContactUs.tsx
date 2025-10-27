@@ -17,7 +17,7 @@ const ContactUs = () => {
     setLoading(true);
 
     const data = {
-      access_key: "e695e1f9-0c1a-4e6f-88ab-b7aa04b23dae", // replace with your actual key
+      access_key:"e695e1f9-0c1a-4e6f-88ab-b7aa04b23dae",
       name: formData.name,
       email: formData.email,
       message: formData.message,
@@ -41,7 +41,7 @@ const ContactUs = () => {
         toast.error("Failed to send message. Please try again.");
       }
     } catch (err) {
-    //  console.error(err);
+      console.error(err);
       toast.error("Network error. Please try again later.");
     } finally {
       setLoading(false);
@@ -67,7 +67,7 @@ const ContactUs = () => {
     {
       icon: Phone,
       title: "CALL US",
-      primary: "+91 7672080881 , +91 9581319687",
+      primary: "+91 - 7672080881 , +91 - 9581319687",
       description: "Available Mon-Sat, 10 AM - 7 PM",
     },
     {
@@ -79,7 +79,7 @@ const ContactUs = () => {
     },
   ];
 
-  
+  return (
     <Layout>
       <div className="min-h-screen bg-background relative">
         <div className="container-custom pt-16">

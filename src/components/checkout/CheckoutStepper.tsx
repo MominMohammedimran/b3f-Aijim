@@ -22,8 +22,8 @@ export const CheckoutStepper = ({ currentStep }: CheckoutStepperProps) => {
                   color: isCurrent ? "#ffe600ff" : isCompleted ? "#ffffffff " : "#9ca3af",
                 }}
                 className={`tracking-wide font-semibold p-1 pb-0 ${
-                  isCurrent ? "text-white   w-full text-center" : 
-                  isCompleted ? "text-white text-center  w-full" : "text-center text-gray-400"
+                  isCurrent ? "text-white   w-full text-center hover:cursor-text" : 
+                  isCompleted ? "text-white text-center  w-full hover:cursor-text" : "text-center text-gray-400 hover:cursor-text"
                 }`}
               >
                 {label}

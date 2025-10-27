@@ -63,19 +63,19 @@ Only a few pieces available – once sold out, they’re gone for good.
   };
 
   return (
-    <div className="mt-4 mb-5 p-5 border border-gray-800 rounded-none bg-black transition-all duration-500">
+    <div className="mt-4 mb-5 p-3 border border-gray-800 rounded-none bg-black transition-all duration-500">
       <h3 className="text-md font-semibold text-yellow-400 uppercase tracking-[1px] mb-4 border-b border-yellow-500/40 pb-2">
         Product Description
       </h3>
 
-      <div className="space-y-3">
+      <div className="space-y-3 ">
         {sections.map((section, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.1 }}
-            className="border-b border-gray-800 pb-3 last:border-none"
+            className="border-b border-gray-800 pb-1.5 last:border-none"
           >
             {/* Section Header */}
             <button
@@ -100,7 +100,7 @@ Only a few pieces available – once sold out, they’re gone for good.
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.4 }}
-                  className="mt-3 pl-2 text-sm font-medium text-gray-300 leading-relaxed space-y-1"
+                  className="mt-3 pl-1 text-sm font-medium text-gray-300 leading-relaxed space-y-1"
                 >
                   {section.content.map((line, j) => (
                     <motion.p

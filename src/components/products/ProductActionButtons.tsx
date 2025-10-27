@@ -135,7 +135,7 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
       <Button
         onClick={handleAddToCart}
         disabled={isAddingToCart}
-        className="w-full rounded-none bg-zinc-200 hover:bg-white text-gray-900 font-semibold text-xl font-bold  px-3 py-2 flex items-center justify-center transition-all duration-200 mb-5 mt-5"
+        className="w-full rounded-none bg-white hover:bg-white text-gray-900 font-semibold text-md lg:text-lg font-bold  px-3 py-2 flex items-center justify-center transition-all duration-200 mb-5 mt-5"
       >
         {isAddingToCart ? (
           <>
