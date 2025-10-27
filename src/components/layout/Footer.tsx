@@ -115,7 +115,7 @@ const Footer = () => {
           <div className="h-[1.5px] w-16 bg-gradient-to-r from-yellow-500 to-transparent mb-2 rounded-full"></div>
 
           {/* --- Section Links --- */}
-          <ul className="flex flex-col items-center pt-2 space-y-2  mt-2 w-full">
+          <ul className="flex flex-col items-center text-center pt-2 space-y-2  mt-2 w-full">
             {section.links.map((link: any) => (
               <li key={link.name} className="w-full">
                 <Link
