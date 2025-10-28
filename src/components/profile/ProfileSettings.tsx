@@ -106,8 +106,8 @@ const ProfileSettings = () => {
         <CardContent className="p-1 border-none rounded-none text-sm">
           <form onSubmit={handleSubmit} className="space-y-0">
             <div className="grid grid-cols-2 gap-4">
-              {/*<div>
-                <Label htmlFor="first_name"  className="text-sm">First Name</Label>
+              <div>
+                <Label htmlFor="first_name"  className="text-sm hidden">First Name</Label>
                 <Input
                 className="text-sm"
                 
@@ -116,20 +116,21 @@ const ProfileSettings = () => {
                   value={formData.first_name}
                   onChange={handleChange}
                   placeholder="Enter your first name"
+                  className='hidden'
                 />
               </div>
               <div>
-                <Label htmlFor="last_name"  className="text-sm">Last Name</Label>
+                <Label htmlFor="last_name"  className="text-sm hidden">Last Name</Label>
                 <Input
                   id="last_name"
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleChange}
                   placeholder="Enter your last name"
-                   className="text-sm"
+                   className="text-sm hidden"
                 />
               </div>
-            </div>*/}
+            </div>
             
             <div className="mb-1">
               <Label htmlFor="display_name"  className="text-sm">Display Name</Label>
