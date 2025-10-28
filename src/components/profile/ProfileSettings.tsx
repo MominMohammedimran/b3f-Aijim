@@ -109,14 +109,14 @@ const ProfileSettings = () => {
               <div>
                 <Label htmlFor="first_name"  className="text-sm hidden">First Name</Label>
                 <Input
-                className="text-sm"
+                className="text-sm hidden"
                 
                   id="first_name"
                   name="first_name"
                   value={formData.first_name}
                   onChange={handleChange}
                   placeholder="Enter your first name"
-                  className='hidden'
+                
                 />
               </div>
               <div>

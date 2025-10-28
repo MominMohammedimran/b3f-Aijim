@@ -17,7 +17,7 @@ interface ProductReviewCarouselProps {
 
 const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTwoPerView, setIsTwoPerView] = useState(window.innerWidth >= 1024);
+  const [isTwoPerView, setIsTwoPerView] = useState(window.innerWidth >= 760);
 
   // Handle responsive switch
   useEffect(() => {
@@ -66,7 +66,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
           return (
             <div
               key={review.id}
-              className="flex-1 min-w-[250px] max-w-md bg-gradient-to-br from-zinc-900/60 via-zinc-800/60 to-zinc-900/40 
+              className="flex-1 min-w-[220px] max-w-md bg-gradient-to-br from-zinc-900/60 via-zinc-800/60 to-zinc-900/40 
                          border border-zinc-800 rounded-none p-6 shadow-md hover:shadow-yellow-500/10 
                          backdrop-blur-sm transition-all duration-300"
             >
@@ -89,7 +89,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
               </div>
 
               {/* Comment */}
-              <p className="text-gray-200 text-sm leading-relaxed  mb-4">
+              <p className="text-gray-200 text-sm leading-relaxed  mb-10">
                 “{review.comment || "No comment provided"}”
               </p>
 
@@ -123,7 +123,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
             variant="ghost"
             size="icon"
             onClick={goToPrevious}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-zinc-800/40 hover:bg-yellow-500/20 text-yellow-400"
+            className="absolute left-0 top-1/2 -translate-y-1/2 text-yellow-400 hover:text-yellow-600"
           >
             <ChevronLeft className="w-6 h-6" />
           </Button>
@@ -131,7 +131,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
             variant="ghost"
             size="icon"
             onClick={goToNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-zinc-800/40 hover:bg-yellow-500/20 text-yellow-400"
+            className="absolute right-0 top-1/2 -translate-y-1/2  text-yellow-400 hover:text-yellow-600"
           >
             <ChevronRight className="w-6 h-6" />
           </Button>
