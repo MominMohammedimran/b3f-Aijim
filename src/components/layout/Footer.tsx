@@ -12,17 +12,13 @@ const Footer = () => {
       title: "ABOUT",
       links: [
         { name: "Our Story", href: "/about-us" },
-     //   { name: "Privacy Policy", href: "/privacy-policy" },
+      { name: "Privacy Policy", href: "/privacy-policy" },
          { name: "Contact Us", href: "/contact-us" },
-      ],
-    },
-    {
-      title: "HELP",
-      links: [
+      
         { name: "Terms & Condition", href: "/terms-conditions" },
         { name: "Cancellation & Returns", href: "/cancellation-refund" },
-        //{ name: "Shipping Info", href: "/shipping-delivery" },
-       // {name:"Track Orders",href:"/orders"},
+      { name: "Shipping Info", href: "/shipping-delivery" },
+       {name:"Track Orders",href:"/orders"},
       ],
     },
     
@@ -107,15 +103,15 @@ const Footer = () => {
           className="group relative flex flex-col items-center space-y-1 text-center sm:text-left"
         >
           {/* --- Section Title --- */}
-          <h3 className="text-lg sm:text-xl font-semiboldbold tracking-[3px] uppercase text-ceter text-white/95 transition-all duration-300 group-hover:text-yellow-400">
+          <h3 className="text-lg hidden sm:text-xl font-semiboldbold tracking-[3px] uppercase text-ceter text-white/95 transition-all duration-300 group-hover:text-yellow-400">
             {section.title}
           </h3>
 
           {/* --- Accent Line --- */}
-          <div className="h-[1.5px] w-16 bg-gradient-to-r from-yellow-500 to-transparent mb-2 rounded-full"></div>
+          <div className="h-[1.5px] w-16 hidden bg-gradient-to-r from-yellow-500 to-transparent mb-2 rounded-full"></div>
 
           {/* --- Section Links --- */}
-          <ul className="flex flex-col items-center text-center pt-2 space-y-2  mt-2 w-full">
+          <ul className="flex flex-wrap gap-5 items-center text-center pt-2 space-y-2  mt-2 w-full">
             {section.links.map((link: any) => (
               <li key={link.name} className="w-full">
                 <Link
@@ -126,7 +122,7 @@ const Footer = () => {
                       behavior: "smooth",
                     })
                   }
-                  className="relative inline-block text-[15px] font-medium text-white/80 hover:text-yellow-400 transition-all duration-300 group/link"
+                  className="relative inline-block text-[10px] font-medium text-white/80 hover:text-yellow-400 transition-all duration-300 group/link"
                 >
                   {link.name}
                   <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-yellow-400 transition-all duration-300 group-hover/link:w-full"></span>

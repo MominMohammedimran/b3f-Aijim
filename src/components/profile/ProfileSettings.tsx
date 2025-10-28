@@ -106,7 +106,7 @@ const ProfileSettings = () => {
         <CardContent className="p-1 border-none rounded-none text-sm">
           <form onSubmit={handleSubmit} className="space-y-0">
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              {/*<div>
                 <Label htmlFor="first_name"  className="text-sm">First Name</Label>
                 <Input
                 className="text-sm"
@@ -129,7 +129,7 @@ const ProfileSettings = () => {
                    className="text-sm"
                 />
               </div>
-            </div>
+            </div>*/}
             
             <div className="mb-1">
               <Label htmlFor="display_name"  className="text-sm">Display Name</Label>
