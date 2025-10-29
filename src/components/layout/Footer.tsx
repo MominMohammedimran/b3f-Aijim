@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Instagram, Mail, HandCoins } from "lucide-react";
+import { Instagram, Mail, HandCoins ,Heart} from "lucide-react";
 import Marquee from "react-fast-marquee";
 
 const Footer = () => {
@@ -17,7 +17,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-black text-gray-300 border-t border-gray-800 pb-24 sm:pb-12">
+    <footer className="bg-black text-gray-300 border-t border-gray-800 mt-10   pb-24 sm:pb-12">
       {/* 🔥 Reward Marquee */}
       <div className="bg-white text-black border-b border-gray-300 py-1 md:py-2 flex items-center">
         <Marquee gradient={false} speed={45} pauseOnHover>
@@ -69,16 +69,16 @@ const Footer = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-800 my-6 w-full  mx-4 " />
+        <div className="border-t border-gray-800 my-6 w-full  ml-4 mr-4 " />
 
         {/* Copyright */}
-        <p className="text-xs sm:text-sm text-gray-400 font-medium">
+        <p className="text-xs md:text-md lg:text-md text-gray-400 font-medium">
           © {new Date().getFullYear()}{" "}
           <span className="font-semibold text-white">AIJIM</span> ® — Made with ❤️ in India
         </p>
 
         {/* Footer Links (centered row) */}
-        <div className="flex flex-wrap justify-center items-center gap-x-7 gap-y-3 mt-6 px-2 pb-10">
+        <div className="flex flex-wrap justify-center items-center gap-x-7 gap-y-3 mt-10 px-2 pb-10">
           {footerLinks.map((link) => (
             <Link
               key={link.name}
@@ -89,7 +89,7 @@ const Footer = () => {
                   behavior: "smooth",
                 })
               }
-              className="text-[12px] sm:text-[15px] text-gray-400 hover:text-yellow-400 transition-colors duration-200"
+              className="text-[12px] sm:text-[15px] text-gray-300 hover:text-yellow-400 transition-colors duration-200"
             >
               {link.name}
             </Link>

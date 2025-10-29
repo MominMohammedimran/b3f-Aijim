@@ -117,8 +117,8 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
       {/* Header Section */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h3 className="text-lg font-semibold text-white tracking-wide">Customer Reviews</h3>
-          <div className="flex items-center mt-1 space-x-1">
+          <h3 className="text-xs md:text-md lg:text-lg font-semibold text-white tracking-wide">Customer Reviews</h3>
+          <div className="flex  items-center mt-1 space-x-1">
             {[1, 2, 3, 4, 5].map((star) => (
               <Star
                 key={star}
@@ -129,18 +129,19 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
                 }`}
               />
             ))}
-            <span className="ml-2 text-sm text-gray-400 font-semibold">
+            </div>
+            <span className=" text-xs md:text-md lg:text-lg text-gray-400 font-semibold">
               {averageRating.toFixed(1)} / 5 • {reviews.length}{' '}
               {reviews.length === 1 ? 'Review' : 'Reviews'}
             </span>
-          </div>
+          
         </div>
 
         <Button
           variant="outline"
           size="sm"
           onClick={() => setShowWriteReview(!showWriteReview)}
-          className="flex items-center gap-2 text-sm border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
+          className="flex items-center gap-2 text-xs md:text-md lg:text-lg border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition"
         >
           <PencilLine className="h-4 w-4" />
           Write Review

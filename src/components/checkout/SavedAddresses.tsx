@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Address } from "@/hooks/useAddresses";
 import { Button } from "@/components/ui/button";
-import { Edit } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
 interface SavedAddressesProps {
@@ -20,9 +19,9 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
   onAddressSelect,
   onUseNewAddress,
   useNewAddress,
-  onEditAddress,
 }) => {
   const [hasUserSelected, setHasUserSelected] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   if (!addresses || addresses.length === 0) return null;
 
@@ -31,84 +30,87 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
     onAddressSelect(id);
   };
 
-  const handleEdit = (address: Address, e: React.MouseEvent) => {
-    e.stopPropagation();
-    onEditAddress?.(address);
-  };
+  const visibleAddresses = showAll ? addresses : addresses.slice(0, 3);
 
   return (
     <div className="mb-6">
       {/* --- Saved Addresses List --- */}
-      <div className="space-y-3">
-        {addresses.map((address) => {
-          const isSelected =
-            hasUserSelected && selectedAddressId === address.id && !useNewAddress;
+      <div
+        className={`space-y-3 transition-all duration-500 overflow-y-auto border border-gray-800 p-2 rounded-md ${
+          showAll ? "max-h-[400px]" : "max-h-[230px]"
+        } custom-scrollbar`}
+      >
+        <AnimatePresence>
+          {visibleAddresses.map((address) => {
+            const isSelected =
+              hasUserSelected && selectedAddressId === address.id && !useNewAddress;
 
-          return (
-            <motion.div
-              key={address.id}
-              layout
-              onClick={() => handleSelect(address.id)}
-              whileHover={{ scale: 1.01 }}
-              className={`border p-4 rounded-none cursor-pointer transition-all duration-300 ${
-                isSelected
-                  ? "border-yellow-400 text-yellow-300 shadow-lg shadow-yellow-800/20"
-                  : "border-gray-700 text-white"
-              }`}
-            >
-              <div className="flex justify-between items-start gap-2">
-                {/* --- Left: Address Info --- */}
-                <div className="flex-1">
-                  <div className="flex justify-between items-center mb-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-sm text-yellow-400 underline">
-                        {address.first_name}
-                      </span>
-                      {address.is_default && (
-                        <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded">
-                          Default
+            return (
+              <motion.div
+                key={address.id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                whileHover={{ scale: 1.01 }}
+                onClick={() => handleSelect(address.id)}
+                className={`border p-3 rounded-none cursor-pointer transition-all duration-300 ${
+                  isSelected
+                    ? "border-yellow-400 text-yellow-300 shadow-lg shadow-yellow-800/20"
+                    : "border-gray-700 text-white hover:border-gray-500"
+                }`}
+              >
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center mb-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-yellow-400 underline">
+                          {address.first_name}
+                        </span>
+                        {address.is_default && (
+                          <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded">
+                            Default
+                          </span>
+                        )}
+                      </div>
+
+                      {isSelected && (
+                        <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded-none font-semibold tracking-wide">
+                          Selected
                         </span>
                       )}
                     </div>
 
-                    {/* --- Right: Selected Tag --- */}
-                    {isSelected && (
-                      <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded-none font-semibold tracking-wide">
-                        Selected
-                      </span>
-                    )}
+                    <p className="text-xs text-gray-300 font-medium">
+                      {address.street}
+                    </p>
+                    <p className="text-xs text-gray-400 font-medium">
+                      {address.city}, {address.state} - {address.zipcode}
+                    </p>
+                    <p className="text-xs text-gray-400 font-medium">
+                      Phone no - {address.phone}
+                    </p>
                   </div>
-
-                  <p className="text-xs text-gray-300 font-medium">
-                    {address.street}
-                  </p>
-                  <p className="text-xs text-gray-400 font-medium">
-                    {address.city}, {address.state} - {address.zipcode}
-                  </p>
-                  <p className="text-xs text-gray-400 font-medium">
-                    Phone no - {address.phone}
-                  </p>
                 </div>
-
-                {/* --- Optional Edit (commented for now)
-                {onEditAddress && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => handleEdit(address, e)}
-                    className="p-2 h-8 w-8 rounded-full bg-white text-black hover:bg-yellow-400 hover:text-black transition-all"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                )} */}
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
 
-    
+      {/* --- Show More / Less Button --- */}
+      {addresses.length > 2 && (
+        <div className="flex justify-center mt-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowAll((prev) => !prev)}
+            className="text-xs font-semibold border-gray-600 text-yellow-400 hover:text-black hover:bg-yellow-400 transition-all"
+          >
+            {showAll ? "Show Less" : "Show More"}
+          </Button>
+        </div>
+      )}
 
       {/* --- Use New Address Section --- */}
       <motion.div
@@ -129,19 +131,37 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
           Add a new shipping address below
         </p>
       </motion.div>
-        {/* --- Profile Info Message --- */}
+
+      {/* --- Profile Info Message --- */}
       <p className="text-[11px] text-gray-400 mt-3 text-center font-medium">
         To <span className="text-yellow-400 font-semibold">edit</span> or{" "}
         <span className="text-yellow-400 font-semibold">remove</span> an address,
-        visit {" "}
+        visit{" "}
         <Link
           to="/profile"
           className="text-yellow-400 underline hover:text-yellow-300"
         >
-          Profile 
+          Profile
         </Link>
         .
       </p>
+
+      {/* --- Custom Scrollbar Styling --- */}
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: rgba(234, 179, 8, 0.7); /* Yellow thumb */
+          border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(234, 179, 8, 0.9);
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+      `}</style>
     </div>
   );
 };

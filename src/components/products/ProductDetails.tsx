@@ -166,10 +166,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                 disabled={isOutOfStock}
                 className={`w-full py-1.5 text-xs font-bold border rounded-sm transition-all ${
                   selected
-                    ? "bg-white text-black underline border-2  border-blue-400"
+                    ? "bg-white text-black underline border-2  border-gray-300"
                     : isOutOfStock
                     ? "bg-black text-white line-through border-gray-700 cursor-not-allowed"
-                    : " text-white underline border-gray-200"
+                    : " text-white border-gray-200"
                 }`}
               >
                 {size}
@@ -277,7 +277,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             {}
           )}
           variant="secondary"
-          className="w-1/2 lg:w-full rounded-none border border-gray-700 font-semibold text-base bg-yellow-400 text-black hover:bg-yellow-300"
+          className="w-1/2 lg:w-full rounded-none border-l border-gray-700 font-semibold text-base bg-yellow-400 text-black hover:bg-yellow-300"
         />
       </div>
 
