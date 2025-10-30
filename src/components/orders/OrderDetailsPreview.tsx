@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate ,useParams} from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { formatPrice } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-
-import { toast } from 'sonner';
-import { X ,ArrowLeft} from 'lucide-react';
-import Layout from '@/components/layout/Layout';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { formatPrice } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { ArrowLeft, CreditCard, Package, Gift, Truck } from "lucide-react";
+import Layout from "@/components/layout/Layout";
 
 interface OrderDetailsPreviewProps {
   orders: any[];
@@ -21,52 +20,40 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const { orderid } = useParams<{ orderid: string }>();
-   const [order, setOrder] = useState<any>(null);
-
+  const [order, setOrder] = useState<any>(null);
 
   useEffect(() => {
     if (!orderid) return;
-
     const fetchOrder = async () => {
-   
       const { data, error } = await supabase
         .from("orders")
         .select("*")
         .eq("order_number", orderid)
         .single();
-
-      if (error) {
-        
-        setOrder(null);
-      } else {
-        setOrder(data);
-      }
-     
+      if (error) setOrder(null);
+      else setOrder(data);
     };
-
     fetchOrder();
   }, [orderid]);
- 
-useEffect(() => {
-  if (Array.isArray(orders)) {
-    const foundOrder = orders.find(
-      (o) => String(o.order_number) === String(orderid)
-    );
-    setOrder(foundOrder || null);
-  }
-}, [orders, orderid]);
+
+  useEffect(() => {
+    if (Array.isArray(orders)) {
+      const foundOrder = orders.find(
+        (o) => String(o.order_number) === String(orderid)
+      );
+      setOrder(foundOrder || null);
+    }
+  }, [orders, orderid]);
 
   const redirect = (product: { id: string; pd_name: string }) => {
     if (!currentUser) {
-      navigate('/signin?redirectTo=/orders');
+      navigate("/signin?redirectTo=/orders");
       return;
     }
-    if (!product.pd_name.toLowerCase().includes('custom printed')) {
+    if (!product.pd_name.toLowerCase().includes("custom printed")) {
       navigate(`/product/details/${product.id}`);
     }
   };
-
-
 
   const handleRetryPayment = (order: any) => {
     navigate(`/payment-retry/${order.order_number}`, {
@@ -79,280 +66,219 @@ useEffect(() => {
     });
   };
 
-  const handleRemoveOrder = async (orderId: string) => {
-    try {
-      const { error } = await supabase.from('orders').delete().eq('order_number', orderId);
-      if (error) throw error;
-      setOrder(null); // single order, so just clear it
-      toast.success('Order removed');
-    } catch (err) {
-    //  console.error(err);
-      toast.error('Failed to remove order');
-    }
-  };
-
- const getOrderStatusText = (status: string) => {
-  switch (status) {
-    case 'pending':
-    case 'processing':
-    case 'confirmed':
-    case 'shipped':
-    case 'delivered':
-    case 'return-acpt':
-    case 'return-pcs':
-    case 'return-pkd':
-    case 'return-wh':
-    case 'payment-rf':
-    case 'payment-rf-ss':
-      case 'cancelled':
-      return status.charAt(0).toUpperCase() + status.slice(1);
-    default:
-      return 'pending';
-  }
-};
-const getPaymentStatusText = (status: string) => {
-  switch (status) {
-    case 'paid':
-    case 'failed':
-    case 'pending':
-    case 'refunded':
-    case 'cancelled':
-    case 'refund-ss':
-      return status.charAt(0).toUpperCase() + status.slice(1);
-    default:
-      return 'pending';
-  }
-};
-
-
-
-
+  const getOrderStatusText = (status: string) =>
+    status ? status.charAt(0).toUpperCase() + status.slice(1) : "Pending";
+  const getPaymentStatusText = (status: string) =>
+    status ? status.charAt(0).toUpperCase() + status.slice(1) : "Pending";
 
   if (!order) {
     return (
-            <Layout>
-      <div className="p-4 text-gray-400 text-center">
-        No order found for #{orderNumber}
-      </div>
+      <Layout>
+        <div className="p-6 text-gray-400 text-center">
+          No order found for #{orderNumber}
+        </div>
       </Layout>
     );
   }
 
   return (
     <Layout>
-
-    <div
-      key={order.id}
-      className="bg-black grid lg:grid-cols-2 mt-12 shadow-lg p-2 hover:shadow-xl transition-shadow duration-200 overflow-hidden"
-    >
-         <div className="flex items-center mb-4 pt-8 animate-fade-in">
-                  <Link to="/orders" className="mr-2 flex items-center gap-[20px]">
-                    <ArrowLeft size={24} className="back-arrow" />
-                    <h1 className="text-2xl text-white font-bold">Back to Orders</h1>
-                  </Link>
-                  
-                </div>
-      <div className="p-2 border border-gray-200">
-        {/* Order Header */}
-        <div className="flex flex-col md:justify-evenly mb-6">
-          <div>
-            <div className="flex p-2 justify-between border-b border-gray-100 items-center gap-3 ">
-              <h3 className="text-lg font-bold md:text-xl text-gray-100">
-                {order.order_number}
-              </h3>
-              <div className="text-right md:text-2xl pt-5">
-                <div className="text-lg font-bold text-gray-200">
-                  {formatPrice(order.total)}
-                </div>
-                <div className="text-xs font-semibold text-gray-300">
-                  {order.items.reduce((total: number, item: any) => {
-                    return total + (Array.isArray(item.sizes)
-                      ? item.sizes.reduce(
-                          (sum: number, s: any) => sum + s.quantity,
-                          0
-                        )
-                      : item.quantity || 1);
-                  }, 0)}{' '}
-                  item(s)
-                </div>
-              </div>
-            </div>
-          </div>
-          
+      <div className="max-w-2xl mx-auto mt-10 pt-10 px-4 pb-24 font-sans">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <Link
+            to="/orders"
+            className="flex items-center text-yellow-400 hover:text-yellow-500"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Orders
+          </Link>
         </div>
 
-                {/* Items */}
-        <div className="border p-4 mb-6">
-          <div className="flex w-ful justify-between">
-
-          <h4 className="font-semibold text-gray-200 ">Order Items</h4>
-           { (order.payment_status!="pending"||order.payment_status!='failed')&&( 
-            <Link
-              to={`/track-order/${order.order_number}`}
-              state={{ order }}
-            >
-              <h4 className="bg-blue-600 text-sm px-2 py-1  w-full  font-semibold  text-white hover:bg-blue-700 
-              w-full  mb-2  rounded-none ">
-                Track Order
-              </h4>
-            </Link>
-              )}
-          
+        {/* Order Overview */}
+        <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-5 mb-5 shadow-lg">
+          <div className="flex justify-between items-start mb-3">
+            <div>
+              <h1 className="text-sm md:text-md font-semibold text-white tracking-wide">
+                ORDER #{order.order_number}
+              </h1>
+              <p className="text-xs text-gray-400">
+                Placed on{" "}
+                {new Date(order.created_at).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm md:text-md font-bold text-yellow-400">
+                {formatPrice(order.total)}
+              </p>
+              <p className="text-xs text-gray-400">
+                {order.items.reduce((t: number, item: any) => {
+                  return (
+                    t +
+                    (Array.isArray(item.sizes)
+                      ? item.sizes.reduce((s: number, x: any) => s + x.quantity, 0)
+                      : item.quantity || 1)
+                  );
+                }, 0)}{" "}
+                ITEM(S)
+              </p>
+            </div>
           </div>
 
+          {/* Order Items */}
           {order.items.map((item: any, idx: number) => (
             <div
               key={idx}
-              className="flex items-start gap-4 p-3 bg-gray-900 m-1"
+              className="flex items-start gap-4 py-3 border-t border-gray-800"
             >
               <img
-                src={item.image || '/placeholder.svg'}
-                onClick={() =>
-                  redirect({ id: item.code, pd_name: item.name })
-                }
-                className={`h-12 w-10 object-cover border shadow-sm hover:scale-105 ${
-                  !item.name.toLowerCase().includes('custom printed')
-                    ? 'cursor-pointer'
-                    : 'cursor-default'
+                src={item.image || "/placeholder.svg"}
+                alt={item.name}                                                                                                                                                                                                                                    
+                onClick={() => redirect({ id: item.code, pd_name: item.name })}
+                className={`w-16 h-16 rounded-md object-cover border border-gray-700 ${
+                  item.name.toLowerCase().includes("custom printed")
+                    ? ""
+                    : "cursor-pointer hover:scale-105 transition-transform"
                 }`}
-                alt={item.name}
               />
               <div className="flex-1">
-                <h5 className="text-sm font-medium line-clamp-1 text-white mb-1">{item.name}</h5>
+                <p className="text-sm font-semibold text-white line-clamp-1">
+                  {item.name}
+                </p>
                 {Array.isArray(item.sizes) ? (
-                  item.sizes.map((s: any, i: number) => (
-                    <div
-                      key={i}
-                      className="flex text-white text-xs font-medium"
-                    >
-                      <p className= "gap-0 text-[11px] font-semibold ">Size - {s.size} |  Qty - {s.quantity} 
-                         <span className="font-semibold ">
-                          &nbsp; {formatPrice(s.quantity * item.price)}
-                        </span>
+                  <div className="space-y-[2px] w-full mt-1 border-b border-gray-400 pb-2 flex flex-wrap items-center justify-start gap-4">
+                    {item.sizes.map((s: any, i: number) => (
+                      <p
+                        key={i}
+                        className="text-sm text-gray-300 font-medium leading-tight"
+                      >
+                        {s.size} × {s.quantity} 
+                        
                       </p>
-                      
-                     
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-[11px] font-semibold text-white">
-                    Size {item.size} ×  Qty — {item.quantity}
-                    <p className="font-semibold">
-                    {item.total}
-                  </p>
+                    ))}                                                                   
                   </div>
-                 
+                ) : (
+                  <p className="text-xs text-gray-300 mt-1">
+                    Qty {item.quantity} ×{" "}
+                    <span className="text-yellow-400 font-semibold">                                            
+                      {formatPrice(item.price)}
+                    </span>
+                  </p>
                 )}
+                <span className='text-yellow-400 mt-2 text-xs font-semibold'>
+                  {formatPrice(item.price)} Each Item                 
+                  </span>
               </div>
-              
             </div>
-            
           ))}
-          <p className="text-gray-200 font-semibold text-center text-[12px]">
-            Placed on{' '}
-            {new Date(order.created_at).toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
+
+          {/* Track Order */}
+          {order.payment_status !== "pending" &&
+            order.payment_status !== "failed" && (
+              <div className="mt-3 text-center">
+                <Link to={`/track-order/${order.order_number}`} state={{ order }}>
+                  <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold w-full py-3 rounded-none shadow-md hover:shadow-yellow-500/40 transition-all">
+                    <Truck className="w-4 h-4 mr-2" /> Track Order
+                  </Button>
+                </Link>
+              </div>
+            )}
         </div>
 
+        {/* Info Cards */}
+        {/* Info Cards */}
+<div className="space-y-0 mt-4">
+  {/* Payment Status */}
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-1 text-center flex flex-col items-center justify-center">
+    <div className="flex items-center justify-center gap-2 ">
+      <CreditCard className="w-5 h-5 text-yellow-400" />
+      <h3 className="text-sm font-semibold text-yellow-400 uppercase">
+        Payment Status
+      </h3>
+    </div>
+    <p className="text-sm text-white font-medium mb-1">
+      {getPaymentStatusText(order.payment_status)}
+    </p>
+    <p className="text-xs text-gray-400 mb-2">
+      Method: {order.payment_method || "N/A"}
+    </p>
 
-        {/* Status & Rewards */}
-        <div className="bg-gray-100 grid grid-cols-1 md:grid-cols-3 mb-6">
-          <div className="p-2 grid w-full items-center border-b md:border-r border-gray-800">
-            <span className="font-semibold text-sm   text-black mb-1  text-center">
-              Payment Status -<span className="w-full font-semibold  text-red-500 text-center ">
-             "{getPaymentStatusText(order.payment_status)}"
-            </span>
-            </span>
-            <p className="text-xs text-gray-800 leading-snug  font-semibold text-center mb-2 ">
-              #Note - {order.payment_method || 'N/A'} 
-            </p>
-           
-            {!['cancelled','paid','refuded','refund-ss'].includes(order.payment_status) && (
-                     <div className="flex gap-2">
-                     <Button
-                 onClick={() => handleRetryPayment(order)}
-                 className="bg-green-600 py-0 font-semibold rounded-none text-sm w-100 m-auto hover:bg-green-700 text-white "
-            >
-                 Complete Payment
-              </Button>
-                </div> 
-             )}
+    {!["cancelled", "paid", "refunded", "refund-ss"].includes(
+      order.payment_status
+    ) && (
+      <Button
+        onClick={() => handleRetryPayment(order)}
+        className="bg-green-600 hover:bg-green-700 text-white w-full mt-2 text-sm font-semibold rounded-md"
+      >
+        Complete Payment
+      </Button>
+    )}
+  </div>
+
+  {/* Order Status */}
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-1 text-center flex flex-col items-center justify-center">
+    <div className="flex items-center justify-center gap-2 ">
+      <Package className="w-5 h-5 text-yellow-400" />
+      <h3 className="text-sm font-semibold text-yellow-400 uppercase">
+        Order Status
+      </h3>
+    </div>
+    <p className="text-sm text-white font-medium mb-1">
+      {getOrderStatusText(order.status)}
+    </p>
+    <p className="text-xs text-gray-400">{order.status_note || "N/A"}</p>
+  </div>
+
+  {/* Rewards / Coupon */}
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-1 text-center flex flex-col items-center justify-center">
+    <div className="flex items-center justify-center gap-2 mb-2">
+      <Gift className="w-5 h-5 text-yellow-400" />
+      <h3 className="text-sm font-semibold text-yellow-400 uppercase">
+        Rewards / Coupon
+      </h3>
+    </div>
+    <p className="text-sm text-white font-medium mb-1">
+      Points Used:{" "}
+      <span className="text-yellow-400 font-semibold">
+        {(order.reward_points_used as any)?.points || 0}
+      </span>
+    </p>
+    <p className="text-sm text-white">
+      Coupon:{" "}
+      <span className="text-yellow-400 font-semibold">
+        {(order.coupon_code as any)?.code || "None"}
+      </span>
+    </p>
+  </div>
+</div>
 
 
-          </div>
-
-      
-            <div className="p-2 grid w-full items-center border-b w-full md:border-r border-gray-800">
-              <span className="font-semibold  w-full   text-sm  text-black mb-1 text-center ">Order Status -
-                 <span className=" w-full text-red-500 font-semibold text-center ">
-                 &nbsp;"{getOrderStatusText(order.status)}"
-              </span>
-              </span>
-             
-              
-              <p className="text-xs text-gray-800 leading-snug  font-semibold text-center mb-2">
-                #Note - {order.status_note || 'N/A'}
-              </p>
-              
-              
-            </div>
-         
-
-          <div className="p-2 w-full  grid items-center border-b  border-gray-800 ">
-             <div className=' w-full m-auto pt-1  '> 
-            <p className="text-sm font-semibold text-center text-black">
-              Reward Points Used -{' '}
-              <span className="font-semibold text-red-500  underline">
-                {(order.reward_points_used as any)?.points || 0}
-              </span>
-            </p>
-            <p className="text-sm text-black font-semibold text-center">
-              Coupon Used- {' '}
-              <span className=" font-semibold underline text-red-500">
-                {(order.coupon_code as any)?.code || 'None'}
-              </span>
-            </p>
-            </div>
-          </div>
-        </div>
-
-      
-
-        {/* Actions */}
-        <div className="w-full grid grid-cols-1 justify-evenly ">
-        
-          <div className=" flex w-full ">
-              {order.status !== 'delivered' && (
+        {/* Issue Buttons */}
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {order.status !== "delivered" && (
             <Link
               to={`/payment-issue?orderId=${order.order_number}`}
-              className="w-full "
+              className="flex-1"
             >
-              <Button className="bg-red-600 text-sm border-r border-black rounded-none hover:bg-red-700 text-white w-full">
+              <Button className="bg-yellow-600 hover:bg-red-700 text-white  w-full py-3 rounded-none font-semibold">
                 Payment Issue?
               </Button>
             </Link>
           )}
-
           <Link
             to={`/order-related-issue?orderId=${order.order_number}`}
-            className="w-full flex-cols-1 "
+            className="flex-1"
           >
-            <Button className="bg-red-600 rounded-none  hover:bg-red-700 text-white w-full ">
+            <Button className="bg-yellow-600 hover:bg-red-700 text-white w-full py-3 rounded-none font-semibold">
               Order Issue?
             </Button>
           </Link>
-          </div>
-
-
-        
         </div>
       </div>
-    </div>
     </Layout>
   );
 };
