@@ -44,13 +44,13 @@ const Footer = () => {
         />
 
         {/* Tagline */}
-        <p className="text-sm text-gray-400 font-medium leading-relaxed max-w-full mx-auto">
+        <p className="text-sm text-gray-400 font-medium leading-relaxed max-w-90 mx-auto">
           Premium oversized streetwear that defines your style.  
           Comfort meets attitude in every piece we create.
         </p>
 
         {/* Social Icons */}
-        <div className="flex justify-center space-x-4 mt-6">
+        <div className="flex justify-center space-x-4 mt-8">
           <a
             href="https://www.instagram.com/aijim.shop?igsh=ZWlnMXl1YzNkYjlx"
             target="_blank"
@@ -69,7 +69,7 @@ const Footer = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-800 my-6 w-full  ml-4 mr-4 " />
+        <div className="border-t border-gray-800 my-6 w-90 mx-1" />
 
         {/* Copyright */}
         <p className="text-xs md:text-md lg:text-md text-gray-400 font-medium">
@@ -78,7 +78,7 @@ const Footer = () => {
         </p>
 
         {/* Footer Links (centered row) */}
-        <div className="flex flex-wrap justify-center items-center gap-x-7 gap-y-3 mt-10 px-2 pb-10">
+        <div className="flex flex-wrap justify-center items-center gap-x-7 gap-y-3 mt-10 px-2 pb-5">
           {footerLinks.map((link) => (
             <Link
               key={link.name}

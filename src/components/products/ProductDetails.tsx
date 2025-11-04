@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Loader2, Share } from "lucide-react";
+import { Loader2, Share , ChevronDown} from "lucide-react";
 import { Link } from "react-router-dom";
 import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ export interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [selectedSizes, setSelectedSizes] = useState<SizeWithQuantity[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
+  const[showInstructions,setShowInstructions]=useState(false);
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
 
@@ -117,7 +118,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   return (
     <div className="relative bg-[#0b0b0b] text-white rounded-md shadow-lg">
       {/* --- Header --- */}
-      <div className="flex items-center justify-between px-4 pt-3">
+      <div className="flex items-center justify-between px-2 pt-3">
         <span className="text-sm font-semibold uppercase tracking-wide">
           AIJIM
         </span>
@@ -131,7 +132,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
 
       {/* --- Product Info --- */}
-      <div className="px-4 mt-2">
+      <div className="px-2 mt-2">
         <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
         <div className="flex items-center gap-2 mb-2">
           {product.originalPrice && product.originalPrice > product.price && (
@@ -153,7 +154,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       <LiveViewingCounter productId={product.id} />
 
       {/* --- Sizes --- */}
-      <div className="px-4">
+      <div className="px-2">
         <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
         <div className="grid grid-cols-4 md:grid-cols-5 gap-2">
           {productVariants.map(({ size, stock }) => {
@@ -181,7 +182,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       {/* --- Selected Sizes --- */}
       {selectedSizes.length > 0 && (
-        <div className="px-4 pt-4 border-t border-gray-700 mt-3">
+        <div className="px-2 pt-4 border-t border-gray-700 mt-3">
           <h4 className="text-md font-semibold mb-3">Selected Sizes</h4>
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
             {selectedSizes.map((sel) => {
@@ -282,57 +283,80 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
 
       {/* --- Delivery Section --- */}
-      <div className="p-4  bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none m-4 mt-4" >
-        <h3 className="text-md font-semibold text-yellow-300 mb-2">
-          Delivery & Returns
-        </h3>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              maxLength={6}
-              inputMode="numeric"
-              placeholder="Enter PIN Code"
-              value={pincode}
-              onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
-              className="w-80 flex-1 text-xs px-1 py-1.5 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 font-semibold focus:ring-1 focus:ring-yellow-400 outline-none"
-            />
-            <button
-              onClick={checkPincode}
-              disabled={loadingPincode}
-              className="px-2 py-1.5 bg-yellow-500 text-xs text-black font-semibold rounded-none hover:bg-yellow-400 disabled:opacity-50"
-            >
-              {loadingPincode ? "Checking..." : "Check"}
-            </button>
-          </div>
+<div className="p-4 bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none m-2 mt-4">
+  <h3 className="text-md font-semibold text-yellow-300 mb-2">
+    Delivery & Returns
+  </h3>
 
-          {pincodeChecked && pincodeResult && (
-            <p
-              className={`text-[10px] font-semibold ${
-                pincodeResult.isServiceable
-                  ? "text-green-400"
-                  : "text-red-400"
-              }`}
-            >
-              {pincodeResult.message}
-            </p>
-          )}
+  <div className="space-y-3">
+    {/* Pincode Input */}
+    <div className="flex items-center gap-2">
+      <input
+        type="text"
+        maxLength={6}
+        inputMode="numeric"
+        placeholder="Enter PIN Code"
+        value={pincode}
+        onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
+        className="w-80 flex-1 text-xs px-1 py-1.5 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 font-semibold focus:ring-1 focus:ring-yellow-400 outline-none"
+      />
+      <button
+        onClick={checkPincode}
+        disabled={loadingPincode}
+        className="px-2 py-1.5 bg-yellow-500 text-xs text-black font-semibold rounded-none hover:bg-yellow-400 disabled:opacity-50"
+      >
+        {loadingPincode ? "Checking..." : "Check"}
+      </button>
+    </div>
 
-          <div className="text-xs text-gray-300 font-medium">
-            <p>• Easy 7-day returns on eligible items</p>
-            <p>• No Cash on Delivery available</p>
-            <Link
-              to="/cancellation-refund"
-              className="text-yellow-400 hover:text-yellow-300 underline block mt-1"
-            >
-              View Cancellation & Refund Policy →
-            </Link>
-          </div>
+    {pincodeChecked && pincodeResult && (
+      <p
+        className={`text-[10px] font-semibold ${
+          pincodeResult.isServiceable ? "text-green-400" : "text-red-400"
+        }`}
+      >
+        {pincodeResult.message}
+      </p>
+    )}
+
+    {/* --- Delivery Instructions Dropdown --- */}
+    <div className="border-t border-gray-700 pt-2">
+      <button
+        onClick={() => setShowInstructions((prev) => !prev)}
+        className="w-full flex items-center justify-between text-xs font-semibold text-gray-200 hover:text-yellow-400 transition-colors"
+      >
+        Delivery Instructions
+        <ChevronDown
+          className={`w-4 h-4 transform transition-transform duration-300 ${
+            showInstructions ? "rotate-180 text-yellow-400" : "rotate-0"
+          }`}
+        />
+      </button>
+
+      {/* Dropdown content */}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-in-out ${
+          showInstructions ? "max-h-[300px] mt-2" : "max-h-0"
+        }`}
+      >
+        <div className="bg-gray-800 text-gray-300 text-xs font-medium p-3 border border-gray-700 rounded-none space-y-1 leading-relaxed">
+          <p>• Easy 7-day returns on eligible items</p>
+          <p>• No Cash on Delivery available</p>
+          <Link
+            to="/cancellation-refund"
+            className="text-yellow-400 hover:text-yellow-300 underline block mt-1"
+          >
+            View Cancellation & Refund Policy →
+          </Link>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
 
       {/* --- Description + Coupons --- */}
-      <div className="px-4 pb-4">
+      <div className="px-2 pb-4">
         <ProductDescription desc={product.description} />
         <AvailableCoupons />
       </div>

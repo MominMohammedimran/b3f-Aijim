@@ -115,7 +115,7 @@ const IndexFeaturesproducts: React.FC<Props> = ({ product, onClick }) => {
       {/* 🏷️ Product Info */}
       <div className="p-1 text-center space-y-1">
         {/* Product Name */}
-        <h3 className="text-[13px] text-white font-medium tracking-wide leading-tight line-clamp-2">
+        <h3 className="text-[13px] w-full p-1 text-white font-medium tracking-wide leading-tight line-clamp-2">
           {product.name}
         </h3>
 

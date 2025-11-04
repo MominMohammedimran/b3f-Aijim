@@ -57,84 +57,86 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
     : [];
 
   return (
-    <div
-      onClick={() => onClick?.(product)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setCurrentImage(0);
-      }}
-      className="group cursor-pointer bg-[#0b0b0b] rounded-none  overflow-hidden transition-all duration-500 hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] hover:-translate-y-1"
+     <div
+          onClick={() => onClick?.(product)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setCurrentImage(0);
+          }}
+          className="cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] hover:-translate-y-1"
+    
+    
     >
-      {/* 🖼️ Image Section */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900">
-        {images.map((img, i) => (
-          <img
-            key={i}
-            src={img}
-            alt={product.name}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-              i === currentImage ? "opacity-100" : "opacity-0"
-            } group-hover:scale-[1.03]`}
-          />
-        ))}
-
-        {/* 🔖 Discount Tag */}
-        {pct > 0 && (
-          <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-[1px] rounded-sm font-semibold">
-            {pct}% OFF
-          </div>
-        )}
-
-        {/* ⭐ Rating */}
-        {reviewStats.reviewCount > 0 && (
-          <div className="absolute bottom-1 left-0 bg-black/60 backdrop-blur-sm px-2 py-[1px] rounded-sm flex items-center gap-1 text-yellow-400 text-[10px]">
-            <Star className="w-3 h-3 fill-yellow-400" />
-            {reviewStats.averageRating.toFixed(1)}
-            <span className="text-gray-300 text-[9px] ml-1">
-              ({reviewStats.reviewCount})
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* 🏷️ Product Info */}
-      <div className="p-3 text-center space-y-1">
-        {/* Name */}
-        <h3 className="text-[13px] text-white font-medium tracking-wide leading-tight line-clamp-2">
-          {product.name}
-        </h3>
-
-        {/* Price */}
-        <div className="flex justify-center items-center gap-2">
-          {discount && (
-            <span className="text-gray-500 text-[12px] line-through">
-              ₹{product.originalPrice}
-            </span>
-          )}
-          <span className="text-yellow-400 text-[14px] font-semibold">
-            ₹{product.price}
-          </span>
-        </div>
-
-        {/* Sizes 
-        {availableSizes.length > 0 && (
-          <div className="flex justify-center flex-wrap gap-1 mt-1">
-            {availableSizes.slice(0, 5).map((s, i) => (
-              <span
+          {/* 🖼️ Product Image with hover carousel */}
+          <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900">
+            {images.map((img, i) => (
+              <img
                 key={i}
-                className="text-[10px] text-gray-400 border border-gray-700 px-1 py-[1px] rounded-sm"
-              >
-                {s}
-              </span>
+                src={img}
+                alt={product.name}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  i === currentImage ? "opacity-100" : "opacity-0"
+                } group-hover:scale-[1.03]`}
+              />
             ))}
-            {availableSizes.length > 5 && (
-              <span className="text-[10px] text-gray-500">+ more</span>
+    
+            {/* 🔖 Discount Tag */}
+            {pct > 0 && (
+              <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-[1px] rounded-sm font-semibold z-10">
+                {pct}% OFF
+              </div>
+            )}
+    
+            {/* ⭐ Rating */}
+            {reviewStats.reviewCount > 0 && (
+              <div className="absolute bottom-1 left-0 bg-black/60 backdrop-blur-sm px-2 py-[1px] rounded-sm flex items-center gap-1 text-yellow-400 text-[10px] font-semibold">
+                <Star className="w-3 h-3 fill-yellow-400" />
+                {reviewStats.averageRating.toFixed(1)}
+                <span className="text-gray-300 text-[9px] ml-1">
+                  ({reviewStats.reviewCount})
+                </span>
+              </div>
             )}
           </div>
-        )}*/}
-      </div>
-    </div>
+    
+          {/* 🏷️ Product Info */}
+          <div className="p-1 text-center space-y-1">
+            {/* Product Name */}
+            <h3 className="text-[13px] w-full p-1 text-white font-medium tracking-wide leading-tight line-clamp-2">
+              {product.name}
+            </h3>
+    
+            {/* Price Section */}
+            <div className="flex justify-center items-center gap-2">
+              {discount && (
+                <span className="text-gray-500 text-[12px] line-through">
+                  ₹{product.originalPrice}
+                </span>
+              )}
+              <span className="text-yellow-400 text-[14px] font-semibold">
+                ₹{product.price}
+              </span>
+            </div>
+    
+            {/* Sizes 
+            {sizes.length > 0 && (
+              <div className="flex justify-center flex-wrap gap-1 mt-1">
+                {sizes.slice(0, 5).map((size, i) => (
+                  <span
+                    key={i}
+                    className="text-[10px] text-gray-400 border border-gray-700 px-1 py-[1px] rounded-sm"
+                  >
+                    {size}
+                  </span>
+                ))}
+                {sizes.length > 5 && (
+                  <span className="text-[10px] text-gray-500">+ more</span>
+                )}
+              </div>
+            )}*/}
+          </div>
+        </div>
   );
 };
 
