@@ -134,19 +134,20 @@ export default function PaymentRelatedIssue() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-950 py-10">
-        <div className="max-w-4xl mx-auto px-4 space-y-6">
+      <div className="min-h-screen bg-gray-950 py-10 pt-10 mt-10">
+        <div className="max-w-4xl mx-auto px-4 space-y-4">
           {/* Header */}
           <div className="flex items-center gap-3">
             <Link
               to={`/order-preview/${orderId}`}
-              className="flex items-center text-yellow-400 hover:text-yellow-300"
+              className="flex items-center text-yellow-400 hover:text-yellow-300 font-semibold"
             >
-              <ArrowLeft className="w-5 h-5 mr-1" />
+              <ArrowLeft className="w-4 h-4 mr-1" />
               Back
             </Link>
-            <h1 className="text-2xl font-bold text-white">Payment Related Issue</h1>
-          </div>
+            </div>
+            <h1 className="text-xl lg:text-2xl font-bold text-center text-yellow-400 underline">Payment Issue</h1>
+          
           <p className="text-gray-400 text-sm font-medium">
             Report payment-related concerns — missing, delayed, or refund issues.
           </p>

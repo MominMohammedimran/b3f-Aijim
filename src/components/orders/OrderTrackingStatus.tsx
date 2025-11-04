@@ -47,12 +47,12 @@ export default function OrderTrackingStatus({
 
   return (
     <div className="w-full mx-auto p-1 bg-black rounded-none shadow-lg">
-      <h2 className="text-md lg:text-lg font-semibold text-yellow-400 mb-3 text-center">
+      <h2 className="text-md lg:text-lg font-semibold text-yellow-400 mb-3 text-center hidden">
         {isReturnFlow ? "Return & Refund Progress" : "Order Progress"}
       </h2>
 
       {/* Steps Row */}
-      <div className="flex justify-between items-center relative">
+      <div className="flex justify-between items-center relative hidden">
         {/* Progress Line */}
         <div className="absolute top-1/2 left-0 mt-2  w-full h-1 bg-gray-700 rounded-full -translate-y-1/2">
           <div
@@ -96,8 +96,8 @@ export default function OrderTrackingStatus({
       </div>
 
       {estimatedDelivery && (
-        <p className="text-center text-gray-400 mt-6 text-xs lg:text-sm">
-          Current Status : <span className="text-yellow-400 font-semibold">{estimatedDelivery}</span>
+        <p className="text-center text-gray-200  text-sm lg:text-md font-semibold leading-tight line-clamnp-1">
+          Current Status - <span className="text-yellow-400 font-semibold underline  ">{estimatedDelivery}</span>
         </p>
       )}
  

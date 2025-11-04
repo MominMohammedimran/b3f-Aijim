@@ -70,7 +70,7 @@ const Products = () => {
         variant="outline"
         size="sm"
         onClick={() => setOpenMenu(openMenu === section ? null : section)}
-        className="flex items-center gap-1 bg-white font-bold text-black text-xs"
+        className="flex items-center gap-1 py-0.5 bg-white font-bold text-black text-xs rounded-none"
       >
         Sort <ChevronDown size={15} />
       </Button>
@@ -164,7 +164,7 @@ const Products = () => {
           ) : (
             <>
               <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
-              <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />
+             {/*} <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />*/}
 
               <section className="px-4 mt-10">
                 <div className="flex justify-between items-center mb-3">
