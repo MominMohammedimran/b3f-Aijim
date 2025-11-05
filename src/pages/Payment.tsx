@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import RazorpayCheckout from '../components/payment/RazorpayCheckout';
+import CashfreeCheckout from '../components/payment/CashfreeCheckout';
 import { Button } from '@/components/ui/button';
 import { useDeliverySettings } from '@/hooks/useDeliverySettings';
 import {
