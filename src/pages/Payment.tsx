@@ -144,7 +144,7 @@ const Payment = () => {
             <div className="bg-gray-800 shadow-sm border">
               <h2 className="text-lg text-yellow-400 border-b border-gray-100 font-semibold text-center pt-3 mb-2">Payment Summary </h2>
 
-              {/* Razorpay Checkout 
+              {/* Razorpay Checkout */}
               <div>
                 <RazorpayCheckout
                   amount={finalTotal}
@@ -157,8 +157,8 @@ const Payment = () => {
                   onRemoveSize={removeSizeFromCart}
                   onRemoveItem={removeFromCart}
                 />
-              </div>*/}
-                {/* Cashfree Checkout */}
+              </div>
+                {/* Cashfree Checkout 
               <div>
                 <CashfreeCheckout
                   amount={finalTotal}
@@ -171,7 +171,7 @@ const Payment = () => {
                   onRemoveSize={removeSizeFromCart}
                   onRemoveItem={removeFromCart}
                 />
-              </div>
+              </div>*/}
 
             </div>
           </div>
