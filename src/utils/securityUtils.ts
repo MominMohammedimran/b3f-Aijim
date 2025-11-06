@@ -17,53 +17,52 @@ export const enforceHttps = (): void => {
  */
 export const setContentSecurityPolicy = (): void => {
   if (typeof document !== 'undefined') {
-    // Content Security Policy
     const existingCSP = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
     if (!existingCSP) {
       const meta = document.createElement('meta');
-     meta.setAttribute('http-equiv', 'Content-Security-Policy');
-meta.setAttribute(
-  'content',
-  "default-src 'self'; " +
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://cdn.gpteng.co; " +
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-  "font-src 'self' https://fonts.gstatic.com; " +
-  "img-src 'self' data: blob: https:; " +
-  "connect-src 'self' https: wss:; " +
-  "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com; " +
-  "media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co;"
-);
- document.head.appendChild(meta);
+      meta.setAttribute('http-equiv', 'Content-Security-Policy');
+      meta.setAttribute(
+        'content',
+        [
+          "default-src 'self';",
+          // ✅ Allow Razorpay + Cashfree SDKs
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co;",
+          // ✅ Allow styles and Google Fonts
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
+          "font-src 'self' https://fonts.gstatic.com;",
+          // ✅ Allow Supabase and data URLs for images
+          "img-src 'self' data: blob: https:;",
+          // ✅ Allow API and websocket connections (Razorpay, Cashfree, Supabase, etc.)
+          "connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://payments.cashfree.com https://cmpggiyuiattqjmddcac.supabase.co https://zfdsrtwjxwzwbrtfgypm.supabase.co;",
+          // ✅ Allow iframes for Razorpay + Cashfree checkout
+          "frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com;",
+          // ✅ Allow Supabase storage for media
+          "media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co;"
+        ].join(' ')
+      );
+      document.head.appendChild(meta);
     }
 
     // Strict Transport Security (HSTS)
-    const existingHSTS = document.querySelector('meta[http-equiv="Strict-Transport-Security"]');
-    if (!existingHSTS) {
-      const hstsMeta = document.createElement('meta');
-      hstsMeta.setAttribute('http-equiv', 'Strict-Transport-Security');
-      hstsMeta.setAttribute('content', 'max-age=31536000; includeSubDomains; preload');
-      document.head.appendChild(hstsMeta);
-    }
+    const hsts = document.createElement('meta');
+    hsts.setAttribute('http-equiv', 'Strict-Transport-Security');
+    hsts.setAttribute('content', 'max-age=31536000; includeSubDomains; preload');
+    document.head.appendChild(hsts);
 
     // X-Content-Type-Options
-    const existingContentTypeOptions = document.querySelector('meta[http-equiv="X-Content-Type-Options"]');
-    if (!existingContentTypeOptions) {
-      const contentTypeMeta = document.createElement('meta');
-      contentTypeMeta.setAttribute('http-equiv', 'X-Content-Type-Options');
-      contentTypeMeta.setAttribute('content', 'nosniff');
-      document.head.appendChild(contentTypeMeta);
-    }
+    const xcto = document.createElement('meta');
+    xcto.setAttribute('http-equiv', 'X-Content-Type-Options');
+    xcto.setAttribute('content', 'nosniff');
+    document.head.appendChild(xcto);
 
     // Referrer Policy
-    const existingReferrerPolicy = document.querySelector('meta[name="referrer"]');
-    if (!existingReferrerPolicy) {
-      const referrerMeta = document.createElement('meta');
-      referrerMeta.setAttribute('name', 'referrer');
-      referrerMeta.setAttribute('content', 'strict-origin-when-cross-origin');
-      document.head.appendChild(referrerMeta);
-    }
+    const ref = document.createElement('meta');
+    ref.setAttribute('name', 'referrer');
+    ref.setAttribute('content', 'strict-origin-when-cross-origin');
+    document.head.appendChild(ref);
   }
 };
+
 
 /**
  * Check password strength
