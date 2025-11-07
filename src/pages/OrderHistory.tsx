@@ -165,8 +165,8 @@ const OrderHistory = () => {
   <div className="text-right text-[11px] space-y-1">
     {/* Payment Status */}
     <div className="flex items-center justify-end gap-1">
-      <span className="text-gray-400 font-semibold">Payment Status:</span>
-      <span
+      <span className="text-gray-400 font-semibold">Payment - </span>
+<span
         className={`font-bold uppercase px-2 py-0.5 rounded-sm ${
           order.payment_status === "paid"
             ? "bg-green-500 text-black"
@@ -181,7 +181,7 @@ const OrderHistory = () => {
 
     {/* Order Status */}
     <div className="flex items-center justify-end gap-1">
-      <span className="text-gray-400 font-semibold">Order Status:</span>
+      <span className="text-gray-400 font-semibold">Order - </span>
       <span
         className={`font-bold uppercase px-2 py-0.5 rounded-sm ${
           order.status === "delivered"
