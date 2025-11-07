@@ -214,13 +214,13 @@ const OrderHistory = () => {
 
                     {/* Timer */}
                     {order.payment_status === "pending" && (
-                      <div className="text-center text-xs text-yellow-400 font-semibold px-3 pb-2">
+                      <div className="text-center text-xs text-yellow-400 font-semibold px-3 pb-2 lowercase">
                         Complete payment within{" "}
                         <span className="text-white">{countdown}</span> before expiry.
                       </div>
                     )}
                     {order.status === "cancelled" && (
-                      <p className="text-center text-xs text-red-400 font-semibold px-3 pb-2">
+                      <p className="text-center text-xs text-red-400 font-semibold px-3 pb-2 lowercase">
                         Order cancelled. Auto-removal after {countdown}.
                       </p>
                     )}

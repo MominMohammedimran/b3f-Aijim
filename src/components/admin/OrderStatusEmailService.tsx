@@ -130,21 +130,27 @@ export const sendOrderConfirmationEmail = async (
       return false;
     }
 
-    const loadingToast = toast.loading('📧 Sending confirmation email...');
-    const { data, error } = await supabase.functions.invoke('send-order-confirmation', {
-      body: {
-        orderId: orderData.orderId,
-        customerEmail: orderData.customerEmail.trim(),
-        customerName: orderData.customerName || 'Customer',
-        status:orderData.status ,
-        orderItems: orderData.orderItems || [],
-        totalAmount: orderData.totalAmount,
-        
-        emailType: 'status_update',
-        
-      }
-    });
-    toast.dismiss(loadingToast);
+   const loadingToast = toast.loading("📧 Sending confirmation email...");
+
+const { data, error } = await supabase.functions.invoke("send-order-notification", {
+  body: {
+    userEmail: orderData.customerEmail?.trim(),
+    orderDetails: {
+      order_number: orderData.orderId,
+      total: orderData.totalAmount,
+      items: orderData.orderItems || [],
+      shipping_address: orderData.shippingAddress,
+      payment_details: { method: orderData.paymentMethod },
+      coupon_code: orderData.couponCode,
+      reward_points_used: orderData.rewardPointsUsed,
+      delivery_fee: orderData.deliveryFee,
+      status: orderData.status,
+    },
+  },
+});
+
+toast.dismiss(loadingToast);
+alt
 
     if (error) {
       toast.error(`Confirmation email failed: ${error.message}`);
