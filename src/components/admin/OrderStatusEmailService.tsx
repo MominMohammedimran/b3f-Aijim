@@ -150,7 +150,6 @@ const { data, error } = await supabase.functions.invoke("send-order-notification
 });
 
 toast.dismiss(loadingToast);
-alt
 
     if (error) {
       toast.error(`Confirmation email failed: ${error.message}`);
