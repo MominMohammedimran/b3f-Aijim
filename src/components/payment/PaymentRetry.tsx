@@ -208,8 +208,8 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
       <h2 className="text-center text-xl font-bold text-white mb-1 uppercase tracking-wide">
         Retry Payment
       </h2>
-      <p className="text-center text-gray-400 text-sm mb-5">
-        Order #{orderNumber}
+      <p className="text-center text-gray-400 text-sm font-semibold mb-5">
+        #{orderNumber}
       </p>
 
       {/* Order Items */}

@@ -100,7 +100,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
           <div className="flex justify-between items-start mb-3">
             <div>
               <h1 className="text-sm md:text-md font-semibold text-white tracking-wide">
-                ORDER #{order.order_number}
+                 #{order.order_number}
               </h1>
               <p className="text-xs text-gray-400">
                 Placed on{" "}
@@ -193,7 +193,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
         {/* Info Cards */}
 <div className="space-y-0 mt-4">
   {/* Payment Status */}
-  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-1 text-center flex flex-col items-center justify-center">
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
     <div className="flex items-center justify-center gap-2 ">
       <CreditCard className="w-5 h-5 text-yellow-400" />
       <h3 className="text-sm font-semibold text-yellow-400 uppercase">
@@ -209,10 +209,10 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
 
     {!["cancelled", "paid", "refunded", "refund-ss"].includes(
       order.payment_status
-    ) && (
+    ) && !["cancelled"].includes(order.status)&& (
       <Button
         onClick={() => handleRetryPayment(order)}
-        className="bg-green-600 hover:bg-green-700 text-white w-full mt-2 text-sm font-semibold rounded-md"
+        className="bg-green-600 hover:bg-green-700 text-white w-full mt-2 mb-2 text-sm font-semibold rounded-none"
       >
         Complete Payment
       </Button>
@@ -220,7 +220,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
   </div>
 
   {/* Order Status */}
-  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-1 text-center flex flex-col items-center justify-center">
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
     <div className="flex items-center justify-center gap-2 ">
       <Package className="w-5 h-5 text-yellow-400" />
       <h3 className="text-sm font-semibold text-yellow-400 uppercase">
@@ -234,7 +234,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
   </div>
 
   {/* Rewards / Coupon */}
-  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-1 text-center flex flex-col items-center justify-center">
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
     <div className="flex items-center justify-center gap-2 mb-2">
       <Gift className="w-5 h-5 text-yellow-400" />
       <h3 className="text-sm font-semibold text-yellow-400 uppercase">
@@ -264,7 +264,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
               to={`/payment-issue?orderId=${order.order_number}`}
               className="flex-1"
             >
-              <Button className="bg-yellow-600 hover:bg-red-700 text-white  w-full py-3 rounded-none font-semibold">
+              <Button className="bg-red-600 hover:bg-yellow-700 text-white  w-full py-3 rounded-none font-semibold">
                 Payment Issue?
               </Button>
             </Link>
@@ -273,7 +273,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
             to={`/order-related-issue?orderId=${order.order_number}`}
             className="flex-1"
           >
-            <Button className="bg-yellow-600 hover:bg-red-700 text-white w-full py-3 rounded-none font-semibold">
+            <Button className="bg-red-600 hover:bg-yellow-700 text-white w-full py-3 rounded-none font-semibold">
               Order Issue?
             </Button>
           </Link>

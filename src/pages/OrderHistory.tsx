@@ -147,7 +147,7 @@ const OrderHistory = () => {
                     <div className="p-3 border-b border-gray-800 flex justify-between items-center">
                       <div>
                         <h4 className="font-bold text-white text-sm">
-                          Order #{order.order_number}
+                         #{order.order_number}
                         </h4>
                         <p className="text-xs text-gray-500">
                           {new Date(order.created_at).toLocaleDateString("en-US", {
@@ -159,26 +159,47 @@ const OrderHistory = () => {
                         </p>
                       </div>
 
-                      <div className="text-right text-[10px]">
-                        <span
-                          className={`block font-bold uppercase px-2 py-0.5 rounded-sm ${
-                            order.payment_status === "paid"
-                              ? "bg-green-500 text-black"
-                              : "bg-red-600 text-white"
-                          }`}
-                        >
-                          {order.payment_status}
-                        </span>
-                        <span
-                          className={`mt-1 block font-bold uppercase px-2 py-0.5 rounded-sm ${
-                            order.status === "delivered"
-                              ? "bg-green-400 text-black"
-                              : "bg-yellow-400 text-black"
-                          }`}
-                        >
-                          {order.status}
-                        </span>
-                      </div>
+                    
+
+  {/* Right Section — Status Labels */}
+  <div className="text-right text-[11px] space-y-1">
+    {/* Payment Status */}
+    <div className="flex items-center justify-end gap-1">
+      <span className="text-gray-400 font-semibold">Payment Status:</span>
+      <span
+        className={`font-bold uppercase px-2 py-0.5 rounded-sm ${
+          order.payment_status === "paid"
+            ? "bg-green-500 text-black"
+            : order.payment_status === "pending"
+            ? "bg-yellow-500 text-black"
+            : "bg-red-600 text-white"
+        }`}
+      >
+        {order.payment_status}
+      </span>
+    </div>
+
+    {/* Order Status */}
+    <div className="flex items-center justify-end gap-1">
+      <span className="text-gray-400 font-semibold">Order Status:</span>
+      <span
+        className={`font-bold uppercase px-2 py-0.5 rounded-sm ${
+          order.status === "delivered"
+            ? "bg-green-400 text-black"
+            : order.status === "cancelled"
+            ? "bg-red-500 text-white"
+            : order.status === "confirmed"
+            ? "bg-blue-400 text-black"
+            : order.status === "processing"
+            ? "bg-yellow-400 text-black"
+            : "bg-gray-500 text-white"
+        }`}
+      >
+        {order.status}
+      </span>
+    </div>
+  </div>
+
                     </div>
 
                     {/* Items */}
@@ -195,7 +216,7 @@ const OrderHistory = () => {
                             className="h-14 w-14 object-cover rounded-sm border border-gray-700"
                           />
                           <div className="flex-1">
-                            <p className="text-sm font-semibold line-clamp-2">{item.name}</p>
+                            <p className="text-sm font-bold line-clamp-2">{item.name}</p>
                             <div className='flex items-center gap-4  flex-wrap '>
                             {item.sizes?.map((s, j) => (
                               

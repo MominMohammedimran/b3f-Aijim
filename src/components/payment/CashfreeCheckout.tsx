@@ -100,7 +100,7 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
     }
 
     // Create new script
-    console.log('Loading Cashfree SDK script...');
+    
     const script = document.createElement('script');
     script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
     script.async = true;
@@ -227,12 +227,10 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
         .single();
 
       if (dbError) {
-        console.error('Database error:', dbError);
         throw new Error('Failed to create order');
       }
 
-      console.log('Order created in database:', createdOrder.id);
-
+     
       // Create Cashfree payment session
       const paymentData = {
         order_amount: finalTotal,
@@ -246,13 +244,12 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
         }
       };
 
-      console.log('Creating Cashfree payment session with data:', paymentData);
+
       const { data: sessionResponse, error: sessionError } = await supabase.functions.invoke('create-cashfree-order', {
         body: paymentData
       });
 
-      console.log('Cashfree response:', { sessionResponse, sessionError });
-
+      
       if (sessionError) {
         console.error('Cashfree session error:', sessionError);
         throw new Error(sessionError.message || 'Failed to create payment session');
