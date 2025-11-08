@@ -100,7 +100,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
 
         try {
           if (["processing", "confirmed", "shipped", "delivered"].includes(selectedStatus)) {
-            await sendOrderConfirmationEmail(emailPayload);
+            await sendOrderStatusEmail(emailPayload);
            {/* console.log("📦 Order confirmation email sent");*/}
           } else if (
             ["return-acpt", "return-pcs", "return-pkd", "return-wh", "payment-rf", "payment-rf-ss"].includes(selectedStatus)
