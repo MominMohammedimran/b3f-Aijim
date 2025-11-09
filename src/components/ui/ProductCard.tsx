@@ -62,9 +62,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
         setIsHovered(false);
         setCurrentImage(0);
       }}
-      className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] ${
-        outOfStock ? "opacity-70 pointer-events-none" : "hover:-translate-y-1"
-      }`}
+      className="cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] hover:-translate-y-1"
     >
       {/* 🖼️ Product Image */}
       <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900">
@@ -80,7 +78,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
         ))}
 
         {/* 🔖 Discount Tag */}
-        {pct > 0 && !outOfStock && (
+        {pct > 0 && (
           <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-[1px] rounded-sm font-semibold z-10">
             {pct}% OFF
           </div>
@@ -97,12 +95,12 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
           </div>
         )}
 
-        {/* ❌ SOLD OUT Overlay */}
+        {/* 🚫 SOLD OUT Label */}
         {outOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-            <span className="text-red-500 bg-white px-2 text-lg font-bold tracking-widest uppercase ">
+          <div className="absolute inset-0 flex items-center justify-center z-20">
+            <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg">
               SOLD OUT
-            </span>
+            </div>
           </div>
         )}
       </div>
