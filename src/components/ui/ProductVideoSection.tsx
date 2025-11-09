@@ -37,7 +37,7 @@ const ProductVideoSection: React.FC = () => {
           {videos.map((video) => (
             <div
               key={video.id}
-              className="relative w-full max-w-[230px] aspect-[3/6] bg-gray-900 overflow-hidden shadow-lg group"
+              className="relative w-full max-w-[250px] aspect-[4/6] bg-gray-900 overflow-hidden shadow-lg group"
             >
               {/* 🎥 Video */}
               <video
