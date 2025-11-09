@@ -36,50 +36,30 @@ const Search = () => {
   useEffect(() => {
     async function loadProducts() {
       const { data, error } = await supabase.from('products').select('*');
-      if (error) {
-        console.error('Error loading products:', error);
-      } else {
-        setAllProducts(data || []);
-      }
+      if (error) console.error('Error loading products:', error);
+      else setAllProducts(data || []);
     }
     loadProducts();
   }, []);
 
-  // Extract unique categories and sizes
   const uniqueCategories = [...new Set(allProducts.map((p) => p.category))];
+  const allAvailableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-  const availableSizes = Array.from(
-    new Set(
-      allProducts.flatMap((p) => {
-        const variants = Array.isArray(p.variants)
-          ? p.variants
-          : typeof p.variants === 'string'
-          ? JSON.parse(p.variants)
-          : [];
-        return variants.map((v) => v.size?.toUpperCase());
-      })
-    )
-  ).sort();
-
-  // ✅ Filter and sort logic
+  // ✅ Filter + sort logic
   useEffect(() => {
-    window.scrollTo(0, 0);
-
     let filtered = [...allProducts];
 
-    // Search
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
-        (product) =>
-          product.name?.toLowerCase().includes(q) ||
-          product.category?.toLowerCase().includes(q) ||
-          product.code?.toLowerCase().includes(q) ||
-          product.description?.toLowerCase().includes(q)
+        (p) =>
+          p.name?.toLowerCase().includes(q) ||
+          p.category?.toLowerCase().includes(q) ||
+          p.code?.toLowerCase().includes(q) ||
+          p.description?.toLowerCase().includes(q)
       );
     }
 
-    // Category filters
     if (selectedCategory) {
       filtered = filtered.filter(
         (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
@@ -94,32 +74,27 @@ const Search = () => {
       );
     }
 
-    // ✅ Size filter
+    // ✅ Size filter (includes out-of-stock)
     if (selectedSizes.length > 0) {
       filtered = filtered.filter((p) => {
-        const variants = Array.isArray(p.variants)
-          ? p.variants
-          : typeof p.variants === 'string'
-          ? JSON.parse(p.variants)
-          : [];
-
-        return variants.some(
-          (variant) =>
-            selectedSizes.includes(variant.size?.toUpperCase()) &&
-            Number(variant.stock) > 0
+        const variants =
+          typeof p.variants === 'string'
+            ? JSON.parse(p.variants)
+            : Array.isArray(p.variants)
+            ? p.variants
+            : [];
+        return variants.some((v) =>
+          selectedSizes.includes(v.size?.toUpperCase())
         );
       });
     }
 
-    // Sort
     switch (sortOption) {
       case 'price-low-high':
         filtered.sort((a, b) => a.price - b.price);
         break;
       case 'price-high-low':
         filtered.sort((a, b) => b.price - a.price);
-        break;
-      default:
         break;
     }
 
@@ -134,7 +109,6 @@ const Search = () => {
     allProducts,
   ]);
 
-  // --- Navigation handlers ---
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -172,28 +146,32 @@ const Search = () => {
     );
   };
 
-  // Pagination
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const currentProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-      window.scrollTo(0, 0);
-    }
+  const nextPage = () => currentPage < totalPages && setCurrentPage((p) => p + 1);
+  const prevPage = () => currentPage > 1 && setCurrentPage((p) => p - 1);
+
+  // ✅ Helper to check stock for dimming unavailable sizes
+  const isSizeOutOfStock = (size: string) => {
+    return !allProducts.some((p) => {
+      const variants =
+        typeof p.variants === 'string'
+          ? JSON.parse(p.variants)
+          : Array.isArray(p.variants)
+          ? p.variants
+          : [];
+      return variants.some(
+        (v) =>
+          v.size?.toUpperCase() === size &&
+          Number(v.stock) > 0
+      );
+    });
   };
 
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-      window.scrollTo(0, 0);
-    }
-  };
-
-  // ✅ UI
   return (
     <Layout>
       <div className="container-custom mt-16">
@@ -221,8 +199,8 @@ const Search = () => {
         />
       </div>
 
-      {/* Sticky Filter & Sort Buttons */}
-      <div className="fixed bottom-14 left-0 right-0 z-50 bg-black/50 border-t border-gray-200 py-0 flex justify-around">
+      {/* Bottom Filter/Sort Bar */}
+      <div className="fixed bottom-14 left-0 right-0 z-50 bg-black/50 border-t border-gray-200 flex justify-around">
         <Button
           onClick={() => setIsFilterPopupOpen(true)}
           className="bg-gray-900 text-white uppercase font-semibold border-r border-gray-200 rounded-none shadow-lg w-1/2 hover:bg-gray-900"
@@ -231,7 +209,7 @@ const Search = () => {
         </Button>
         <Button
           onClick={() => setIsSortPopupOpen(true)}
-          className="bg-gray-900 text-white uppercase font-semibold px-6 rounded-none shadow-lg w-1/2 hover:bg-gray-900"
+          className="bg-gray-900 text-white uppercase font-semibold rounded-none shadow-lg w-1/2 hover:bg-gray-900"
         >
           Sort <ChevronDown size={18} />
         </Button>
@@ -254,27 +232,35 @@ const Search = () => {
               </button>
             </div>
 
-            {/* Filter by Size */}
+            {/* ✅ Size Filter (grayed-out for out-of-stock) */}
             <div className="mb-6">
               <h3 className="font-semibold mb-3 text-lg">Size</h3>
               <div className="flex flex-wrap gap-3 justify-center">
-                {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => toggleSize(size)}
-                    className={`px-5 py-2 rounded-full border font-semibold transition-all ${
-                      selectedSizes.includes(size)
-                        ? 'bg-yellow-400 text-black border-yellow-400 scale-105'
-                        : 'border-gray-600 text-white hover:bg-gray-800'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+                {allAvailableSizes.map((size) => {
+                  const outOfStock = isSizeOutOfStock(size);
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => toggleSize(size)}
+                      className={`px-5 py-2 rounded-full border font-semibold transition-all ${
+                        selectedSizes.includes(size)
+                          ? 'bg-yellow-400 text-black border-yellow-400 scale-105'
+                          : outOfStock
+                          ? 'border-gray-600 text-gray-400 bg-gray-800 cursor-pointer'
+                          : 'border-gray-600 text-white hover:bg-gray-800'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
               </div>
+              <p className="text-xs text-gray-400 mt-2 text-center">
+                *Dimmed sizes are currently out of stock but can be pre-booked.
+              </p>
             </div>
 
-            {/* Filter by Category */}
+            {/* Category Filter */}
             <div className="mb-6">
               <h3 className="font-semibold mb-3 text-lg">Category</h3>
               <div className="grid grid-cols-2 gap-2">
