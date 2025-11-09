@@ -5,9 +5,9 @@ import Layout from '../components/layout/Layout';
 import { Product } from '../lib/types';
 import { Button } from '@/components/ui/button';
 import SearchBox from '../components/search/SearchBox';
-import ProductGrid from '../components/search/ProductGrid';
 import Pagination from '../components/search/Pagination';
 import { supabase } from '@/lib/supabase';
+import ProductCard from '@/components/ui/ProductCard'; // ✅ Using ProductCard directly
 
 type SortOption = 'default' | 'price-low-high' | 'price-high-low';
 type FilterCategory = string | null;
@@ -32,7 +32,7 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  // ✅ Load all products from Supabase
+  // ✅ Load all products
   useEffect(() => {
     async function loadProducts() {
       const { data, error } = await supabase.from('products').select('*');
@@ -45,7 +45,7 @@ const Search = () => {
   const uniqueCategories = [...new Set(allProducts.map((p) => p.category))];
   const allAvailableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-  // ✅ Filter + sort logic
+  // ✅ Filtering and sorting logic
   useEffect(() => {
     let filtered = [...allProducts];
 
@@ -74,7 +74,7 @@ const Search = () => {
       );
     }
 
-    // ✅ Size filter (includes out-of-stock)
+    // ✅ Size filtering (includes out-of-stock)
     if (selectedSizes.length > 0) {
       filtered = filtered.filter((p) => {
         const variants =
@@ -155,7 +155,7 @@ const Search = () => {
   const nextPage = () => currentPage < totalPages && setCurrentPage((p) => p + 1);
   const prevPage = () => currentPage > 1 && setCurrentPage((p) => p - 1);
 
-  // ✅ Helper to check stock for dimming unavailable sizes
+  // ✅ Dim out-of-stock sizes but still clickable
   const isSizeOutOfStock = (size: string) => {
     return !allProducts.some((p) => {
       const variants =
@@ -189,7 +189,22 @@ const Search = () => {
           clearSearch={clearSearch}
         />
 
-        <ProductGrid products={currentProducts} onProductClick={handleProductClick} />
+        {/* ✅ Product display using ProductCard */}
+        {currentProducts.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 py-6">
+            {currentProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onClick={() => handleProductClick(product)}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-400 py-10">
+            No products found for your selection.
+          </p>
+        )}
 
         <Pagination
           currentPage={currentPage}
@@ -199,7 +214,7 @@ const Search = () => {
         />
       </div>
 
-      {/* Bottom Filter/Sort Bar */}
+      {/* ✅ Bottom Filter/Sort Bar */}
       <div className="fixed bottom-14 left-0 right-0 z-50 bg-black/50 border-t border-gray-200 flex justify-around">
         <Button
           onClick={() => setIsFilterPopupOpen(true)}
@@ -215,7 +230,7 @@ const Search = () => {
         </Button>
       </div>
 
-      {/* Filter Popup */}
+      {/* ✅ Filter Popup */}
       {isFilterPopupOpen && (
         <div
           className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end"
@@ -232,7 +247,7 @@ const Search = () => {
               </button>
             </div>
 
-            {/* ✅ Size Filter (grayed-out for out-of-stock) */}
+            {/* ✅ Size Filter */}
             <div className="mb-6">
               <h3 className="font-semibold mb-3 text-lg">Size</h3>
               <div className="flex flex-wrap gap-3 justify-center">
@@ -256,11 +271,11 @@ const Search = () => {
                 })}
               </div>
               <p className="text-xs text-gray-400 mt-2 text-center">
-                *Dimmed sizes are currently out of stock but can be pre-booked.
+                *Dimmed sizes are out of stock but can be pre-booked.
               </p>
             </div>
 
-            {/* Category Filter */}
+            {/* ✅ Category Filter */}
             <div className="mb-6">
               <h3 className="font-semibold mb-3 text-lg">Category</h3>
               <div className="grid grid-cols-2 gap-2">
@@ -280,7 +295,7 @@ const Search = () => {
               </div>
             </div>
 
-            {/* Footer Buttons */}
+            {/* ✅ Filter Footer */}
             <div className="mt-6 flex justify-between gap-4">
               <Button
                 variant="outline"
@@ -305,7 +320,7 @@ const Search = () => {
         </div>
       )}
 
-      {/* Sort Popup */}
+      {/* ✅ Sort Popup */}
       {isSortPopupOpen && (
         <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-end">
           <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up">
