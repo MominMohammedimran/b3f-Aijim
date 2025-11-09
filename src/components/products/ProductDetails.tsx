@@ -160,11 +160,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       {selectedSizes.length === 1 && (
         <div className="mt-4 text-[11px] text-gray-300 font-medium flex items-center gap-2">
           <p>
-            💡 Regular size{" "}
+            Regular size{" "}
             <span className="text-yellow-400 font-semibold">
               {selectedSizes[0].size}
             </span>{" "}
-            = AIJIM size{" "}
+            ~ AIJIM size{" "}
             <span className="text-yellow-400 font-semibold">
               {selectedSizes[0].size === "XS"
                 ? "XS"
@@ -185,16 +185,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             onClick={() => setShowSizeGuide(true)}
             className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
           >
-            View AIJIM Size Guide →
+            AIJIM Size Guide →
           </button>
 
           {/* --- Popup Modal --- */}
           {showSizeGuide && (
-            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-              <div className="relative w-[90%] max-w-md bg-gray-900 p-3 rounded-2xl shadow-lg border border-gray-700">
+            <div className="fixed inset-0  flex items-center justify-center z-50">
+              <div className="relative w-[100%] max-w-md bg-gray-900 p-3 rounded-none shadow-lg border border-gray-700">
                 <button
                   onClick={() => setShowSizeGuide(false)}
-                  className="absolute top-2 right-3 text-gray-300 hover:text-white text-lg font-bold"
+                  className="absolute top-0 right-3 text-red-500  text-lg font-bold"
                 >
                   ✕
                 </button>
