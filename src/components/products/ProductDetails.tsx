@@ -155,7 +155,45 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
 
       <LiveViewingCounter productId={product.id} />
-
+      {/* --- AIJIM Size Conversion Note (auto updates) --- */}
+{selectedSizes.length === 1 && (
+  <div className="mt-4 text-[11px] text-gray-300 font-medium flex flex-wrap items-center gap-2">
+    <p>
+      💡 Regular size{" "}
+      <span className="text-yellow-400 font-semibold">
+        {selectedSizes[0].size}
+      </span>{" "}
+      ~ AIJIM size{" "}
+      <span className="text-yellow-400 font-semibold">
+        {selectedSizes[0].size === "XS"
+          ? "XS"
+          : selectedSizes[0].size === "S"
+          ? "XS"
+          : selectedSizes[0].size === "M"
+          ? "S"
+          : selectedSizes[0].size === "L"
+          ? "M"
+          : selectedSizes[0].size === "XL"
+          ? "L"
+          : selectedSizes[0].size === "XXL"
+          ? "XXL"
+          : selectedSizes[0].size}
+      </span>{" "}
+      | For the perfect fit, check our size guide.
+    </p>
+    <button
+      onClick={() =>
+        window.open(
+          "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp",
+          "_blank"
+        )
+      }
+      className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
+    >
+      View AIJIM Size Guide →
+    </button>
+  </div>
+)}
       {/* --- Sizes --- */}
       <div className="px-2">
         <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
