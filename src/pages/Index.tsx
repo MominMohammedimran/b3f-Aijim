@@ -107,7 +107,11 @@ const seo = useSEO('/');
   const handleProductClick = (product: Product) => {
     navigate(`/product/details/${product.code}`);
   };
-
+// 🔥 Filter featured products based on tag
+  const featuredProducts = products.filter(
+    (p) => Array.isArray(p.tags) && p.tags.includes('indexmainimage')
+  );
+    
   return (
     <Layout>
        <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
@@ -173,24 +177,28 @@ const seo = useSEO('/');
 
 
 
-          {/* ✨ Featured Products */}
-            <h2 className="text-xl  font-bold mb-5 text-left">Feature products</h2>
-             {loading ?(
-          <p className='text-gray-400'>Loading Products....</p>
-         ):(
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
-
-        
-          {products.map((product, index) => (
-            <div key={product.id} className={`animate-fade-in`} style={{ animationDelay: `${index * 0.1}s` }}>
-              <IndexFeaturesproducts 
-                product={product}
-                onClick={() => handleProductClick(product)}
-              />
+          {/* 🌟 Featured Products Section */}
+          <h2 className="text-xl font-bold mb-5 text-left">Featured Products</h2>
+          {loading ? (
+            <p className="text-gray-400">Loading Products...</p>
+          ) : featuredProducts.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
+              {featuredProducts.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 0.08}s` }}
+                >
+                  <ProductCard
+                    product={product}
+                    onClick={handleProductClick}
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-         )}
+          ) : (
+            <p className="text-gray-500 text-sm">No featured products available.</p>
+          )}
          
 
           {/* 🎥 Product Videos */}
