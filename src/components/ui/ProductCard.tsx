@@ -52,29 +52,21 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
     return () => clearInterval(interval);
   }, [isHovered, images.length]);
 
-  const availableStock =
-    product.stock ??
-    (Array.isArray(product.variants)
-      ? product.variants.reduce((sum, v) => sum + (v.stock || 0), 0)
-      : 0);
-
-  const isOutOfStock = availableStock <= 0;
+  const outOfStock = product.stock <= 0;
 
   return (
     <div
-      onClick={() => !isOutOfStock && onClick?.(product)} // disable click if sold out
+      onClick={() => onClick?.(product)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
         setCurrentImage(0);
       }}
-      className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 ${
-        isOutOfStock
-          ? "opacity-70 cursor-not-allowed"
-          : "hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] hover:-translate-y-1"
+      className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] ${
+        outOfStock ? "opacity-70 pointer-events-none" : "hover:-translate-y-1"
       }`}
     >
-      {/* 🖼️ Product Image with hover carousel */}
+      {/* 🖼️ Product Image */}
       <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900">
         {images.map((img, i) => (
           <img
@@ -88,7 +80,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
         ))}
 
         {/* 🔖 Discount Tag */}
-        {pct > 0 && !isOutOfStock && (
+        {pct > 0 && !outOfStock && (
           <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-[1px] rounded-sm font-semibold z-10">
             {pct}% OFF
           </div>
@@ -113,31 +105,22 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
             </span>
           </div>
         )}
-      
       </div>
 
       {/* 🏷️ Product Info */}
       <div className="p-1 text-center space-y-1">
-        <h3
-          className={`text-[13px] w-full p-1 font-medium tracking-wide leading-tight line-clamp-2 ${
-            isOutOfStock ? "text-gray-400" : "text-white"
-          }`}
-        >
+        <h3 className="text-[13px] w-full p-1 text-white font-medium tracking-wide leading-tight line-clamp-2">
           {product.name}
         </h3>
 
-        {/* Price Section */}
+        {/* 💰 Price */}
         <div className="flex justify-center items-center gap-2">
           {discount && (
             <span className="text-gray-500 text-[12px] line-through">
               ₹{product.originalPrice}
             </span>
           )}
-          <span
-            className={`text-[14px] font-semibold ${
-              isOutOfStock ? "text-gray-400" : "text-yellow-400"
-            }`}
-          >
+          <span className="text-yellow-400 text-[14px] font-semibold">
             ₹{product.price}
           </span>
         </div>
