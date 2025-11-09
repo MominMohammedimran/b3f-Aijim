@@ -190,11 +190,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
           {/* --- Popup Modal --- */}
           {showSizeGuide && (
-            <div className="fixed inset-0  flex bg-none items-center justify-center z-50">
+            <div className="fixed inset-0  flex bg-black items-center justify-center z-50">
               <div className="relative w-[90%] max-w-md bg-none p-3 rounded-none shadow-lg ">
                 <button
                   onClick={() => setShowSizeGuide(false)}
-                  className="absolute top-0 right-3 text-red-500  text-lg font-bold"
+                  className="absolute top-0 right-1 text-red-500  text-lg font-black"
                 >
                   ✕
                 </button>
