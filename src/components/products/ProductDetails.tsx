@@ -190,8 +190,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
           {/* --- Popup Modal --- */}
           {showSizeGuide && (
-            <div className="fixed inset-0  flex items-center justify-center z-50">
-              <div className="relative w-[100%] max-w-md bg-gray-900 p-3 rounded-none shadow-lg border border-gray-700">
+            <div className="fixed inset-0  flex bg-none items-center justify-center z-50">
+              <div className="relative w-[90%] max-w-md bg-none p-3 rounded-none shadow-lg ">
                 <button
                   onClick={() => setShowSizeGuide(false)}
                   className="absolute top-0 right-3 text-red-500  text-lg font-bold"
@@ -201,7 +201,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                 <img
                   src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp"
                   alt="AIJIM Size Guide"
-                  className="rounded-xl w-full h-auto object-contain"
+                  className="rounded-none w-full h-auto object-contain"
                 />
               </div>
             </div>
