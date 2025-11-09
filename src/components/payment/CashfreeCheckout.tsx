@@ -8,6 +8,10 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { formatPrice } from '@/lib/utils';
 
+// 🔧 CASHFREE MODE CONFIGURATION
+// Change to "production" when going live
+const CASHFREE_MODE = "sandbox"; // "sandbox" or "production"
+
 interface CashfreeCheckoutProps {
   amount?: number;
   cartItems?: any[];
@@ -100,7 +104,7 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
     }
 
     // Create new script
-    
+    console.log('Loading Cashfree SDK script...');
     const script = document.createElement('script');
     script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
     script.async = true;
@@ -227,10 +231,12 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
         .single();
 
       if (dbError) {
+        console.error('Database error:', dbError);
         throw new Error('Failed to create order');
       }
 
-     
+      console.log('Order created in database:', createdOrder.id);
+
       // Create Cashfree payment session
       const paymentData = {
         order_amount: finalTotal,
@@ -244,12 +250,13 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
         }
       };
 
-
+      console.log('Creating Cashfree payment session with data:', paymentData);
       const { data: sessionResponse, error: sessionError } = await supabase.functions.invoke('create-cashfree-order', {
         body: paymentData
       });
 
-      
+      console.log('Cashfree response:', { sessionResponse, sessionError });
+
       if (sessionError) {
         console.error('Cashfree session error:', sessionError);
         throw new Error(sessionError.message || 'Failed to create payment session');
@@ -263,7 +270,7 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
       console.log('Cashfree session created:', sessionResponse.payment_session_id);
 
       // Initialize Cashfree checkout
-      const cashfree = window.Cashfree({ mode: "production" });
+      const cashfree = window.Cashfree({ mode: CASHFREE_MODE });
       
       const checkoutOptions = {
         paymentSessionId: sessionResponse.payment_session_id,
@@ -334,6 +341,31 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
         id: order.id,
         items: cartItems
       });
+
+      // Create Delhivery order after successful payment
+      try {
+        const delhiveryData = {
+          orderId: order.id,
+          orderNumber: order.order_number,
+          shippingAddress: shippingAddress,
+          items: cartItems,
+          total: finalTotal,
+          paymentMethod: 'cashfree'
+        };
+
+        console.log('Creating Delhivery order...');
+        const { data: delhiveryResponse, error: delhiveryError } = await supabase.functions.invoke('create-delhivery-order', {
+          body: { orderData: delhiveryData }
+        });
+
+        if (delhiveryError) {
+          console.error('Delhivery order creation failed:', delhiveryError);
+        } else {
+          console.log('Delhivery order created successfully:', delhiveryResponse);
+        }
+      } catch (delhiveryErr) {
+        console.error('Error calling Delhivery function:', delhiveryErr);
+      }
 
       toast.success('Payment completed successfully!');
       setIsProcessing(false);
