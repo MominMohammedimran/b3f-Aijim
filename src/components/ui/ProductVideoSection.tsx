@@ -4,7 +4,7 @@ const videos = [
   {
     id: 1,
     title: 'Aijim Story',
-   src: 'https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/aijim-first-video.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2FpamltLWZpcnN0LXZpZGVvLm1wNCIsImlhdCI6MTc2MjY3NDY3MCwiZXhwIjoxNzk0MjEwNjcwfQ.kzKzlkLr7bqjeM4y22qPMFDkaS3sru6Ahrue8TJ6PlsnLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2FpamltX2ZlbWFsZW1vZGFsX3ZpZGVvMS5tcDQiLCJpYXQiOjE3NTQ5MTM3NTYsImV4cCI6MTc4NjQ0OTc1Nn0.jb63uFGfs64v6h3qBgmgQfC008ylJ4FNh2aPjsPnSIo',  },
+   src: 'https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/aijim-first-video.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2FpamltLWZpcnN0LXZpZGVvLm1wNCIsImlhdCI6MTc2MjY3NTg2NCwiZXhwIjoxNzk0MjExODY0fQ.9bs6lmPAdviCi2rrcjMYowMVA8fSsz3t4KdqN7zG81s',  },
     { id: 2,
     title: 'Tshirt Design',
    src: 'https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/aijim_femalemodal_video1.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2FpamltX2ZlbWFsZW1vZGFsX3ZpZGVvMS5tcDQiLCJpYXQiOjE3NTQ5MTM3NTYsImV4cCI6MTc4NjQ0OTc1Nn0.jb63uFGfs64v6h3qBgmgQfC008ylJ4FNh2aPjsPnSIo',  },
