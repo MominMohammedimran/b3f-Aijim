@@ -27,6 +27,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [selectedSizes, setSelectedSizes] = useState<SizeWithQuantity[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
 
@@ -107,7 +108,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
     setLoadingPincode(false);
   };
-const [showInstructions, setShowInstructions] = useState(false);
+
   if (inventoryLoading)
     return (
       <div className="flex justify-center py-12">
@@ -155,59 +156,59 @@ const [showInstructions, setShowInstructions] = useState(false);
       </div>
 
       <LiveViewingCounter productId={product.id} />
-      {/* --- AIJIM Size Conversion Note (auto updates) --- */}
-{/* --- AIJIM Size Conversion Note (Popup Version) --- */}
-{selectedSizes.length === 1 && (
-  <div className="mt-4 text-[11px] text-gray-300 font-medium flex items-center gap-2">
-    <p>
-      💡 Regular size{" "}
-      <span className="text-yellow-400 font-semibold">
-        {selectedSizes[0].size}
-      </span>{" "}
-      ~ AIJIM size{" "}
-      <span className="text-yellow-400 font-semibold">
-        {selectedSizes[0].size === "XS"
-          ? "XS"
-          : selectedSizes[0].size === "S"
-          ? "XS"
-          : selectedSizes[0].size === "M"
-          ? "S"
-          : selectedSizes[0].size === "L"
-          ? "M"
-          : selectedSizes[0].size === "XL"
-          ? "L"
-          : selectedSizes[0].size === "XXL"
-          ? "XXL"
-          : selectedSizes[0].size}
-      </span>
-    </p>
-    <button
-      onClick={() => setShowSizeGuide(true)}
-      className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
-    >
-      View AIJIM Size Guide →
-    </button>
-
-    {/* --- Popup Modal --- */}
-    {showSizeGuide && (
-      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-        <div className="relative w-[90%] max-w-md bg-gray-900 p-3 rounded-2xl shadow-lg border border-gray-700">
+      {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
+      {selectedSizes.length === 1 && (
+        <div className="mt-4 text-[11px] text-gray-300 font-medium flex items-center gap-2">
+          <p>
+            💡 Regular size{" "}
+            <span className="text-yellow-400 font-semibold">
+              {selectedSizes[0].size}
+            </span>{" "}
+            = AIJIM size{" "}
+            <span className="text-yellow-400 font-semibold">
+              {selectedSizes[0].size === "XS"
+                ? "XS"
+                : selectedSizes[0].size === "S"
+                ? "XS"
+                : selectedSizes[0].size === "M"
+                ? "S"
+                : selectedSizes[0].size === "L"
+                ? "M"
+                : selectedSizes[0].size === "XL"
+                ? "L"
+                : selectedSizes[0].size === "XXL"
+                ? "XXL"
+                : selectedSizes[0].size}
+            </span>
+          </p>
           <button
-            onClick={() => setShowSizeGuide(false)}
-            className="absolute top-2 right-3 text-gray-300 hover:text-white text-lg font-bold"
+            onClick={() => setShowSizeGuide(true)}
+            className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
           >
-            ✕
+            View AIJIM Size Guide →
           </button>
-          <img
-            src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp"
-            alt="AIJIM Size Guide"
-            className="rounded-xl w-full h-auto object-contain"
-          />
+
+          {/* --- Popup Modal --- */}
+          {showSizeGuide && (
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+              <div className="relative w-[90%] max-w-md bg-gray-900 p-3 rounded-2xl shadow-lg border border-gray-700">
+                <button
+                  onClick={() => setShowSizeGuide(false)}
+                  className="absolute top-2 right-3 text-gray-300 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+                <img
+                  src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp"
+                  alt="AIJIM Size Guide"
+                  className="rounded-xl w-full h-auto object-contain"
+                />
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-    )}
-  </div>
-)}
+      )}
+
       {/* --- Sizes --- */}
       <div className="px-2">
         <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
@@ -345,9 +346,8 @@ const [showInstructions, setShowInstructions] = useState(false);
           />
         </div>
       ) : (
-          <div className="flex items-center justify-center py-4 m-3 bg-gray-900 border-t  border-gray-800">
-        
-         <p className="text-sm text-gray-400 font-semibold">
+        <div className="flex items-center justify-center py-4 m-3 bg-gray-900 border-t  border-gray-800">
+          <p className="text-sm text-gray-400 font-semibold">
             ❌ Currently <span className="text-yellow-400">Out of Stock</span> — Coming Soon!
           </p>
         </div>
