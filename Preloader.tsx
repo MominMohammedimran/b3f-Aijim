@@ -1,21 +1,37 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const letters = "AIJIM".split("");
-
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const [zoomOut, setZoomOut] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Animate progress 0 → 100 over 3 seconds
+    let start: number | null = null;
+    const duration = 3000;
+
+    const step = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+      const pct = Math.min((elapsed / duration) * 100, 100);
+      setProgress(pct);
+      if (pct < 100) requestAnimationFrame(step);
+    };
+
+    const frame = requestAnimationFrame(step);
+
+    // Exit after bar fills
     const exitTimeout = setTimeout(() => {
       setZoomOut(true);
       setTimeout(onComplete, 1500);
-    }, 3000); // delay before exit
+    }, duration);
 
-    return () => clearTimeout(exitTimeout);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(exitTimeout);
+    };
   }, [onComplete]);
 
-  
   return (
     <AnimatePresence>
       {!zoomOut && (
@@ -24,49 +40,31 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           animate={{ opacity: zoomOut ? 0 : 1, scale: zoomOut ? 0.9 : 1 }}
           exit={{ opacity: 0, filter: "blur(8px)" }}
           transition={{ duration: 1, ease: "easeInOut" }}
-          className="fixed inset-0 z-40 flex items-center justify-center bg-black"
+          className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-black"
         >
-          <div className="flex flex-col items-center space-y-0">
-            {/* Logo */}
-            <motion.img
-              src="/aijim-uploads/aijim.png"
-              alt="AIJIM Logo"
-              className="w-44 h-44 object-contain"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: [0.9, 1.05, 1] }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-            />
+          {/* Logo */}
+          <motion.img
+            src="/aijim-uploads/aijim.png"
+            alt="AIJIM Logo"
+            className="w-44 h-44 object-contain mb-6"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: [0.9, 1.05, 1] }}
+            transition={{ duration: 1, ease: "easeOut" }}
+          />
 
-            {/* AIJIM Letters Reveal */}
-            <div className="flex gap-3">
-              {letters.map((char, i) => (
-                <motion.span
-                  key={i}
-                  className="text-[72px] font-extrabold bg-clip-text text-transparent g-wider"
-                  style={{
-                    fontFamily: "'Unbounded', 'Space Grotesk', sans-serif",
-                   backgroundImage:
-  "linear-gradient(90deg, #cfcfcf, #ffffff, #c0c0c0, #e6e6e6, #a9a9a9)",
-// silver
-                    WebkitTextFillColor: "transparent",
-                    WebkitBackgroundClip: "text",
-                  }}
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{
-                    delay: i * 0.25,
-                    duration: 0.5,
-                    ease: "easeOut",
-                  }}
-                >
-                  {char}
-                </motion.span>
-              ))}
-            </div>
+          {/* Progress Bar */}
+          <div className="w-64 h-1.5 bg-gray-700 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-gray-300 via-white to-gray-400"
+              style={{ width: `${progress}%` }}
+              transition={{ duration: 0.1, ease: "linear" }}
+            />
           </div>
+          <p className="text-gray-400 text-xs mt-2 font-mono tracking-wider">
+            {Math.round(progress)}%
+          </p>
         </motion.div>
       )}
     </AnimatePresence>
   );
-}
+                                   }
