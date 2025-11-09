@@ -35,7 +35,9 @@ const Search = () => {
   const availableSizes = Array.from(
     new Set(
       products.flatMap(p =>
-        p.sizes?.map(s => s.size.toUpperCase()) || []
+        p.variants?.map(v => v.size.toUpperCase()) ||
+        p.sizes?.map(s => s.size.toUpperCase()) ||
+        []
       )
     )
   ).sort();
@@ -45,7 +47,7 @@ const Search = () => {
 
     let filtered = [...products];
 
-    // --- SMART SEARCH FIX ---
+    // --- SEARCH LOGIC ---
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(product =>
@@ -56,14 +58,13 @@ const Search = () => {
       );
     }
 
-    // Category filter (from params or chips)
+    // --- CATEGORY FILTER (from URL or popup) ---
     if (selectedCategory) {
       filtered = filtered.filter(
         product => product.category.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
 
-    // Popup category filters
     if (selectedFilterCategories.length > 0) {
       filtered = filtered.filter(product =>
         selectedFilterCategories.some(cat =>
@@ -72,16 +73,19 @@ const Search = () => {
       );
     }
 
-    // --- SIZE FILTER ---
+    // --- SIZE FILTER (FIXED) ---
     if (selectedSizes.length > 0) {
-      filtered = filtered.filter(product =>
-        product.sizes?.some(variant =>
-          selectedSizes.includes(variant.size.toUpperCase())
-        )
-      );
+      filtered = filtered.filter(product => {
+        const variants = product.variants || product.sizes || [];
+        return variants.some(variant => {
+          const size = variant.size?.toUpperCase?.();
+          const stock = Number(variant.stock);
+          return selectedSizes.includes(size) && stock > 0;
+        });
+      });
     }
 
-    // --- SORT ---
+    // --- SORT LOGIC ---
     switch (sortOption) {
       case 'price-low-high':
         filtered.sort((a, b) => a.price - b.price);
@@ -99,7 +103,6 @@ const Search = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (searchQuery.trim()) {
       navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
       setSelectedCategory(null);
@@ -209,87 +212,86 @@ const Search = () => {
       </div>
 
       {/* Filter Popup */}
-      {/* Filter Popup */}
-{isFilterPopupOpen && (
-  <div
-    className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end"
-    onClick={() => setIsFilterPopupOpen(false)}
-  >
-    <div
-      className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up max-h-[80vh] overflow-y-auto"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold">Filter</h2>
-        <button onClick={() => setIsFilterPopupOpen(false)}>
-          <X size={24} className="text-gray-300 hover:text-white" />
-        </button>
-      </div>
-
-      {/* Filter by Size */}
-      <div className="mb-6">
-        <h3 className="font-semibold mb-3 text-lg">Size</h3>
-        <div className="flex flex-wrap gap-3 justify-center">
-          {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
-            <button
-              key={size}
-              onClick={() => toggleSize(size)}
-              className={`px-5 py-2 rounded-full border font-semibold transition-all ${
-                selectedSizes.includes(size)
-                  ? "bg-yellow-400 text-black border-yellow-400 scale-105"
-                  : "border-gray-600 text-white hover:bg-gray-800"
-              }`}
-            >
-              {size}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Filter by Category */}
-      <div className="mb-6">
-        <h3 className="font-semibold mb-3 text-lg">Category</h3>
-        <div className="grid grid-cols-2 gap-2">
-          {uniqueCategories.map((category) => (
-            <button
-              key={category}
-              onClick={() => toggleFilterCategory(category)}
-              className={`px-4 py-2 rounded-md border font-semibold text-sm ${
-                selectedFilterCategories.includes(category)
-                  ? "bg-yellow-400 text-black border-yellow-400"
-                  : "border-gray-600 text-white hover:bg-gray-800"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Footer Buttons */}
-      <div className="mt-6 flex justify-between gap-4">
-        <Button
-          variant="outline"
-          className="w-1/2 border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800"
-          onClick={() => {
-            setSelectedSizes([]);
-            setSelectedFilterCategories([]);
-            setSelectedCategory(null);
-            setIsFilterPopupOpen(false);
-          }}
-        >
-          Clear
-        </Button>
-        <Button
-          className="w-1/2 bg-yellow-400 text-black font-bold hover:bg-yellow-300"
+      {isFilterPopupOpen && (
+        <div
+          className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end"
           onClick={() => setIsFilterPopupOpen(false)}
         >
-          Apply
-        </Button>
-      </div>
-    </div>
-  </div>
-)}
+          <div
+            className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold">Filter</h2>
+              <button onClick={() => setIsFilterPopupOpen(false)}>
+                <X size={24} className="text-gray-300 hover:text-white" />
+              </button>
+            </div>
+
+            {/* Filter by Size */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3 text-lg">Size</h3>
+              <div className="flex flex-wrap gap-3 justify-center">
+                {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => toggleSize(size)}
+                    className={`px-5 py-2 rounded-full border font-semibold transition-all ${
+                      selectedSizes.includes(size)
+                        ? "bg-yellow-400 text-black border-yellow-400 scale-105"
+                        : "border-gray-600 text-white hover:bg-gray-800"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Filter by Category */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3 text-lg">Category</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {uniqueCategories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => toggleFilterCategory(category)}
+                    className={`px-4 py-2 rounded-md border font-semibold text-sm ${
+                      selectedFilterCategories.includes(category)
+                        ? "bg-yellow-400 text-black border-yellow-400"
+                        : "border-gray-600 text-white hover:bg-gray-800"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer Buttons */}
+            <div className="mt-6 flex justify-between gap-4">
+              <Button
+                variant="outline"
+                className="w-1/2 border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800"
+                onClick={() => {
+                  setSelectedSizes([]);
+                  setSelectedFilterCategories([]);
+                  setSelectedCategory(null);
+                  setIsFilterPopupOpen(false);
+                }}
+              >
+                Clear
+              </Button>
+              <Button
+                className="w-1/2 bg-yellow-400 text-black font-bold hover:bg-yellow-300"
+                onClick={() => setIsFilterPopupOpen(false)}
+              >
+                Apply
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Sort Popup */}
       {isSortPopupOpen && (
