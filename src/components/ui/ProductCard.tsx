@@ -107,7 +107,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
 
         {/* 🚫 SOLD OUT Overlay */}
         {isOutOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/70 text-white font-semibold text-lg text-red-500 tracking-widest uppercase">
+          <div className="absolute inset-0 flex items-center justify-center bg-red/70 text-white font-semibold text-lg text-red-500 tracking-widest uppercase">
             SOLD OUT
           </div>
         )}
