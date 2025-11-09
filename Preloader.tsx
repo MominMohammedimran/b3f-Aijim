@@ -6,7 +6,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Animate progress 0 → 100 over 3 seconds
     let start: number | null = null;
     const duration = 3000;
 
@@ -15,16 +14,21 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       const elapsed = timestamp - start;
       const pct = Math.min((elapsed / duration) * 100, 100);
       setProgress(pct);
-      if (pct < 100) requestAnimationFrame(step);
+      if (pct < 100) {
+        requestAnimationFrame(step);
+      }
     };
 
     const frame = requestAnimationFrame(step);
 
-    // Exit after bar fills
+    // Wait slightly longer than 3s to ensure we render 100%
     const exitTimeout = setTimeout(() => {
-      setZoomOut(true);
-      setTimeout(onComplete, 1500);
-    }, duration);
+      setProgress(100); // ensure 100% visible
+      setTimeout(() => {
+        setZoomOut(true);
+        setTimeout(onComplete, 1000); // fade-out delay
+      }, 300); // small delay to show full bar before zoom out
+    }, duration + 200);
 
     return () => {
       cancelAnimationFrame(frame);
@@ -60,9 +64,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
               transition={{ duration: 0.1, ease: "linear" }}
             />
           </div>
-          <p className="text-gray-400 text-xs mt-2 font-mono tracking-wider">
-            {Math.round(progress)}%
-          </p>
         </motion.div>
       )}
     </AnimatePresence>
