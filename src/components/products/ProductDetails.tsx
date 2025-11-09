@@ -156,8 +156,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       <LiveViewingCounter productId={product.id} />
       {/* --- AIJIM Size Conversion Note (auto updates) --- */}
+{/* --- AIJIM Size Conversion Note (Popup Version) --- */}
 {selectedSizes.length === 1 && (
-  <div className="mt-4 text-[11px] text-gray-300 font-medium flex flex-wrap items-center gap-2">
+  <div className="mt-4 text-[11px] text-gray-300 font-medium flex items-center gap-2">
     <p>
       💡 Regular size{" "}
       <span className="text-yellow-400 font-semibold">
@@ -178,20 +179,33 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           : selectedSizes[0].size === "XXL"
           ? "XXL"
           : selectedSizes[0].size}
-      </span>{" "}
-      | For the perfect fit, check our size guide.
+      </span>
     </p>
     <button
-      onClick={() =>
-        window.open(
-          "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp",
-          "_blank"
-        )
-      }
+      onClick={() => setShowSizeGuide(true)}
       className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
     >
       View AIJIM Size Guide →
     </button>
+
+    {/* --- Popup Modal --- */}
+    {showSizeGuide && (
+      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div className="relative w-[90%] max-w-md bg-gray-900 p-3 rounded-2xl shadow-lg border border-gray-700">
+          <button
+            onClick={() => setShowSizeGuide(false)}
+            className="absolute top-2 right-3 text-gray-300 hover:text-white text-lg font-bold"
+          >
+            ✕
+          </button>
+          <img
+            src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp"
+            alt="AIJIM Size Guide"
+            className="rounded-xl w-full h-auto object-contain"
+          />
+        </div>
+      </div>
+    )}
   </div>
 )}
       {/* --- Sizes --- */}
