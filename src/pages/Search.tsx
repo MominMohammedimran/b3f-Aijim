@@ -32,7 +32,7 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  // ✅ Load all products
+  // ✅ Load all products from Supabase
   useEffect(() => {
     async function loadProducts() {
       const { data, error } = await supabase.from('products').select('*');
@@ -49,6 +49,7 @@ const Search = () => {
   useEffect(() => {
     let filtered = [...allProducts];
 
+    // 🔍 Search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -60,6 +61,7 @@ const Search = () => {
       );
     }
 
+    // 🏷 Category filters
     if (selectedCategory) {
       filtered = filtered.filter(
         (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
@@ -74,7 +76,7 @@ const Search = () => {
       );
     }
 
-    // ✅ Size filtering (includes out-of-stock)
+    // 👕 Size filter — include even out-of-stock products
     if (selectedSizes.length > 0) {
       filtered = filtered.filter((p) => {
         const variants =
@@ -83,12 +85,13 @@ const Search = () => {
             : Array.isArray(p.variants)
             ? p.variants
             : [];
-        return variants.some((v) =>
-          selectedSizes.includes(v.size?.toUpperCase())
+        return variants.some(
+          (v) => selectedSizes.includes(v.size?.toUpperCase())
         );
       });
     }
 
+    // 💰 Sort logic
     switch (sortOption) {
       case 'price-low-high':
         filtered.sort((a, b) => a.price - b.price);
@@ -165,9 +168,7 @@ const Search = () => {
           ? p.variants
           : [];
       return variants.some(
-        (v) =>
-          v.size?.toUpperCase() === size &&
-          Number(v.stock) > 0
+        (v) => v.size?.toUpperCase() === size && Number(v.stock) > 0
       );
     });
   };
@@ -182,6 +183,7 @@ const Search = () => {
           <h1 className="text-xl font-semibold">Search</h1>
         </div>
 
+        {/* 🔍 Search Box */}
         <SearchBox
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -189,7 +191,7 @@ const Search = () => {
           clearSearch={clearSearch}
         />
 
-        {/* ✅ Product display using ProductCard */}
+        {/* 🧢 Product Display */}
         {currentProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 py-6">
             {currentProducts.map((product) => (
@@ -214,7 +216,7 @@ const Search = () => {
         />
       </div>
 
-      {/* ✅ Bottom Filter/Sort Bar */}
+      {/* ⚙️ Bottom Filter/Sort Bar */}
       <div className="fixed bottom-14 left-0 right-0 z-50 bg-black/50 border-t border-gray-200 flex justify-around">
         <Button
           onClick={() => setIsFilterPopupOpen(true)}
@@ -230,7 +232,7 @@ const Search = () => {
         </Button>
       </div>
 
-      {/* ✅ Filter Popup */}
+      {/* 🧩 Filter Popup */}
       {isFilterPopupOpen && (
         <div
           className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end"
@@ -247,7 +249,7 @@ const Search = () => {
               </button>
             </div>
 
-            {/* ✅ Size Filter */}
+            {/* 👕 Size Filter */}
             <div className="mb-6">
               <h3 className="font-semibold mb-3 text-lg">Size</h3>
               <div className="flex flex-wrap gap-3 justify-center">
@@ -275,7 +277,7 @@ const Search = () => {
               </p>
             </div>
 
-            {/* ✅ Category Filter */}
+            {/* 🏷 Category Filter */}
             <div className="mb-6">
               <h3 className="font-semibold mb-3 text-lg">Category</h3>
               <div className="grid grid-cols-2 gap-2">
@@ -295,7 +297,7 @@ const Search = () => {
               </div>
             </div>
 
-            {/* ✅ Filter Footer */}
+            {/* 🔘 Filter Footer */}
             <div className="mt-6 flex justify-between gap-4">
               <Button
                 variant="outline"
@@ -320,7 +322,7 @@ const Search = () => {
         </div>
       )}
 
-      {/* ✅ Sort Popup */}
+      {/* 🧭 Sort Popup */}
       {isSortPopupOpen && (
         <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-end">
           <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up">
