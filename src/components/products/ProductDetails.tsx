@@ -107,7 +107,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
     setLoadingPincode(false);
   };
-
+const [showInstructions, setShowInstructions] = useState(false);
   if (inventoryLoading)
     return (
       <div className="flex justify-center py-12">
