@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, X,ChevronDown} from 'lucide-react';
+import { ArrowLeft, X, ChevronDown } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import { products } from '../lib/data';
 import { Product } from '../lib/types';
 import { Button } from '@/components/ui/button';
 import SearchBox from '../components/search/SearchBox';
-import CategoryFilter from '../components/search/CategoryFilter';
 import ProductGrid from '../components/search/ProductGrid';
 import Pagination from '../components/search/Pagination';
 
@@ -22,7 +21,6 @@ const Search = () => {
 
   const [searchQuery, setSearchQuery] = useState(queryParam || '');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
- 
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [isSortPopupOpen, setIsSortPopupOpen] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -33,54 +31,57 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  const minProductPrice = Math.min(...products.map(product => product.price));
-  const maxProductPrice = Math.max(...products.map(product => product.price));
-
   const uniqueCategories = [...new Set(products.map(product => product.category))];
-
+  const availableSizes = Array.from(
+    new Set(
+      products.flatMap(p =>
+        p.sizes?.map(s => s.size.toUpperCase()) || []
+      )
+    )
+  ).sort();
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
     let filtered = [...products];
 
-    // Apply search query
-    if (queryParam) {
+    // --- SMART SEARCH FIX ---
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
       filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(queryParam.toLowerCase()) ||
-        product.category.toLowerCase().includes(queryParam.toLowerCase())
+        product.name.toLowerCase().includes(q) ||
+        product.category.toLowerCase().includes(q) ||
+        product.code.toLowerCase().includes(q) ||
+        (product.description && product.description.toLowerCase().includes(q))
       );
     }
 
-    // Apply category selection from chips
+    // Category filter (from params or chips)
     if (selectedCategory) {
-      filtered = filtered.filter(product =>
-        product.category.toLowerCase() === selectedCategory.toLowerCase()
+      filtered = filtered.filter(
+        product => product.category.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
 
-    // Apply filter categories from popup
+    // Popup category filters
     if (selectedFilterCategories.length > 0) {
       filtered = filtered.filter(product =>
-        selectedFilterCategories.some(cat => 
+        selectedFilterCategories.some(cat =>
           product.category.toLowerCase() === cat.toLowerCase()
         )
       );
     }
 
-    // Apply size filter
+    // --- SIZE FILTER ---
     if (selectedSizes.length > 0) {
-      filtered = filtered.filter(product => {
-        if (product.sizes && Array.isArray(product.sizes)) {
-          return selectedSizes.some(size => 
-            product.sizes.some(variant => variant.size === size)
-          );
-        }
-        return false;
-      });
+      filtered = filtered.filter(product =>
+        product.sizes?.some(variant =>
+          selectedSizes.includes(variant.size.toUpperCase())
+        )
+      );
     }
 
-    // Apply sorting
+    // --- SORT ---
     switch (sortOption) {
       case 'price-low-high':
         filtered.sort((a, b) => a.price - b.price);
@@ -94,7 +95,7 @@ const Search = () => {
 
     setFilteredProducts(filtered);
     setCurrentPage(1);
-  }, [queryParam, selectedCategory, selectedFilterCategories, selectedSizes, sortOption]);
+  }, [searchQuery, selectedCategory, selectedFilterCategories, selectedSizes, sortOption]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,16 +182,7 @@ const Search = () => {
           clearSearch={clearSearch}
         />
 
-       {/*<CategoryFilter
-          categories={uniqueCategories}
-          selectedCategory={selectedCategory}
-          onCategorySelect={handleCategoryClick}
-        />*/}
-
-        <ProductGrid
-          products={currentProducts}
-          onProductClick={handleProductClick}
-        />
+        <ProductGrid products={currentProducts} onProductClick={handleProductClick} />
 
         <Pagination
           currentPage={currentPage}
@@ -201,16 +193,16 @@ const Search = () => {
       </div>
 
       {/* Sticky Filter & Sort Buttons */}
-      <div className="fixed bottom-14 left-0 right-0 z-50  bg-black/50 border-t border-gray-200 py-0 flex justify-around ">
+      <div className="fixed bottom-14 left-0 right-0 z-50 bg-black/50 border-t border-gray-200 py-0 flex justify-around">
         <Button
           onClick={() => setIsFilterPopupOpen(true)}
-          className="bg-gray-900 text-white uppercase font-semibold border-r border-gray-200 rounded-none shadow-lg w-1/2 hover:bg-gray-900 "
+          className="bg-gray-900 text-white uppercase font-semibold border-r border-gray-200 rounded-none shadow-lg w-1/2 hover:bg-gray-900"
         >
           Filter <ChevronDown size={18} />
         </Button>
         <Button
           onClick={() => setIsSortPopupOpen(true)}
-          className="bg-gray-900  text-white uppercase font-semibold px-6  rounded-none shadow-lg w-1/2 hover:bg-gray-900"
+          className="bg-gray-900 text-white uppercase font-semibold px-6 rounded-none shadow-lg w-1/2 hover:bg-gray-900"
         >
           Sort <ChevronDown size={18} />
         </Button>
@@ -218,8 +210,14 @@ const Search = () => {
 
       {/* Filter Popup */}
       {isFilterPopupOpen && (
-        <div className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end" onClick={() => setIsFilterPopupOpen(false)}>
-          <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end"
+          onClick={() => setIsFilterPopupOpen(false)}
+        >
+          <div
+            className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up max-h-[80vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Filter</h2>
               <button onClick={() => setIsFilterPopupOpen(false)}>
@@ -227,7 +225,7 @@ const Search = () => {
               </button>
             </div>
 
-            {/* Filter by Size 
+            {/* Filter by Size */}
             <div className="mb-6">
               <h3 className="font-semibold mb-3 text-lg">Size</h3>
               <div className="grid grid-cols-4 gap-2">
@@ -237,15 +235,15 @@ const Search = () => {
                     onClick={() => toggleSize(size)}
                     className={`px-4 py-2 rounded-md border font-semibold ${
                       selectedSizes.includes(size)
-                        ? "bg-yellow-400 text-black border-yellow-400"
-                        : "border-gray-600 text-white hover:bg-gray-800"
+                        ? 'bg-yellow-400 text-black border-yellow-400'
+                        : 'border-gray-600 text-white hover:bg-gray-800'
                     }`}
                   >
                     {size}
                   </button>
                 ))}
               </div>
-            </div>*/}
+            </div>
 
             {/* Filter by Category */}
             <div className="mb-6">
@@ -257,8 +255,8 @@ const Search = () => {
                     onClick={() => toggleFilterCategory(category)}
                     className={`px-4 py-2 rounded-md border font-semibold text-sm ${
                       selectedFilterCategories.includes(category)
-                        ? "bg-yellow-400 text-black border-yellow-400"
-                        : "border-gray-600 text-white hover:bg-gray-800"
+                        ? 'bg-yellow-400 text-black border-yellow-400'
+                        : 'border-gray-600 text-white hover:bg-gray-800'
                     }`}
                   >
                     {category}
@@ -303,7 +301,7 @@ const Search = () => {
             </div>
 
             <div className="space-y-3">
-              {["default", "price-low-high", "price-high-low"].map((option) => (
+              {['default', 'price-low-high', 'price-high-low'].map(option => (
                 <button
                   key={option}
                   onClick={() => {
@@ -312,15 +310,15 @@ const Search = () => {
                   }}
                   className={`w-full px-4 py-2 rounded-md border ${
                     sortOption === option
-                      ? "bg-yellow-400 text-black font-bold"
-                      : "border-gray-600 hover:bg-gray-800"
+                      ? 'bg-yellow-400 text-black font-bold'
+                      : 'border-gray-600 hover:bg-gray-800'
                   }`}
                 >
-                  {option === "default"
-                    ? "Default"
-                    : option === "price-low-high"
-                    ? "Price: Low to High"
-                    : "Price: High to Low"}
+                  {option === 'default'
+                    ? 'Default'
+                    : option === 'price-low-high'
+                    ? 'Price: Low to High'
+                    : 'Price: High to Low'}
                 </button>
               ))}
             </div>
