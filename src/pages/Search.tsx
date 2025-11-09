@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, X, ChevronDown } from 'lucide-react';
 import Layout from '../components/layout/Layout';
-import { products } from '../lib/data';
 import { Product } from '../lib/types';
 import { Button } from '@/components/ui/button';
 import SearchBox from '../components/search/SearchBox';
 import ProductGrid from '../components/search/ProductGrid';
 import Pagination from '../components/search/Pagination';
+import { supabase } from '@/lib/supabase';
 
 type SortOption = 'default' | 'price-low-high' | 'price-high-low';
 type FilterCategory = string | null;
@@ -20,7 +20,8 @@ const Search = () => {
   const queryParam = queryParams.get('query');
 
   const [searchQuery, setSearchQuery] = useState(queryParam || '');
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [isSortPopupOpen, setIsSortPopupOpen] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -31,61 +32,86 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  const uniqueCategories = [...new Set(products.map(product => product.category))];
+  // ✅ Load all products from Supabase
+  useEffect(() => {
+    async function loadProducts() {
+      const { data, error } = await supabase.from('products').select('*');
+      if (error) {
+        console.error('Error loading products:', error);
+      } else {
+        setAllProducts(data || []);
+      }
+    }
+    loadProducts();
+  }, []);
+
+  // Extract unique categories and sizes
+  const uniqueCategories = [...new Set(allProducts.map((p) => p.category))];
+
   const availableSizes = Array.from(
     new Set(
-      products.flatMap(p =>
-        p.variants?.map(v => v.size.toUpperCase()) ||
-        p.sizes?.map(s => s.size.toUpperCase()) ||
-        []
-      )
+      allProducts.flatMap((p) => {
+        const variants = Array.isArray(p.variants)
+          ? p.variants
+          : typeof p.variants === 'string'
+          ? JSON.parse(p.variants)
+          : [];
+        return variants.map((v) => v.size?.toUpperCase());
+      })
     )
   ).sort();
 
+  // ✅ Filter and sort logic
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    let filtered = [...products];
+    let filtered = [...allProducts];
 
-    // --- SEARCH LOGIC ---
+    // Search
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(q) ||
-        product.category.toLowerCase().includes(q) ||
-        product.code.toLowerCase().includes(q) ||
-        (product.description && product.description.toLowerCase().includes(q))
+      filtered = filtered.filter(
+        (product) =>
+          product.name?.toLowerCase().includes(q) ||
+          product.category?.toLowerCase().includes(q) ||
+          product.code?.toLowerCase().includes(q) ||
+          product.description?.toLowerCase().includes(q)
       );
     }
 
-    // --- CATEGORY FILTER (from URL or popup) ---
+    // Category filters
     if (selectedCategory) {
       filtered = filtered.filter(
-        product => product.category.toLowerCase() === selectedCategory.toLowerCase()
+        (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
 
     if (selectedFilterCategories.length > 0) {
-      filtered = filtered.filter(product =>
-        selectedFilterCategories.some(cat =>
-          product.category.toLowerCase() === cat.toLowerCase()
+      filtered = filtered.filter((p) =>
+        selectedFilterCategories.some(
+          (cat) => p.category?.toLowerCase() === cat.toLowerCase()
         )
       );
     }
 
-    // --- SIZE FILTER (FIXED) ---
+    // ✅ Size filter
     if (selectedSizes.length > 0) {
-      filtered = filtered.filter(product => {
-        const variants = product.variants || product.sizes || [];
-        return variants.some(variant => {
-          const size = variant.size?.toUpperCase?.();
-          const stock = Number(variant.stock);
-          return selectedSizes.includes(size) && stock > 0;
-        });
+      filtered = filtered.filter((p) => {
+        const variants = Array.isArray(p.variants)
+          ? p.variants
+          : typeof p.variants === 'string'
+          ? JSON.parse(p.variants)
+          : [];
+
+        return variants.some(
+          (variant) =>
+            selectedSizes.includes(variant.size?.toUpperCase()) &&
+            Number(variant.stock) > 0
+        );
       });
     }
 
-    // --- SORT LOGIC ---
+    // Sort
     switch (sortOption) {
       case 'price-low-high':
         filtered.sort((a, b) => a.price - b.price);
@@ -99,8 +125,16 @@ const Search = () => {
 
     setFilteredProducts(filtered);
     setCurrentPage(1);
-  }, [searchQuery, selectedCategory, selectedFilterCategories, selectedSizes, sortOption]);
+  }, [
+    searchQuery,
+    selectedCategory,
+    selectedFilterCategories,
+    selectedSizes,
+    sortOption,
+    allProducts,
+  ]);
 
+  // --- Navigation handlers ---
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -118,12 +152,6 @@ const Search = () => {
     navigate('/search');
   };
 
-  const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category);
-    setSearchQuery('');
-    navigate(`/search?category=${encodeURIComponent(category)}`);
-  };
-
   const handleProductClick = (product: Product) => {
     if (product.code.includes('TSHIRT-PRINT') || product.code.includes('MUG-PRINT')) {
       navigate(`/design-tool`);
@@ -133,21 +161,18 @@ const Search = () => {
   };
 
   const toggleSize = (size: string) => {
-    setSelectedSizes(prev =>
-      prev.includes(size)
-        ? prev.filter(s => s !== size)
-        : [...prev, size]
+    setSelectedSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
     );
   };
 
   const toggleFilterCategory = (category: string) => {
-    setSelectedFilterCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
+    setSelectedFilterCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
     );
   };
 
+  // Pagination
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const currentProducts = filteredProducts.slice(
     (currentPage - 1) * productsPerPage,
@@ -168,6 +193,7 @@ const Search = () => {
     }
   };
 
+  // ✅ UI
   return (
     <Layout>
       <div className="container-custom mt-16">
@@ -232,14 +258,14 @@ const Search = () => {
             <div className="mb-6">
               <h3 className="font-semibold mb-3 text-lg">Size</h3>
               <div className="flex flex-wrap gap-3 justify-center">
-                {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
+                {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map((size) => (
                   <button
                     key={size}
                     onClick={() => toggleSize(size)}
                     className={`px-5 py-2 rounded-full border font-semibold transition-all ${
                       selectedSizes.includes(size)
-                        ? "bg-yellow-400 text-black border-yellow-400 scale-105"
-                        : "border-gray-600 text-white hover:bg-gray-800"
+                        ? 'bg-yellow-400 text-black border-yellow-400 scale-105'
+                        : 'border-gray-600 text-white hover:bg-gray-800'
                     }`}
                   >
                     {size}
@@ -258,8 +284,8 @@ const Search = () => {
                     onClick={() => toggleFilterCategory(category)}
                     className={`px-4 py-2 rounded-md border font-semibold text-sm ${
                       selectedFilterCategories.includes(category)
-                        ? "bg-yellow-400 text-black border-yellow-400"
-                        : "border-gray-600 text-white hover:bg-gray-800"
+                        ? 'bg-yellow-400 text-black border-yellow-400'
+                        : 'border-gray-600 text-white hover:bg-gray-800'
                     }`}
                   >
                     {category}
@@ -305,7 +331,7 @@ const Search = () => {
             </div>
 
             <div className="space-y-3">
-              {['default', 'price-low-high', 'price-high-low'].map(option => (
+              {['default', 'price-low-high', 'price-high-low'].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
