@@ -69,13 +69,13 @@ const AboutUs = () => {
                   className="bg-white/5 border border-gray-800 rounded-none p-3 backdrop-blur-md hover:scale-[1.03] transition-all duration-500 hover:border-yellow-400 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]"
                 >
                   <div className="flex flex-col items-start gap-4">
-                    <div className='flex flex-wrap items-center gap-5'>
-                    <div className="p-2 rounded-lg bg-yellow-400/20 border border-yellow-500">
-                      <Icon className="text-yellow-400" size={22} />
-                    </div>
-                    <h3 className="text-xl font-semibold uppercase tracking-wide">
-                      {v.title}
-                    </h3>
+                    <div className="flex flex-wrap items-center gap-5">
+                      <div className="p-2 rounded-lg bg-yellow-400/20 border border-yellow-500">
+                        <Icon className="text-yellow-400" size={22} />
+                      </div>
+                      <h3 className="text-xl font-semibold uppercase tracking-wide">
+                        {v.title}
+                      </h3>
                     </div>
                     <p className="text-sm text-gray-300 leading-relaxed">
                       {v.description}
@@ -140,24 +140,24 @@ const AboutUs = () => {
           </div>
         </section>
 
-        {/* --- CTA --- 
-        <section className="text-center py-16 bg-black border-t border-gray-800">
-          <motion.h3
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-2xl md:text-3xl font-semibold text-white mb-4"
-          >
-            Join the <span className="text-yellow-400">AIJIM</span> Movement
-          </motion.h3>
-          <p className="text-gray-400 text-sm mb-6">
-            Be the first to access exclusive drops, limited editions, and
-            insider updates.
+        {/* --- LEGAL BUSINESS INFO --- */}
+        <section className="bg-black border-t border-gray-800 text-center py-8 text-sm text-gray-400">
+          <p>
+            © 2025 <span className="text-white font-semibold">AIJIM</span>. All
+            Rights Reserved.
           </p>
-          <button className="bg-yellow-400 text-black px-6 py-3 rounded-full font-semibold hover:bg-yellow-300 transition-all">
-            Explore Collection
-          </button>
-        </section>*/}
+          <p className="mt-2">
+            Legal Business Name:{" "}
+            <span className="text-yellow-400 font-medium">
+              Aijim Clothing
+            </span>{" "}
+          
+          </p>
+          <p className="mt-1">
+            Aijim is a registered clothing brand owned and operated by{" "}
+            <span className="text-white font-medium">Aijim Clothing</span>.
+          </p>
+        </section>
       </div>
     </Layout>
   );
