@@ -118,7 +118,7 @@ const Navbar = () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               className={`flex flex-col items-center justify-center px-2 transition-all duration-300 ${
-                isActive(path) ? 'text-white scale-110' : 'hover:text-yellow-400'
+                isActive(path) ? 'text-white scale-110 border-b border-white' : 'hover:text-yellow-400'
               }`}
             >
               <Icon size={18} />
