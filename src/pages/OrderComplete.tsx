@@ -1,53 +1,39 @@
-
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/context/AuthContext';
-import { useCart } from '@/context/CartContext';
-import Layout from '@/components/layout/Layout';
-import { CheckCircle, Package } from 'lucide-react';
-import{CheckoutStepper} from '@/components/checkout/CheckoutStepper'
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import Layout from "@/components/layout/Layout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { CheckCircle, Package } from "lucide-react";
+import { toast } from "sonner";
+import { CheckoutStepper } from "@/components/checkout/CheckoutStepper";
+import { useCart } from "@/context/CartContext";
 
 const OrderComplete = () => {
-  const [searchParams] = useSearchParams();
+  const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
   const { clearCart } = useCart();
-  
-  const [orderData, setOrderData] = useState<any>(null);
+  const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const orderId = searchParams.get('orderId');
-  const orderNumber = searchParams.get('orderNumber');
-
   useEffect(() => {
-    if (orderId) {
-      fetchOrderData();
-      // Clear cart after successful payment
-      clearCart();
-    } else if (!orderNumber) {
-      navigate('/');
+    if (!orderId) {
+      toast.error("Invalid order.");
+      navigate("/");
+      return;
     }
-  }, [orderId, orderNumber, navigate]);
+    fetchOrder();
+  }, [orderId]);
 
-  const fetchOrderData = async () => {
-    if (!orderId) return;
-
+  const fetchOrder = async () => {
     try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('id', orderId)
-        .single();
-
-      if (error) throw error;
-      setOrderData(data);
-    } catch (error) {
-      console.error('Error fetching order:', error);
-      toast.error('Failed to load order details');
+      const { data, error } = await supabase.from("orders").select("*").eq("id", orderId).single();
+      if (error || !data) throw error;
+      setOrder(data);
+      clearCart();
+    } catch (err) {
+      console.error("Error fetching order:", err);
+      toast.error("Unable to load order details.");
     } finally {
       setLoading(false);
     }
@@ -56,10 +42,19 @@ const OrderComplete = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-8 max-w-md">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
-          </div>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin h-10 w-10 border-b-2 border-green-600 rounded-full"></div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!order) {
+    return (
+      <Layout>
+        <div className="text-center py-10">
+          <h2 className="text-xl font-bold text-red-500">Order not found</h2>
+          <Button onClick={() => navigate("/")} className="mt-4">Go Home</Button>
         </div>
       </Layout>
     );
@@ -67,54 +62,35 @@ const OrderComplete = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8 max-w-md">
-      <CheckoutStepper currentStep={4}/>
+      <div className="container mx-auto px-4 py-10 max-w-md">
+        <CheckoutStepper currentStep={4} />
         <Card>
           <CardContent className="pt-6 text-center space-y-6">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
-            <div>
-              <h2 className="text-2xl font-bold text-green-600 mb-2">Payment Successful!</h2>
-              <p className="text-gray-600">
-                Thank you for your order. Your payment has been processed successfully.
-              </p>
+            <h2 className="text-2xl font-bold text-green-600">Payment Successful!</h2>
+            <p className="text-gray-600">Thank you for shopping with us. Your payment has been received.</p>
+
+            <div className="bg-gray-50 p-4 rounded-lg text-left space-y-2">
+              <div className="flex justify-between"><span>Order Number:</span><span>{order.order_number}</span></div>
+              <div className="flex justify-between"><span>Total Amount:</span><span>₹{order.total}</span></div>
+              <div className="flex justify-between"><span>Status:</span><span className="capitalize text-blue-600">{order.status}</span></div>
             </div>
 
-            {orderData && (
-              <div className="bg-gray-50 p-4 rounded-lg space-y-2">
-                <div className="flex justify-between">
-                  <span className="font-medium">Order Number:</span>
-                  <span>{orderData.order_number}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium">Total Amount:</span>
-                  <span className="font-bold">₹{orderData.total}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium">Status:</span>
-                  <span className="text-blue-600 capitalize">{orderData.status}</span>
-                </div>
-              </div>
-            )}
-
-            <div className="bg-blue-50 p-4 rounded-lg space-y-2">
-              <div className="flex items-center gap-2 justify-center">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="flex items-center justify-center gap-2 mb-2">
                 <Package className="h-4 w-4 text-blue-600" />
-                <span className="font-medium text-blue-800">What's Next?</span>
+                <span className="font-medium text-blue-800">Next Steps</span>
               </div>
               <ul className="text-sm text-blue-700 space-y-1">
-                <li>• You'll receive an email confirmation shortly</li>
-                <li>• We'll start processing your order within 24 hours</li>
-                <li>• Track your order status in the Orders section</li>
+                <li>• You’ll receive a confirmation email shortly.</li>
+                <li>• Your order will be processed within 24 hours.</li>
+                <li>• You can track your order in “My Orders”.</li>
               </ul>
             </div>
 
             <div className="space-y-3">
-              <Button onClick={() => navigate('/orders')} className="w-full">
-                View My Orders
-              </Button>
-              <Button onClick={() => navigate('/')} variant="outline" className="w-full">
-                Continue Shopping
-              </Button>
+              <Button onClick={() => navigate("/orders")} className="w-full">View My Orders</Button>
+              <Button onClick={() => navigate("/")} variant="outline" className="w-full">Continue Shopping</Button>
             </div>
           </CardContent>
         </Card>
