@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { 
-Loader2,
+import {
+  Loader2,
   Share,
   ChevronDown,
   IndianRupee,
   Truck,
   Shirt,
-  Coins, } from "lucide-react";
+  Coins,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [selectedSizes, setSelectedSizes] = useState<SizeWithQuantity[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
-  const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [showSizeSelector, setShowSizeSelector] = useState(false);
+
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
 
@@ -58,7 +61,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
   }, [cartItems, product.id]);
 
-  // --- Toggle / Change Size ---
   const toggleSize = (size: string) => {
     const stock = productVariants.find((v) => v.size === size)?.stock ?? 0;
     const already = selectedSizes.some((s) => s.size === size);
@@ -66,6 +68,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     setSelectedSizes((prev) =>
       already ? prev.filter((s) => s.size !== size) : [...prev, { size, quantity: 1 }]
     );
+    setShowSizeSelector(false);
   };
 
   const changeQuantity = (size: string, q: number) => {
@@ -123,26 +126,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
     );
 
-  // --- Determine stock availability ---
   const allOutOfStock = productVariants.every((v) => v.stock === 0);
 
   return (
     <div className="relative bg-[#0b0b0b] text-white rounded-md shadow-lg">
-      {/* --- Header --- */}
+      {/* Header */}
       <div className="flex items-center justify-between px-2 pt-3">
         <span className="text-sm font-semibold uppercase tracking-wide">
           AIJIM
         </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setShowShareModal(true)}
-        >
+        <Button variant="ghost" size="icon" onClick={() => setShowShareModal(true)}>
           <Share className="w-5 h-5 text-gray-200" />
         </Button>
       </div>
 
-      {/* --- Product Info --- */}
+      {/* Info */}
       <div className="px-2 mt-2">
         <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
         <div className="flex items-center gap-2 mb-2">
@@ -151,9 +149,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               ₹{product.originalPrice}
             </span>
           )}
-          <span className="text-xl font-bold text-yellow-300">
-            ₹{product.price}
-          </span>
+          <span className="text-xl font-bold text-yellow-300">₹{product.price}</span>
           {discountPercent > 0 && (
             <span className="text-[10px] bg-red-600 text-white px-1 py-0.5 rounded">
               {discountPercent}% OFF
@@ -163,86 +159,30 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
 
       <LiveViewingCounter productId={product.id} />
-      {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
-      {selectedSizes.length === 1 && (
-        <div className="mt-4 text-[11px] text-gray-300 font-medium flex items-center gap-2">
-          <p>
-            Regular size{" "}
-            <span className="text-yellow-400 font-semibold">
-              {selectedSizes[0].size}
-            </span>{" "}
-            ~ AIJIM size{" "}
-            <span className="text-yellow-400 font-semibold">
-              {selectedSizes[0].size === "XS"
-                ? "XS"
-                : selectedSizes[0].size === "S"
-                ? "XS"
-                : selectedSizes[0].size === "M"
-                ? "S"
-                : selectedSizes[0].size === "L"
-                ? "M"
-                : selectedSizes[0].size === "XL"
-                ? "L"
-                : selectedSizes[0].size === "XXL"
-                ? "XXL"
-                : selectedSizes[0].size}
-            </span>
-          </p>
-          <button
-            onClick={() => setShowSizeGuide(true)}
-            className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
-          >
-            AIJIM Size Guide →
-          </button>
 
-          {/* --- Popup Modal --- */}
-          {showSizeGuide && (
-            <div className="fixed inset-0  flex bg-none items-center justify-center z-50">
-              <div className="relative w-[90%] max-w-md bg-black p-3 rounded-none shadow-lg ">
-                <button
-                  onClick={() => setShowSizeGuide(false)}
-                  className="absolute top-0 right-1 text-red-500  text-lg font-black"
-                >
-                  ✕
-                </button>
-                <img
-                  src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp"
-                  alt="AIJIM Size Guide"
-                  className="rounded-none w-[90%] h-auto object-contain"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* --- Sizes --- */}
+      {/* Size Selector */}
       <div className="px-2">
         <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
-        <div className="grid grid-cols-4 md:grid-cols-5 gap-2 relative">
+        <div className="grid grid-cols-4 md:grid-cols-5 gap-2">
           {productVariants.map(({ size, stock }) => {
             const selected = selectedSizes.some((s) => s.size === size);
             const isOutOfStock = stock === 0;
-
             return (
               <div key={size} className="relative">
                 <button
                   onClick={() => toggleSize(size)}
-                  disabled={isOutOfStock}
-                  className={`relative w-full py-1.5 text-xs font-bold border rounded-sm transition-all overflow-hidden ${
+                  className={`relative w-full py-1.5 text-xs font-bold border rounded-sm transition-all ${
                     selected
                       ? "bg-white text-black underline border-2 border-gray-300"
                       : isOutOfStock
-                      ? "bg-gray-900 text-gray-200 border-gray-700 cursor-not-allowed opacity-90"
+                      ? "bg-gray-900 text-gray-400 border-gray-700 cursor-not-allowed"
                       : "text-white border-gray-200 hover:bg-gray-100 hover:text-black"
                   }`}
                 >
                   {size}
                 </button>
-
-                {/* ❌ X Mark Overlay for Out of Stock */}
                 {isOutOfStock && (
-                  <span className="absolute inset-0 flex items-center justify-center opacity-70 text-red-500 font-extrabold text-xs pointer-events-none">
+                  <span className="absolute inset-0 flex items-center justify-center text-red-500 text-xs font-bold opacity-70 pointer-events-none">
                     ✕
                   </span>
                 )}
@@ -252,121 +192,122 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         </div>
       </div>
 
-      {/* --- Selected Sizes --- */}
+      {/* Selected Sizes */}
       {selectedSizes.length > 0 && (
         <div className="px-2 pt-4 border-t border-gray-700 mt-3">
           <h4 className="text-md font-semibold mb-3">Selected Sizes</h4>
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
-            {selectedSizes.map((sel) => {
-              const variant = productVariants.find((v) => v.size === sel.size);
-              const maxStock = variant?.stock ?? 0;
-              const cartItem = cartItems.find((c) => c.product_id === product.id);
-              const cartSizeInfo = cartItem?.sizes.find(
-                (s) => s.size === sel.size
-              );
-              const inCartQty = cartSizeInfo?.quantity ?? 0;
-              const isLocked = inCartQty >= maxStock;
-              return (
-                <div
-                  key={sel.size}
-                  className="min-w-[110px] p-2 border border-gray-500 bg-gradient-to-br from-black via-gray-900 to-black rounded-sm"
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold uppercase text-lg mr-2">
-                      {sel.size}
-                    </span>
-                    <div className="flex items-center gap-2.5">
-                      <button
-                        disabled={sel.quantity <= 1 || isLocked}
-                        onClick={() =>
-                          changeQuantity(sel.size, sel.quantity - 1)
-                        }
-                        className={`px-1.5 py-0 text-lg font-bold rounded ${
-                          sel.quantity <= 1 || isLocked
-                            ? "text-gray-500 cursor-not-allowed opacity-50"
-                            : "hover:bg-gray-200 hover:text-black text-white"
-                        }`}
-                      >
-                        −
-                      </button>
-                      <span className="text-gray-200 text-lg font-semibold">
-                        {sel.quantity}
-                      </span>
-                      <button
-                        disabled={sel.quantity >= maxStock || isLocked}
-                        onClick={() =>
-                          changeQuantity(sel.size, sel.quantity + 1)
-                        }
-                        className={`px-1.5 py-0 text-lg font-bold rounded ${
-                          sel.quantity >= maxStock || isLocked
-                            ? "text-gray-500 cursor-not-allowed opacity-50"
-                            : "hover:bg-gray-200 hover:text-black text-white"
-                        }`}
-                      >
-                        +
-                      </button>
-                    </div>
+            {selectedSizes.map((sel) => (
+              <div
+                key={sel.size}
+                className="min-w-[110px] p-2 border border-gray-500 bg-gray-900 rounded-sm"
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold uppercase text-lg mr-2">
+                    {sel.size}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      disabled={sel.quantity <= 1}
+                      onClick={() => changeQuantity(sel.size, sel.quantity - 1)}
+                      className="px-1 py-0 text-lg font-bold text-white hover:bg-gray-200 hover:text-black"
+                    >
+                      −
+                    </button>
+                    <span className="text-gray-200 text-lg">{sel.quantity}</span>
+                    <button
+                      onClick={() => changeQuantity(sel.size, sel.quantity + 1)}
+                      className="px-1 py-0 text-lg font-bold text-white hover:bg-gray-200 hover:text-black"
+                    >
+                      +
+                    </button>
                   </div>
-                  {inCartQty > 0 && (
-                    <p className="text-[10px] text-center text-yellow-400 font-semibold">
-                      In Cart - {inCartQty} Qty
-                    </p>
-                  )}
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {totalPrice > 0 && (
+        <div className="flex justify-center mt-4">
+          <span className="text-xl font-semibold">
+            Total : <span className="text-yellow-400 underline">₹{totalPrice}</span>
+          </span>
+        </div>
+      )}
+
+      {/* Slide-up Size Selector if no size selected */}
+      {showSizeSelector && selectedSizes.length === 0 && (
+        <div className="fixed bottom-20 left-0 right-0 z-40 flex flex-col items-center justify-center bg-black/95 border-t border-gray-800 py-4 animate-slide-up">
+          <h4 className="text-yellow-400 text-sm font-semibold mb-2">
+            Please select your size
+          </h4>
+          <div className="grid grid-cols-6 gap-2 px-4">
+            {productVariants.map(({ size, stock }) => {
+              const isOutOfStock = stock === 0;
+              return (
+                <button
+                  key={size}
+                  onClick={() => toggleSize(size)}
+                  disabled={isOutOfStock}
+                  className={`w-12 py-1 text-xs font-bold rounded-sm ${
+                    isOutOfStock
+                      ? "bg-gray-800 text-gray-600 border border-gray-700"
+                      : "bg-gray-700 text-white hover:bg-yellow-400 hover:text-black"
+                  }`}
+                >
+                  {size}
+                </button>
               );
             })}
           </div>
         </div>
       )}
 
-      {/* --- Total --- */}
-      {totalPrice > 0 && (
-        <div className="flex justify-center mt-4">
-          <span className="text-xl font-semibold">
-            Total Amount :{" "}
-            <span className="text-yellow-400 underline">₹{totalPrice}</span>
-          </span>
-        </div>
-      )}
-
-      {/* --- Action Buttons (hide if all out of stock) --- */}
+      {/* Add to Cart / Order */}
       {!allOutOfStock ? (
-        <div className="w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 left-0 right-0 z-10 items-center justify-center">
+        <div className="w-full flex flex-row fixed lg:relative bottom-8 left-0 right-0 z-30 items-center justify-center">
           <ProductActionButtons
             product={product}
             selectedSizes={selectedSizes.map((s) => s.size)}
-            quantities={selectedSizes.reduce(
-              (acc, s) => ({ ...acc, [s.size]: s.quantity }),
-              {}
-            )}
+            quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
             className="w-1/2 lg:w-full rounded-none text-base font-semibold"
+            onClick={() => {
+              if (selectedSizes.length === 0) {
+                setShowSizeSelector(true);
+                setTimeout(() => setShowSizeSelector(false), 4000);
+              }
+            }}
           />
           <ProductPlaceOrder
             product={product}
             selectedSizes={selectedSizes.map((s) => s.size)}
-            quantities={selectedSizes.reduce(
-              (acc, s) => ({ ...acc, [s.size]: s.quantity }),
-              {}
-            )}
+            quantities={selectedSizes.reduce((acc, s) => ({ ...acc, [s.size]: s.quantity }), {})}
             variant="secondary"
-            className="w-1/2 lg:w-full rounded-none border-l border-gray-700 font-semibold text-base bg-yellow-400 text-black hover:bg-yellow-300"
+            className="w-1/2 lg:w-full rounded-none border-l border-gray-700 bg-yellow-400 text-black font-semibold hover:bg-yellow-300"
+            onClick={() => {
+              if (selectedSizes.length === 0) {
+                setShowSizeSelector(true);
+                setTimeout(() => setShowSizeSelector(false), 4000);
+              }
+            }}
           />
         </div>
       ) : (
-        <div className="flex items-center justify-center py-4 m-3 bg-gray-900 border-t  border-gray-800">
+        <div className="flex items-center justify-center py-4 m-3 bg-gray-900 border-t border-gray-800">
           <p className="text-sm text-gray-400 font-semibold">
-            ❌ Currently <span className="text-yellow-400">Out of Stock</span> — Coming Soon!
+            ❌ Out of Stock — Coming Soon!
           </p>
         </div>
       )}
 
-      {/* --- Delivery Section --- */}
-      <div className="p-4 bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none m-2 mt-4">
+      {/* Delivery Section */}
+      <div className="p-4 bg-gray-950 border border-gray-700 rounded-none m-2 mt-4">
         <h3 className="text-md font-semibold text-yellow-300 mb-2">
           Delivery & Returns
         </h3>
         <div className="space-y-3">
-          {/* Pincode Input */}
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -375,7 +316,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               placeholder="Enter PIN Code"
               value={pincode}
               onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
-              className="w-80 flex-1 text-xs px-1 py-1.5 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 font-semibold focus:ring-1 focus:ring-yellow-400 outline-none"
+              className="flex-1 text-xs px-2 py-1.5 bg-gray-800 border border-gray-600 text-white placeholder-gray-400 font-semibold focus:ring-1 focus:ring-yellow-400 outline-none"
             />
             <button
               onClick={checkPincode}
@@ -396,72 +337,58 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             </p>
           )}
 
-          {/* --- Delivery Instructions Dropdown --- */}
+          {/* Dropdown */}
           <div className="border-t border-gray-700 pt-2">
             <button
-              onClick={() => setShowInstructions((prev) => !prev)}
-              className="w-full flex items-center justify-between text-xs font-semibold text-gray-200 hover:text-yellow-400 transition-colors"
+              onClick={() => setShowInstructions(!showInstructions)}
+              className="w-full flex items-center justify-between text-xs font-semibold text-gray-200 hover:text-yellow-400"
             >
               Delivery Instructions
               <ChevronDown
-                className={`w-4 h-4 transform transition-transform duration-300 ${
+                className={`w-4 h-4 transform transition-transform ${
                   showInstructions ? "rotate-180 text-yellow-400" : "rotate-0"
                 }`}
               />
             </button>
-            {/* Dropdown content */}
-            <div
-              className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                showInstructions ? "max-h-[300px] mt-2" : "max-h-0"
-              }`}
-            >
-              <div className="bg-gray-800 text-gray-300 text-xs font-medium p-3 border border-gray-700 rounded-none space-y-1 leading-relaxed">
-                <p>• Easy 7-day returns on eligible items</p>
-                <p>• No Cash on Delivery available</p>
+            {showInstructions && (
+              <div className="bg-gray-800 text-gray-300 text-xs p-3 border border-gray-700 mt-2 rounded-sm space-y-1">
+                <p>• Easy 7-day returns</p>
+                <p>• No Cash on Delivery</p>
                 <Link
                   to="/cancellation-refund"
-                  className="text-yellow-400 hover:text-yellow-300 underline block mt-1"
+                  className="text-yellow-400 underline"
                 >
-                  View Cancellation & Refund Policy →
+                  View Refund Policy →
                 </Link>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* --- Description + Features + Coupons --- */}
-<div className="px-2 pb-4">
-  {/* Product Description */}
-  <ProductDescription desc={product.description} />
-
-  {/* --- Feature Highlights (Lucide Icons) --- */}
-  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 mb-2 text-center">
-  {[
-    { icon: IndianRupee, label: "Free Delivery" },
-    { icon: Truck, label: "Fast Delivery (5–7 Days)" },
-    { icon: Shirt, label: "100% Cotton" },
-    { icon: Coins, label: "Reward Points" },
-  ].map(({ icon: Icon, label }, index) => (
-    <div
-      key={index}
-      className="group flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 border border-gray-700 hover:border-gray-500 transition-all duration-300 p-3 rounded-lg text-white shadow-md hover:shadow-lg hover:shadow-indigo-500/20"
-    >
-      <div className="flex items-center justify-center bg-gray-800 group-hover:bg-indigo-600 transition-all duration-300 rounded-full w-8 h-8 mb-1">
-        <Icon className="w-4 h-4 text-white transition-transform duration-300 group-hover:scale-110" />
+      {/* Icons Section */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 mb-2 text-center px-3">
+        {[
+          { icon: IndianRupee, label: "Free Delivery" },
+          { icon: Truck, label: "Fast Delivery (5–7 Days)" },
+          { icon: Shirt, label: "100% Cotton" },
+          { icon: Coins, label: "Reward Points" },
+        ].map(({ icon: Icon, label }, i) => (
+          <div
+            key={i}
+            className="group flex flex-col items-center justify-center bg-gray-900 border border-gray-700 hover:border-gray-500 transition-all p-3 rounded-md text-white shadow hover:shadow-indigo-500/10"
+          >
+            <Icon className="w-4 h-4 mb-1 text-white group-hover:text-yellow-400" />
+            <p className="text-[12px] font-medium group-hover:text-yellow-400">
+              {label}
+            </p>
+          </div>
+        ))}
       </div>
-      <p className="text-[12px] sm:text-[13px] font-medium leading-tight group-hover:text-yellow-400">
-        {label}
-      </p>
-    </div>
-  ))}
-</div>
 
-  {/* Available Coupons */}
-  <AvailableCoupons />
-</div>
+      <ProductDescription desc={product.description} />
+      <AvailableCoupons />
 
-      {/* --- Share Modal --- */}
       <ShareModal
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
@@ -472,3 +399,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 };
 
 export default ProductDetails;
+
+/* Add this CSS in your global.css or tailwind.css */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+                     }
