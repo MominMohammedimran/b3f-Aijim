@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Loader2,
+import { 
+Loader2,
   Share,
   ChevronDown,
   IndianRupee,
   Truck,
   Shirt,
-  Coins,
-} from "lucide-react";
+  Coins, } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [selectedSizes, setSelectedSizes] = useState<SizeWithQuantity[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
-  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
 
@@ -61,11 +60,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   // --- Toggle / Change Size ---
   const toggleSize = (size: string) => {
+    const stock = productVariants.find((v) => v.size === size)?.stock ?? 0;
     const already = selectedSizes.some((s) => s.size === size);
+    if (stock === 0 && !already) return;
     setSelectedSizes((prev) =>
-      already
-        ? prev.filter((s) => s.size !== size)
-        : [...prev, { size, quantity: 1 }]
+      already ? prev.filter((s) => s.size !== size) : [...prev, { size, quantity: 1 }]
     );
   };
 
@@ -124,6 +123,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
     );
 
+  // --- Determine stock availability ---
   const allOutOfStock = productVariants.every((v) => v.stock === 0);
 
   return (
@@ -163,10 +163,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       </div>
 
       <LiveViewingCounter productId={product.id} />
-
-      {/* --- AIJIM Size Conversion Note --- */}
+      {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
       {selectedSizes.length === 1 && (
-        <div className="mt-4 pl-2 text-[11px] text-gray-300 font-medium flex items-center gap-2">
+        <div className="mt-4 text-[11px] text-gray-300 font-medium flex items-center gap-2">
           <p>
             Regular size{" "}
             <span className="text-yellow-400 font-semibold">
@@ -196,20 +195,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             AIJIM Size Guide →
           </button>
 
-          {/* Popup Modal */}
+          {/* --- Popup Modal --- */}
           {showSizeGuide && (
-            <div className="fixed inset-0 flex bg-black/80 items-center justify-center z-50">
-              <div className="relative w-[90%] max-w-md bg-black p-3 rounded-none shadow-lg">
+            <div className="fixed inset-0  flex bg-none items-center justify-center z-50">
+              <div className="relative w-[90%] max-w-md bg-black p-3 rounded-none shadow-lg ">
                 <button
                   onClick={() => setShowSizeGuide(false)}
-                  className="absolute top-1 right-1 text-red-500 text-lg font-black"
+                  className="absolute top-0 right-1 text-red-500  text-lg font-black"
                 >
                   ✕
                 </button>
                 <img
                   src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp"
                   alt="AIJIM Size Guide"
-                  className="rounded-none w-full h-auto object-contain"
+                  className="rounded-none w-[90%] h-auto object-contain"
                 />
               </div>
             </div>
@@ -220,7 +219,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       {/* --- Sizes --- */}
       <div className="px-2">
         <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
-        <div className="grid grid-cols-4 md:grid-cols-5 gap-2">
+        <div className="grid grid-cols-4 md:grid-cols-5 gap-2 relative">
           {productVariants.map(({ size, stock }) => {
             const selected = selectedSizes.some((s) => s.size === size);
             const isOutOfStock = stock === 0;
@@ -229,18 +228,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               <div key={size} className="relative">
                 <button
                   onClick={() => toggleSize(size)}
-                  className={`relative w-full py-1.5 text-xs font-bold border rounded-sm transition-all ${
+                  disabled={isOutOfStock}
+                  className={`relative w-full py-1.5 text-xs font-bold border rounded-sm transition-all overflow-hidden ${
                     selected
                       ? "bg-white text-black underline border-2 border-gray-300"
                       : isOutOfStock
-                      ? "bg-gray-900 text-gray-400 border-gray-700 opacity-90"
+                      ? "bg-gray-900 text-gray-200 border-gray-700 cursor-not-allowed opacity-90"
                       : "text-white border-gray-200 hover:bg-gray-100 hover:text-black"
                   }`}
                 >
                   {size}
                 </button>
+
+                {/* ❌ X Mark Overlay for Out of Stock */}
                 {isOutOfStock && (
-                  <span className="absolute inset-0 flex items-center justify-center text-red-500 font-extrabold text-xs pointer-events-none">
+                  <span className="absolute inset-0 flex items-center justify-center opacity-70 text-red-500 font-extrabold text-xs pointer-events-none">
                     ✕
                   </span>
                 )}
@@ -250,34 +252,215 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         </div>
       </div>
 
-      {/* --- Description + Features --- */}
-      <div className="px-2 pb-4 mt-4">
-        <ProductDescription desc={product.description} />
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center">
-          <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
-            <IndianRupee className="w-5 h-5 mb-1 text-white" />
-            <p className="text-[13px] font-semibold">Free Delivery</p>
-          </div>
-
-          <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
-            <Truck className="w-5 h-5 mb-1 text-white" />
-            <p className="text-[13px] font-semibold">Fast Delivery (5–7 Days)</p>
-          </div>
-
-          <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
-            <Shirt className="w-5 h-5 mb-1 text-white" />
-            <p className="text-[13px] font-semibold">100% Cotton</p>
-          </div>
-
-          <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
-            <Coins className="w-5 h-5 mb-1 text-white" />
-            <p className="text-[13px] font-semibold">Reward Points</p>
+      {/* --- Selected Sizes --- */}
+      {selectedSizes.length > 0 && (
+        <div className="px-2 pt-4 border-t border-gray-700 mt-3">
+          <h4 className="text-md font-semibold mb-3">Selected Sizes</h4>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {selectedSizes.map((sel) => {
+              const variant = productVariants.find((v) => v.size === sel.size);
+              const maxStock = variant?.stock ?? 0;
+              const cartItem = cartItems.find((c) => c.product_id === product.id);
+              const cartSizeInfo = cartItem?.sizes.find(
+                (s) => s.size === sel.size
+              );
+              const inCartQty = cartSizeInfo?.quantity ?? 0;
+              const isLocked = inCartQty >= maxStock;
+              return (
+                <div
+                  key={sel.size}
+                  className="min-w-[110px] p-2 border border-gray-500 bg-gradient-to-br from-black via-gray-900 to-black rounded-sm"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold uppercase text-lg mr-2">
+                      {sel.size}
+                    </span>
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        disabled={sel.quantity <= 1 || isLocked}
+                        onClick={() =>
+                          changeQuantity(sel.size, sel.quantity - 1)
+                        }
+                        className={`px-1.5 py-0 text-lg font-bold rounded ${
+                          sel.quantity <= 1 || isLocked
+                            ? "text-gray-500 cursor-not-allowed opacity-50"
+                            : "hover:bg-gray-200 hover:text-black text-white"
+                        }`}
+                      >
+                        −
+                      </button>
+                      <span className="text-gray-200 text-lg font-semibold">
+                        {sel.quantity}
+                      </span>
+                      <button
+                        disabled={sel.quantity >= maxStock || isLocked}
+                        onClick={() =>
+                          changeQuantity(sel.size, sel.quantity + 1)
+                        }
+                        className={`px-1.5 py-0 text-lg font-bold rounded ${
+                          sel.quantity >= maxStock || isLocked
+                            ? "text-gray-500 cursor-not-allowed opacity-50"
+                            : "hover:bg-gray-200 hover:text-black text-white"
+                        }`}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  {inCartQty > 0 && (
+                    <p className="text-[10px] text-center text-yellow-400 font-semibold">
+                      In Cart - {inCartQty} Qty
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
+      )}
 
-        <AvailableCoupons />
+      {/* --- Total --- */}
+      {totalPrice > 0 && (
+        <div className="flex justify-center mt-4">
+          <span className="text-xl font-semibold">
+            Total Amount :{" "}
+            <span className="text-yellow-400 underline">₹{totalPrice}</span>
+          </span>
+        </div>
+      )}
+
+      {/* --- Action Buttons (hide if all out of stock) --- */}
+      {!allOutOfStock ? (
+        <div className="w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 left-0 right-0 z-10 items-center justify-center">
+          <ProductActionButtons
+            product={product}
+            selectedSizes={selectedSizes.map((s) => s.size)}
+            quantities={selectedSizes.reduce(
+              (acc, s) => ({ ...acc, [s.size]: s.quantity }),
+              {}
+            )}
+            className="w-1/2 lg:w-full rounded-none text-base font-semibold"
+          />
+          <ProductPlaceOrder
+            product={product}
+            selectedSizes={selectedSizes.map((s) => s.size)}
+            quantities={selectedSizes.reduce(
+              (acc, s) => ({ ...acc, [s.size]: s.quantity }),
+              {}
+            )}
+            variant="secondary"
+            className="w-1/2 lg:w-full rounded-none border-l border-gray-700 font-semibold text-base bg-yellow-400 text-black hover:bg-yellow-300"
+          />
+        </div>
+      ) : (
+        <div className="flex items-center justify-center py-4 m-3 bg-gray-900 border-t  border-gray-800">
+          <p className="text-sm text-gray-400 font-semibold">
+            ❌ Currently <span className="text-yellow-400">Out of Stock</span> — Coming Soon!
+          </p>
+        </div>
+      )}
+
+      {/* --- Delivery Section --- */}
+      <div className="p-4 bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none m-2 mt-4">
+        <h3 className="text-md font-semibold text-yellow-300 mb-2">
+          Delivery & Returns
+        </h3>
+        <div className="space-y-3">
+          {/* Pincode Input */}
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              maxLength={6}
+              inputMode="numeric"
+              placeholder="Enter PIN Code"
+              value={pincode}
+              onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
+              className="w-80 flex-1 text-xs px-1 py-1.5 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 font-semibold focus:ring-1 focus:ring-yellow-400 outline-none"
+            />
+            <button
+              onClick={checkPincode}
+              disabled={loadingPincode}
+              className="px-2 py-1.5 bg-yellow-500 text-xs text-black font-semibold rounded-none hover:bg-yellow-400 disabled:opacity-50"
+            >
+              {loadingPincode ? "Checking..." : "Check"}
+            </button>
+          </div>
+
+          {pincodeChecked && pincodeResult && (
+            <p
+              className={`text-[10px] font-semibold ${
+                pincodeResult.isServiceable ? "text-green-400" : "text-red-400"
+              }`}
+            >
+              {pincodeResult.message}
+            </p>
+          )}
+
+          {/* --- Delivery Instructions Dropdown --- */}
+          <div className="border-t border-gray-700 pt-2">
+            <button
+              onClick={() => setShowInstructions((prev) => !prev)}
+              className="w-full flex items-center justify-between text-xs font-semibold text-gray-200 hover:text-yellow-400 transition-colors"
+            >
+              Delivery Instructions
+              <ChevronDown
+                className={`w-4 h-4 transform transition-transform duration-300 ${
+                  showInstructions ? "rotate-180 text-yellow-400" : "rotate-0"
+                }`}
+              />
+            </button>
+            {/* Dropdown content */}
+            <div
+              className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                showInstructions ? "max-h-[300px] mt-2" : "max-h-0"
+              }`}
+            >
+              <div className="bg-gray-800 text-gray-300 text-xs font-medium p-3 border border-gray-700 rounded-none space-y-1 leading-relaxed">
+                <p>• Easy 7-day returns on eligible items</p>
+                <p>• No Cash on Delivery available</p>
+                <Link
+                  to="/cancellation-refund"
+                  className="text-yellow-400 hover:text-yellow-300 underline block mt-1"
+                >
+                  View Cancellation & Refund Policy →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* --- Description + Features + Coupons --- */}
+<div className="px-2 pb-4">
+  {/* Product Description */}
+  <ProductDescription desc={product.description} />
+
+  {/* --- Feature Highlights (Lucide Icons) --- */}
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center">
+    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
+      <IndianRupee className="w-5 h-5 mb-1 text-white" />
+      <p className="text-[13px] font-semibold">Free Delivery</p>
+    </div>
+
+    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
+      <Truck className="w-5 h-5 mb-1 text-white" />
+      <p className="text-[13px] font-semibold">Fast Delivery (5–7 Days)</p>
+    </div>
+
+    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
+      <Shirt className="w-5 h-5 mb-1 text-white" />
+      <p className="text-[13px] font-semibold">100% Cotton</p>
+    </div>
+
+    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
+      <Coins className="w-5 h-5 mb-1 text-white" />
+      <p className="text-[13px] font-semibold">Reward Points</p>
+    </div>
+  </div>
+
+  {/* Available Coupons */}
+  <AvailableCoupons />
+</div>
 
       {/* --- Share Modal --- */}
       <ShareModal
