@@ -69,8 +69,8 @@ const Navbar = () => {
           isScrolled ? 'backdrop-blur-md bg-black/70 shadow-md' : 'bg-transparent'
         }`}
       >
-        {/* Brand Logo */}
-        <div className="flex-grow flex justify-center items-left">
+        {/* Brand Logo - aligned left */}
+        <div className="flex items-center pl-2 mb-2">
           <img
             src="/aijim-uploads/aijim.svg"
             alt="AIJIM Logo"
@@ -79,7 +79,7 @@ const Navbar = () => {
         </div>
 
         {/* Right Icons */}
-        <div className="flex items-center gap-4 mr-4">
+        <div className="flex items-center gap-4 mr-4 pb-2">
           {/* Search Icon */}
           <Link to="/search" aria-label="Search" className="text-white hover:text-yellow-400">
             <Search size={20} />
