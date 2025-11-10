@@ -70,7 +70,7 @@ const Navbar = () => {
         }`}
       >
         {/* Brand Logo */}
-        <div className="flex-grow flex justify-center">
+        <div className="flex-grow flex justify-center items-left">
           <img
             src="/aijim-uploads/aijim.svg"
             alt="AIJIM Logo"
