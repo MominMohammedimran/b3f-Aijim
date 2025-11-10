@@ -399,18 +399,3 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 };
 
 export default ProductDetails;
-
-/* Add this CSS in your global.css or tailwind.css */
-@keyframes slide-up {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
-                     }
