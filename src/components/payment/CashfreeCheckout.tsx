@@ -186,32 +186,66 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
 
   // ✅ On Payment Success
   const handlePaymentSuccess = async (order: any, paymentDetails: any) => {
+  try {
+    // Update order with payment details
+    await supabase
+      .from('orders')
+      .update({
+        payment_status: 'paid',
+        status: 'confirmed',
+        payment_details: JSON.stringify({
+          cashfree_order_id: paymentDetails.cf_order_id,
+          payment_method: paymentDetails.payment_method,
+          amount: finalTotal,
+          currency: 'INR'
+        }),
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', order.id);
+
+    // Update inventory
+    const { updateInventoryFromOrder } = await import('@/hooks/useProductInventory');
+    await updateInventoryFromOrder({
+      id: order.id,
+      items: cartItems
+    });
+
+    // Create Delhivery order (optional)
     try {
-      await supabase
-        .from('orders')
-        .update({
-          payment_status: 'paid',
-          status: 'confirmed',
-          payment_details: JSON.stringify(paymentDetails),
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', order.id);
+      const delhiveryData = {
+        orderId: order.id,
+        orderNumber: order.order_number,
+        shippingAddress: shippingAddress,
+        items: cartItems,
+        total: finalTotal,
+        paymentMethod: 'cashfree'
+      };
 
-      toast.success('Payment successful! Redirecting...');
+      console.log('Creating Delhivery order...');
+      const { data: delhiveryResponse, error: delhiveryError } = await supabase.functions.invoke('create-delhivery-order', {
+        body: { orderData: delhiveryData }
+      });
 
-      // 🧭 Redirect to Order Complete
-      setTimeout(() => {
-        navigate(`/order-complete?order_id=${order.id}`);
-      }, 1500);
-
-      setIsProcessing(false);
-      onSuccess?.();
-    } catch (updateError) {
-      console.error(updateError);
-      toast.error('Payment saved but failed to update order.');
-      setIsProcessing(false);
+      if (delhiveryError) {
+        console.error('Delhivery order creation failed:', delhiveryError);
+      } else {
+        console.log('Delhivery order created successfully:', delhiveryResponse);
+      }
+    } catch (delhiveryErr) {
+      console.error('Error calling Delhivery function:', delhiveryErr);
     }
-  };
+
+    toast.success('Payment completed successfully!');
+    setIsProcessing(false);
+
+    // ✅ Redirect to Order Complete page
+    window.location.href = `/order-complete/${order.id}`;
+  } catch (updateError) {
+    console.error('Failed to update order:', updateError);
+    toast.error('Payment successful but failed to update order');
+    setIsProcessing(false);
+  }
+};
 
   return (
     <div className="bg-gray-900 border border-gray-700 p-4 shadow max-w-sm mx-auto text-white rounded-md">
