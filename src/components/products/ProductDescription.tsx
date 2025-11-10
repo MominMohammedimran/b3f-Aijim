@@ -1,6 +1,6 @@
-import { ChevronDown, ChevronUp, Dot } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface ProductDescriptionProps {
   desc?: string;
@@ -8,107 +8,109 @@ interface ProductDescriptionProps {
 
 const ProductDescription = ({ desc }: ProductDescriptionProps) => {
   const defaultDescription = `
-Neck: Ribbed crew neck for structure and comfort  
-Color: High-saturation printing for bold impact  
-Design ID: Aijim_00001  
+Timeless Style Meets Modern Craftsmanship.
+This elegant beige oversized T-shirt offers a refined look with premium comfort. Featuring intricate front embroidery, it is the perfect blend of youth style and classic charm for those who appreciate subtle sophistication.
 
-Style It With:  
-Layer it over jeans, cargos, or joggers for a casual streetwear vibe.  
-Perfect for daily wear, college hangouts, or relaxed weekends.  
+DETAILS
+✔️ 100% Pure Cotton: Ultra-soft, breathable fabric ensuring maximum comfort throughout the day.
+✔️ Oversized Youth Fit: Relaxed yet stylish silhouette tailored for a trendy, youthful vibe.
+✔️ Weight: 240 GSM: High-quality cotton providing durability and a luxurious feel.
+✔️ Front Embroidery: Detailed embroidery that adds a tactile, premium finish.
+✔️ Colour: Soft beige base pairing effortlessly with any outfit.
+✔️ Made in India: Crafted with attention to detail by skilled artisans.
 
-Care Instructions:  
-🧺 Machine wash cold with similar colors  
-🚫 Avoid direct ironing on print  
-🌤 Dry in shade to retain print vibrancy  
-🧵 Do not bleach or wring  
+ARTWORK FEATURES
+- High-quality thread embroidery for crisp, refined aesthetic.
+- Designed to combine understated style with youthful energy.
+- Embroidery adds texture and character for a standout look.
 
-Limited Edition Drop:  
-Only a few pieces available – once sold out, they’re gone for good.
-  `;
+WASH CARE
+- Turn inside out and wash with cold water.
+- Use gentle detergents; avoid bleach or dry cleaning.
+- Do not iron directly over the embroidery.
+- Dry in shade for long-lasting color and print.
+`;
 
-  const text = (desc && desc.trim().length > 20 ? desc : defaultDescription)
-    .trim()
-    .split(/\n+/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+  // ✅ Use product description if available, else fallback
+  const text = useMemo(() => {
+    const finalText = desc && desc.trim().length > 20 ? desc : defaultDescription;
+    return finalText.trim().split(/\n+/).map((line) => line.trim()).filter(Boolean);
+  }, [desc]);
 
-  // Group dynamically
-  const sections: { title: string; content: string[] }[] = [];
-  let currentSection: { title: string; content: string[] } | null = null;
+  // ✅ Group by sections like DETAILS, ARTWORK FEATURES, etc.
+  const sections = useMemo(() => {
+    const grouped: { title: string; content: string[] }[] = [];
+    let current: { title: string; content: string[] } | null = null;
 
-  text.forEach((line) => {
-    const isHeader =
-      line.toLowerCase().includes("details") ||
-      line.toLowerCase().includes("artwork features") ||
-      line.toLowerCase().includes("wash care") ||
-      line.toLowerCase().includes("limited edition drop") ||
-      line.toLowerCase().includes("key features");
+    text.forEach((line) => {
+      const isHeader =
+        line.match(/^(details|artwork features|wash care|limited edition|style it with)/i);
 
-    if (isHeader) {
-      if (currentSection) sections.push(currentSection);
-      currentSection = { title: line, content: [] };
-    } else {
-      if (!currentSection) currentSection = { title: "Details", content: [] };
-      currentSection.content.push(line);
-    }
-  });
-  if (currentSection) sections.push(currentSection);
+      if (isHeader) {
+        if (current) grouped.push(current);
+        current = { title: line.trim(), content: [] };
+      } else {
+        if (!current) current = { title: "Description", content: [] };
+        current.content.push(line);
+      }
+    });
+
+    if (current) grouped.push(current);
+    return grouped;
+  }, [text]);
 
   const [openSections, setOpenSections] = useState(
     sections.reduce((acc, _, i) => ({ ...acc, [i]: true }), {})
   );
 
-  const toggleSection = (index: number) => {
+  const toggleSection = (index: number) =>
     setOpenSections((prev) => ({ ...prev, [index]: !prev[index] }));
-  };
 
   return (
-    <div className="mt-4 mb-5 p-3 border border-gray-800 rounded-none bg-black transition-all duration-500">
+    <div className="mt-4 mb-6 p-4 border border-gray-800 bg-black rounded-none transition-all duration-500">
       <h3 className="text-md font-semibold text-yellow-400 uppercase tracking-[1px] mb-4 border-b border-yellow-500/40 pb-2">
         Product Description
       </h3>
 
-      <div className="space-y-3 ">
+      <div className="space-y-3">
         {sections.map((section, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: i * 0.1 }}
-            className="border-b border-gray-800 pb-1.5 last:border-none"
+            transition={{ duration: 0.3, delay: i * 0.1 }}
+            className="border-b border-gray-800 pb-2 last:border-none"
           >
-            {/* Section Header */}
             <button
               onClick={() => toggleSection(i)}
               className="flex justify-between items-center w-full text-left group"
             >
-              <span className="text-yellow-300 text-sm font-semibold uppercase tracking-wide transition-all group-hover:text-yellow-400">
+              <span className="text-yellow-300 text-sm font-semibold uppercase tracking-wide group-hover:text-yellow-400 transition">
                 {section.title}
               </span>
               {openSections[i] ? (
-                <ChevronUp className="w-4 h-4 text-yellow-400 transition-transform group-hover:rotate-180" />
+                <ChevronUp className="w-4 h-4 text-yellow-400" />
               ) : (
-                <ChevronDown className="w-4 h-4 text-gray-400 transition-transform group-hover:-rotate-180" />
+                <ChevronDown className="w-4 h-4 text-gray-400" />
               )}
             </button>
 
-            {/* Section Content */}
             <AnimatePresence>
               {openSections[i] && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="mt-3 pl-1 text-sm font-medium text-gray-300 leading-relaxed space-y-1"
+                  transition={{ duration: 0.3 }}
+                  className="mt-2 pl-1 text-gray-300 text-sm leading-relaxed space-y-1"
                 >
                   {section.content.map((line, j) => (
                     <motion.p
                       key={j}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: j * 0.05 }}
-                      className="flex items-start gap-2 text-gray-300 text-xs "
+                      transition={{ delay: j * 0.03 }}
+                      className="text-xs flex items-start gap-2"
                     >
                       {line}
                     </motion.p>
