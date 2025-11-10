@@ -6,7 +6,7 @@ import { Product } from '../lib/types';
 import { Button } from '@/components/ui/button';
 import SearchBox from '../components/search/SearchBox';
 import Pagination from '../components/search/Pagination';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import ProductCard from '@/components/ui/ProductCard'; // ✅ Using ProductCard directly
 
 type SortOption = 'default' | 'price-low-high' | 'price-high-low';
