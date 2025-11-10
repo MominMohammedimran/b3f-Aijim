@@ -67,7 +67,7 @@ WASH CARE
     setOpenSections((prev) => ({ ...prev, [index]: !prev[index] }));
 
   return (
-    <div className="mt-4 mb-6 p-4 border border-gray-800 bg-black rounded-none transition-all duration-500">
+    <div className="mt-4 mb-6 p-2 pb-2 border border-gray-800 bg-black rounded-none transition-all duration-500">
       <h3 className="text-md font-semibold text-yellow-400 uppercase tracking-[1px] mb-4 border-b border-yellow-500/40 pb-2">
         Product Description
       </h3>
@@ -85,7 +85,7 @@ WASH CARE
               onClick={() => toggleSection(i)}
               className="flex justify-between items-center w-full text-left group"
             >
-              <span className="text-yellow-300 text-sm font-semibold uppercase tracking-wide group-hover:text-yellow-400 transition">
+              <span className="text-yellow-300 text-sm border-b border-yellow-400 font-semibold uppercase tracking-wide group-hover:text-yellow-400 transition">
                 {section.title}
               </span>
               {openSections[i] ? (
