@@ -74,8 +74,7 @@ const Footer = () => {
         {/* Copyright */}
         <p className="text-xs md:text-md lg:text-md text-gray-400 font-medium">
           © {new Date().getFullYear()}{" "}
-          <span className="font-semibold text-white">AIJIM</span> ® — Made with ❤️ in India.
-Legal Business Name: Aijim Clothing
+          <span className="font-semibold text-white">AIJIM Clothing</span> ® — Made with ❤️ in India.
         </p>
 
         {/* Footer Links (centered row) */}
