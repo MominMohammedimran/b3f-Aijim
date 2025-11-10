@@ -423,11 +423,37 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         </div>
       </div>
 
-      {/* --- Description + Coupons --- */}
-      <div className="px-2 pb-4">
-        <ProductDescription desc={product.description} />
-        <AvailableCoupons />
-      </div>
+      {/* --- Description + Features + Coupons --- */}
+<div className="px-2 pb-4">
+  {/* Product Description */}
+  <ProductDescription desc={product.description} />
+
+  {/* --- Feature Highlights (Lucide Icons) --- */}
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center">
+    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
+      <IndianRupee className="w-5 h-5 mb-1 text-white" />
+      <p className="text-[13px] font-semibold">Free Delivery</p>
+    </div>
+
+    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
+      <Truck className="w-5 h-5 mb-1 text-white" />
+      <p className="text-[13px] font-semibold">Fast Delivery (5–7 Days)</p>
+    </div>
+
+    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
+      <Shirt className="w-5 h-5 mb-1 text-white" />
+      <p className="text-[13px] font-semibold">100% Cotton</p>
+    </div>
+
+    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
+      <Coins className="w-5 h-5 mb-1 text-white" />
+      <p className="text-[13px] font-semibold">Reward Points</p>
+    </div>
+  </div>
+
+  {/* Available Coupons */}
+  <AvailableCoupons />
+</div>
 
       {/* --- Share Modal --- */}
       <ShareModal
