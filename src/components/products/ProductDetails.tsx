@@ -436,27 +436,26 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   <ProductDescription desc={product.description} />
 
   {/* --- Feature Highlights (Lucide Icons) --- */}
-  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center">
-    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
-      <IndianRupee className="w-5 h-5 mb-1 text-white" />
-      <p className="text-[13px] font-semibold">Free Delivery</p>
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 mb-2 text-center">
+  {[
+    { icon: IndianRupee, label: "Free Delivery" },
+    { icon: Truck, label: "Fast Delivery (5–7 Days)" },
+    { icon: Shirt, label: "100% Cotton" },
+    { icon: Coins, label: "Reward Points" },
+  ].map(({ icon: Icon, label }, index) => (
+    <div
+      key={index}
+      className="group flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 border border-gray-700 hover:border-gray-500 transition-all duration-300 p-3 rounded-lg text-white shadow-md hover:shadow-lg hover:shadow-indigo-500/20"
+    >
+      <div className="flex items-center justify-center bg-gray-800 group-hover:bg-indigo-600 transition-all duration-300 rounded-full w-8 h-8 mb-1">
+        <Icon className="w-4 h-4 text-white transition-transform duration-300 group-hover:scale-110" />
+      </div>
+      <p className="text-[12px] sm:text-[13px] font-medium leading-tight group-hover:text-indigo-300">
+        {label}
+      </p>
     </div>
-
-    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
-      <Truck className="w-5 h-5 mb-1 text-white" />
-      <p className="text-[13px] font-semibold">Fast Delivery (5–7 Days)</p>
-    </div>
-
-    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
-      <Shirt className="w-5 h-5 mb-1 text-white" />
-      <p className="text-[13px] font-semibold">100% Cotton</p>
-    </div>
-
-    <div className="flex flex-col items-center justify-center bg-gray-900 border border-gray-700 py-3 rounded-none text-white">
-      <Coins className="w-5 h-5 mb-1 text-white" />
-      <p className="text-[13px] font-semibold">Reward Points</p>
-    </div>
-  </div>
+  ))}
+</div>
 
   {/* Available Coupons */}
   <AvailableCoupons />
