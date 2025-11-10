@@ -38,9 +38,9 @@ Only a few pieces available – once sold out, they’re gone for good.
 
   text.forEach((line) => {
     const isHeader =
-      line.toLowerCase().includes("style it with") ||
-      line.toLowerCase().includes("care instructions") ||
-      line.toLowerCase().includes("designed by aijim") ||
+      line.toLowerCase().includes("details") ||
+      line.toLowerCase().includes("artwork features") ||
+      line.toLowerCase().includes("wash care") ||
       line.toLowerCase().includes("limited edition drop") ||
       line.toLowerCase().includes("key features");
 
