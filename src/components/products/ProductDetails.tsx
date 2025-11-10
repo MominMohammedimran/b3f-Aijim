@@ -450,7 +450,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       <div className="flex items-center justify-center bg-gray-800 group-hover:bg-indigo-600 transition-all duration-300 rounded-full w-8 h-8 mb-1">
         <Icon className="w-4 h-4 text-white transition-transform duration-300 group-hover:scale-110" />
       </div>
-      <p className="text-[12px] sm:text-[13px] font-medium leading-tight group-hover:text-indigo-300">
+      <p className="text-[12px] sm:text-[13px] font-medium leading-tight group-hover:text-yellow-400">
         {label}
       </p>
     </div>
