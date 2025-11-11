@@ -10,6 +10,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ProductCard from "@/components/ProductCard"; // ✅ use external ProductCard
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,7 +21,7 @@ const Products = () => {
   );
   const navigate = useNavigate();
 
-  // ✅ Fetch from Supabase
+  // ✅ Fetch from Supabase once
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase.from("products").select("*");
@@ -31,15 +32,13 @@ const Products = () => {
       }
 
       const transformed = (data || []).map((p: any) => {
-        const sizes = Array.isArray(p.variants)
+        const variants = Array.isArray(p.variants)
           ? p.variants
-              .filter(
-                (v) =>
-                  v && typeof v === "object" && v.size && v.stock != null
-              )
+              .filter((v) => v && v.size && v.stock != null)
               .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
           : [];
-        const totalStock = sizes.reduce((s, x) => s + (x.stock || 0), 0);
+
+        const totalStock = variants.reduce((s, x) => s + (x.stock || 0), 0);
 
         return {
           id: p.id,
@@ -48,17 +47,10 @@ const Products = () => {
           originalPrice: p.original_price || p.price,
           image: p.image || "",
           images: p.images || [],
-          variants: sizes,
+          stock: totalStock,
           code: p.code,
           description: p.description || "",
           tags: Array.isArray(p.tags) ? p.tags : [],
-          inStock: totalStock > 0,
-          discountPercentage:
-            p.original_price && p.original_price > p.price
-              ? Math.round(
-                  ((p.original_price - p.price) / p.original_price) * 100
-                )
-              : 0,
         } as Product;
       });
 
@@ -118,85 +110,6 @@ const Products = () => {
       )}
     </div>
   );
-
-  // ✅ Inline ProductCard Component
-  const ProductCardInline = ({ product }: { product: Product }) => {
-    const [currentImage, setCurrentImage] = useState(0);
-    const [isHovered, setIsHovered] = useState(false);
-
-    const images =
-      Array.isArray(product.images) && product.images.length > 0
-        ? product.images
-        : [product.image];
-
-    const discount =
-      product.originalPrice && product.originalPrice > product.price;
-
-    useEffect(() => {
-      if (!isHovered || images.length <= 1) return;
-      const interval = setInterval(
-        () => setCurrentImage((p) => (p + 1) % images.length),
-        1500
-      );
-      return () => clearInterval(interval);
-    }, [isHovered, images.length]);
-
-    const outOfStock = product.stock <= 0;
-
-    return (
-      <div
-        onClick={() => navigate(`/product/details/${product.code}`)}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          setCurrentImage(0);
-        }}
-        className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col`}
-      >
-        {/* 🖼️ Image Section */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900 flex-shrink-0">
-          {images.map((img, i) => (
-            <img
-              key={i}
-              src={img}
-              alt={product.name}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                i === currentImage ? "opacity-100" : "opacity-0"
-              } group-hover:scale-[1.03]`}
-            />
-          ))}
-
-          {outOfStock && (
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-              <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg">
-                SOLD OUT
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* 🏷️ Product Info */}
-        <div className="p-2 flex flex-col justify-between flex-grow">
-          <h3
-            className="text-[13px] sm:text-[14px] text-left sm:text-center text-white font-medium tracking-wide leading-tight min-h-[36px]"
-          >
-            {product.name}
-          </h3>
-
-          <div className="flex justify-center items-center gap-2 mt-1">
-            {discount && (
-              <span className="text-gray-500 text-[12px] line-through">
-                ₹{product.originalPrice}
-              </span>
-            )}
-            <span className="text-yellow-400 text-[14px] font-semibold">
-              ₹{product.price}
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   // ✅ Horizontal Section (carousel)
   const HorizontalSection = ({
@@ -263,7 +176,12 @@ const Products = () => {
                 key={p.id}
                 className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[320px] flex"
               >
-                <ProductCardInline product={p} />
+                {/* ✅ Use external ProductCard here */}
+                <ProductCard
+                  product={p}
+                  onClick={() => navigate(`/product/details/${p.code}`)}
+                  className="w-full h-full"
+                />
               </div>
             ))}
           </div>
@@ -317,7 +235,11 @@ const Products = () => {
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {sortProducts(products).map((p) => (
-                    <ProductCardInline key={p.id} product={p} />
+                    <ProductCard
+                      key={p.id}
+                      product={p}
+                      onClick={() => navigate(`/product/details/${p.code}`)}
+                    />
                   ))}
                 </div>
               </section>
