@@ -1,24 +1,29 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { Product } from '@/lib/types';
-import Layout from '@/components/layout/Layout';
-import { Loader2, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import ProductCard from '@/components/ui/ProductCard';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Product } from "@/lib/types";
+import Layout from "@/components/layout/Layout";
+import {
+  Loader2,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ProductCard from "@/components/ui/ProductCard";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sort, setSort] = useState<'default' | 'low' | 'newest'>('default');
-  const [openMenu, setOpenMenu] = useState<'hot' | 'edition' | 'all' | null>(null);
+  const [sort, setSort] = useState<"default" | "low" | "newest">("default");
+  const [openMenu, setOpenMenu] = useState<"hot" | "edition" | "all" | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase.from('products').select('*');
+      const { data, error } = await supabase.from("products").select("*");
       if (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
         setLoading(false);
         return;
       }
@@ -26,7 +31,7 @@ const Products = () => {
       const transformed = (data || []).map((p: any) => {
         const sizes = Array.isArray(p.variants)
           ? p.variants
-              .filter((v) => v && typeof v === 'object' && v.size && v.stock != null)
+              .filter((v) => v && typeof v === "object" && v.size && v.stock != null)
               .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
           : [];
         const totalStock = sizes.reduce((s, x) => s + (x.stock || 0), 0);
@@ -36,11 +41,11 @@ const Products = () => {
           name: p.name,
           price: p.price,
           originalPrice: p.original_price || p.price,
-          image: p.image || '',
+          image: p.image || "",
           images: p.images || [],
           variants: sizes,
           code: p.code,
-          description: p.description || '',
+          description: p.description || "",
           tags: Array.isArray(p.tags) ? p.tags : [],
           inStock: totalStock > 0,
           discountPercentage:
@@ -57,14 +62,14 @@ const Products = () => {
 
   const sortProducts = useMemo(() => {
     const sorter = (list: Product[]) => {
-      if (sort === 'low') return [...list].sort((a, b) => a.price - b.price);
-      if (sort === 'newest') return [...list].sort((a, b) => b.id.localeCompare(a.id));
+      if (sort === "low") return [...list].sort((a, b) => a.price - b.price);
+      if (sort === "newest") return [...list].sort((a, b) => b.id.localeCompare(a.id));
       return list;
     };
     return sorter;
   }, [sort]);
 
-  const SortDropdown = ({ section }: { section: 'hot' | 'edition' | 'all' }) => (
+  const SortDropdown = ({ section }: { section: "hot" | "edition" | "all" }) => (
     <div className="relative inline-block">
       <Button
         variant="outline"
@@ -80,22 +85,22 @@ const Products = () => {
           className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg z-10 text-sm"
           onMouseLeave={() => setOpenMenu(null)}
         >
-          {['default', 'low', 'newest'].map((opt) => (
+          {["default", "low", "newest"].map((opt) => (
             <li key={opt}>
               <button
                 className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${
-                  sort === opt ? 'font-bold' : ''
+                  sort === opt ? "font-bold" : ""
                 }`}
                 onClick={() => {
                   setSort(opt as any);
                   setOpenMenu(null);
                 }}
               >
-                {opt === 'default'
-                  ? 'Default'
-                  : opt === 'low'
-                  ? 'Price: Low to High'
-                  : 'Newest First'}
+                {opt === "default"
+                  ? "Default"
+                  : opt === "low"
+                  ? "Price: Low to High"
+                  : "Newest First"}
               </button>
             </li>
           ))}
@@ -111,17 +116,16 @@ const Products = () => {
   }: {
     title: string;
     tag: string;
-    sectionKey: 'hot' | 'edition';
+    sectionKey: "hot" | "edition";
   }) => {
     const ref = useRef<HTMLDivElement>(null);
 
-    // Manual scroll
-    const scroll = (dir: 'left' | 'right') => {
+    const scroll = (dir: "left" | "right") => {
       if (!ref.current) return;
       const distance = 250;
       ref.current.scrollBy({
-        left: dir === 'left' ? -distance : distance,
-        behavior: 'smooth',
+        left: dir === "left" ? -distance : distance,
+        behavior: "smooth",
       });
     };
 
@@ -133,9 +137,9 @@ const Products = () => {
         const isEnd = scrollLeft + clientWidth >= scrollWidth - 10;
         ref.current.scrollBy({
           left: isEnd ? -scrollWidth : 250,
-          behavior: 'smooth',
+          behavior: "smooth",
         });
-      }, 3500);
+      }, 4000);
       return () => clearInterval(interval);
     }, []);
 
@@ -152,7 +156,7 @@ const Products = () => {
         <div className="relative">
           {/* Left Button */}
           <button
-            onClick={() => scroll('left')}
+            onClick={() => scroll("left")}
             className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
           >
             <ChevronLeft size={18} />
@@ -166,7 +170,7 @@ const Products = () => {
             {filtered.map((p) => (
               <div
                 key={p.id}
-                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[310px]"
+                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[320px] flex"
               >
                 <ProductCard
                   product={p}
@@ -178,7 +182,7 @@ const Products = () => {
 
           {/* Right Button */}
           <button
-            onClick={() => scroll('right')}
+            onClick={() => scroll("right")}
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
           >
             <ChevronRight size={18} />
@@ -202,13 +206,13 @@ const Products = () => {
             </div>
           ) : (
             <>
-              {/* 🔥 Hot Selling Section with Auto-scroll */}
+              {/* 🔥 Hot Selling Section */}
               <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
 
-              {/* ✨ Edition 1 Section (optional) */}
-              {/* <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" /> */}
+              {/* ✨ Edition 1 Section */}
+              <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />
 
-              {/* 🛍 All Products Grid */}
+              {/* 🛍 All Products */}
               <section className="px-4 mt-10">
                 <div className="flex justify-between items-center mb-3">
                   <h2 className="text-lg font-bold">🛍 All Products</h2>
