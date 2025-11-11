@@ -104,7 +104,6 @@ const Products = () => {
     </div>
   );
 
-  // 🔥 Horizontal carousel section with manual scroll buttons
   const HorizontalSection = ({
     title,
     tag,
@@ -116,6 +115,7 @@ const Products = () => {
   }) => {
     const ref = useRef<HTMLDivElement>(null);
 
+    // Manual scroll
     const scroll = (dir: 'left' | 'right') => {
       if (!ref.current) return;
       const distance = 250;
@@ -124,6 +124,20 @@ const Products = () => {
         behavior: 'smooth',
       });
     };
+
+    // ✅ Auto-scroll every few seconds
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (!ref.current) return;
+        const { scrollLeft, scrollWidth, clientWidth } = ref.current;
+        const isEnd = scrollLeft + clientWidth >= scrollWidth - 10;
+        ref.current.scrollBy({
+          left: isEnd ? -scrollWidth : 250,
+          behavior: 'smooth',
+        });
+      }, 3500);
+      return () => clearInterval(interval);
+    }, []);
 
     const filtered = sortProducts(products.filter((p) => p.tags?.includes(tag)));
     if (!filtered.length) return null;
@@ -136,7 +150,7 @@ const Products = () => {
         </div>
 
         <div className="relative">
-          {/* Left Scroll Button */}
+          {/* Left Button */}
           <button
             onClick={() => scroll('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
@@ -150,17 +164,19 @@ const Products = () => {
             className="overflow-x-auto no-scrollbar scroll-smooth flex gap-4 snap-x snap-mandatory"
           >
             {filtered.map((p) => (
-              <div key={p.id} className="snap-start flex-shrink-0">
+              <div
+                key={p.id}
+                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[310px]"
+              >
                 <ProductCard
                   product={p}
                   onClick={() => navigate(`/product/details/${p.code}`)}
-                  className="w-[155px] sm:w-[195px] md:w-[210px]"
                 />
               </div>
             ))}
           </div>
 
-          {/* Right Scroll Button */}
+          {/* Right Button */}
           <button
             onClick={() => scroll('right')}
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
@@ -186,11 +202,13 @@ const Products = () => {
             </div>
           ) : (
             <>
-              {/* 🔥 Carousel Sections */}
+              {/* 🔥 Hot Selling Section with Auto-scroll */}
               <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
-              <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />
 
-              {/* 🛍 All Products */}
+              {/* ✨ Edition 1 Section (optional) */}
+              {/* <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" /> */}
+
+              {/* 🛍 All Products Grid */}
               <section className="px-4 mt-10">
                 <div className="flex justify-between items-center mb-3">
                   <h2 className="text-lg font-bold">🛍 All Products</h2>
