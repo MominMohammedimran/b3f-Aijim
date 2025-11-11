@@ -48,6 +48,7 @@ const Products = () => {
           description: p.description || "",
           tags: Array.isArray(p.tags) ? p.tags : [],
           inStock: totalStock > 0,
+          stock:totalStock,
           discountPercentage:
             p.original_price && p.original_price > p.price
               ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
