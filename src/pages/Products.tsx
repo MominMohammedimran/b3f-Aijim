@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Product } from '@/lib/types';
 import Layout from '@/components/layout/Layout';
-import { Loader2, ChevronDown } from 'lucide-react';
+import { Loader2, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ProductCard from '@/components/ui/ProductCard';
 
@@ -104,7 +104,7 @@ const Products = () => {
     </div>
   );
 
-  // 🔥 Horizontal scrolling section with auto scroll
+  // 🔥 Horizontal carousel section with manual scroll buttons
   const HorizontalSection = ({
     title,
     tag,
@@ -116,50 +116,57 @@ const Products = () => {
   }) => {
     const ref = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-      const el = ref.current;
-      if (!el) return;
-
-      let scrollDir: 'left' | 'right' = 'right';
-      const interval = setInterval(() => {
-        if (!el) return;
-        const maxScroll = el.scrollWidth - el.clientWidth;
-        if (scrollDir === 'right') {
-          el.scrollBy({ left: 200, behavior: 'smooth' });
-          if (el.scrollLeft >= maxScroll - 10) scrollDir = 'left';
-        } else {
-          el.scrollBy({ left: -200, behavior: 'smooth' });
-          if (el.scrollLeft <= 0) scrollDir = 'right';
-        }
-      }, 3000);
-
-      return () => clearInterval(interval);
-    }, []);
+    const scroll = (dir: 'left' | 'right') => {
+      if (!ref.current) return;
+      const distance = 250;
+      ref.current.scrollBy({
+        left: dir === 'left' ? -distance : distance,
+        behavior: 'smooth',
+      });
+    };
 
     const filtered = sortProducts(products.filter((p) => p.tags?.includes(tag)));
     if (!filtered.length) return null;
 
     return (
-      <section className="mb-10 px-4">
+      <section className="mb-10 px-4 relative">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-lg mb-1 font-bold">{title}</h2>
           <SortDropdown section={sectionKey} />
         </div>
 
-        <div
-          ref={ref}
-          className="overflow-x-auto no-scrollbar scroll-smooth cursor-grab active:cursor-grabbing"
-        >
-          <div className="flex gap-5">
+        <div className="relative">
+          {/* Left Scroll Button */}
+          <button
+            onClick={() => scroll('left')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          {/* Carousel */}
+          <div
+            ref={ref}
+            className="overflow-x-auto no-scrollbar scroll-smooth flex gap-4 snap-x snap-mandatory"
+          >
             {filtered.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                onClick={() => navigate(`/product/details/${p.code}`)}
-                className="w-[155px] sm:w-[195px] md:w-[210px] flex-shrink-0"
-              />
+              <div key={p.id} className="snap-start flex-shrink-0">
+                <ProductCard
+                  product={p}
+                  onClick={() => navigate(`/product/details/${p.code}`)}
+                  className="w-[155px] sm:w-[195px] md:w-[210px]"
+                />
+              </div>
             ))}
           </div>
+
+          {/* Right Scroll Button */}
+          <button
+            onClick={() => scroll('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
       </section>
     );
@@ -167,7 +174,7 @@ const Products = () => {
 
   return (
     <Layout>
-      <div className="bg-black text-white py-16 mt-4 min-h-screen overflow-y-auto scroll-smooth">
+      <div className="bg-black text-white py-16 mt-4 min-h-screen">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-xl font-semibold mb-3 pt-4 px-4">
             AIJIM Collections
@@ -179,7 +186,7 @@ const Products = () => {
             </div>
           ) : (
             <>
-              {/* 🔥 Auto-scrolling horizontal sections */}
+              {/* 🔥 Carousel Sections */}
               <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
               <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />
 
@@ -190,13 +197,13 @@ const Products = () => {
                   <SortDropdown section="all" />
                 </div>
 
-                <div className="grid gap-3 grid-cols-[repeat(auto-fit,minmax(160px,auto))] justify-start">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {sortProducts(products).map((p) => (
                     <ProductCard
                       key={p.id}
                       product={p}
                       onClick={() => navigate(`/product/details/${p.code}`)}
-                      className="w-[175px] sm:w-[195px] md:w-[210px]"
+                      className="w-full"
                     />
                   ))}
                 </div>
