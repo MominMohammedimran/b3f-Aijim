@@ -17,7 +17,7 @@ import Marquee from "react-fast-marquee";
 import NewHero from "@/components/landing/NewHero";
 import HeroSlider from '../components/ui/HeroSlider'
 import IndexFeaturesproducts from '../components/ui/IdexFeaturesproducts'
-import { supabase } from '@/integrations/supabase/client'; // ensure you have this
+import { supabase } from '@/integrations/supabase/client';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -27,13 +27,11 @@ const Index = () => {
   const [visibleCategories, setVisibleCategories] = useState<number>(4);
   const [startIndex, setStartIndex] = useState(0);
   const categoriesRef = useRef<HTMLDivElement>(null);
-const seo = useSEO('/');
+  const seo = useSEO('/');
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
-
-  
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -55,46 +53,44 @@ const seo = useSEO('/');
       const { data, error } = await query;
       if (error) throw error;
 
- const transformed: Product[] = (data || []).map((item: any) => {
-  const rawSizes = Array.isArray(item.variants) ? item.variants : [];
+      const transformed: Product[] = (data || []).map((item: any) => {
+        const rawSizes = Array.isArray(item.variants) ? item.variants : [];
 
-  const normalizedSizes: { size: string; stock: number }[] = rawSizes
-    .filter((s) => typeof s === 'object' && s !== null && 'size' in s && 'stock' in s)
-    .map((s) => ({
-      size: String((s as any).size),
-      stock: Number((s as any).stock),
-    }));
+        const normalizedSizes: { size: string; stock: number }[] = rawSizes
+          .filter((s) => typeof s === 'object' && s !== null && 'size' in s && 'stock' in s)
+          .map((s) => ({
+            size: String((s as any).size),
+            stock: Number((s as any).stock),
+          }));
 
-  const totalStock = normalizedSizes.reduce((sum, s) => sum + s.stock, 0);
+        const totalStock = normalizedSizes.reduce((sum, s) => sum + s.stock, 0);
 
-  return {
-    id: item.id,
-    productId: item.id,
-    code: item.code || `PROD-${item.id.slice(0, 8)}`,
-    name: item.name,
-    description: item.description || '',
-    price: item.price,
-    originalPrice: item.original_price || item.price,
-    discountPercentage: item.discount_percentage || 0,
-    image: item.image || '',
-    images: Array.isArray(item.images)
-      ? item.images.filter((img) => typeof img === 'string')
-      : [],
-    category: item.category || '',
-    stock: totalStock,
-    
-    variants:normalizedSizes,// ✅ Correct format
-    tags: Array.isArray(item.tags)
-      ? item.tags.filter((tag) => typeof tag === 'string')
-      : [],
-    inStock: totalStock > 0,
-  };
-});
-
+        return {
+          id: item.id,
+          productId: item.id,
+          code: item.code || `PROD-${item.id.slice(0, 8)}`,
+          name: item.name,
+          description: item.description || '',
+          price: item.price,
+          originalPrice: item.original_price || item.price,
+          discountPercentage: item.discount_percentage || 0,
+          image: item.image || '',
+          images: Array.isArray(item.images)
+            ? item.images.filter((img) => typeof img === 'string')
+            : [],
+          category: item.category || '',
+          stock: totalStock,
+          variants: normalizedSizes,
+          tags: Array.isArray(item.tags)
+            ? item.tags.filter((tag) => typeof tag === 'string')
+            : [],
+          inStock: totalStock > 0,
+        };
+      });
 
       setProducts(transformed);
     } catch (err) {
-    // console.error('Error fetching products:', err);
+      // console.error('Error fetching products:', err);
     } finally {
       setLoading(false);
     }
@@ -107,21 +103,27 @@ const seo = useSEO('/');
   const handleProductClick = (product: Product) => {
     navigate(`/product/details/${product.code}`);
   };
-// 🔥 Filter featured products based on tag
+
   const featuredProducts = products.filter(
     (p) => Array.isArray(p.tags) && p.tags.includes('indexmainimage')
   );
-    
+
+  // Scroll control for featured products
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scroll = (direction: 'left' | 'right') => {
+    if (!scrollRef.current) return;
+    const scrollAmount = 300;
+    scrollRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
+  };
+
   return (
     <Layout>
-       <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
-   
-    <NewHero/>
-      <div className="bg-black min-h-screen pt-5 text-white">
-       
-        <div className="container-custom mt-22 pt-2">
-        
-          {/*<HeroSlider />/*}
+      <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
+      <NewHero />
+  {/*<HeroSlider />/*}
 
           {/* 🔥 Hot Selling 
       <div className="mb-4 mt-4 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black
@@ -174,38 +176,58 @@ const seo = useSEO('/');
   </div>
 </div>}/*}
 
-
-
-
+      <div className="bg-black min-h-screen pt-5 text-white">
+        <div className="container-custom mt-22 pt-2">
           {/* 🌟 Featured Products Section */}
-          <h2 className="text-xl font-bold mb-5 text-left">Featured Products</h2>
-          {loading ? (
-            <p className="text-gray-400">Loading Products...</p>
-          ) : featuredProducts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
-              {featuredProducts.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${index * 0.08}s` }}
+          <div className="relative mb-8">
+            <h2 className="text-xl font-bold mb-4 text-left">Featured Products</h2>
+
+            {loading ? (
+              <p className="text-gray-400">Loading Products...</p>
+            ) : featuredProducts.length > 0 ? (
+              <div className="relative">
+                {/* Arrows */}
+                <button
+                  onClick={() => scroll('left')}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 hover:text-white transition"
                 >
-                  <ProductCard
-                    product={product}
-                    onClick={handleProductClick}
-                  />
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                <div
+                  ref={scrollRef}
+                  className="flex overflow-x-auto no-scrollbar scroll-smooth gap-2 pb-2"
+                >
+                  {featuredProducts.map((product, index) => (
+                    <div
+                      key={product.id}
+                      className="min-w-[45%] sm:min-w-[30%] md:min-w-[22%] lg:min-w-[18%] animate-fade-in"
+                      style={{ animationDelay: `${index * 0.08}s` }}
+                    >
+                      <ProductCard product={product} onClick={handleProductClick} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 text-sm">No featured products available.</p>
-          )}
-         
+
+                <button
+                  onClick={() => scroll('right')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 hover:text-white transition"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm">No featured products available.</p>
+            )}
+          </div>
 
           {/* 🎥 Product Videos */}
           <ProductVideoSection />
 
           {/* 🛍 All Products */}
-          <h2 className="text-xl font-extrabold text-white mt-6 mb-6 tracking-wide"> All Products</h2>
+          <h2 className="text-xl font-extrabold text-white mt-6 mb-6 tracking-wide">
+            All Products
+          </h2>
 
           {loading ? (
             <p className="text-gray-400">Loading products...</p>
