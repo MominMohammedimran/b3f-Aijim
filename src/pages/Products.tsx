@@ -170,7 +170,7 @@ const Products = () => {
             {filtered.map((p) => (
               <div
                 key={p.id}
-                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[320px] flex"
+                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[280px] flex"
               >
                 <ProductCard
                   product={p}
@@ -209,9 +209,9 @@ const Products = () => {
               {/* 🔥 Hot Selling Section */}
               <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
 
-              {/* ✨ Edition 1 Section */}
+              {/* ✨ Edition 1 Section 
               <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />
-
+               */}
               {/* 🛍 All Products */}
               <section className="px-4 mt-10">
                 <div className="flex justify-between items-center mb-3">
