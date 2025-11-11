@@ -17,7 +17,7 @@ import Marquee from "react-fast-marquee";
 import NewHero from "@/components/landing/NewHero";
 import HeroSlider from '../components/ui/HeroSlider'
 import IndexFeaturesproducts from '../components/ui/IdexFeaturesproducts'
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client'; // ensure you have this
 
 const Index = () => {
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const Index = () => {
             : [],
           category: item.category || '',
           stock: totalStock,
-          variants: normalizedSizes,
+          variants: normalizedSizes, // ✅ Correct format
           tags: Array.isArray(item.tags)
             ? item.tags.filter((tag) => typeof tag === 'string')
             : [],
@@ -104,11 +104,12 @@ const Index = () => {
     navigate(`/product/details/${product.code}`);
   };
 
+  // 🔥 Filter featured products based on tag
   const featuredProducts = products.filter(
     (p) => Array.isArray(p.tags) && p.tags.includes('indexmainimage')
   );
 
-  // Scroll control for featured products
+  // 👇 Scroll logic for featured products
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return;
@@ -123,11 +124,14 @@ const Index = () => {
     <Layout>
       <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
       <NewHero />
-  {/*<HeroSlider />/*}
+
+      <div className="bg-black min-h-screen pt-5 text-white">
+        <div className="container-custom mt-22 pt-2">
+          
+          {/*<HeroSlider />/*}
 
           {/* 🔥 Hot Selling 
       <div className="mb-4 mt-4 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black
-
  p-4 pl-0 pr-0 shadow-md">
   <div className="flex items-center justify-evenly mb-2">
     <span className="bg-red-500 text-white px-3 py-1 mb-3 text-sm sm:text-m font-bold tracking-wide uppercase shadow">
@@ -176,17 +180,15 @@ const Index = () => {
   </div>
 </div>}/*}
 
-      <div className="bg-black min-h-screen pt-5 text-white">
-        <div className="container-custom mt-22 pt-2">
           {/* 🌟 Featured Products Section */}
           <div className="relative mb-8">
-            <h2 className="text-xl font-bold mb-4 text-left">Featured Products</h2>
+            <h2 className="text-xl font-bold mb-5 text-left">Featured Products</h2>
 
             {loading ? (
               <p className="text-gray-400">Loading Products...</p>
             ) : featuredProducts.length > 0 ? (
               <div className="relative">
-                {/* Arrows */}
+                {/* ➤ Scroll Buttons */}
                 <button
                   onClick={() => scroll('left')}
                   className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 hover:text-white transition"
@@ -204,7 +206,10 @@ const Index = () => {
                       className="min-w-[45%] sm:min-w-[30%] md:min-w-[22%] lg:min-w-[18%] animate-fade-in"
                       style={{ animationDelay: `${index * 0.08}s` }}
                     >
-                      <ProductCard product={product} onClick={handleProductClick} />
+                      <ProductCard
+                        product={product}
+                        onClick={handleProductClick}
+                      />
                     </div>
                   ))}
                 </div>
@@ -225,9 +230,7 @@ const Index = () => {
           <ProductVideoSection />
 
           {/* 🛍 All Products */}
-          <h2 className="text-xl font-extrabold text-white mt-6 mb-6 tracking-wide">
-            All Products
-          </h2>
+          <h2 className="text-xl font-extrabold text-white mt-6 mb-6 tracking-wide"> All Products</h2>
 
           {loading ? (
             <p className="text-gray-400">Loading products...</p>
