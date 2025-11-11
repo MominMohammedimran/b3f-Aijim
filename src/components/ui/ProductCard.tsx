@@ -74,7 +74,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
           {product.name}
         </h3>
 
-        <div className="flex justify-center items-center gap-2 mt-1">
+        <div className="flex justify-center items-left sm:items-center gap-2 mt-1">
           {discount && (
             <span className="text-gray-500 text-[12px] line-through">
               ₹{product.originalPrice}
