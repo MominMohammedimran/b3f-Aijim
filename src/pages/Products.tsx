@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/lib/types";
 import Layout from "@/components/layout/Layout";
-import { Loader2, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Loader2,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Products = () => {
@@ -15,7 +20,7 @@ const Products = () => {
   );
   const navigate = useNavigate();
 
-  // ✅ Fetch products from Supabase
+  // ✅ Fetch from Supabase
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase.from("products").select("*");
@@ -29,11 +34,11 @@ const Products = () => {
         const sizes = Array.isArray(p.variants)
           ? p.variants
               .filter(
-                (v) => v && typeof v === "object" && v.size && v.stock != null
+                (v) =>
+                  v && typeof v === "object" && v.size && v.stock != null
               )
               .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
           : [];
-
         const totalStock = sizes.reduce((s, x) => s + (x.stock || 0), 0);
 
         return {
@@ -47,7 +52,6 @@ const Products = () => {
           code: p.code,
           description: p.description || "",
           tags: Array.isArray(p.tags) ? p.tags : [],
-          stock: totalStock, // ✅ ensure stock is included
           inStock: totalStock > 0,
           discountPercentage:
             p.original_price && p.original_price > p.price
@@ -119,7 +123,6 @@ const Products = () => {
   const ProductCardInline = ({ product }: { product: Product }) => {
     const [currentImage, setCurrentImage] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
-    const navigate = useNavigate();
 
     const images =
       Array.isArray(product.images) && product.images.length > 0
@@ -148,7 +151,7 @@ const Products = () => {
           setIsHovered(false);
           setCurrentImage(0);
         }}
-        className="cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col"
+        className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col`}
       >
         {/* 🖼️ Image Section */}
         <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900 flex-shrink-0">
@@ -163,9 +166,8 @@ const Products = () => {
             />
           ))}
 
-          {/* ✅ Sold Out Overlay */}
           {outOfStock && (
-            <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/40">
+            <div className="absolute inset-0 flex items-center justify-center z-20">
               <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg">
                 SOLD OUT
               </div>
@@ -175,11 +177,13 @@ const Products = () => {
 
         {/* 🏷️ Product Info */}
         <div className="p-2 flex flex-col justify-between flex-grow">
-          <h3 className="text-[13px] sm:text-[14px] text-left sm:text-center text-white font-medium tracking-wide leading-tight min-h-[34px]">
+          <h3
+            className="text-[13px] sm:text-[14px] text-left sm:text-center text-white font-medium tracking-wide leading-tight min-h-[36px]"
+          >
             {product.name}
           </h3>
 
-          <div className="flex justify-center sm:justify-center items-center gap-2 mt-1">
+          <div className="flex justify-center items-center gap-2 mt-1">
             {discount && (
               <span className="text-gray-500 text-[12px] line-through">
                 ₹{product.originalPrice}
@@ -215,6 +219,19 @@ const Products = () => {
       });
     };
 
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (!ref.current) return;
+        const { scrollLeft, scrollWidth, clientWidth } = ref.current;
+        const isEnd = scrollLeft + clientWidth >= scrollWidth - 10;
+        ref.current.scrollBy({
+          left: isEnd ? -scrollWidth : 250,
+          behavior: "smooth",
+        });
+      }, 4000);
+      return () => clearInterval(interval);
+    }, []);
+
     const filtered = sortProducts(
       products.filter((p) => p.tags?.includes(tag))
     );
@@ -244,7 +261,7 @@ const Products = () => {
             {filtered.map((p) => (
               <div
                 key={p.id}
-                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[330px] flex"
+                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[320px] flex"
               >
                 <ProductCardInline product={p} />
               </div>
