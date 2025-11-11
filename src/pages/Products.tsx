@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/lib/types";
 import Layout from "@/components/layout/Layout";
 import {
@@ -9,29 +10,75 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ProductCard from "@/components/ui/ProductCard";
 
-interface ProductsProps {
-  products: Product[];
-  loading?: boolean;
-}
-
-const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
+const Products = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<"default" | "low" | "newest">("default");
-  const [openMenu, setOpenMenu] = useState<"hot" | "edition" | "all" | null>(null);
+  const [openMenu, setOpenMenu] = useState<"hot" | "edition" | "all" | null>(
+    null
+  );
   const navigate = useNavigate();
 
-  // ✅ Sorting logic (no Supabase fetching)
+  // ✅ Fetch from Supabase
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase.from("products").select("*");
+      if (error) {
+        console.error("Error:", error);
+        setLoading(false);
+        return;
+      }
+
+      const transformed = (data || []).map((p: any) => {
+        const sizes = Array.isArray(p.variants)
+          ? p.variants
+              .filter(
+                (v) =>
+                  v && typeof v === "object" && v.size && v.stock != null
+              )
+              .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
+          : [];
+        const totalStock = sizes.reduce((s, x) => s + (x.stock || 0), 0);
+
+        return {
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          originalPrice: p.original_price || p.price,
+          image: p.image || "",
+          images: p.images || [],
+          variants: sizes,
+          code: p.code,
+          description: p.description || "",
+          tags: Array.isArray(p.tags) ? p.tags : [],
+          inStock: totalStock > 0,
+          discountPercentage:
+            p.original_price && p.original_price > p.price
+              ? Math.round(
+                  ((p.original_price - p.price) / p.original_price) * 100
+                )
+              : 0,
+        } as Product;
+      });
+
+      setProducts(transformed);
+      setLoading(false);
+    })();
+  }, []);
+
+  // ✅ Sorting logic
   const sortProducts = useMemo(() => {
     const sorter = (list: Product[]) => {
       if (sort === "low") return [...list].sort((a, b) => a.price - b.price);
-      if (sort === "newest") return [...list].sort((a, b) => b.id.localeCompare(a.id));
+      if (sort === "newest")
+        return [...list].sort((a, b) => b.id.localeCompare(a.id));
       return list;
     };
     return sorter;
   }, [sort]);
 
-  // 🔽 Sort dropdown UI
+  // 🔽 Sort Dropdown UI
   const SortDropdown = ({ section }: { section: "hot" | "edition" | "all" }) => (
     <div className="relative inline-block">
       <Button
@@ -72,7 +119,86 @@ const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
     </div>
   );
 
-  // 🧱 Horizontal scroll section
+  // ✅ Inline ProductCard Component
+  const ProductCardInline = ({ product }: { product: Product }) => {
+    const [currentImage, setCurrentImage] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
+
+    const images =
+      Array.isArray(product.images) && product.images.length > 0
+        ? product.images
+        : [product.image];
+
+    const discount =
+      product.originalPrice && product.originalPrice > product.price;
+
+    useEffect(() => {
+      if (!isHovered || images.length <= 1) return;
+      const interval = setInterval(
+        () => setCurrentImage((p) => (p + 1) % images.length),
+        1500
+      );
+      return () => clearInterval(interval);
+    }, [isHovered, images.length]);
+
+    const outOfStock = product.stock <= 0;
+
+    return (
+      <div
+        onClick={() => navigate(`/product/details/${product.code}`)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          setCurrentImage(0);
+        }}
+        className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col`}
+      >
+        {/* 🖼️ Image Section */}
+        <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900 flex-shrink-0">
+          {images.map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt={product.name}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                i === currentImage ? "opacity-100" : "opacity-0"
+              } group-hover:scale-[1.03]`}
+            />
+          ))}
+
+          {outOfStock && (
+            <div className="absolute inset-0 flex items-center justify-center z-20">
+              <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg">
+                SOLD OUT
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 🏷️ Product Info */}
+        <div className="p-2 flex flex-col justify-between flex-grow">
+          <h3
+            className="text-[13px] sm:text-[14px] text-left sm:text-center text-white font-medium tracking-wide leading-tight min-h-[36px]"
+          >
+            {product.name}
+          </h3>
+
+          <div className="flex justify-center items-center gap-2 mt-1">
+            {discount && (
+              <span className="text-gray-500 text-[12px] line-through">
+                ₹{product.originalPrice}
+              </span>
+            )}
+            <span className="text-yellow-400 text-[14px] font-semibold">
+              ₹{product.price}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ✅ Horizontal Section (carousel)
   const HorizontalSection = ({
     title,
     tag,
@@ -93,7 +219,6 @@ const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
       });
     };
 
-    // ✅ Auto-scroll every few seconds
     useEffect(() => {
       const interval = setInterval(() => {
         if (!ref.current) return;
@@ -107,7 +232,9 @@ const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
       return () => clearInterval(interval);
     }, []);
 
-    const filtered = sortProducts(products.filter((p) => p.tags?.includes(tag)));
+    const filtered = sortProducts(
+      products.filter((p) => p.tags?.includes(tag))
+    );
     if (!filtered.length) return null;
 
     return (
@@ -118,7 +245,7 @@ const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
         </div>
 
         <div className="relative">
-          {/* Left Button */}
+          {/* Left */}
           <button
             onClick={() => scroll("left")}
             className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
@@ -136,15 +263,12 @@ const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
                 key={p.id}
                 className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[320px] flex"
               >
-                <ProductCard
-                  product={p}
-                  onClick={() => navigate(`/product/details/${p.code}`)}
-                />
+                <ProductCardInline product={p} />
               </div>
             ))}
           </div>
 
-          {/* Right Button */}
+          {/* Right */}
           <button
             onClick={() => scroll("right")}
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
@@ -170,11 +294,19 @@ const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
             </div>
           ) : (
             <>
-              {/* 🔥 Hot Selling Section */}
-              <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
+              {/* 🔥 Hot Selling */}
+              <HorizontalSection
+                title="🔥 Hot Selling"
+                tag="hot"
+                sectionKey="hot"
+              />
 
-              {/* ✨ Edition 1 Section */}
-              <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />
+              {/* ✨ Edition 1 */}
+              <HorizontalSection
+                title="✨ Edition 1"
+                tag="edition1"
+                sectionKey="edition"
+              />
 
               {/* 🛍 All Products */}
               <section className="px-4 mt-10">
@@ -185,12 +317,7 @@ const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                   {sortProducts(products).map((p) => (
-                    <ProductCard
-                      key={p.id}
-                      product={p}
-                      onClick={() => navigate(`/product/details/${p.code}`)}
-                      className="w-full"
-                    />
+                    <ProductCardInline key={p.id} product={p} />
                   ))}
                 </div>
               </section>
