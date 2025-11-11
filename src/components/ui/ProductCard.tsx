@@ -79,7 +79,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
 
         {/* 🔖 Discount Tag */}
         {pct > 0 && (
-          <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-[1px] rounded-sm font-semibold z-10">
+          <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-[1px] rounded-none font-semibold z-10">
             {pct}% OFF
           </div>
         )}
