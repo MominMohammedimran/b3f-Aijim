@@ -114,7 +114,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
         {/* 🧾 Product Name */}
         <h3
           className="
-            text-[13px] sm:text-[14px]
+            text-[11px] sm:text-[14px]
             text-left sm:text-center
             text-white font-medium tracking-wide leading-tight 
             min-h-[36px]
@@ -124,7 +124,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
         </h3>
 
         {/* 💰 Price */}
-        <div className="flex justify-center items-center gap-2">
+        <div className="flex justify-center items-left text-left sm:items-center sm:text-center gap-2">
           {discount && !outOfStock && (
             <span className="text-gray-500 text-[12px] line-through">
               ₹{product.originalPrice}
