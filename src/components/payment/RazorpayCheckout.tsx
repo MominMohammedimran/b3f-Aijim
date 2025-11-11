@@ -222,7 +222,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
           points: appliedPoints.points,
           value_used: appliedPoints.discount || appliedPoints.points
         } : null,
-        reward_points_earned: Math.floor(finalTotal / 100),
+        reward_points_earned: 0,
         discount_applied: couponDiscount + pointsDiscount
       };
 
@@ -310,8 +310,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
         paymentData.customerInfo.email,
         paymentData.customerInfo.contact,
         async (paymentId, orderId, signature) => {
-          console.log('Payment successful:', { paymentId, orderId, signature });
-          
+        
           // Update order with payment details
           try {
             await supabase
@@ -374,11 +373,13 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
           }
           
           toast.success('Payment completed successfully!');
+          window.location.href = `/order-complete/${order.id}`;
           onSuccess?.();
         },
         () => {
          
           toast.error('Payment was cancelled');
+          
           onError?.();
         },
         orderResponse.key_id // ✅ use key from backend response
