@@ -47,16 +47,17 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
             key={i}
             src={img}
             alt={product.name}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
               i === currentImage ? "opacity-100" : "opacity-0"
-            } group-hover:scale-[1.03]`}
+            } ${outOfStock ? "opacity-50 grayscale" : ""}`}
           />
         ))}
 
+        {/* SOLD OUT Overlay (still clickable) */}
         {outOfStock && (
-          <div className="absolute inset-0 flex items-center justify-center z-20">
-            <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg">
-              SOLD OUT
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/40 pointer-events-none">
+            <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg select-none">
+              SOLD
             </div>
           </div>
         )}
@@ -74,7 +75,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
           {product.name}
         </h3>
 
-        <div className="flex justify-center items-left sm:items-center gap-2 mt-1">
+        <div className="flex justify-center items-center text-left sm:text-center gap-2 mt-1">
           {discount && (
             <span className="text-gray-500 text-[12px] line-through">
               ₹{product.originalPrice}
