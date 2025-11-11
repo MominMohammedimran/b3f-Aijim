@@ -106,8 +106,16 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
       </div>
 
       {/* 🏷️ Product Info */}
-      <div className="p-1 text-center space-y-1">
-        <h3 className="text-[13px] w-full p-1 text-white font-medium tracking-wide leading-tight line-clamp-2">
+      <div className="p-2 space-y-1">
+        {/* 🧾 Product Name */}
+        <h3
+          className="
+            text-[13px] sm:text-[14px]
+            text-left sm:text-center
+            text-white font-medium tracking-wide leading-tight 
+            line-clamp-2 min-h-[36px]
+          "
+        >
           {product.name}
         </h3>
 
