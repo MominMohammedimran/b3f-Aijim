@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/lib/types";
 import Layout from "@/components/layout/Layout";
 import {
@@ -12,54 +11,17 @@ import {
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ui/ProductCard";
 
-const Products = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ProductsProps {
+  products: Product[];
+  loading?: boolean;
+}
+
+const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
   const [sort, setSort] = useState<"default" | "low" | "newest">("default");
   const [openMenu, setOpenMenu] = useState<"hot" | "edition" | "all" | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    (async () => {
-      const { data, error } = await supabase.from("products").select("*");
-      if (error) {
-        console.error("Error:", error);
-        setLoading(false);
-        return;
-      }
-
-      const transformed = (data || []).map((p: any) => {
-        const sizes = Array.isArray(p.variants)
-          ? p.variants
-              .filter((v) => v && typeof v === "object" && v.size && v.stock != null)
-              .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
-          : [];
-        const totalStock = sizes.reduce((s, x) => s + (x.stock || 0), 0);
-
-        return {
-          id: p.id,
-          name: p.name,
-          price: p.price,
-          originalPrice: p.original_price || p.price,
-          image: p.image || "",
-          images: p.images || [],
-          variants: sizes,
-          code: p.code,
-          description: p.description || "",
-          tags: Array.isArray(p.tags) ? p.tags : [],
-          inStock: totalStock > 0,
-          discountPercentage:
-            p.original_price && p.original_price > p.price
-              ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
-              : 0,
-        } as Product;
-      });
-
-      setProducts(transformed);
-      setLoading(false);
-    })();
-  }, []);
-
+  // ✅ Sorting logic (no Supabase fetching)
   const sortProducts = useMemo(() => {
     const sorter = (list: Product[]) => {
       if (sort === "low") return [...list].sort((a, b) => a.price - b.price);
@@ -69,6 +31,7 @@ const Products = () => {
     return sorter;
   }, [sort]);
 
+  // 🔽 Sort dropdown UI
   const SortDropdown = ({ section }: { section: "hot" | "edition" | "all" }) => (
     <div className="relative inline-block">
       <Button
@@ -109,6 +72,7 @@ const Products = () => {
     </div>
   );
 
+  // 🧱 Horizontal scroll section
   const HorizontalSection = ({
     title,
     tag,
