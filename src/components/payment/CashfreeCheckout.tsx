@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/lib/utils";
 
-const CASHFREE_MODE = "sandbox"; // Change to "production" in live mode
+const CASHFREE_MODE = "production"; // Change to "production" in live mode
 
 interface CashfreeCheckoutProps {
   amount?: number;
@@ -94,7 +94,7 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
         coupon_code: appliedCoupon?.code || null,
         discount_applied: couponDiscount + pointsDiscount,
         reward_points_used: appliedPoints.points || 0,
-        reward_points_earned: Math.floor(total / 100),
+        reward_points_earned:0,
       };
 
       // 🧾 Save order in Supabase
