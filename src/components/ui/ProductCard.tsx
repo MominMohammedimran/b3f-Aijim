@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Product } from "@/lib/types";
-import { Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
@@ -9,10 +8,6 @@ interface Props {
 }
 
 const ProductCard: React.FC<Props> = ({ product, onClick }) => {
-  const [reviewStats, setReviewStats] = useState({
-    averageRating: 0,
-    reviewCount: 0,
-  });
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -23,31 +18,12 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
 
   const discount =
     product.originalPrice && product.originalPrice > product.price;
-  const pct = discount
-    ? Math.round(
-        ((product.originalPrice - product.price) / product.originalPrice) * 100
-      )
-    : 0;
-
-  useEffect(() => {
-    const fetchReviews = async () => {
-      const { data } = await supabase
-        .from("reviews")
-        .select("rating")
-        .eq("product_id", product.id);
-      if (data?.length) {
-        const avg = data.reduce((s, r) => s + (r.rating || 0), 0) / data.length;
-        setReviewStats({ averageRating: avg, reviewCount: data.length });
-      }
-    };
-    if (product.id) fetchReviews();
-  }, [product.id]);
 
   useEffect(() => {
     if (!isHovered || images.length <= 1) return;
     const interval = setInterval(
       () => setCurrentImage((p) => (p + 1) % images.length),
-      500
+      1500
     );
     return () => clearInterval(interval);
   }, [isHovered, images.length]);
@@ -56,16 +32,14 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
 
   return (
     <div
-      onClick={() => !outOfStock && onClick?.(product)}
+      onClick={() => onClick?.(product)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
         setCurrentImage(0);
       }}
-      className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 ${
-        outOfStock
-          ? "opacity-70 "
-          : "hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] hover:-translate-y-1"
+      className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] hover:-translate-y-1 ${
+        outOfStock ? "opacity-70" : ""
       }`}
     >
       {/* 🖼️ Product Image */}
@@ -77,33 +51,15 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
             alt={product.name}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
               i === currentImage ? "opacity-100" : "opacity-0"
-            } ${outOfStock ? "brightness-50" : "group-hover:scale-[1.03]"}`}
+            } group-hover:scale-[1.03]`}
           />
         ))}
 
-        {/* 🔖 Discount Tag (hide if sold out) */}
-        {!outOfStock && pct > 0 && (
-          <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-[1px] rounded-none font-semibold z-10">
-            {pct}% OFF
-          </div>
-        )}
-
-        {/* ⭐ Rating (hide if sold out) */}
-        {!outOfStock && reviewStats.reviewCount > 0 && (
-          <div className="absolute bottom-1 left-0 bg-black/60 backdrop-blur-sm px-2 py-[1px] rounded-sm flex items-center gap-1 text-yellow-400 text-[10px] font-semibold">
-            <Star className="w-3 h-3 fill-yellow-400" />
-            {reviewStats.averageRating.toFixed(1)}
-            <span className="text-gray-300 text-[9px] ml-1">
-              ({reviewStats.reviewCount})
-            </span>
-          </div>
-        )}
-
-        {/* 🚫 SOLD Label */}
+        {/* 🚫 SOLD OUT Label */}
         {outOfStock && (
           <div className="absolute inset-0 flex items-center justify-center z-20">
             <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg">
-              SOLD
+              SOLD OUT
             </div>
           </div>
         )}
@@ -114,9 +70,9 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
         {/* 🧾 Product Name */}
         <h3
           className="
-            text-[11px] sm:text-[14px]
-            text-left sm:text-center
-            text-white font-medium tracking-wide leading-tight 
+            text-[13px] sm:text-[14px]  
+            text-left sm:text-center  
+            text-white font-medium tracking-wide leading-tight   
             min-h-[36px]
           "
         >
@@ -124,8 +80,8 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
         </h3>
 
         {/* 💰 Price */}
-        <div className="flex justify-center items-left text-left sm:items-center sm:text-center gap-2">
-          {discount && !outOfStock && (
+        <div className="flex justify-center items-center gap-2">
+          {discount && (
             <span className="text-gray-500 text-[12px] line-through">
               ₹{product.originalPrice}
             </span>
