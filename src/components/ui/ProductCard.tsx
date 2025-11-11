@@ -113,7 +113,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
             text-[13px] sm:text-[14px]
             text-left sm:text-center
             text-white font-medium tracking-wide leading-tight 
-            line-clamp-2 min-h-[36px]
+            min-h-[36px]
           "
         >
           {product.name}
