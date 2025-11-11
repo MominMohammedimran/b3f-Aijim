@@ -12,7 +12,6 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<'default' | 'low' | 'newest'>('default');
   const [openMenu, setOpenMenu] = useState<'hot' | 'edition' | 'all' | null>(null);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +30,7 @@ const Products = () => {
               .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
           : [];
         const totalStock = sizes.reduce((s, x) => s + (x.stock || 0), 0);
+
         return {
           id: p.id,
           name: p.name,
@@ -38,8 +38,8 @@ const Products = () => {
           originalPrice: p.original_price || p.price,
           image: p.image || '',
           images: p.images || [],
-          variants:sizes,
-          code:p.code,
+          variants: sizes,
+          code: p.code,
           description: p.description || '',
           tags: Array.isArray(p.tags) ? p.tags : [],
           inStock: totalStock > 0,
@@ -83,7 +83,7 @@ const Products = () => {
           {['default', 'low', 'newest'].map((opt) => (
             <li key={opt}>
               <button
-                className={`block w-full text-left px-4 py-2 font-bold hover:bg-gray-100 ${
+                className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${
                   sort === opt ? 'font-bold' : ''
                 }`}
                 onClick={() => {
@@ -104,6 +104,7 @@ const Products = () => {
     </div>
   );
 
+  // 🔥 Horizontal scrolling section with auto scroll
   const HorizontalSection = ({
     title,
     tag,
@@ -116,14 +117,26 @@ const Products = () => {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      const timer = setInterval(() => {
-        if (ref.current) ref.current.scrollBy({ left: 200, behavior: 'smooth' });
+      const el = ref.current;
+      if (!el) return;
+
+      let scrollDir: 'left' | 'right' = 'right';
+      const interval = setInterval(() => {
+        if (!el) return;
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        if (scrollDir === 'right') {
+          el.scrollBy({ left: 200, behavior: 'smooth' });
+          if (el.scrollLeft >= maxScroll - 10) scrollDir = 'left';
+        } else {
+          el.scrollBy({ left: -200, behavior: 'smooth' });
+          if (el.scrollLeft <= 0) scrollDir = 'right';
+        }
       }, 3000);
-      return () => clearInterval(timer);
+
+      return () => clearInterval(interval);
     }, []);
 
     const filtered = sortProducts(products.filter((p) => p.tags?.includes(tag)));
-
     if (!filtered.length) return null;
 
     return (
@@ -133,7 +146,10 @@ const Products = () => {
           <SortDropdown section={sectionKey} />
         </div>
 
-        <div ref={ref} className="overflow-x-auto no-scrollbar ">
+        <div
+          ref={ref}
+          className="overflow-x-auto no-scrollbar scroll-smooth cursor-grab active:cursor-grabbing"
+        >
           <div className="flex gap-5">
             {filtered.map((p) => (
               <ProductCard
@@ -151,34 +167,36 @@ const Products = () => {
 
   return (
     <Layout>
-      <div className="bg-black text-white py-16 mt-4 min-h-screen">
+      <div className="bg-black text-white py-16 mt-4 min-h-screen overflow-y-auto scroll-smooth">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-xl font-semibold line-clamp-1 leading-snug mb-3 pt-4 px-4">
+          <h1 className="text-xl font-semibold mb-3 pt-4 px-4">
             AIJIM Collections
           </h1>
 
           {loading ? (
             <div className="flex justify-center py-24">
-              <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+              <Loader2 className="h-6 w-6 animate-spin text-yellow-400" />
             </div>
           ) : (
             <>
+              {/* 🔥 Auto-scrolling horizontal sections */}
               <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
-             {/*} <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />*/}
+              <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />
 
+              {/* 🛍 All Products */}
               <section className="px-4 mt-10">
                 <div className="flex justify-between items-center mb-3">
                   <h2 className="text-lg font-bold">🛍 All Products</h2>
                   <SortDropdown section="all" />
                 </div>
 
-           <div className="grid gap-2  grid-cols-[repeat(auto-fit,minmax(152px,auto))] justify-start">
-{sortProducts(products).map((p) => (
+                <div className="grid gap-3 grid-cols-[repeat(auto-fit,minmax(160px,auto))] justify-start">
+                  {sortProducts(products).map((p) => (
                     <ProductCard
                       key={p.id}
                       product={p}
                       onClick={() => navigate(`/product/details/${p.code}`)}
-                      className="w-[175px]   sm:w-[195px] md:w-[210px] "
+                      className="w-[175px] sm:w-[195px] md:w-[210px]"
                     />
                   ))}
                 </div>
