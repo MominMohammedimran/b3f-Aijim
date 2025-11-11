@@ -1,199 +1,92 @@
-import React, { useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { Product } from "@/lib/types";
-import Layout from "@/components/layout/Layout";
-import { Loader2, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import ProductCard from "@/components/ui/ProductCard";
 
-interface ProductsProps {
-  products: Product[];
-  loading?: boolean;
+interface Props {
+  product: Product;
+  onClick?: (p: Product) => void;
+  className?: string;
 }
 
-const Products: React.FC<ProductsProps> = ({ products, loading = false }) => {
-  const [sort, setSort] = useState<"default" | "low" | "newest">("default");
-  const [openMenu, setOpenMenu] = useState<"hot" | "edition" | "all" | null>(
-    null
-  );
-  const navigate = useNavigate();
+const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Sorting logic
-  const sortProducts = useMemo(() => {
-    const sorter = (list: Product[]) => {
-      if (sort === "low") return [...list].sort((a, b) => a.price - b.price);
-      if (sort === "newest") return [...list].sort((a, b) => b.id.localeCompare(a.id));
-      return list;
-    };
-    return sorter;
-  }, [sort]);
+  const images =
+    Array.isArray(product.images) && product.images.length > 0
+      ? product.images
+      : [product.image];
 
-  // Sort dropdown
-  const SortDropdown = ({ section }: { section: "hot" | "edition" | "all" }) => (
-    <div className="relative inline-block">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setOpenMenu(openMenu === section ? null : section)}
-        className="flex items-center gap-1 py-0.5 bg-white font-bold text-black text-xs rounded-none"
-      >
-        Sort <ChevronDown size={15} />
-      </Button>
+  const discount =
+    product.originalPrice && product.originalPrice > product.price;
 
-      {openMenu === section && (
-        <ul
-          className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg z-10 text-sm"
-          onMouseLeave={() => setOpenMenu(null)}
-        >
-          {["default", "low", "newest"].map((opt) => (
-            <li key={opt}>
-              <button
-                className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${
-                  sort === opt ? "font-bold" : ""
-                }`}
-                onClick={() => {
-                  setSort(opt as any);
-                  setOpenMenu(null);
-                }}
-              >
-                {opt === "default"
-                  ? "Default"
-                  : opt === "low"
-                  ? "Price: Low to High"
-                  : "Newest First"}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-
-  // Horizontal section for Hot or Edition products
-  const HorizontalSection = ({
-    title,
-    tag,
-    sectionKey,
-  }: {
-    title: string;
-    tag: string;
-    sectionKey: "hot" | "edition";
-  }) => {
-    const ref = useRef<HTMLDivElement>(null);
-
-    const scroll = (dir: "left" | "right") => {
-      if (!ref.current) return;
-      const distance = 250;
-      ref.current.scrollBy({
-        left: dir === "left" ? -distance : distance,
-        behavior: "smooth",
-      });
-    };
-
-    // Auto-scroll every few seconds
-    useEffect(() => {
-      const interval = setInterval(() => {
-        if (!ref.current) return;
-        const { scrollLeft, scrollWidth, clientWidth } = ref.current;
-        const isEnd = scrollLeft + clientWidth >= scrollWidth - 10;
-        ref.current.scrollBy({
-          left: isEnd ? -scrollWidth : 250,
-          behavior: "smooth",
-        });
-      }, 3500);
-      return () => clearInterval(interval);
-    }, []);
-
-    const filtered = sortProducts(products.filter((p) => p.tags?.includes(tag)));
-    if (!filtered.length) return null;
-
-    return (
-      <section className="mb-10 px-4 relative">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-lg mb-1 font-bold">{title}</h2>
-          <SortDropdown section={sectionKey} />
-        </div>
-
-        <div className="relative">
-          {/* Left Button */}
-          <button
-            onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
-          >
-            <ChevronLeft size={18} />
-          </button>
-
-          {/* Carousel */}
-          <div
-            ref={ref}
-            className="overflow-x-auto no-scrollbar scroll-smooth flex gap-4 snap-x snap-mandatory"
-          >
-            {filtered.map((p) => (
-              <div
-                key={p.id}
-                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[310px]"
-              >
-                <ProductCard
-                  product={p}
-                  onClick={() => navigate(`/product/details/${p.code}`)}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Right Button */}
-          <button
-            onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      </section>
+  useEffect(() => {
+    if (!isHovered || images.length <= 1) return;
+    const interval = setInterval(
+      () => setCurrentImage((p) => (p + 1) % images.length),
+      1500
     );
-  };
+    return () => clearInterval(interval);
+  }, [isHovered, images.length]);
+
+  const outOfStock = product.stock <= 0;
 
   return (
-    <Layout>
-      <div className="bg-black text-white py-16 mt-4 min-h-screen">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-xl font-semibold mb-3 pt-4 px-4">
-            AIJIM Collections
-          </h1>
+    <div
+      onClick={() => onClick?.(product)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setCurrentImage(0);
+      }}
+      className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col ${className}`}
+    >
+      {/* 🖼️ Image Section */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900 flex-shrink-0">
+        {images.map((img, i) => (
+          <img
+            key={i}
+            src={img}
+            alt={product.name}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+              i === currentImage ? "opacity-100" : "opacity-0"
+            } group-hover:scale-[1.03]`}
+          />
+        ))}
 
-          {loading ? (
-            <div className="flex justify-center py-24">
-              <Loader2 className="h-6 w-6 animate-spin text-yellow-400" />
+        {outOfStock && (
+          <div className="absolute inset-0 flex items-center justify-center z-20">
+            <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg">
+              SOLD OUT
             </div>
-          ) : (
-            <>
-              {/* 🔥 Hot Selling Section */}
-              <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
+          </div>
+        )}
+      </div>
 
-              {/* 🛍 All Products */}
-              <section className="px-4 mt-10">
-                <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-lg font-bold">🛍 All Products</h2>
-                  <SortDropdown section="all" />
-                </div>
+      {/* 🏷️ Product Info */}
+      <div className="p-2 flex flex-col justify-between flex-grow">
+        <h3
+          className="
+            text-[13px] sm:text-[14px]
+            text-left sm:text-center
+            text-white font-medium tracking-wide leading-tight min-h-[36px]
+          "
+        >
+          {product.name}
+        </h3>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                  {sortProducts(products).map((p) => (
-                    <ProductCard
-                      key={p.id}
-                      product={p}
-                      onClick={() => navigate(`/product/details/${p.code}`)}
-                      className="w-full"
-                    />
-                  ))}
-                </div>
-              </section>
-            </>
+        <div className="flex justify-center items-center gap-2 mt-1">
+          {discount && (
+            <span className="text-gray-500 text-[12px] line-through">
+              ₹{product.originalPrice}
+            </span>
           )}
+          <span className="text-yellow-400 text-[14px] font-semibold">
+            ₹{product.price}
+          </span>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 
-export default Products;
+export default ProductCard;
