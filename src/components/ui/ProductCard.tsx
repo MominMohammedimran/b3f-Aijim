@@ -47,7 +47,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
     if (!isHovered || images.length <= 1) return;
     const interval = setInterval(
       () => setCurrentImage((p) => (p + 1) % images.length),
-      1500
+      500
     );
     return () => clearInterval(interval);
   }, [isHovered, images.length]);
@@ -56,13 +56,17 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
 
   return (
     <div
-      onClick={() => onClick?.(product)}
+      onClick={() => !outOfStock && onClick?.(product)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
         setCurrentImage(0);
       }}
-      className="cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] hover:-translate-y-1"
+      className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 ${
+        outOfStock
+          ? "opacity-70 "
+          : "hover:shadow-[0_8px_20px_rgba(255,255,255,0.08)] hover:-translate-y-1"
+      }`}
     >
       {/* 🖼️ Product Image */}
       <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900">
@@ -73,19 +77,19 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
             alt={product.name}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
               i === currentImage ? "opacity-100" : "opacity-0"
-            } group-hover:scale-[1.03]`}
+            } ${outOfStock ? "brightness-50" : "group-hover:scale-[1.03]"}`}
           />
         ))}
 
-        {/* 🔖 Discount Tag */}
-        {pct > 0 && (
+        {/* 🔖 Discount Tag (hide if sold out) */}
+        {!outOfStock && pct > 0 && (
           <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-[1px] rounded-none font-semibold z-10">
             {pct}% OFF
           </div>
         )}
 
-        {/* ⭐ Rating */}
-        {reviewStats.reviewCount > 0 && (
+        {/* ⭐ Rating (hide if sold out) */}
+        {!outOfStock && reviewStats.reviewCount > 0 && (
           <div className="absolute bottom-1 left-0 bg-black/60 backdrop-blur-sm px-2 py-[1px] rounded-sm flex items-center gap-1 text-yellow-400 text-[10px] font-semibold">
             <Star className="w-3 h-3 fill-yellow-400" />
             {reviewStats.averageRating.toFixed(1)}
@@ -95,11 +99,11 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
           </div>
         )}
 
-        {/* 🚫 SOLD OUT Label */}
+        {/* 🚫 SOLD Label */}
         {outOfStock && (
           <div className="absolute inset-0 flex items-center justify-center z-20">
             <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg">
-              SOLD OUT
+              SOLD
             </div>
           </div>
         )}
@@ -121,7 +125,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick }) => {
 
         {/* 💰 Price */}
         <div className="flex justify-center items-center gap-2">
-          {discount && (
+          {discount && !outOfStock && (
             <span className="text-gray-500 text-[12px] line-through">
               ₹{product.originalPrice}
             </span>
