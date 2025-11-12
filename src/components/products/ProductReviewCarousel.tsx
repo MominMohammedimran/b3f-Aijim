@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Star, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,15 +22,16 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
   const [isTwoPerView, setIsTwoPerView] = useState(window.innerWidth >= 1024);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [reviewImages, setReviewImages] = useState<Record<string, string[]>>({});
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // ✅ Fetch image URLs from Supabase
   useEffect(() => {
     const fetchImages = async () => {
       const urls: Record<string, string[]> = {};
       for (const review of reviews) {
         if (review.image_paths?.length) {
-          const paths = review.image_paths.slice(0, 3);
           const imageUrls = await Promise.all(
-            paths.map(async (path) => {
+            review.image_paths.map(async (path) => {
               const { data } = supabase.storage
                 .from("paymentproofs")
                 .getPublicUrl(`review-images/${path}`);
@@ -42,23 +43,51 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
       }
       setReviewImages(urls);
     };
-
     fetchImages();
   }, [reviews]);
 
+  // ✅ Resize listener for two-per-view toggle
   useEffect(() => {
     const handleResize = () => setIsTwoPerView(window.innerWidth >= 1024);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // ✅ Swipe handling for mobile devices
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    let startX = 0;
+    const handleTouchStart = (e: TouchEvent) => (startX = e.touches[0].clientX);
+    const handleTouchEnd = (e: TouchEvent) => {
+      const endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+      if (diff > 50) goToNext();
+      if (diff < -50) goToPrevious();
+    };
+
+    container.addEventListener("touchstart", handleTouchStart);
+    container.addEventListener("touchend", handleTouchEnd);
+    return () => {
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [currentIndex]);
+
   const goToPrevious = () =>
     setCurrentIndex((prev) =>
-      prev === 0 ? Math.max(0, reviews.length - (isTwoPerView ? 2 : 1)) : prev - (isTwoPerView ? 2 : 1)
+      prev === 0
+        ? Math.max(0, reviews.length - (isTwoPerView ? 2 : 1))
+        : prev - (isTwoPerView ? 2 : 1)
     );
 
   const goToNext = () =>
-    setCurrentIndex((prev) => (prev + (isTwoPerView ? 2 : 1)) % reviews.length);
+    setCurrentIndex((prev) =>
+      prev + (isTwoPerView ? 2 : 1) >= reviews.length
+        ? 0
+        : prev + (isTwoPerView ? 2 : 1)
+    );
 
   if (!reviews.length)
     return (
@@ -72,13 +101,16 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
     : [reviews[currentIndex]];
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto mt-4">
-      <div className="flex justify-center gap-6 overflow-hidden">
-        {visibleReviews.map((review, idx) => (
+    <div className="relative w-full max-w-6xl mx-auto mt-4">
+      <div
+        ref={scrollContainerRef}
+        className="flex justify-center gap-6 overflow-hidden px-4"
+      >
+        {visibleReviews.map((review) => (
           <div
             key={review.id}
-            className="flex-1 min-w-[220px] max-w-md bg-gradient-to-br from-zinc-900/60 via-zinc-800/60 to-zinc-900/40 
-                       border border-zinc-800 rounded-md p-6 shadow-md hover:shadow-yellow-500/10 
+            className="flex-1 min-w-[250px] max-w-md bg-gradient-to-br from-zinc-900/60 via-zinc-800/60 to-zinc-900/40 
+                       border border-zinc-800 rounded-lg p-6 shadow-md hover:shadow-yellow-500/10 
                        backdrop-blur-sm transition-all duration-300"
           >
             {/* Rating */}
@@ -98,7 +130,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
             </div>
 
             {/* Comment */}
-            <p className="text-gray-200 text-sm leading-relaxed mb-6">
+            <p className="text-gray-200 text-sm leading-relaxed mb-6 line-clamp-5">
               “{review.comment || "No comment provided"}”
             </p>
 
@@ -134,14 +166,14 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
         ))}
       </div>
 
-      {/* Navigation */}
+      {/* Arrows for large devices */}
       {reviews.length > (isTwoPerView ? 2 : 1) && (
         <>
           <Button
             variant="ghost"
             size="icon"
             onClick={goToPrevious}
-            className="absolute left-0 top-1/2 -translate-y-1/2 text-yellow-400 hover:text-yellow-600"
+            className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 text-yellow-400 hover:text-yellow-500"
           >
             <ChevronLeft className="w-6 h-6" />
           </Button>
@@ -149,14 +181,14 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
             variant="ghost"
             size="icon"
             onClick={goToNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 text-yellow-400 hover:text-yellow-600"
+            className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 text-yellow-400 hover:text-yellow-500"
           >
             <ChevronRight className="w-6 h-6" />
           </Button>
         </>
       )}
 
-      {/* Fullscreen Image */}
+      {/* Fullscreen Image Modal */}
       {selectedImage && (
         <div
           className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center"
