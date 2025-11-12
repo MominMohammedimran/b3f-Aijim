@@ -14,7 +14,7 @@ interface Review {
   rating: number;
   comment: string;
   created_at: string;
-  review_images?: string[];
+  image_paths?: string[];
   user_name?: string;
 }
 
@@ -36,13 +36,13 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
 
   const fetchReviews = async () => {
     try {
-      const { data: reviewsData, error: reviewsError } = await supabase
+      const { data: reviewsData, error } = await supabase
         .from('reviews')
-        .select('id, user_id, rating, comment, created_at, review_images')
+        .select('id, user_id, rating, comment, created_at, image_paths')
         .eq('product_id', productId)
         .order('created_at', { ascending: false });
 
-      if (reviewsError) throw reviewsError;
+      if (error) throw error;
       if (!reviewsData?.length) return setReviews([]);
 
       const userIds = [...new Set(reviewsData.map((r) => r.user_id))];
@@ -61,12 +61,13 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
       });
 
       setReviews(reviewsWithNames);
-    } catch (error) {
-      console.error('Error fetching reviews:', error);
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
       setReviews([]);
     }
   };
 
+  // ✅ Image Upload Handling
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + selectedImages.length > 3) {
@@ -81,22 +82,18 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
   };
 
   const uploadImages = async () => {
-    const uploadedUrls: string[] = [];
+    const uploadedPaths: string[] = [];
     for (const file of selectedImages) {
-      const filePath = `review-images/${Date.now()}-${file.name}`;
-      const { data, error } = await supabase.storage
-        .from('paymentproofs')
-        .upload(filePath, file, { upsert: true });
+      const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}-${file.name}`;
+      const filePath = `review-images/${uniqueName}`;
+      const { error } = await supabase.storage.from('paymentproofs').upload(filePath, file);
       if (error) {
         console.error('Upload error:', error);
         continue;
       }
-      const { data: publicUrl } = supabase.storage
-        .from('paymentproofs')
-        .getPublicUrl(filePath);
-      uploadedUrls.push(publicUrl.publicUrl);
+      uploadedPaths.push(uniqueName);
     }
-    return uploadedUrls;
+    return uploadedPaths;
   };
 
   const handleSubmitReview = async () => {
@@ -106,7 +103,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
 
     setLoading(true);
     try {
-      const uploadedImages = await uploadImages();
+      const uploadedPaths = await uploadImages();
 
       const { error } = await supabase.from('reviews').insert([
         {
@@ -114,7 +111,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
           user_id: currentUser.id,
           rating: newReview.rating,
           comment: newReview.comment.trim(),
-          review_images: uploadedImages,
+          image_paths: uploadedPaths,
         },
       ]);
 
@@ -125,8 +122,8 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
       setSelectedImages([]);
       setShowWriteReview(false);
       fetchReviews();
-    } catch (error) {
-      console.error('Error submitting review:', error);
+    } catch (err) {
+      console.error('Error submitting review:', err);
       toast.error('Failed to submit review');
     } finally {
       setLoading(false);
@@ -134,9 +131,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
   };
 
   const averageRating =
-    reviews.length > 0
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
-      : 0;
+    reviews.length > 0 ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : 0;
 
   return (
     <div className="space-y-8 mt-6 border-t border-zinc-800 pt-6">
@@ -178,7 +173,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
       {/* Carousel */}
       <ProductReviewCarousel reviews={reviews} />
 
-      {/* Write Review Section */}
+      {/* Write Review */}
       {showWriteReview && (
         <div className="border border-zinc-700 bg-zinc-900/60 backdrop-blur-md rounded-md p-4 space-y-4 shadow-lg">
           <h4 className="text-md font-semibold text-yellow-400">Write Your Review</h4>
@@ -213,7 +208,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
               id="comment"
               value={newReview.comment}
               onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-              placeholder="Share your experience with this product..."
+              placeholder="Share your experience..."
               className="mt-1 bg-zinc-800 text-white border-zinc-700 focus:ring-yellow-400"
               rows={4}
             />
@@ -231,12 +226,14 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
                 className="hidden"
                 id="review-images"
               />
-              <label
-                htmlFor="review-images"
-                className="flex items-center justify-center w-24 h-24 border-2 border-dashed border-zinc-600 text-zinc-400 hover:border-yellow-400 hover:text-yellow-400 cursor-pointer rounded-md"
-              >
-                <Upload className="w-6 h-6" />
-              </label>
+              {selectedImages.length < 3 && (
+                <label
+                  htmlFor="review-images"
+                  className="flex items-center justify-center w-24 h-24 border-2 border-dashed border-zinc-600 text-zinc-400 hover:border-yellow-400 hover:text-yellow-400 cursor-pointer rounded-md"
+                >
+                  <Upload className="w-6 h-6" />
+                </label>
+              )}
 
               {selectedImages.map((file, index) => (
                 <div key={index} className="relative">
