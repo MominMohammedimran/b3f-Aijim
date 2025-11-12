@@ -15,7 +15,7 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }
   
   return (
     <div className="space-y-8">
-      <div className="grid    grid-cols-1 mt-5 md:grid-cols-2 shadow-md">
+      <div className="grid    grid-cols-1 mt-10 pt-5 md:grid-cols-2 shadow-md">
         <ProductImage 
           image={product.image} 
           name={product.name} 
