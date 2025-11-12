@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Volume2, VolumeX } from "lucide-react";
 
 const videos = [
@@ -20,13 +20,45 @@ const videos = [
 ];
 
 const ProductVideoSection: React.FC = () => {
+  const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
   const [mutedStates, setMutedStates] = useState<Record<number, boolean>>(
     Object.fromEntries(videos.map((v) => [v.id, true]))
   );
+  const [activeVideo, setActiveVideo] = useState<number | null>(null);
 
   const toggleMute = (id: number) => {
     setMutedStates((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let mostVisibleId: number | null = null;
+        let maxRatio = 0;
+
+        entries.forEach((entry) => {
+          const videoId = Number(entry.target.getAttribute("data-id"));
+          if (entry.intersectionRatio > maxRatio) {
+            maxRatio = entry.intersectionRatio;
+            mostVisibleId = videoId;
+          }
+        });
+
+        if (mostVisibleId !== null) setActiveVideo(mostVisibleId);
+      },
+      { threshold: Array.from({ length: 10 }, (_, i) => i / 10) } // finer visibility steps
+    );
+
+    videos.forEach((v) => {
+      const el = videoRefs.current[v.id];
+      if (el) {
+        observer.observe(el);
+        el.play().catch(() => {}); // start all videos
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="mb-8 mt-8 px-4">
@@ -37,20 +69,24 @@ const ProductVideoSection: React.FC = () => {
           {videos.map((video) => (
             <div
               key={video.id}
-              className="relative w-full max-w-[250px] aspect-[4/6] bg-gray-900 overflow-hidden shadow-lg group"
+              className={`relative w-full max-w-[250px] aspect-[4/6] bg-gray-900 overflow-hidden shadow-lg transition-transform duration-500 ${
+                activeVideo === video.id ? "scale-[1.1]" : "scale-100"
+              }`}
             >
               {/* 🎥 Video */}
               <video
+                ref={(el) => (videoRefs.current[video.id] = el)}
+                data-id={video.id}
                 src={video.src}
                 muted={mutedStates[video.id]}
-                autoPlay
                 loop
                 playsInline
+                autoPlay
                 preload="metadata"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover"
               />
 
-              {/* 📢 Mute / Unmute Button */}
+              {/* 📢 Mute / Unmute */}
               <button
                 onClick={() => toggleMute(video.id)}
                 className="absolute top-2 right-2 bg-black/60 p-1.5 rounded-sm hover:bg-black/80 transition"
