@@ -23,7 +23,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
   const touchStart = useRef<number | null>(null);
   const pinchDistance = useRef<number | null>(null);
 
-  // 🌀 Auto-slide for mobile only
+  // 🌀 Auto-slide (for mobile)
   useEffect(() => {
     const timer = setInterval(() => {
       if (!open && window.innerWidth < 1024) {
@@ -33,12 +33,11 @@ const ProductImage: React.FC<ProductImageProps> = ({
     return () => clearInterval(timer);
   }, [imgs.length, open]);
 
-  // 👆 Swipe
+  // 👆 Swipe + Pinch Zoom
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 1) {
       touchStart.current = e.touches[0].clientX;
     } else if (e.touches.length === 2) {
-      // start pinch
       const dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
@@ -89,56 +88,32 @@ const ProductImage: React.FC<ProductImageProps> = ({
 
   return (
     <>
-      {/* 🖼 Main Container */}
-      <div className="w-full relative">
-        {/* 💻 Large Screen Grid */}
-        <div className="hidden lg:grid grid-cols-2 gap-0">
-          {imgs.map((img, i) => (
-            <div
-              key={i}
-              className="overflow-hidden cursor-zoom-in group"
-              onClick={() => {
-                setIdx(i);
-                setOpen(true);
-              }}
-            >
-              <img
-                src={img}
-                alt={`${name}-${i}`}
-                className="w-full h-[80vh] object-cover transition-transform duration-[1800ms] group-hover:scale-105"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* 📱 Mobile Auto-Slide */}
+      {/* 🖼 Main Image + Thumbnails (All Devices) */}
+      <div className="w-full flex flex-col items-center">
+        {/* Main Image */}
         <div
-          className="lg:hidden relative h-[70vh] overflow-hidden"
+          className="relative w-full h-[70vh] lg:h-[80vh] overflow-hidden bg-neutral-900 cursor-zoom-in"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onClick={handleDoubleTap}
         >
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={idx}
-              src={imgs[idx]}
-              alt={name}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className={`absolute inset-0 w-full h-full object-cover select-none transform ${
-                zoomed ? "cursor-zoom-out" : "cursor-zoom-in"
-              }`}
-              style={{
-                transform: `scale(${scale})`,
-                transition: "transform 0.2s ease-out",
-              }}
-            />
-          </AnimatePresence>
+          <motion.img
+            key={idx}
+            src={imgs[idx]}
+            alt={name}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="absolute inset-0 w-full h-full object-cover select-none"
+            style={{
+              transform: `scale(${scale})`,
+              transition: "transform 0.25s ease-out",
+            }}
+          />
 
-          {/* 🔍 Zoom Icon */}
+          {/* 🔍 Zoom Button */}
           <button
             onClick={() => setOpen(true)}
             className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-full shadow hover:bg-white transition"
@@ -151,13 +126,30 @@ const ProductImage: React.FC<ProductImageProps> = ({
             {idx + 1} / {imgs.length}
           </div>
         </div>
+
+        {/* 🖼 Thumbnail Gallery (All Devices) */}
+        {imgs.length > 1 && (
+          <div className="flex gap-3 mt-3 overflow-x-auto justify-center w-full px-2 scrollbar-hide">
+            {imgs.map((thumb, i) => (
+              <img
+                key={i}
+                src={thumb}
+                alt={`thumb-${i}`}
+                onClick={() => setIdx(i)}
+                className={`h-20 w-20 object-cover rounded-md border ${
+                  idx === i ? "border-white scale-105" : "border-gray-600"
+                } transition-all duration-300 cursor-pointer hover:opacity-90`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 🔍 Fullscreen Zoom View */}
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-50 bg-black flex items-center justify-center touch-none overflow-hidden"
+            className="fixed inset-0 z-50 bg-black flex items-center justify-center overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -185,13 +177,13 @@ const ProductImage: React.FC<ProductImageProps> = ({
               <>
                 <button
                   onClick={prev}
-                  className="absolute left-1 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white"
                 >
                   <ChevronLeft size={32} />
                 </button>
                 <button
                   onClick={next}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white"
                 >
                   <ChevronRight size={32} />
                 </button>
@@ -206,9 +198,9 @@ const ProductImage: React.FC<ProductImageProps> = ({
                 setScale(1);
                 setLastScale(1);
               }}
-              className="absolute top-1 right-3  p-2 rounded-none shadow"
+              className="absolute top-3 right-4"
             >
-              <X size={22} className="text-white" />
+              <X size={26} className="text-white" />
             </button>
           </motion.div>
         )}
