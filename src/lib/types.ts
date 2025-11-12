@@ -142,9 +142,10 @@ export interface Location {
 
 export interface Review {
   id: string;
-  productId: string;
-  userId: string;
+  product_id: string;
+  user_id: string;
   rating: number;
   comment: string;
-  createdAt: string;
+  created_at: string;
+  review_images?: string[];
 }
