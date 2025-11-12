@@ -27,34 +27,43 @@ const ProductVideoSection: React.FC = () => {
   const [activeVideo, setActiveVideo] = useState<number | null>(null);
 
   const toggleMute = (id: number) => {
-    setMutedStates((prev) => ({ ...prev, [id]: !prev[id] }));
+    const video = videoRefs.current[id];
+    if (video) {
+      const newMuted = !mutedStates[id];
+      video.muted = newMuted;
+      setMutedStates((prev) => ({ ...prev, [id]: newMuted }));
+    }
   };
 
   useEffect(() => {
+    // ensure autoplay for all videos
+    videos.forEach((v) => {
+      const el = videoRefs.current[v.id];
+      if (el) {
+        el.muted = true; // important for autoplay on mobile
+        el.play().catch(() => {});
+      }
+    });
+
     const observer = new IntersectionObserver(
       (entries) => {
         let mostVisibleId: number | null = null;
         let maxRatio = 0;
-
         entries.forEach((entry) => {
-          const videoId = Number(entry.target.getAttribute("data-id"));
+          const id = Number(entry.target.getAttribute("data-id"));
           if (entry.intersectionRatio > maxRatio) {
             maxRatio = entry.intersectionRatio;
-            mostVisibleId = videoId;
+            mostVisibleId = id;
           }
         });
-
-        if (mostVisibleId !== null) setActiveVideo(mostVisibleId);
+        setActiveVideo(mostVisibleId);
       },
-      { threshold: Array.from({ length: 10 }, (_, i) => i / 10) } // finer visibility steps
+      { threshold: Array.from({ length: 10 }, (_, i) => i / 10) }
     );
 
     videos.forEach((v) => {
       const el = videoRefs.current[v.id];
-      if (el) {
-        observer.observe(el);
-        el.play().catch(() => {}); // start all videos
-      }
+      if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
@@ -69,8 +78,8 @@ const ProductVideoSection: React.FC = () => {
           {videos.map((video) => (
             <div
               key={video.id}
-              className={`relative w-full max-w-[250px] aspect-[4/6] bg-gray-900 overflow-hidden shadow-lg transition-transform duration-500 ${
-                activeVideo === video.id ? "scale-[1.1]" : "scale-100"
+              className={`relative w-full max-w-[250px] aspect-[5/6] bg-gray-900 overflow-hidden shadow-lg transition-transform duration-500 ${
+                activeVideo === video.id ? "scale-[1.1]  " : "scale-100 rounded-sm"
               }`}
             >
               {/* 🎥 Video */}
@@ -78,15 +87,15 @@ const ProductVideoSection: React.FC = () => {
                 ref={(el) => (videoRefs.current[video.id] = el)}
                 data-id={video.id}
                 src={video.src}
-                muted={mutedStates[video.id]}
-                loop
-                playsInline
+                muted
                 autoPlay
+                playsInline
+                loop
                 preload="metadata"
                 className="w-full h-full object-cover"
               />
 
-              {/* 📢 Mute / Unmute */}
+              {/* 📢 Mute/Unmute Button */}
               <button
                 onClick={() => toggleMute(video.id)}
                 className="absolute top-2 right-2 bg-black/60 p-1.5 rounded-sm hover:bg-black/80 transition"
