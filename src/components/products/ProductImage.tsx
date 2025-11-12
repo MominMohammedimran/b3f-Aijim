@@ -34,25 +34,6 @@ const ProductImage: React.FC<ProductImageProps> = ({
     return () => clearInterval(timer);
   }, [imgs.length, open]);
 
-  // 🌀 Auto thumbnail scroll synced with main image
-  useEffect(() => {
-    if (window.innerWidth >= 1024 || !thumbRef.current) return;
-    const thumbEl = thumbRef.current;
-    const timer = setInterval(() => {
-      if (!open && imgs.length > 1) {
-        setIdx((i) => {
-          const nextIndex = (i + 1) % imgs.length;
-          const thumb = thumbEl.children[nextIndex] as HTMLElement;
-          if (thumb) {
-            thumb.scrollIntoView({ behavior: "smooth", inline: "center" });
-          }
-          return nextIndex;
-        });
-      }
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [imgs.length, open]);
-
   // 👆 Swipe + Pinch Zoom
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 1) {
@@ -91,7 +72,6 @@ const ProductImage: React.FC<ProductImageProps> = ({
     touchStart.current = null;
   };
 
-  // 🔁 Double Tap Zoom
   const handleDoubleTap = () => {
     const now = Date.now();
     if (doubleTap && now - doubleTap < 300) {
@@ -106,10 +86,10 @@ const ProductImage: React.FC<ProductImageProps> = ({
   const next = () => setIdx((i) => (i + 1) % imgs.length);
   const prev = () => setIdx((i) => (i - 1 + imgs.length) % imgs.length);
 
-  // ➡️ Thumbnail scroll for large devices
+  // ➡️ Thumbnail scroll for all devices
   const scrollThumbnails = (dir: "left" | "right") => {
     if (!thumbRef.current) return;
-    const scrollAmount = 150;
+    const scrollAmount = 100; // smaller scroll for finer control
     thumbRef.current.scrollBy({
       left: dir === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
@@ -118,11 +98,10 @@ const ProductImage: React.FC<ProductImageProps> = ({
 
   return (
     <>
-      {/* 🖼 Main Image + Thumbnails */}
+      {/* 🖼 Main Image */}
       <div className="w-full flex flex-col items-center">
-        {/* Main Image */}
         <div
-          className="relative w-full h-[70vh] lg:h-[80vh] overflow-hidden bg-neutral-900 cursor-zoom-in"
+          className="relative w-full h-[45vh] lg:h-[70vh] overflow-hidden bg-neutral-900 cursor-zoom-in"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -156,20 +135,20 @@ const ProductImage: React.FC<ProductImageProps> = ({
             {idx + 1} / {imgs.length}
           </div>
 
-          {/* ⬅️➡️ Arrows (desktop only) */}
+          {/* ⬅️➡️ Arrows */}
           {imgs.length > 1 && (
             <>
               <button
                 onClick={prev}
-                className="hidden lg:flex absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full hover:bg-black/60 transition"
+                className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full hover:bg-black/60 transition"
               >
-                <ChevronLeft className="text-white" size={26} />
+                <ChevronLeft className="text-white" size={24} />
               </button>
               <button
                 onClick={next}
-                className="hidden lg:flex absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full hover:bg-black/60 transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full hover:bg-black/60 transition"
               >
-                <ChevronRight className="text-white" size={26} />
+                <ChevronRight className="text-white" size={24} />
               </button>
             </>
           )}
@@ -177,19 +156,19 @@ const ProductImage: React.FC<ProductImageProps> = ({
 
         {/* 🖼 Thumbnail Gallery */}
         {imgs.length > 1 && (
-          <div className="relative w-full mt-3 flex items-center">
-            {/* Left Arrow (desktop) */}
+          <div className="relative w-full mt-3 flex items-center justify-center">
+            {/* Left Arrow */}
             <button
               onClick={() => scrollThumbnails("left")}
-              className="hidden lg:flex absolute left-0 z-10 bg-black/40 hover:bg-black/60 p-1 rounded-full ml-2"
+              className="absolute left-1 z-10 bg-black/30 hover:bg-black/50 p-1 rounded-full"
             >
-              <ChevronLeft size={20} className="text-white" />
+              <ChevronLeft size={18} className="text-white" />
             </button>
 
-            {/* Thumbnails */}
+            {/* Scrollable Thumbnails */}
             <div
               ref={thumbRef}
-              className="flex gap-3 overflow-x-auto w-full px-8 scrollbar-hide snap-x scroll-smooth"
+              className="flex gap-2 overflow-x-auto w-full px-8 scrollbar-hide scroll-smooth snap-x"
             >
               {imgs.map((thumb, i) => (
                 <img
@@ -203,19 +182,19 @@ const ProductImage: React.FC<ProductImageProps> = ({
                       inline: "center",
                     });
                   }}
-                  className={`h-18 w-20 object-cover rounded-md border snap-start ${
-                    idx === i ? "border-white scale-105" : "border-gray-600"
+                  className={`h-14 w-14 object-cover rounded-md border ${
+                    idx === i ? "border-yellow-400 scale-105" : "border-gray-600"
                   } transition-all duration-300 cursor-pointer hover:opacity-90`}
                 />
               ))}
             </div>
 
-            {/* Right Arrow (desktop) */}
+            {/* Right Arrow */}
             <button
               onClick={() => scrollThumbnails("right")}
-              className="hidden lg:flex absolute right-0 z-10 bg-black/40 hover:bg-black/60 p-1 rounded-full mr-2"
+              className="absolute right-1 z-10 bg-black/30 hover:bg-black/50 p-1 rounded-full"
             >
-              <ChevronRight size={20} className="text-white" />
+              <ChevronRight size={18} className="text-white" />
             </button>
           </div>
         )}
