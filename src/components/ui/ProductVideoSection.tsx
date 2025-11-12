@@ -78,8 +78,8 @@ const ProductVideoSection: React.FC = () => {
           {videos.map((video) => (
             <div
               key={video.id}
-              className={`relative w-full max-w-[250px] aspect-[5/6] bg-gray-900 overflow-hidden shadow-lg transition-transform duration-500 ${
-                activeVideo === video.id ? "scale-[1.1]  " : "scale-100 rounded-sm"
+              className={`relative w-full max-w-[250px] aspect-[4/6] bg-gray-900 overflow-hidden shadow-lg transition-transform duration-500 ${
+                activeVideo === video.id ? "scale-[1.1]" : "scale-100"
               }`}
             >
               {/* 🎥 Video */}
