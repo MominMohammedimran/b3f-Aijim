@@ -101,7 +101,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
       {/* 🖼 Main Image */}
       <div className="w-full flex flex-col items-center">
         <div
-          className="relative w-full h-[45vh] lg:h-[70vh] overflow-hidden bg-neutral-900 cursor-zoom-in"
+          className="relative w-full h-[55vh] lg:h-[80vh] overflow-hidden bg-neutral-900 cursor-zoom-in"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -140,13 +140,13 @@ const ProductImage: React.FC<ProductImageProps> = ({
             <>
               <button
                 onClick={prev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full hover:bg-black/60 transition"
+                className="absolute left-1 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full hover:bg-black/60 opacity-70 transition"
               >
                 <ChevronLeft className="text-white" size={24} />
               </button>
               <button
                 onClick={next}
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full hover:bg-black/60 transition"
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full hover:bg-black/60 opacity-70 transition"
               >
                 <ChevronRight className="text-white" size={24} />
               </button>
@@ -156,7 +156,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
 
         {/* 🖼 Thumbnail Gallery */}
         {imgs.length > 1 && (
-          <div className="relative w-full mt-3 flex items-center justify-center">
+          <div className="relative w-full mt-3 p-1 flex items-center justify-center">
             {/* Left Arrow */}
             <button
               onClick={() => scrollThumbnails("left")}
@@ -183,7 +183,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
                     });
                   }}
                   className={`h-14 w-14 object-cover rounded-md border ${
-                    idx === i ? "border-yellow-400 scale-105" : "border-gray-600"
+                    idx === i ? "border-yellow-400 scale-100" : "border-gray-600"
                   } transition-all duration-300 cursor-pointer hover:opacity-90`}
                 />
               ))}
