@@ -14,7 +14,7 @@ interface Review {
   rating: number;
   comment: string;
   created_at: string;
-  image_paths?: string[];
+  review_images?: string[];
   user_name?: string;
 }
 
@@ -38,7 +38,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
     try {
       const { data: reviewsData, error } = await supabase
         .from('reviews')
-        .select('id, user_id, rating, comment, created_at, image_paths')
+        .select('id, user_id, rating, comment, created_at, review_images')
         .eq('product_id', productId)
         .order('created_at', { ascending: false });
 
@@ -67,7 +67,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
     }
   };
 
-  // ✅ Image Upload Handling
+  // ✅ Image selection (max 3)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length + selectedImages.length > 3) {
@@ -77,25 +77,39 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
     setSelectedImages((prev) => [...prev, ...files]);
   };
 
+  // ✅ Remove preview image
   const handleRemoveImage = (index: number) => {
     setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // ✅ Upload images to Supabase (returns public URLs)
   const uploadImages = async () => {
-    const uploadedPaths: string[] = [];
+    const uploadedUrls: string[] = [];
     for (const file of selectedImages) {
-      const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}-${file.name}`;
+      const ext = file.name.split('.').pop();
+      const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const filePath = `review-images/${uniqueName}`;
-      const { error } = await supabase.storage.from('paymentproofs').upload(filePath, file);
+
+      const { error } = await supabase.storage
+        .from('paymentproofs')
+        .upload(filePath, file);
+
       if (error) {
         console.error('Upload error:', error);
+        toast.error('Failed to upload image');
         continue;
       }
-      uploadedPaths.push(uniqueName);
+
+      const { data } = supabase.storage
+        .from('paymentproofs')
+        .getPublicUrl(filePath);
+
+      if (data?.publicUrl) uploadedUrls.push(data.publicUrl);
     }
-    return uploadedPaths;
+    return uploadedUrls;
   };
 
+  // ✅ Submit review
   const handleSubmitReview = async () => {
     if (!currentUser) return toast.error('Please log in to submit a review');
     if (newReview.comment.trim().length < 10)
@@ -103,7 +117,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
 
     setLoading(true);
     try {
-      const uploadedPaths = await uploadImages();
+      const uploadedUrls = await uploadImages();
 
       const { error } = await supabase.from('reviews').insert([
         {
@@ -111,7 +125,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
           user_id: currentUser.id,
           rating: newReview.rating,
           comment: newReview.comment.trim(),
-          image_paths: uploadedPaths,
+          review_images: uploadedUrls,
         },
       ]);
 
@@ -173,7 +187,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
       {/* Carousel */}
       <ProductReviewCarousel reviews={reviews} />
 
-      {/* Write Review */}
+      {/* Write Review Form */}
       {showWriteReview && (
         <div className="border border-zinc-700 bg-zinc-900/60 backdrop-blur-md rounded-md p-4 space-y-4 shadow-lg">
           <h4 className="text-md font-semibold text-yellow-400">Write Your Review</h4>
