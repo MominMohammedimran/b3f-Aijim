@@ -145,7 +145,7 @@ const OrderHistory = () => {
                   >
                     {/* Header */}
 <div className="p-3 border-b border-gray-800">
-  <h4 className="font-bold text-white text-sm mb-2"> #{order.order_number} - Order</h4>
+  <h4 className="font-bold text-white text-md mb-2"> #{order.order_number} - Order</h4>
 
   {/* Payment & Order Status */}
   <div className="flex flex-wrap gap-2">
