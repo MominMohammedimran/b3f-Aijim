@@ -41,7 +41,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
       className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col ${className}`}
     >
       {/* 🖼️ Image Section */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-neutral-900 flex-shrink-0">
+      <div className="relative aspect-[4/5] sm:aspect-[5/5] overflow-hidden bg-neutral-900 flex-shrink-0">
         {images.map((img, i) => (
           <img
             key={i}

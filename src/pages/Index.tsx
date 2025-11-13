@@ -203,7 +203,7 @@ const Index = () => {
                   {featuredProducts.map((product, index) => (
                     <div
                       key={product.id}
-                      className="min-w-[48%] sm:min-w-[35%]  animate-fade-in"
+                      className="min-w-[48%] sm:min-w-[28%]  animate-fade-in"
                       style={{ animationDelay: `${index * 0.08}s` }}
                     >
                       <ProductCard

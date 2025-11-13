@@ -296,11 +296,11 @@ const AddressManagement = () => {
           {addresses.map((address) => (
             <div
               key={address.id}
-              className={`p-3 border border-gray-200 bg-none hover:border-yellow-400 transition-all duration-300`}
+              className={`p-3 border border-gray-600 bg-none hover:border-yellow-400 transition-all duration-300`}
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-semibold text-yellow-400 uppercase">
+                  <h3 className="font-semibold text-white uppercase">
                     {address.first_name} {address.last_name}
                   </h3>
                   <p className="text-sm text-gray-400">{address.phone}</p>
