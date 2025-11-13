@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Star, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Star ,UserRound} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Review {
   id: string;
@@ -10,7 +9,7 @@ interface Review {
   comment: string;
   created_at: string;
   user_name?: string;
-  image_paths?: string[];
+  review_images?: string[];
 }
 
 interface ProductReviewCarouselProps {
@@ -19,165 +18,114 @@ interface ProductReviewCarouselProps {
 
 const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTwoPerView, setIsTwoPerView] = useState(window.innerWidth >= 1024);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [reviewImages, setReviewImages] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
-    const fetchImages = async () => {
-      const urls: Record<string, string[]> = {};
-      for (const review of reviews) {
-        if (review.image_paths?.length) {
-          const paths = review.image_paths.slice(0, 3);
-          const imageUrls = await Promise.all(
-            paths.map(async (path) => {
-              const { data } = supabase.storage
-                .from("paymentproofs")
-                .getPublicUrl(`review-images/${path}`);
-              return data?.publicUrl || "";
-            })
-          );
-          urls[review.id] = imageUrls.filter(Boolean);
-        }
-      }
-      setReviewImages(urls);
-    };
+    if (reviews.length <= 1) return;
 
-    fetchImages();
-  }, [reviews]);
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % reviews.length);
+    }, 6000);
 
-  useEffect(() => {
-    const handleResize = () => setIsTwoPerView(window.innerWidth >= 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    return () => clearInterval(interval);
+  }, [reviews.length]);
 
-  const goToPrevious = () =>
-    setCurrentIndex((prev) =>
-      prev === 0 ? Math.max(0, reviews.length - (isTwoPerView ? 2 : 1)) : prev - (isTwoPerView ? 2 : 1)
-    );
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1));
+  };
 
-  const goToNext = () =>
-    setCurrentIndex((prev) => (prev + (isTwoPerView ? 2 : 1)) % reviews.length);
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % reviews.length);
+  };
 
-  if (!reviews.length)
+  if (!reviews || reviews.length === 0) {
     return (
-      <div className="text-center py-10 text-gray-400 text-sm italic">
-        No reviews yet. Be the first to leave one ✍️
+      <div className="text-center py-12 text-zinc-400">
+        <p>No reviews yet. Be the first to leave one!</p>
       </div>
     );
+  }
 
-  const visibleReviews = isTwoPerView
-    ? reviews.slice(currentIndex, currentIndex + 2)
-    : [reviews[currentIndex]];
+  const currentReview = reviews[currentIndex];
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto mt-4">
-      <div className="flex justify-center gap-6 overflow-hidden">
-        {visibleReviews.map((review) => (
-          <div
-            key={review.id}
-            className="flex-1 min-w-[220px] max-w-md bg-gradient-to-br from-zinc-900/60 via-zinc-800/60 to-zinc-900/40 
-                       border border-zinc-800 rounded-2xl p-6 shadow-lg hover:shadow-yellow-500/20 
-                       backdrop-blur-md transition-all duration-300 transform hover:scale-[1.02]"
-          >
-            {/* Rating */}
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`w-4 h-4 ${
-                      star <= review.rating
-                        ? "text-yellow-400 fill-yellow-400"
-                        : "text-zinc-600"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
+    <div className="relative max-w-3xl mx-auto">
+      <div className="bg-zinc-900/70 backdrop-blur-md  border border-zinc-700 p-6 sm:p-8 shadow-lg transition-all duration-300">
+        <div className="flex items-center mb-4">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <UserRound
+              key={star}
+              className={`w-5 h-5 transition ${
+                star <= currentReview.rating
+                  ? 'text-yellow-400 fill-yellow-400'
+                  : 'text-zinc-500'
+              }`}
+            />
+          ))}
+          <span className="ml-3 text-sm text-zinc-400">
+            {currentReview.rating}/5
+          </span>
+        </div>
 
-            {/* Comment */}
-            <p className="text-gray-200 text-sm leading-relaxed mb-6">
-              “{review.comment || "No comment provided"}”
-            </p>
+        <p className="text-zinc-200 text-base leading-relaxed min-h-[80px]">
+          " {currentReview.comment || 'No comment provided'} "
+        </p>
 
-            {/* Images */}
-            {reviewImages[review.id]?.length ? (
-              <div className="flex gap-3 mb-6">
-                {reviewImages[review.id].map((imgUrl, i) => (
-                  <img
-                    key={i}
-                    src={imgUrl}
-                    alt={`Review ${i}`}
-                    className="w-20 h-20 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform shadow-md"
-                    onClick={() => setSelectedImage(imgUrl)}
-                  />
-                ))}
-              </div>
-            ) : null}
-
-            {/* Footer */}
-            <div>
-              <p className="font-medium text-white text-sm">
-                {review.user_name || "Anonymous User"}
-              </p>
-              <p className="text-xs text-gray-400">
-                {new Date(review.created_at).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </p>
-            </div>
+        {currentReview.review_images && currentReview.review_images.length > 0 && (
+          <div className="mt-4 flex gap-2 flex-wrap">
+            {currentReview.review_images.map((imageUrl, idx) => (
+              <img
+                key={idx}
+                src={imageUrl}
+                alt={`Review image ${idx + 1}`}
+                className="h-20 w-20 object-cover rounded-md border border-zinc-600"
+              />
+            ))}
           </div>
-        ))}
+        )}
+
+        <div className="mt-6 flex items-center justify-between text-sm text-zinc-500">
+          <div>
+            <p className="font-semibold text-white">{currentReview.user_name || 'Anonymous'}</p>
+            <p>{new Date(currentReview.created_at).toLocaleDateString()}</p>
+          </div>
+          <div>{currentIndex + 1} / {reviews.length}</div>
+        </div>
       </div>
 
-      {/* Navigation */}
-      {reviews.length > (isTwoPerView ? 2 : 1) && (
+      {reviews.length > 1 && (
         <>
           <Button
             variant="ghost"
             size="icon"
             onClick={goToPrevious}
-            className="absolute left-0 top-1/2 -translate-y-1/2 text-yellow-400 hover:text-yellow-500 rounded-full bg-black/40 backdrop-blur-md"
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-transparent  hover: text-yellow-400"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-8 h-8" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={goToNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 text-yellow-400 hover:text-yellow-500 rounded-full bg-black/40 backdrop-blur-md"
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent  hover: text-yellow-400"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-8 h-8" />
           </Button>
         </>
       )}
 
-      {/* Fullscreen Image Modal */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center animate-fadeIn"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div
-            className="relative max-w-[90%] max-h-[85%]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img
-              src={selectedImage}
-              alt="Full Preview"
-              className="w-full h-full object-contain rounded-xl shadow-2xl"
+      {reviews.length > 1 && (
+        <div className="flex justify-center mt-5 gap-2">
+          {reviews.map((_, index) => (
+            <div
+              key={index}
+              className={`h-2 w-2 rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? 'bg-yellow-400 scale-110 shadow-md'
+                  : 'bg-zinc-600'
+              }`}
+              onClick={() => setCurrentIndex(index)}
             />
-            <button
-              className="absolute top-3 right-3 bg-black/70 hover:bg-black/90 rounded-full p-2 transition"
-              onClick={() => setSelectedImage(null)}
-            >
-              <X className="w-5 h-5 text-white" />
-            </button>
-          </div>
+          ))}
         </div>
       )}
     </div>
