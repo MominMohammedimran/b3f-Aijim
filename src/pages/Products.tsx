@@ -158,7 +158,7 @@ const Products = () => {
           {/* Left Button */}
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-1 rounded-none z-10"
           >
             <ChevronLeft size={18} />
           </button>
@@ -166,7 +166,7 @@ const Products = () => {
           {/* Carousel */}
           <div
             ref={ref}
-            className="overflow-x-auto no-scrollbar scroll-smooth flex gap-4 snap-x snap-mandatory"
+            className="overflow-x-auto no-scrollbar scroll-smooth flex gap-1.5 snap-x snap-mandatory"
           >
             {filtered.map((p) => (
               <div
@@ -184,7 +184,7 @@ const Products = () => {
           {/* Right Button */}
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-2 rounded-full z-10"
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-1 rounded-none z-10"
           >
             <ChevronRight size={18} />
           </button>
@@ -220,7 +220,7 @@ const Products = () => {
                   <SortDropdown section="all" />
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1.5">
                   {sortProducts(products).map((p) => (
                     <ProductCard
                       key={p.id}

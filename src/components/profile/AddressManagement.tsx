@@ -158,11 +158,11 @@ const AddressManagement = () => {
     );
 
   return (
-    <div className="text-white p-2 rounded-none">
+    <div className="text-white p-1 rounded-none">
       {!showAddForm && (
         <Button
           onClick={handleAddNew}
-          className="mb-6 bg-yellow-500 hover:bg-yellow-400 text-black rounded-none"
+          className="mb-6 bg-white  hover:bg-white hover:text-yellow-400  text-black rounded-none"
         >
           <PlusCircle size={16} className="mr-2" />
           Add New Address
@@ -308,7 +308,7 @@ const AddressManagement = () => {
                     {address.address}, {address.city}, {address.state} - {address.zip_code}
                   </p>
                   <p className="text-xs text-gray-500 mt-1 flex items-center">
-                    <MapPin className="w-3 h-3 mr-1 text-yellow-400" />
+                    <MapPin className="w-3 h-3 mr-1 " />
                     {address.country}
                   </p>
                 </div>

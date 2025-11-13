@@ -187,23 +187,23 @@ const Index = () => {
             {loading ? (
               <p className="text-gray-400">Loading Products...</p>
             ) : featuredProducts.length > 0 ? (
-              <div className="relative">
+              <div className="relative w-full">
                 {/* ➤ Scroll Buttons */}
                 <button
                   onClick={() => scroll('left')}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 hover:text-white transition"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 bg-black/60 py-0.5 hover:bg-black hover:text-white transition"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
 
                 <div
                   ref={scrollRef}
-                  className="flex overflow-x-auto no-scrollbar scroll-smooth gap-2 pb-2"
+                  className="flex overflow-x-auto no-scrollbar scroll-smooth gap-1.5 pb-2"
                 >
                   {featuredProducts.map((product, index) => (
                     <div
                       key={product.id}
-                      className="min-w-[45%] sm:min-w-[30%] md:min-w-[22%] lg:min-w-[18%] animate-fade-in"
+                      className="min-w-[48%] sm:min-w-[35%]  animate-fade-in"
                       style={{ animationDelay: `${index * 0.08}s` }}
                     >
                       <ProductCard
@@ -216,7 +216,7 @@ const Index = () => {
 
                 <button
                   onClick={() => scroll('right')}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 hover:text-white transition"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/60 py-0.5 hover:bg-black text-gray-500 hover:text-white transition"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>

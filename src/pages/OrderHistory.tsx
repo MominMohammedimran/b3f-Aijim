@@ -144,63 +144,43 @@ const OrderHistory = () => {
                     className="relative bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-md shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
                   >
                     {/* Header */}
-                    <div className="p-3 border-b border-gray-800 flex justify-between items-center">
-                      <div>
-                        <h4 className="font-bold text-white text-sm">
-                         #{order.order_number}
-                        </h4>
-                        <p className="text-xs text-gray-500">
-                          {new Date(order.created_at).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </p>
-                      </div>
+<div className="p-3 border-b border-gray-800">
+  <h4 className="font-bold text-white text-sm mb-2"> #{order.order_number} - Order</h4>
 
-                    
-
-  {/* Right Section — Status Labels */}
-  <div className="text-right text-[11px] space-y-1">
+  {/* Payment & Order Status */}
+  <div className="flex flex-wrap gap-2">
     {/* Payment Status */}
-    <div className="flex items-center justify-end gap-1">
-      <span className="text-gray-400 font-semibold">Payment - </span>
-<span
-        className={`font-bold uppercase px-2 py-0.5 rounded-sm ${
-          order.payment_status === "paid"
-            ? "bg-green-500 text-black"
-            : order.payment_status === "pending"
-            ? "bg-yellow-500 text-black"
-            : "bg-red-600 text-white"
-        }`}
-      >
-        {order.payment_status}
-      </span>
-    </div>
+    <span
+      className={`font-bold uppercase px-2 py-0.5 rounded-sm text-[10px] ${
+        order.payment_status === "paid"
+          ? "bg-green-500 text-black"
+          : order.payment_status === "pending"
+          ? "bg-yellow-500 text-black"
+          : "bg-red-600 text-white"
+      }`}
+    >
+      Payment- {order.payment_status}
+    </span>
 
     {/* Order Status */}
-    <div className="flex items-center justify-end gap-1">
-      <span className="text-gray-400 font-semibold">Order - </span>
-      <span
-        className={`font-bold uppercase px-2 py-0.5 rounded-sm ${
-          order.status === "delivered"
-            ? "bg-green-400 text-black"
-            : order.status === "cancelled"
-            ? "bg-red-500 text-white"
-            : order.status === "confirmed"
-            ? "bg-blue-400 text-black"
-            : order.status === "processing"
-            ? "bg-yellow-400 text-black"
-            : "bg-gray-500 text-white"
-        }`}
-      >
-        {order.status}
-      </span>
-    </div>
+    <span
+      className={`font-bold uppercase px-2 py-0.5 rounded-sm text-[10px] ${
+        order.status === "delivered"
+          ? "bg-green-400 text-black"
+          : order.status === "cancelled"
+          ? "bg-red-500 text-white"
+          : order.status === "confirmed"
+          ? "bg-blue-400 text-black"
+          : order.status === "processing"
+          ? "bg-yellow-400 text-black"
+          : "bg-gray-500 text-white"
+      }`}
+    >
+      Order- {order.status}
+    </span>
   </div>
+</div>
 
-                    </div>
 
                     {/* Items */}
                     <div className="p-3 space-y-2">
@@ -267,11 +247,21 @@ const OrderHistory = () => {
                         </Button>
                       )}
                     </div>
+                     <p className="text-xs text-center font-semibold text-gray-400 mb-1">
+                          Booked on {new Date(order.created_at).toLocaleDateString("en-US", {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </p>
                   </div>
                 );
               })}
             </div>
+            
           )}
+          
         </div>
       </div>
     </Layout>

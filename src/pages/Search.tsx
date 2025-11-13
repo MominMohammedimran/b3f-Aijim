@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, X, ChevronDown } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import { Product } from '../lib/types';
 import { Button } from '@/components/ui/button';
 import SearchBox from '../components/search/SearchBox';
 import Pagination from '../components/search/Pagination';
 import { supabase } from '@/integrations/supabase/client';
-import ProductCard from '@/components/ui/ProductCard'; // ✅ Using ProductCard directly
+import ProductCard from '@/components/ui/ProductCard';
 
 type SortOption = 'default' | 'price-low-high' | 'price-high-low';
-type FilterCategory = string | null;
+const allAvailableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 const Search = () => {
   const location = useLocation();
@@ -24,32 +24,73 @@ const Search = () => {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [isSortPopupOpen, setIsSortPopupOpen] = useState(false);
+
+  const [tempSelectedSizes, setTempSelectedSizes] = useState<string[]>([]);
+  const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
+
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
-  const [selectedFilterCategories, setSelectedFilterCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<SortOption>('default');
-  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>(categoryParam);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryParam);
+  const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  // ✅ Load all products from Supabase
-  useEffect(() => {
-    async function loadProducts() {
-      const { data, error } = await supabase.from('products').select('*');
-      if (error) console.error('Error loading products:', error);
-      else setAllProducts(data || []);
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      let query = supabase.from('products').select('*');
+      if (selectedCategory) query = query.eq('category', selectedCategory);
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      const transformed: Product[] = (data || []).map((item: any) => {
+        const rawVariants = Array.isArray(item.variants) ? item.variants : [];
+        const variants = rawVariants
+          .filter((v) => v && typeof v === 'object' && 'size' in v && 'stock' in v)
+          .map((v) => ({
+            size: String((v as any).size),
+            stock: Number((v as any).stock),
+          }));
+
+        const totalStock = variants.reduce((sum, v) => sum + v.stock, 0);
+
+        return {
+          id: item.id,
+          productId: item.id,
+          code: item.code || `PROD-${item.id.slice(0, 8)}`,
+          name: item.name,
+          description: item.description || '',
+          price: item.price,
+          originalPrice: item.original_price || item.price,
+          discountPercentage: item.discount_percentage || 0,
+          image: item.image || '',
+          images: Array.isArray(item.images) ? item.images.filter((img) => typeof img === 'string') : [],
+          category: item.category || '',
+          stock: totalStock,
+          variants: variants,
+          tags: Array.isArray(item.tags) ? item.tags.filter((t) => typeof t === 'string') : [],
+          inStock: totalStock > 0,
+        };
+      });
+
+      setAllProducts(transformed);
+    } catch (err) {
+      console.error('Error fetching products:', err);
+    } finally {
+      setLoading(false);
     }
-    loadProducts();
-  }, []);
+  };
 
-  const uniqueCategories = [...new Set(allProducts.map((p) => p.category))];
-  const allAvailableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory]);
 
-  // ✅ Filtering and sorting logic
   useEffect(() => {
     let filtered = [...allProducts];
 
-    // 🔍 Search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -61,37 +102,18 @@ const Search = () => {
       );
     }
 
-    // 🏷 Category filters
-    if (selectedCategory) {
-      filtered = filtered.filter(
-        (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
-      );
-    }
-
-    if (selectedFilterCategories.length > 0) {
+    if (selectedCategories.length > 0) {
       filtered = filtered.filter((p) =>
-        selectedFilterCategories.some(
-          (cat) => p.category?.toLowerCase() === cat.toLowerCase()
-        )
+        selectedCategories.some((cat) => p.category?.toLowerCase() === cat.toLowerCase())
       );
     }
 
-    // 👕 Size filter — include even out-of-stock products
     if (selectedSizes.length > 0) {
-      filtered = filtered.filter((p) => {
-        const variants =
-          typeof p.variants === 'string'
-            ? JSON.parse(p.variants)
-            : Array.isArray(p.variants)
-            ? p.variants
-            : [];
-        return variants.some(
-          (v) => selectedSizes.includes(v.size?.toUpperCase())
-        );
-      });
+      filtered = filtered.filter((p) =>
+        (p.variants || []).some((v) => selectedSizes.includes(v.size?.toUpperCase()))
+      );
     }
 
-    // 💰 Sort logic
     switch (sortOption) {
       case 'price-low-high':
         filtered.sort((a, b) => a.price - b.price);
@@ -103,24 +125,12 @@ const Search = () => {
 
     setFilteredProducts(filtered);
     setCurrentPage(1);
-  }, [
-    searchQuery,
-    selectedCategory,
-    selectedFilterCategories,
-    selectedSizes,
-    sortOption,
-    allProducts,
-  ]);
+  }, [allProducts, searchQuery, selectedSizes, selectedCategories, sortOption]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
-      setSelectedCategory(null);
-    } else {
-      navigate('/search');
-      setSelectedCategory(null);
-    }
+    navigate(searchQuery.trim() ? `/search?query=${encodeURIComponent(searchQuery)}` : '/search');
+    setSelectedCategory(null);
   };
 
   const clearSearch = () => {
@@ -137,16 +147,26 @@ const Search = () => {
     }
   };
 
-  const toggleSize = (size: string) => {
-    setSelectedSizes((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
-    );
-  };
+  const toggleTempSize = (size: string) =>
+    setTempSelectedSizes((prev) => (prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]));
 
-  const toggleFilterCategory = (category: string) => {
-    setSelectedFilterCategories((prev) =>
+  const toggleTempCategory = (category: string) =>
+    setTempSelectedCategories((prev) =>
       prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
     );
+
+  const applyFilter = () => {
+    setSelectedSizes(tempSelectedSizes);
+    setSelectedCategories(tempSelectedCategories);
+    setIsFilterPopupOpen(false);
+  };
+
+  const clearFilter = () => {
+    setTempSelectedSizes([]);
+    setTempSelectedCategories([]);
+    setSelectedSizes([]);
+    setSelectedCategories([]);
+    setIsFilterPopupOpen(false);
   };
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -158,24 +178,11 @@ const Search = () => {
   const nextPage = () => currentPage < totalPages && setCurrentPage((p) => p + 1);
   const prevPage = () => currentPage > 1 && setCurrentPage((p) => p - 1);
 
-  // ✅ Dim out-of-stock sizes but still clickable
-  const isSizeOutOfStock = (size: string) => {
-    return !allProducts.some((p) => {
-      const variants =
-        typeof p.variants === 'string'
-          ? JSON.parse(p.variants)
-          : Array.isArray(p.variants)
-          ? p.variants
-          : [];
-      return variants.some(
-        (v) => v.size?.toUpperCase() === size && Number(v.stock) > 0
-      );
-    });
-  };
+  const uniqueCategories = Array.from(new Set(allProducts.map((p) => p.category))).filter(Boolean);
 
   return (
     <Layout>
-      <div className="container-custom mt-16">
+      <div className="container-custom mt-16 pb-28">
         <div className="flex items-center mb-4 pt-8 animate-fade-in">
           <Link to="/" className="mr-2">
             <ArrowLeft size={24} className="back-arrow" />
@@ -183,7 +190,6 @@ const Search = () => {
           <h1 className="text-xl font-semibold">Search</h1>
         </div>
 
-        {/* 🔍 Search Box */}
         <SearchBox
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -191,173 +197,165 @@ const Search = () => {
           clearSearch={clearSearch}
         />
 
-        {/* 🧢 Product Display */}
-        {currentProducts.length > 0 ? (
+        {loading ? (
+          <p className="text-gray-400 text-center py-10">Loading products...</p>
+        ) : currentProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 py-6">
             {currentProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onClick={() => handleProductClick(product)}
-              />
+              <ProductCard key={product.id} product={product} onClick={() => handleProductClick(product)} />
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-400 py-10">
-            No products found for your selection.
-          </p>
+          <p className="text-center text-gray-400 py-10">No products found for your selection.</p>
         )}
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onNextPage={nextPage}
-          onPrevPage={prevPage}
-        />
-      </div>
+        <Pagination currentPage={currentPage} totalPages={totalPages} onNextPage={nextPage} onPrevPage={prevPage} />
 
-      {/* ⚙️ Bottom Filter/Sort Bar */}
-      <div className="fixed bottom-12 left-0 right-0 z-50 bg-black/50 border-t border-gray-200 flex justify-around">
-        <Button
-          onClick={() => setIsFilterPopupOpen(true)}
-          className="bg-gray-900 text-white uppercase font-semibold border-r border-gray-200 rounded-none shadow-lg w-1/2 hover:bg-gray-900"
-        >
-          Filter <ChevronDown size={18} />
-        </Button>
-        <Button
-          onClick={() => setIsSortPopupOpen(true)}
-          className="bg-gray-900 text-white uppercase font-semibold rounded-none shadow-lg w-1/2 hover:bg-gray-900"
-        >
-          Sort <ChevronDown size={18} />
-        </Button>
-      </div>
-
-      {/* 🧩 Filter Popup */}
-      {isFilterPopupOpen && (
-        <div
-          className="fixed bottom-12 inset-0 bg-black/70 z-50 flex justify-center items-end"
-          onClick={() => setIsFilterPopupOpen(false)}
-        >
+        {/* Overlay */}
+        {(isFilterPopupOpen || isSortPopupOpen) && (
           <div
-            className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Filter</h2>
-              <button onClick={() => setIsFilterPopupOpen(false)}>
-                <X size={24} className="text-gray-300 hover:text-white" />
-              </button>
+            className="fixed inset-0 bg-black/70 z-40"
+            onClick={() => {
+              setIsFilterPopupOpen(false);
+              setIsSortPopupOpen(false);
+            }}
+          />
+        )}
+
+        {/* Filter Popup */}
+        {isFilterPopupOpen && !isSortPopupOpen && (
+          <div className="fixed w-full bottom-16 mb-5 left-1/2 -translate-x-1/2 z-50 bg-black p-5 rounded shadow-lg w-[90%] max-w-md text-yellow-400">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="font-bold text-lg">Filter By</h2>
+              <X className="cursor-pointer" size={20} onClick={() => setIsFilterPopupOpen(false)} />
             </div>
 
-            {/* 👕 Size Filter */}
-            <div className="mb-6">
-              <h3 className="font-semibold mb-3 text-lg">Size</h3>
-              <div className="flex flex-wrap gap-3 justify-center">
-                {allAvailableSizes.map((size) => {
-                  const outOfStock = isSizeOutOfStock(size);
-                  return (
-                    <button
-                      key={size}
-                      onClick={() => toggleSize(size)}
-                      className={`px-5 py-2 rounded-full border font-semibold transition-all ${
-                        selectedSizes.includes(size)
-                          ? 'bg-yellow-400 text-black border-yellow-400 scale-105'
-                          : outOfStock
-                          ? 'border-gray-600 text-gray-400 bg-gray-800 cursor-pointer'
-                          : 'border-gray-600 text-white hover:bg-gray-800'
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  );
-                })}
-              </div>
-              <p className="text-xs text-gray-400 mt-2 text-center">
-                *Dimmed sizes are out of stock but can be pre-booked.
-              </p>
-            </div>
-
-            {/* 🏷 Category Filter */}
-            <div className="mb-6">
-              <h3 className="font-semibold mb-3 text-lg">Category</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {uniqueCategories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => toggleFilterCategory(category)}
-                    className={`px-4 py-2 rounded-md border font-semibold text-sm ${
-                      selectedFilterCategories.includes(category)
-                        ? 'bg-yellow-400 text-black border-yellow-400'
-                        : 'border-gray-600 text-white hover:bg-gray-800'
-                    }`}
+            <div className="mb-4">
+              <h3 className="font-medium mb-1">Category</h3>
+              <div className="flex flex-wrap gap-2">
+                {uniqueCategories.map((cat) => (
+                  <Button
+                    key={cat}
+                    variant={tempSelectedCategories.includes(cat) ? 'default' : 'outline'}
+                    size="sm"
+                    className={
+                      tempSelectedCategories.includes(cat)
+                        ? 'bg-red-500 text-white'
+                        : 'text-yellow-400 border-yellow-400'
+                    }
+                    onClick={() => toggleTempCategory(cat)}
                   >
-                    {category}
-                  </button>
+                    {cat}
+                  </Button>
                 ))}
               </div>
             </div>
 
-            {/* 🔘 Filter Footer */}
-            <div className="mt-6 flex justify-between gap-4">
-              <Button
-                variant="outline"
-                className="w-1/2 border-gray-600 text-gray-300 hover:text-white hover:bg-gray-800"
-                onClick={() => {
-                  setSelectedSizes([]);
-                  setSelectedFilterCategories([]);
-                  setSelectedCategory(null);
-                  setIsFilterPopupOpen(false);
-                }}
-              >
-                Clear
-              </Button>
-              <Button
-                className="w-1/2 bg-yellow-400 text-black font-bold hover:bg-yellow-300"
-                onClick={() => setIsFilterPopupOpen(false)}
-              >
+            <div className="mb-4">
+              <h3 className="font-medium mb-1">Sizes</h3>
+              <div className="flex flex-wrap gap-2">
+                {allAvailableSizes.map((size) => (
+                  <Button
+                    key={size}
+                    variant={tempSelectedSizes.includes(size) ? 'default' : 'outline'}
+                    size="sm"
+                    className={
+                      tempSelectedSizes.includes(size)
+                        ? 'bg-red-500 text-white'
+                        : 'text-yellow-400 border-yellow-400'
+                    }
+                    onClick={() => toggleTempSize(size)}
+                  >
+                    {size}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-between mt-4">
+              <Button className="text-black bg-yellow-400" onClick={applyFilter}>
                 Apply
               </Button>
+              <Button className="text-black bg-yellow-400" onClick={clearFilter}>
+                Clear
+              </Button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 🧭 Sort Popup */}
-      {isSortPopupOpen && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-end">
-          <div className="bg-gray-900 text-white w-full max-w-lg rounded-t-2xl p-6 animate-slide-up">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Sort By</h2>
-              <button onClick={() => setIsSortPopupOpen(false)}>
-                <X size={24} className="text-gray-300 hover:text-white" />
-              </button>
+        {/* Sort Popup */}
+        {isSortPopupOpen && !isFilterPopupOpen && (
+          <div className="w-full fixed bottom-16 mb-5 left-1/2 -translate-x-1/2 z-50 bg-black p-5 rounded shadow-lg w-[90%] max-w-xs text-yellow-400">
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="font-bold text-lg">Sort By</h2>
+              <X className="cursor-pointer" size={20} onClick={() => setIsSortPopupOpen(false)} />
             </div>
-
-            <div className="space-y-3">
-              {['default', 'price-low-high', 'price-high-low'].map((option) => (
-                <button
-                  key={option}
-                  onClick={() => {
-                    setSortOption(option as SortOption);
-                    setIsSortPopupOpen(false);
-                  }}
-                  className={`w-full px-4 py-2 rounded-md border ${
-                    sortOption === option
-                      ? 'bg-yellow-400 text-black font-bold'
-                      : 'border-gray-600 hover:bg-gray-800'
-                  }`}
-                >
-                  {option === 'default'
-                    ? 'Default'
-                    : option === 'price-low-high'
-                    ? 'Price: Low to High'
-                    : 'Price: High to Low'}
-                </button>
-              ))}
+            <div className="flex flex-col gap-2">
+              <Button
+                variant={sortOption === 'default' ? 'default' : 'outline'}
+                size="sm"
+                className={sortOption === 'default' ? 'bg-red-500 text-white' : 'text-yellow-400 border-yellow-400'}
+                onClick={() => {
+                  setSortOption('default');
+                  setIsSortPopupOpen(false);
+                }}
+              >
+                Default
+              </Button>
+              <Button
+                variant={sortOption === 'price-low-high' ? 'default' : 'outline'}
+                size="sm"
+                className={
+                  sortOption === 'price-low-high' ? 'bg-red-500 text-white' : 'text-yellow-400 border-yellow-400'
+                }
+                onClick={() => {
+                  setSortOption('price-low-high');
+                  setIsSortPopupOpen(false);
+                }}
+              >
+                Price: Low to High
+              </Button>
+              <Button
+                variant={sortOption === 'price-high-low' ? 'default' : 'outline'}
+                size="sm"
+                className={
+                  sortOption === 'price-high-low' ? 'bg-red-500 text-white' : 'text-yellow-400 border-yellow-400'
+                }
+                onClick={() => {
+                  setSortOption('price-high-low');
+                  setIsSortPopupOpen(false);
+                }}
+              >
+                Price: High to Low
+              </Button>
             </div>
           </div>
+        )}
+
+        {/* Bottom Sticky Filter & Sort Bar */}
+        <div className="fixed bottom-12 left-0 w-full bg-black z-50 flex justify-around border-t border-yellow-400">
+          <Button
+            className="text-yellow-400 w-full rounded-none bg-black border-r border-yellow-400 hover:bg-black/60"
+            onClick={() => {
+              setTempSelectedSizes(selectedSizes);
+              setTempSelectedCategories(selectedCategories);
+              setIsFilterPopupOpen(true);
+              setIsSortPopupOpen(false);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            className="text-yellow-400 w-full bg-black rounded-none border-yellow-400 hover:bg-black/60"
+            onClick={() => {
+              setIsSortPopupOpen(true);
+              setIsFilterPopupOpen(false);
+            }}
+          >
+            Sort
+          </Button>
         </div>
-      )}
+      </div>
     </Layout>
   );
 };
