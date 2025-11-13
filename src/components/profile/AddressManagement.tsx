@@ -158,7 +158,7 @@ const AddressManagement = () => {
     );
 
   return (
-    <div className="text-white p-3 rounded-none">
+    <div className="text-white p-2 rounded-none">
       {!showAddForm && (
         <Button
           onClick={handleAddNew}
@@ -296,7 +296,7 @@ const AddressManagement = () => {
           {addresses.map((address) => (
             <div
               key={address.id}
-              className={`p-3 border border-yellow-500/30 bg-none hover:border-yellow-400 transition-all duration-300`}
+              className={`p-3 border border-gray-200 bg-none hover:border-yellow-400 transition-all duration-300`}
             >
               <div className="flex justify-between items-start">
                 <div>
