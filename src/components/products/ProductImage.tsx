@@ -168,20 +168,20 @@ const ProductImage: React.FC<ProductImageProps> = ({
             {/* Scrollable Thumbnails */}
             <div
               ref={thumbRef}
-              className="flex gap-2 overflow-x-auto w-full px-8 scrollbar-hide scroll-smooth snap-x"
+              className="flex justify-center items-center gap-2 overflow-x-auto w-full px-8 scrollbar-hide scroll-smooth snap-x"
             >
               {imgs.map((thumb, i) => (
                 <img
                   key={i}
                   src={thumb}
                   alt={`thumb-${i}`}
-                  onClick={() => {
-                    setIdx(i);
-                    thumbRef.current?.children[i]?.scrollIntoView({
-                      behavior: "smooth",
-                      inline: "center",
-                    });
-                  }}
+                  //onClick={() => {
+                   // setIdx(i);
+                 //   thumbRef.current?.children[i]?.scrollIntoView({
+                  //    behavior: "smooth",
+                 //     inline: "center",
+                //    });
+               //   }}
                   className={`h-14 w-14 object-cover rounded-md border ${
                     idx === i ? "border-yellow-400 scale-100" : "border-gray-600"
                   } transition-all duration-300 cursor-pointer hover:opacity-90`}
