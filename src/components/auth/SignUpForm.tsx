@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useSupabaseClient } from "@/hooks/useSupabaseClient";
 
 const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
+  const supabase = useSupabaseClient();
+
   const [step, setStep] = useState<"form" | "otp">("form");
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    fullName: "",
-  });
+  // Form fields
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
+  // OTP fields
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resendTimer, setResendTimer] = useState(60);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [resendTimer, setResendTimer] = useState(60);
-
-  // RESEND TIMER COUNTDOWN
+  // TIMER for resend
   useEffect(() => {
     if (step === "otp" && resendTimer > 0) {
       const t = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
@@ -33,49 +33,56 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     }
   }, [resendTimer, step]);
 
-  const handleChange = (e: any) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // STEP 1 — SEND OTP USING SUPABASE BUILT-IN
+  // STEP 1 — CREATE USER THEN SEND OTP
   const handleSignup = async (e: any) => {
     e.preventDefault();
 
-    if (formData.password.length < 6) {
+    if (!fullName || !email) {
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    if (password.length < 6) {
       toast.error("Password must be at least 6 characters");
       return;
     }
-    if (formData.password !== formData.confirmPassword) {
+
+    if (password !== confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
 
     setLoading(true);
 
-    // ❗ Step 1: Create user but require OTP
-    const { error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: { full_name: formData.fullName },
-        emailRedirectTo: window.location.origin,
-      },
-    });
+    try {
+      // Create user account (email unconfirmed)
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName },
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      });
 
-    if (error) {
-      toast.error(error.message);
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("OTP sent to your email!");
+        setStep("otp");
+        setResendTimer(60);
+      }
+    } catch (err) {
+      toast.error("Something went wrong");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    toast.success("OTP sent to your email");
-    setStep("otp");
-    setResendTimer(60);
-    setLoading(false);
   };
 
-  // STEP 2 — VERIFY OTP USING SUPABASE
-  const handleVerifyOTP = async () => {
+  // STEP 2 — VERIFY OTP
+  const handleVerifyOTP = async (e: any) => {
+    e.preventDefault();
+
     if (otp.length !== 6) {
       toast.error("Enter a valid 6-digit OTP");
       return;
@@ -83,30 +90,33 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
     setLoading(true);
 
-    const { error } = await supabase.auth.verifyOtp({
-      email: formData.email,
-      token: otp,
-      type: "email",
-    });
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otp,
+        type: "email"
+      });
 
-    if (error) {
-      toast.error("Invalid OTP");
+      if (error) {
+        toast.error("Invalid OTP");
+      } else {
+        toast.success("Account created successfully!");
+        onSuccess?.();
+      }
+    } catch {
+      toast.error("Failed to verify OTP");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    toast.success("Account created successfully!");
-    onSuccess?.();
-    setLoading(false);
   };
 
-  // RESEND OTP AFTER 1 MINUTE
+  // RESEND OTP
   const handleResend = async () => {
     if (resendTimer !== 0) return;
 
     const { error } = await supabase.auth.resend({
       type: "signup",
-      email: formData.email,
+      email,
     });
 
     if (error) {
@@ -118,128 +128,116 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     setResendTimer(60);
   };
 
-  // ============ UI RENDER ===========
-
+  // =====================
   // OTP SCREEN
+  // =====================
   if (step === "otp") {
     return (
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center">Verify OTP</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-center text-sm text-gray-500">
-            Enter the 6-digit code sent to <b>{formData.email}</b>
-          </p>
+      <form onSubmit={handleVerifyOTP} className="space-y-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center">Verify OTP</h2>
 
-          <Input
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            maxLength={6}
-            placeholder="Enter OTP"
-          />
+        <p className="text-center text-sm text-gray-500">
+          A 6-digit code has been sent to <b>{email}</b>
+        </p>
 
-          <Button className="w-full" onClick={handleVerifyOTP} disabled={loading}>
-            {loading ? "Verifying..." : "Verify"}
-          </Button>
+        <Input
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          placeholder="Enter OTP"
+          maxLength={6}
+        />
 
-          <div className="text-center text-sm text-gray-400">
-            {resendTimer > 0 ? (
-              <>Resend OTP in {resendTimer}s</>
-            ) : (
-              <button
-                onClick={handleResend}
-                className="text-blue-500 underline"
-              >
-                Resend OTP
-              </button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+        <Button className="w-full" disabled={loading}>
+          {loading ? "Verifying..." : "Verify OTP"}
+        </Button>
+
+        <div className="text-center text-sm text-gray-500">
+          {resendTimer > 0 ? (
+            <>Resend OTP in {resendTimer}s</>
+          ) : (
+            <button onClick={handleResend} className="text-blue-500 underline">
+              Resend OTP
+            </button>
+          )}
+        </div>
+      </form>
     );
   }
 
-  // SIGNUP FORM SCREEN
+  // =====================
+  // SIGNUP FORM
+  // =====================
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="text-center">Create An Account</CardTitle>
-      </CardHeader>
+    <form onSubmit={handleSignup} className="space-y-6 w-full max-w-md">
+      <h2 className="text-2xl font-bold text-center">Create Your Account</h2>
 
-      <CardContent className="space-y-4">
-        <form onSubmit={handleSignup} className="space-y-4">
+      {/* Full Name */}
+      <div>
+        <Label>Full Name</Label>
+        <Input
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          required
+        />
+      </div>
 
-          <div>
-            <Label>Full Name</Label>
-            <Input
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-            />
-          </div>
+      {/* Email */}
+      <div>
+        <Label>Email</Label>
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
 
-          <div>
-            <Label>Email</Label>
-            <Input
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+      {/* Password */}
+      <div>
+        <Label>Password</Label>
+        <div className="relative">
+          <Input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="pr-10"
+          />
+          <button
+            type="button"
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+      </div>
 
-          <div>
-            <Label>Password</Label>
-            <div className="relative">
-              <Input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                className="pr-10"
-                minLength={6}
-                onChange={handleChange}
-                value={formData.password}
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
+      {/* Confirm Password */}
+      <div>
+        <Label>Confirm Password</Label>
+        <div className="relative">
+          <Input
+            type={showConfirmPassword ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className="pr-10"
+          />
+          <button
+            type="button"
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+      </div>
 
-          <div>
-            <Label>Confirm Password</Label>
-            <div className="relative">
-              <Input
-                name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                className="pr-10"
-                onChange={handleChange}
-                value={formData.confirmPassword}
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
-
-          <Button className="w-full" type="submit" disabled={loading}>
-            {loading ? "Sending OTP..." : "Create Account"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Sending OTP..." : "Create Account"}
+      </Button>
+    </form>
   );
 };
 
