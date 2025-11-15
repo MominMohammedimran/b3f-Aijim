@@ -11,13 +11,11 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
   const [step, setStep] = useState<"form" | "otp">("form");
 
-  // Form fields
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // OTP fields
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
@@ -25,7 +23,7 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // TIMER for resend
+  // TIMER FOR RESEND
   useEffect(() => {
     if (step === "otp" && resendTimer > 0) {
       const t = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
@@ -33,7 +31,7 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     }
   }, [resendTimer, step]);
 
-  // STEP 1 — CREATE USER THEN SEND OTP
+  // SIGNUP HANDLE
   const handleSignup = async (e: any) => {
     e.preventDefault();
 
@@ -55,7 +53,6 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     setLoading(true);
 
     try {
-      // Create user account (email unconfirmed)
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -68,18 +65,17 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success("OTP sent to your email!");
+        toast.success("OTP sent to your email");
         setStep("otp");
         setResendTimer(60);
       }
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
-  // STEP 2 — VERIFY OTP
   const handleVerifyOTP = async (e: any) => {
     e.preventDefault();
 
@@ -94,13 +90,13 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       const { error } = await supabase.auth.verifyOtp({
         email,
         token: otp,
-        type: "email"
+        type: "email",
       });
 
       if (error) {
         toast.error("Invalid OTP");
       } else {
-        toast.success("Account created successfully!");
+        toast.success("Account created successfully");
         onSuccess?.();
       }
     } catch {
@@ -110,7 +106,6 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     }
   };
 
-  // RESEND OTP
   const handleResend = async () => {
     if (resendTimer !== 0) return;
 
@@ -133,29 +128,33 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   // =====================
   if (step === "otp") {
     return (
-      <form onSubmit={handleVerifyOTP} className="space-y-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center">Verify OTP</h2>
+      <form
+        onSubmit={handleVerifyOTP}
+        className="space-y-6 w-full max-w-md bg-gray-900 text-white p-6 rounded-xl"
+      >
+        <h2 className="text-center text-xl">Verify OTP</h2>
 
-        <p className="text-center text-sm text-gray-500">
-          A 6-digit code has been sent to <b>{email}</b>
+        <p className="text-center text-sm text-gray-300">
+          A 6-digit code has been sent to {email}
         </p>
 
         <Input
+          className="bg-gray-800 text-white border-gray-700"
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
-          placeholder="Enter OTP"
           maxLength={6}
+          placeholder="Enter OTP"
         />
 
         <Button className="w-full" disabled={loading}>
           {loading ? "Verifying..." : "Verify OTP"}
         </Button>
 
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-gray-400">
           {resendTimer > 0 ? (
             <>Resend OTP in {resendTimer}s</>
           ) : (
-            <button onClick={handleResend} className="text-blue-500 underline">
+            <button onClick={handleResend} className="text-blue-400 underline">
               Resend OTP
             </button>
           )}
@@ -168,13 +167,17 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   // SIGNUP FORM
   // =====================
   return (
-    <form onSubmit={handleSignup} className="space-y-6 w-full max-w-md">
-      <h2 className="text-2xl font-bold text-center">Create Your Account</h2>
+    <form
+      onSubmit={handleSignup}
+      className="space-y-6 w-full max-w-md bg-gray-900 text-white p-6 rounded-xl"
+    >
+      <h2 className="text-center text-xl">Create Your Account</h2>
 
       {/* Full Name */}
       <div>
-        <Label>Full Name</Label>
+        <Label className="text-white">Full Name</Label>
         <Input
+          className="bg-gray-800 text-white border-gray-700"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required
@@ -183,9 +186,10 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
       {/* Email */}
       <div>
-        <Label>Email</Label>
+        <Label className="text-white">Email</Label>
         <Input
           type="email"
+          className="bg-gray-800 text-white border-gray-700"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -194,18 +198,18 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
       {/* Password */}
       <div>
-        <Label>Password</Label>
+        <Label className="text-white">Password</Label>
         <div className="relative">
           <Input
+            className="bg-gray-800 text-white border-gray-700 pr-10"
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="pr-10"
           />
           <button
             type="button"
-            className="absolute right-3 top-1/2 -translate-y-1/2"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -215,18 +219,18 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
 
       {/* Confirm Password */}
       <div>
-        <Label>Confirm Password</Label>
+        <Label className="text-white">Confirm Password</Label>
         <div className="relative">
           <Input
+            className="bg-gray-800 text-white border-gray-700 pr-10"
             type={showConfirmPassword ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className="pr-10"
           />
           <button
             type="button"
-            className="absolute right-3 top-1/2 -translate-y-1/2"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
           >
             {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
