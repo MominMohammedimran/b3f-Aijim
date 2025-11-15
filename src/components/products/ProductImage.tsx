@@ -13,65 +13,56 @@ const ProductImage: React.FC<ProductImageProps> = ({
   name,
   additionalImages = [],
 }) => {
-  const imgs = [image, ...additionalImages].filter(Boolean);
+  const media = [image, ...additionalImages].filter(Boolean);
 
   const [idx, setIdx] = useState(0);
   const [open, setOpen] = useState(false);
 
-  const [scale, setScale] = useState(1);
-  const [lastScale, setLastScale] = useState(1);
-
   const thumbRef = useRef<HTMLDivElement>(null);
-  const touchStart = useRef<number | null>(null);
-  const pinchDistance = useRef<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
-  // 🔄 Auto-slide on mobile
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (!open && window.innerWidth < 1024 && imgs.length > 1) {
-        setIdx((i) => (i + 1) % imgs.length);
-      }
-    }, 3500);
-    return () => clearInterval(timer);
-  }, [imgs.length, open]);
+  // Swipe for main image
+  const onTouchStart = (e: any) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: any) => {
+    if (!touchStartX.current) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
 
-  // 👆 Swipe gestures only change image, no fade blink
-  const handleTouchStart = (e: any) => {
-    if (e.touches.length === 1) {
-      touchStart.current = e.touches[0].clientX;
-    }
+    if (delta > 50) prev();
+    if (delta < -50) next();
+
+    touchStartX.current = null;
   };
 
-  const handleTouchEnd = (e: any) => {
-    if (touchStart.current === null) return;
-    const delta = e.changedTouches[0].clientX - touchStart.current;
+  const next = () => setIdx((i) => (i + 1) % media.length);
+  const prev = () => setIdx((i) => (i - 1 + media.length) % media.length);
 
-    if (Math.abs(delta) > 50) {
-      if (delta > 0) prev();
-      else next();
-    }
-    touchStart.current = null;
+  const isVideo = (src: string) =>
+    src.endsWith(".mp4") || src.endsWith(".mov") || src.includes("video");
+
+  // Thumbnail swipe
+  const onThumbTouchStart = (e: any) => {
+    touchStartX.current = e.touches[0].clientX;
   };
 
-  const next = () => setIdx((i) => (i + 1) % imgs.length);
-  const prev = () => setIdx((i) => (i - 1 + imgs.length) % imgs.length);
+  const onThumbTouchEnd = (e: any) => {
+    if (!touchStartX.current) return;
 
-  // 🔄 Scroll thumbnails when clicking
-  const scrollThumbIntoView = (i: number) => {
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+
     const container = thumbRef.current;
     if (!container) return;
 
-    const thumb = container.children[i] as HTMLElement;
-    if (thumb) {
-      thumb.scrollIntoView({
+    if (Math.abs(delta) > 40) {
+      container.scrollBy({
+        left: delta > 0 ? -120 : 120,
         behavior: "smooth",
-        inline: "center",
-        block: "nearest",
       });
     }
+    touchStartX.current = null;
   };
 
-  // SLIDER VARIANTS (side-by-side)
   const slideVariants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 150 : -150,
@@ -89,39 +80,42 @@ const ProductImage: React.FC<ProductImageProps> = ({
       {/* MAIN IMAGE */}
       <div className="w-full flex flex-col items-center">
         <div
-          className="relative w-full h-[55vh] lg:h-[80vh] overflow-hidden bg-neutral-900"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+          className="relative w-full h-[55vh] lg:h-[80vh] overflow-hidden bg-black"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
-          <AnimatePresence initial={false} custom={1}>
-            <motion.img
+          <AnimatePresence initial={false}>
+            <motion.div
               key={idx}
-              src={imgs[idx]}
               custom={1}
               variants={slideVariants}
               initial="enter"
               animate="center"
               exit="exit"
               transition={{ duration: 0.35, ease: "easeOut" }}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+              className="absolute inset-0"
+            >
+              {isVideo(media[idx]) ? (
+                <video
+                  src={media[idx]}
+                  className="w-full h-full object-cover"
+                  playsInline
+                  autoPlay
+                  muted
+                  loop
+                />
+              ) : (
+                <img
+                  src={media[idx]}
+                  className="w-full h-full object-cover"
+                  alt={name}
+                />
+              )}
+            </motion.div>
           </AnimatePresence>
 
-          {/* ZOOM BUTTON */}
-          <button
-            onClick={() => setOpen(true)}
-            className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-full shadow"
-          >
-            <ZoomIn className="text-black" size={18} />
-          </button>
-
-          {/* COUNTER */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 text-white text-xs px-3 py-1 rounded">
-            {idx + 1} / {imgs.length}
-          </div>
-
           {/* ARROWS */}
-          {imgs.length > 1 && (
+          {media.length > 1 && (
             <>
               <button
                 onClick={prev}
@@ -137,29 +131,76 @@ const ProductImage: React.FC<ProductImageProps> = ({
               </button>
             </>
           )}
+
+          {/* ZOOM */}
+          <button
+            onClick={() => setOpen(true)}
+            className="absolute bottom-4 right-4 bg-white/90 p-2 rounded-full shadow"
+          >
+            <ZoomIn className="text-black" size={18} />
+          </button>
+
+          {/* COUNTER */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 text-white text-xs px-3 py-1 rounded">
+            {idx + 1} / {media.length}
+          </div>
         </div>
 
-        {/* THUMBNAILS */}
-        {imgs.length > 1 && (
-          <div className="relative w-full mt-3 px-2">
+        {/* THUMBNAILS WITH SWIPE + ARROWS */}
+        {media.length > 1 && (
+          <div className="w-full mt-3 relative">
+            {/* Left Scroll Arrow */}
+            <button
+              className="absolute left-1 top-1/2 -translate-y-1/2 bg-black/40 p-1 rounded-full z-10"
+              onClick={() =>
+                thumbRef.current?.scrollBy({ left: -120, behavior: "smooth" })
+              }
+            >
+              <ChevronLeft className="text-white" size={18} />
+            </button>
+
             <div
               ref={thumbRef}
-              className="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth"
+              className="flex gap-2 overflow-x-auto scrollbar-hide px-8 p-2"
+              onTouchStart={onThumbTouchStart}
+              onTouchEnd={onThumbTouchEnd}
             >
-              {imgs.map((thumb, i) => (
-                <img
-                  key={i}
-                  src={thumb}
-                  onClick={() => {
-                    setIdx(i);
-                    scrollThumbIntoView(i);
-                  }}
-                  className={`h-14 w-14 rounded-md object-cover transition-all cursor-pointer border ${
-                    idx === i ? "border-yellow-400 scale-105" : "border-gray-600"
-                  }`}
-                />
+              {media.map((m, i) => (
+                <div key={i} className="flex-shrink-0">
+                  {isVideo(m) ? (
+                    <video
+                      src={m}
+                      className={`h-14 w-14 rounded-xl border object-cover ${
+                        idx === i
+                          ? "border-yellow-400 scale-105"
+                          : "border-gray-600"
+                      }`}
+                      muted
+                    />
+                  ) : (
+                    <img
+                      src={m}
+                      onClick={() => setIdx(i)}
+                      className={`h-16 w-16 rounded object-cover cursor-pointer border ${
+                        idx === i
+                          ? "border-yellow-400 scale-105"
+                          : "border-gray-600"
+                      }`}
+                    />
+                  )}
+                </div>
               ))}
             </div>
+
+            {/* Right Scroll Arrow */}
+            <button
+              className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/40 p-1 rounded-full z-10"
+              onClick={() =>
+                thumbRef.current?.scrollBy({ left: 120, behavior: "smooth" })
+              }
+            >
+              <ChevronRight className="text-white" size={18} />
+            </button>
           </div>
         )}
       </div>
@@ -168,30 +209,35 @@ const ProductImage: React.FC<ProductImageProps> = ({
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+            className="fixed inset-0 bg-black z-50 flex items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <img
-              src={imgs[idx]}
-              className="max-w-[95vw] max-h-[90vh] object-contain"
-            />
+            {isVideo(media[idx]) ? (
+              <video
+                src={media[idx]}
+                className="max-w-[95vw] max-h-[90vh]"
+                controls
+                autoPlay
+                playsInline
+              />
+            ) : (
+              <img
+                src={media[idx]}
+                className="max-w-[95vw] max-h-[90vh] object-contain"
+              />
+            )}
 
-            {/* CLOSE */}
+            {/* Close */}
             <button
               onClick={() => setOpen(false)}
               className="absolute top-4 right-4 text-white"
             >
-              <X size={26} />
+              <X size={30} />
             </button>
 
-            {/* COUNTER */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 text-white px-4 py-1 rounded">
-              {idx + 1} / {imgs.length}
-            </div>
-
-            {/* FULLSCREEN ARROWS */}
+            {/* FS Arrows */}
             <>
               <button
                 onClick={prev}
