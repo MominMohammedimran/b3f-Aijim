@@ -44,13 +44,13 @@ WASH CARE
 
     text.forEach((line) => {
       const isHeader =
-        line.match(/^(details|artwork features|wash care|limited edition|style it with)/i);
+        line.match(/^(story|details|artwork features|wash care|limited edition|style it with)/i);
 
       if (isHeader) {
         if (current) grouped.push(current);
         current = { title: line.trim(), content: [] };
       } else {
-        if (!current) current = { title: "Description", content: [] };
+        if (!current) current = { title: "Story", content: [] };
         current.content.push(line);
       }
     });
