@@ -119,13 +119,13 @@ const ProductImage: React.FC<ProductImageProps> = ({
             <>
               <button
                 onClick={prev}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full text-white"
+                className="absolute left-2 top-1/2 -translate-y-1/2  p-2 rounded-none text-gray-400 hover:text-white"
               >
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={next}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 p-2 rounded-full text-white"
+                className="absolute right-2 top-1/2 -translate-y-1/2  p-2 rounded-none text-gray-400 hover:text-white"
               >
                 <ChevronRight size={24} />
               </button>
