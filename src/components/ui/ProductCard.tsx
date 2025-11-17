@@ -16,8 +16,16 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
       ? product.images
       : [product.image];
 
-  const discount =
-    product.originalPrice && product.originalPrice > product.price;
+  // Determine effective original price (if not provided fallback to price)
+  const originalPrice = typeof product.originalPrice === "number" && product.originalPrice > 0
+    ? product.originalPrice
+    : product.price;
+
+  // Calculate discount percentage when originalPrice is greater than price
+  const hasDiscount = originalPrice > product.price;
+  const discountPercent = hasDiscount
+    ? Math.round(((originalPrice - product.price) / product.price) * 100)
+    : 0;
 
   useEffect(() => {
     if (!isHovered || images.length <= 1) return;
@@ -28,7 +36,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
     return () => clearInterval(interval);
   }, [isHovered, images.length]);
 
-  const outOfStock = product.stock <= 0;
+  const outOfStock = typeof product.stock === "number" ? product.stock <= 0 : false;
 
   return (
     <div
@@ -40,7 +48,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
       }}
       className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col ${className}`}
     >
-      {/* 🖼️ Image Section */}
+      {/* Image Section */}
       <div className="relative aspect-[4/5] sm:aspect-[5/5] overflow-hidden bg-neutral-900 flex-shrink-0">
         {images.map((img, i) => (
           <img
@@ -53,7 +61,14 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
           />
         ))}
 
-        {/* SOLD OUT Overlay (still clickable) */}
+        {/* Discount Badge */}
+        {hasDiscount && discountPercent > 0 && (
+          <div className="absolute top-3 left-3 z-20 bg-yellow-400 text-black text-[11px] font-semibold px-2 py-1 rounded-md shadow">
+            {discountPercent}% OFF
+          </div>
+        )}
+
+        {/* SOLD Overlay (still clickable) */}
         {outOfStock && (
           <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/40 pointer-events-none">
             <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg select-none">
@@ -63,7 +78,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
         )}
       </div>
 
-      {/* 🏷️ Product Info */}
+      {/* Product Info */}
       <div className="p-1 flex flex-col justify-between flex-grow">
         <h3
           className="
@@ -75,7 +90,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
           {product.name}
         </h3>
 
-        {/* 💰 Price Section */}
+        {/* Price Section */}
         <div
           className="
             flex 
@@ -86,14 +101,19 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
             text-left sm:text-center
           "
         >
-          
           <span className="text-yellow-400 text-[14px] font-semibold">
             ₹{product.price}
           </span>
-          {discount && (
-            <span className="text-gray-500 text-[12px] line-through">
-              ₹{product.originalPrice}
-            </span>
+
+          {hasDiscount && (
+            <>
+              <span className="text-gray-400 text-[12px] line-through">
+                ₹{originalPrice}
+              </span>
+              <span className="text-green-400 text-[12px] font-medium">
+                Save ₹{Math.round(originalPrice - product.price)}
+              </span>
+            </>
           )}
         </div>
       </div>
