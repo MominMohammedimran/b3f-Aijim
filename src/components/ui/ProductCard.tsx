@@ -23,7 +23,9 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
 
   // Calculate discount percentage when originalPrice is greater than price
   const hasDiscount = originalPrice > product.price;
-  const discountPercent= Math.round((price / originalPrice) * 100);
+  const discountPercent = hasDiscount
+    ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
+    : 0;
 
   useEffect(() => {
     if (!isHovered || images.length <= 1) return;
