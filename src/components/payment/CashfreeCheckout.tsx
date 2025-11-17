@@ -46,6 +46,7 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
   const passedPoints = location.state?.appliedPoints || 0;
   const [appliedCoupon, setAppliedCoupon] = useState(passedCoupon || { code: "", discount: 0 });
   const [appliedPoints, setAppliedPoints] = useState(passedPoints || { points: 0, discount: 0 });
+  
 
   // 🧩 Load Cashfree SDK
   useEffect(() => {
@@ -96,6 +97,7 @@ const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({
         reward_points_used: appliedPoints.points || 0,
         reward_points_earned:0,
       };
+    
 
       // 🧾 Save order in Supabase
       const { data: createdOrder, error: dbError } = await supabase

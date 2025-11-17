@@ -204,7 +204,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
       {getPaymentStatusText(order.payment_status)}
     </p>
     <p className="text-xs text-gray-400 mb-2">
-      Method: {order.payment_method || "N/A"}
+    Transction Id - {order.payment_method || "N/A"}
     </p>
 
     {!["cancelled", "paid", "refunded", "refund-ss"].includes(
@@ -264,7 +264,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
               to={`/payment-issue?orderId=${order.order_number}`}
               className="flex-1"
             >
-              <Button className="bg-red-600 hover:bg-yellow-700 text-white  w-full py-3 rounded-none font-semibold">
+              <Button className="bg-red-600 hover:bg-red700 text-white  w-full py-3 rounded-none font-semibold">
                 Payment Issue?
               </Button>
             </Link>
@@ -273,7 +273,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
             to={`/order-related-issue?orderId=${order.order_number}`}
             className="flex-1"
           >
-            <Button className="bg-red-600 hover:bg-yellow-700 text-white w-full py-3 rounded-none font-semibold">
+            <Button className="bg-red-600 hover:bg-red-700 text-white w-full py-3 rounded-none font-semibold">
               Order Issue?
             </Button>
           </Link>

@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Layout from "../components/layout/Layout";
 import SEOHelmet from "@/components/seo/SEOHelmet";
 import useSEO from "@/hooks/useSEO";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../integrations/supabase/client";
-import { Order, CartItem } from "../lib/types";
+import { Order } from "../lib/types";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { updateInventoryFromPaidOrders } from "@/hooks/useProductInventory";
 import { Loader2 } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
 const OrderHistory = () => {
   const { currentUser } = useAuth();
-  const navigate = useNavigate();
+  const { clearCart } = useCart();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(new Date());
@@ -34,6 +35,7 @@ const OrderHistory = () => {
         const twentyFourHoursAgo = new Date();
         twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
+        // Auto-delete expired pending orders
         await supabase
           .from("orders")
           .delete()
@@ -41,6 +43,7 @@ const OrderHistory = () => {
           .eq("payment_status", "pending")
           .lt("created_at", twentyFourHoursAgo.toISOString());
 
+        // Fetch orders
         const { data, error } = await supabase
           .from("orders")
           .select("*")
@@ -61,6 +64,18 @@ const OrderHistory = () => {
           })) || [];
 
         setOrders(transformed);
+
+        // ---- CART CLEAR LOGIC (Only once per new order) ----
+        if (transformed.length > 0) {
+          const latestOrderId = transformed[0].id;
+          const lastClearedOrder = localStorage.getItem("lastOrderId");
+          if (lastClearedOrder !== latestOrderId) {
+            await clearCart(); // Supabase + Local
+            localStorage.setItem("lastOrderId", latestOrderId);
+            toast.success("Your cart has been cleared after order placement.");
+          }
+        }
+
       } catch (err) {
         console.error("Error fetching orders:", err);
       } finally {
@@ -69,7 +84,7 @@ const OrderHistory = () => {
     };
 
     fetchOrders();
-  }, [currentUser]);
+  }, [currentUser, clearCart]);
 
   const handleRemoveOrder = async (orderId: string) => {
     try {
@@ -77,6 +92,7 @@ const OrderHistory = () => {
         .from("orders")
         .update({ status: "cancelled" })
         .eq("id", orderId);
+
       if (error) throw error;
 
       toast.success("Order cancelled successfully");
@@ -101,7 +117,9 @@ const OrderHistory = () => {
       <Layout>
         <div className="flex flex-col items-center justify-center pt-20 text-center h-[60vh]">
           <Loader2 className="w-8 h-8 animate-spin text-yellow-400 mb-4" />
-          <p className="text-gray-400 text-sm font-semibold">Fetching your orders...</p>
+          <p className="text-gray-400 text-sm font-semibold">
+            Fetching your orders...
+          </p>
         </div>
       </Layout>
     );
@@ -131,10 +149,12 @@ const OrderHistory = () => {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {orders.map((order) => {
-                const { text: countdown, expired } = getCountdown(order.created_at);
+                const { text: countdown, expired } =
+                  getCountdown(order.created_at);
                 if (
                   expired &&
-                  (order.payment_status === "pending" || order.status === "cancelled")
+                  (order.payment_status === "pending" ||
+                    order.status === "cancelled")
                 )
                   return null;
 
@@ -143,46 +163,42 @@ const OrderHistory = () => {
                     key={order.id}
                     className="relative bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-md shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
                   >
-                    {/* Header */}
-<div className="p-3 border-b border-gray-800">
-  <h4 className="font-bold text-white text-md mb-2"> #{order.order_number} - Order</h4>
+                    <div className="p-3 border-b border-gray-800">
+                      <h4 className="font-bold text-white text-md mb-2">
+                        #{order.order_number} - Order
+                      </h4>
 
-  {/* Payment & Order Status */}
-  <div className="flex flex-wrap gap-2">
-    {/* Payment Status */}
-    <span
-      className={`font-bold uppercase px-2 py-0.5 rounded-sm text-[10px] ${
-        order.payment_status === "paid"
-          ? "bg-green-500 text-black"
-          : order.payment_status === "pending"
-          ? "bg-yellow-500 text-black"
-          : "bg-red-600 text-white"
-      }`}
-    >
-      Payment- {order.payment_status}
-    </span>
+                      <div className="flex flex-wrap gap-2">
+                        <span
+                          className={`font-bold uppercase px-2 py-0.5 rounded-sm text-[10px] ${
+                            order.payment_status === "paid"
+                              ? "bg-green-500 text-black"
+                              : order.payment_status === "pending"
+                              ? "bg-yellow-500 text-black"
+                              : "bg-red-600 text-white"
+                          }`}
+                        >
+                          Payment- {order.payment_status}
+                        </span>
 
-    {/* Order Status */}
-    <span
-      className={`font-bold uppercase px-2 py-0.5 rounded-sm text-[10px] ${
-        order.status === "delivered"
-          ? "bg-green-400 text-black"
-          : order.status === "cancelled"
-          ? "bg-red-500 text-white"
-          : order.status === "confirmed"
-          ? "bg-blue-400 text-black"
-          : order.status === "processing"
-          ? "bg-yellow-400 text-black"
-          : "bg-gray-500 text-white"
-      }`}
-    >
-      Order- {order.status}
-    </span>
-  </div>
-</div>
+                        <span
+                          className={`font-bold uppercase px-2 py-0.5 rounded-sm text-[10px] ${
+                            order.status === "delivered"
+                              ? "bg-green-400 text-black"
+                              : order.status === "cancelled"
+                              ? "bg-red-500 text-white"
+                              : order.status === "confirmed"
+                              ? "bg-blue-400 text-black"
+                              : order.status === "processing"
+                              ? "bg-yellow-400 text-black"
+                              : "bg-gray-500 text-white"
+                          }`}
+                        >
+                          Order- {order.status}
+                        </span>
+                      </div>
+                    </div>
 
-
-                    {/* Items */}
                     <div className="p-3 space-y-2">
                       {order.items.map((item, i) => (
                         <div
@@ -196,44 +212,44 @@ const OrderHistory = () => {
                             className="h-14 w-14 object-cover rounded-sm border border-gray-700"
                           />
                           <div className="flex-1">
-                            <p className="text-sm font-bold line-clamp-2">{item.name}</p>
-                            <div className='flex items-center gap-4  flex-wrap '>
-                            {item.sizes?.map((s, j) => (
-                              
-                              <p
-                                key={j}
-                                className="text-[11px] text-gray-200 font-medium mt-1"
-                              >
-                                 <b>{s.size}</b> x <b>{s.quantity}</b> 
-                              </p>
-                            ))}
+                            <p className="text-sm font-bold line-clamp-2">
+                              {item.name}
+                            </p>
+                            <div className="flex items-center gap-4 flex-wrap">
+                              {item.sizes?.map((s, j) => (
+                                <p
+                                  key={j}
+                                  className="text-[11px] text-gray-200 font-medium mt-1"
+                                >
+                                  <b>{s.size}</b> x <b>{s.quantity}</b>
+                                </p>
+                              ))}
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
 
-                    {/* Timer */}
                     {order.payment_status === "pending" && (
                       <div className="text-center text-xs text-yellow-400 font-semibold px-3 pb-2 lowercase">
                         Complete payment within{" "}
                         <span className="text-white">{countdown}</span> before expiry.
                       </div>
                     )}
-                    {order.status === "cancelled" && (
-                      <p className="text-center text-xs text-red-400 font-semibold px-3 pb-2 lowercase">
-                        Order cancelled. Auto-removal after {countdown}.
-                      </p>
-                    )}
 
-                    {/* Actions */}
                     <div className="flex gap-2 p-3 border-t border-gray-800">
-                      <Link to={`/order-preview/${order.order_number}`} className="flex-1">
+                      <Link
+                        to={`/order-preview/${order.order_number}`}
+                        className="flex-1"
+                      >
                         <Button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold text-sm rounded-none">
                           View Details
                         </Button>
                       </Link>
-                      {["pending", "processing", "confirmed"].includes(order.status) && (
+
+                      {["pending", "processing", "confirmed"].includes(
+                        order.status
+                      ) && (
                         <Button
                           onClick={() => handleRemoveOrder(order.id)}
                           disabled={expired}
@@ -247,21 +263,21 @@ const OrderHistory = () => {
                         </Button>
                       )}
                     </div>
-                     <p className="text-xs text-center font-semibold text-gray-400 mb-1">
-                          Booked on {new Date(order.created_at).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </p>
+
+                    <p className="text-xs text-center font-semibold text-gray-400 mb-1">
+                      Booked on{" "}
+                      {new Date(order.created_at).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
                   </div>
                 );
               })}
             </div>
-            
           )}
-          
         </div>
       </div>
     </Layout>

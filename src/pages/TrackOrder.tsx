@@ -144,13 +144,19 @@ const TrackOrder = () => {
         <div className="bg-gray-900 border border-gray-800 rounded-x p-6 shadow-lg">
           <div className="flex flex-row items-center justify-between mb-3">
             <div>
-              <h2 className="text-sm lg:text-md font-bold text-yellow-400">{tracking.order_number}</h2>
+              <h2 className="text-lg lg:text-xl font-bold text-yellow-400">{tracking.order_number}</h2>
               <p className="text-sm text-gray-400">
                 Placed on {new Date(tracking.created_at).toLocaleDateString()}
               </p>
             </div>
-            <div className="bg-green-600  font-semibold text-white text-xs px-1 py-1 mt-4 md:mt-0 rounded-none">
-              {orderStatus.toUpperCase()}
+            <div className="grid items-center justify-center text-center   font-semibold  text-white text-xs px-1 py-1  rounded-none">
+              <p className='uppercase' >
+              Payment
+              </p>
+              <h3 className='w-full bg-green-500 px-2 py-1'>
+                    {order.payment_status}
+              </h3>
+             
             </div>
           </div>
          
@@ -256,9 +262,9 @@ const TrackOrder = () => {
 
         {/* Shipping Address */}
         {tracking.shippingAddress && (
-          <div className="bg-gray-900 text-white rounded-xl shadow-lg p-6 max-w-lg mx-auto">
+          <div className="bg-gray-900 text-white rounded-none shadow-lg p-6 max-w-lg mx-auto">
             <h3 className="text-lg font-semibold text-yellow-400 mb-3">📦 Shipping Address</h3>
-            <div className="text-sm text-gray-300">
+            <div className="text-xs text-gray-300">
               <p>{tracking.shippingAddress.fullName || `${tracking.shippingAddress.firstName} ${tracking.shippingAddress.lastName}`}</p>
               <p>{tracking.shippingAddress.address}</p>
               <p>

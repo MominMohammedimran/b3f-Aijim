@@ -101,8 +101,11 @@ const Index = () => {
   }, [selectedCategory]);
 
   const handleProductClick = (product: Product) => {
-    navigate(`/product/details/${product.code}`);
-  };
+  window.scrollTo(0, 0);
+
+  navigate(`/product/details/${product.code}`);
+};
+
 
   // 🔥 Filter featured products based on tag
   const featuredProducts = products.filter(

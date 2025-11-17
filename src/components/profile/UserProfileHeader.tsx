@@ -89,21 +89,33 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
             <User className="h-7 w-7 text-black" />
           </div>
 
-          <div className="flex flex-col">
-            <h1 className="text-xl sm:text-2xl font-semibold text-white leading-tight">
-              {name || userProfile?.display_name || 'User'}
-            </h1>
-            <p className="text-sm text-gray-300 font-medium lowercase truncate max-w-[250px] sm:max-w-[320px]">
-              {email || 'No email provided'}
-            </p>
+         <div className="flex flex-col">
+  <h1 className="text-xl sm:text-2xl font-semibold text-white leading-tight">
+    {name || userProfile?.display_name || "User"}
+  </h1>
 
-            {createdAt && (
-              <div className="flex items-center font-semibold gap-2 mt-1 text-xs text-gray-500">
-                <Calendar className="h-3.5 w-3.5 text-yellow-400" />
-                <span>Joined {formatDate(createdAt)}</span>
-              </div>
-            )}
-          </div>
+  <p
+    className="text-sm text-gray-300 font-medium lowercase cursor-pointer hover:text-yellow-400 transition
+               max-w-[90vw] truncate sm:max-w-none"
+    onClick={() => {
+      if (email) {
+        navigator.clipboard.writeText(email);
+        toast.success("Email copied!");
+      }
+    }}
+    title={email || "No email provided"}
+  >
+    {email || "No email provided"}
+  </p>
+
+  {createdAt && (
+    <div className="flex items-center font-semibold gap-2 mt-1 text-xs text-gray-500">
+      <Calendar className="h-3.5 w-3.5 text-yellow-400" />
+      <span>Joined {formatDate(createdAt)}</span>
+    </div>
+  )}
+</div>
+
         </div>
 
         {/* --- Right: Actions --- */}

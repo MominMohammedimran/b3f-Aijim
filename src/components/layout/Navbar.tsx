@@ -117,7 +117,7 @@ const Navbar = () => {
               key={label}
               onClick={() => {
                 navigate(path);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+               window.scrollTo(0, 0);
               }}
               className={`flex flex-col items-center justify-center px-2 transition-all duration-300 ${
                 isActive(path) ? 'text-white scale-110 border-b border-white' : 'hover:text-yellow-400'

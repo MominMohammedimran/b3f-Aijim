@@ -151,7 +151,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
           <div className="w-full mt-3 relative">
             {/* Left Scroll Arrow */}
             <button
-              className="absolute left-1 top-1/2 -translate-y-1/2 bg-black/40 p-1 rounded-full z-10"
+              className="absolute left-1 top-1/2 -translate-y-1/2 bg-black p-1 rounded-full z-10"
               onClick={() =>
                 thumbRef.current?.scrollBy({ left: -120, behavior: "smooth" })
               }
@@ -161,7 +161,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
 
             <div
               ref={thumbRef}
-              className="flex gap-2 overflow-x-auto scrollbar-hide px-8 p-2"
+              className="flex justify-center items-center gap-2 overflow-x-auto overflow-hidden scrollbar-hide px-8 p-2"
               onTouchStart={onThumbTouchStart}
               onTouchEnd={onThumbTouchEnd}
             >
@@ -194,7 +194,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
 
             {/* Right Scroll Arrow */}
             <button
-              className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/40 p-1 rounded-full z-10"
+              className="absolute right-1 top-1/2 -translate-y-1/2 bg-black p-1 rounded-full z-10"
               onClick={() =>
                 thumbRef.current?.scrollBy({ left: 120, behavior: "smooth" })
               }

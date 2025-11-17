@@ -49,7 +49,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
       className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col ${className}`}
     >
       {/* Image Section */}
-      <div className="relative aspect-[4/5] sm:aspect-[5/5] overflow-hidden bg-neutral-900 flex-shrink-0">
+      <div className="relative aspect-[5/6]  overflow-hidden bg-neutral-900 flex-shrink-0">
         {images.map((img, i) => (
           <img
             key={i}
@@ -63,7 +63,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
 
         {/* Discount Badge */}
         {hasDiscount && discountPercent > 0 && (
-          <div className="absolute top-3 left-3 z-20 bg-yellow-400 text-black text-[11px] font-semibold px-2 py-1 rounded-md shadow">
+          <div className="absolute top-0 left-0 z-20 bg-yellow-400 text-black text-[10px] font-semibold px-2 py-1 rounded-none shadow">
             {discountPercent}% OFF
           </div>
         )}
@@ -110,7 +110,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
               <span className="text-gray-400 text-[12px] line-through">
                 ₹{originalPrice}
               </span>
-              <span className="text-green-400 text-[12px] font-medium">
+              <span className="text-green-500 text-[10px] font-medium">
                 Save ₹{Math.round(originalPrice - product.price)}
               </span>
             </>

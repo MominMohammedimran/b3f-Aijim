@@ -81,6 +81,7 @@
     "sharp": "^0.34.4",
     "slick-carousel": "^1.8.1",
     "sonner": "^2.0.5",
+    "swiper": "^12.0.3",
     "tailwind-merge": "^2.5.2",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss-animate": "^1.0.7",

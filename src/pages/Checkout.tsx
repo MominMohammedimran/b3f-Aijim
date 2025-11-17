@@ -284,6 +284,7 @@ const Checkout = () => {
 
   const subtotal = totalPrice;
   const couponDiscount = Math.floor(appliedCoupon?.discount || 0);
+  console.log(appliedCoupon)
   const pointsDiscount = Math.floor(appliedPoints?.discount || 0);
   const totalDiscount = Math.floor(couponDiscount + pointsDiscount);
   const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
@@ -343,12 +344,13 @@ const Checkout = () => {
             <CollapsibleSection title="Apply Coupon" defaultOpen={false}>
             <div className='h-auto '>
               <CouponSection
-            
-                cartTotal={totalPrice}
-                onCouponApplied={handleCouponApplied}
-                onCouponRemoved={handleCouponRemoved}
-                appliedCoupon={appliedCoupon || undefined}
-              />
+  cartTotal={totalPrice}
+  cartItems={cartItems} // <-- add this
+  onCouponApplied={handleCouponApplied}
+  onCouponRemoved={handleCouponRemoved}
+  appliedCoupon={appliedCoupon || undefined}
+/>
+
               </div>
             </CollapsibleSection>
 

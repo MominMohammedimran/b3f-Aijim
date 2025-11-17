@@ -1,21 +1,46 @@
 import React from "react";
-import {Link,useNavigate} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Truck, RotateCcw,Tag, Shield } from "lucide-react";
+import { ArrowRight, Truck, RotateCcw, Shield } from "lucide-react";
 import Marquee from "react-fast-marquee";
+
+// ⭐ Swiper Imports
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
+
 const NewHero = () => {
+  // 🖼 Add multiple banner images here
+  const bannerImages = [
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
+  ];
 
   return (
     <div className="relative h-[70vh] mt-4 overflow-hidden">
-      {/* Hero Background Image */}
+
+      {/* Hero Background Image (NOW CAROUSEL) */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={"https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png"}
-          alt="AIJIM lifestyle - model wearing oversized streetwear"
-          className="w-full h-full object-cover object-center"
-          loading='eager'
-        
+        <Swiper
+          modules={[Autoplay]}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={true}
+          speed={1200}
+          allowTouchMove={false} // ❌ No user swipe
+          className="w-full h-full"
+        >
+          {bannerImages.map((img, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={img}
+                alt={`AIJIM lifestyle banner ${index + 1}`}
+                className="w-full h-full object-fit object-center"
+                loading="eager"
               />
+            </SwiperSlide>
+          ))}
+        </Swiper>
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
 
@@ -41,23 +66,24 @@ const NewHero = () => {
             </Button>
           </Link>
         </div>
-      </div>/*}
+      </div>*/}
 
       {/* Trust Signals Banner */}
+      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 pt-1 pb-1 md:h-8 md:pt-3 md:pb-3 flex items-center">
+        <Marquee gradient={false} speed={5} pauseOnHover className="w-full">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <span
+              key={i}
+              className="flex items-center uppercase text-black font-semibold text-[11px] sm:text-[12px] md:text-[13px] lg:text-[15px] px-4 whitespace-nowrap"
+            >
+              <Truck size={18} className="mr-3" /> FREE SHIPPING &nbsp;&nbsp;&nbsp;
+              <RotateCcw size={18} className="mr-3" /> EASY RETURNS &nbsp;&nbsp;&nbsp;
+              <Shield size={18} className="mr-3" /> SECURE PAYMENTS
+            </span>
+          ))}
+        </Marquee>
+      </div>
 
-      
-      <div className="bg-white absolute bottom-0 left-0 right-0 h-6  z-10 bottom justify-center  pt-1 pb-1  md:h-8 md:pt-3 md:pb-3 flex items-center ">
-                    <Marquee gradient={false} speed={5} pauseOnHover={true} className="w-full">
-                      {Array.from({ length:14 }).map((_, i) => (
-                        <span key={i} className="flex items-center uppercase  text-black font-semibold text-[11px] sm:text-[12px] md:text-[13px] lg:text-[15px] px-4 whitespace-nowrap">
-                             <Truck size={18}className="mr-3"/>FREE SHIPPING  &nbsp;&nbsp;&nbsp;
-                             <RotateCcw size={18}className="mr-3 "/>EASY RETURNS&nbsp;&nbsp;&nbsp;
-                              <Shield size={18}className=" mr-3 "/>SECURE PAYMENTS
-                              </span>
-                      ))}
-                    </Marquee>
-                  </div>
-      
     </div>
   );
 };

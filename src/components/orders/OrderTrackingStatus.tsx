@@ -96,9 +96,16 @@ export default function OrderTrackingStatus({
       </div>
 
       {estimatedDelivery && (
-        <p className="text-center text-gray-200  text-sm lg:text-md font-semibold leading-tight line-clamnp-1">
-          Current Status - <span className="text-yellow-400 font-semibold underline  ">{estimatedDelivery}</span>
+        <div className="text-center">
+           <p className="text-center text-gray-200  text-sm lg:text-md font-semibold leading-tight line-clamnp-1">
+          Current Order Status -  <span className="bg-red-500 text-white px-2 py-0.5 text-xs text-center font-semibold   ">{status.toUpperCase()}
+
+          </span>
         </p>
+        <span className="text-center text-yellow-400 text-xs  font-semibold  ">
+          estimate delivery - {estimatedDelivery}</span>
+        </div>
+        
       )}
  
       {cancellationReason && (

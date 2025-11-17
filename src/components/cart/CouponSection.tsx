@@ -17,6 +17,7 @@ interface Coupon {
 
 interface CouponSectionProps {
   cartTotal: number;
+  cartItems: any[]; // Added for AIJIM coupon scaling
   onCouponApplied: (discount: number, code: string) => void;
   onCouponRemoved?: () => void;
   appliedCoupon?: {
@@ -27,10 +28,12 @@ interface CouponSectionProps {
 
 const CouponSection: React.FC<CouponSectionProps> = ({
   cartTotal,
+  cartItems,
   onCouponApplied,
   onCouponRemoved,
   appliedCoupon
 }) => {
+  
   const [couponCode, setCouponCode] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
@@ -62,46 +65,90 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       ? `${c.discount_value}% OFF`
       : `₹${c.discount_value} OFF`;
 
-  const applyCoupon = async (codeFromList?: string) => {
-    const codeToApply = codeFromList || couponCode;
+ const applyCoupon = async (codeFromList?: string) => {
+  const codeToApply = (codeFromList || couponCode).toUpperCase().trim();
 
-    if (!codeToApply.trim()) {
-      setMessage("Please enter a coupon code");
-      setMessageType("error");
-      return;
-    }
+  if (!codeToApply) {
+    setMessage("Please enter a coupon code");
+    setMessageType("error");
+    return;
+  }
 
-    setLoading(true);
-    try {
+  setLoading(true);
+
+  try {
+    // Special logic for AIJIM50 coupon
+   if (codeToApply === "AIJIM50") {
+  const { data: orderData } = await supabase
+    .from("orders")
+    .select("id")
+    .eq("user_id", currentUser?.id)
+    .eq("coupon_code", "AIJIM50");
+
+  if (orderData && orderData.length > 0) {
+    setMessage("AIJIM50 coupon already used for your first order");
+    setMessageType("error");
+    toast.error("AIJIM50 coupon already used for your first order");
+  } else {
+    // Discount scales per quantity of sizes
+    const totalQuantity = cartItems.reduce((acc, item) => {
+      if (Array.isArray(item.sizes)) {
+        return acc + item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
+      }
+      return acc;
+    }, 0);
+
+    const discountAmount = totalQuantity * 50;
+    onCouponApplied(discountAmount, "AIJIM50");
+    setMessage(`AIJIM50 applied: ₹${discountAmount} off!`);
+    setMessageType("success");
+    toast.success(`AIJIM50 applied: ₹${discountAmount} off!`);
+  }
+}
+ else {
+      // Normal coupon validation via RPC
       const { data, error } = await supabase.rpc("validate_coupon", {
-        coupon_code_input: codeToApply.toUpperCase(),
+        coupon_code_input: codeToApply,
         cart_total: cartTotal,
         user_id_input: currentUser?.id || null
       });
 
       if (error) throw error;
 
-      const result = data[0];
+      const result = data?.[0];
+
+      if (!result) {
+        setMessage("Coupon not valid");
+        setMessageType("error");
+        toast.error("Coupon not valid");
+        return;
+      }
+
       if (result.valid) {
         setMessage(result.message);
         setMessageType("success");
-        onCouponApplied(result.discount_amount, codeToApply.toUpperCase());
-        setCouponCode("");
+        onCouponApplied(result.discount_amount, codeToApply);
         toast.success(`Coupon "${codeToApply}" applied`);
       } else {
         setMessage(result.message);
         setMessageType("error");
         toast.error(result.message);
       }
-    } catch (error) {
-  //    console.error("Error applying coupon:", error);
-      setMessage("Failed to validate coupon. Please try again.");
-      setMessageType("error");
-      toast.error("Failed to validate coupon. Please try again.");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // Clear input in all cases
+    setCouponCode("");
+  } catch (err) {
+    console.error(err);
+    setMessage("Failed to apply coupon. Please try again.");
+    setMessageType("error");
+    toast.error("Failed to apply coupon. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const removeCoupon = () => {
     onCouponRemoved?.();
