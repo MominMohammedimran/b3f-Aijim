@@ -207,7 +207,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                   ✕
                 </button>
                 <img
-                  src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Size%20guide/Aijim-size-guide.webp"
+                  src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/size%20guide/aijim-size-guide.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL3NpemUgZ3VpZGUvYWlqaW0tc2l6ZS1ndWlkZS5wbmciLCJpYXQiOjE3NjMzOTAzMjgsImV4cCI6MTc5NDkyNjMyOH0.QILeaKATU2vwJmqRL5tTwhZTzrvLBn315YEF66uC09A"
                   alt="AIJIM Size Guide"
                   className="rounded-none w-[90%] h-auto object-contain"
                 />
