@@ -17,7 +17,7 @@ interface Coupon {
 
 interface CouponSectionProps {
   cartTotal: number;
-  cartItems: any[]; // Added for AIJIM coupon scaling
+  cartItems: any[];
   onCouponApplied: (discount: number, code: string) => void;
   onCouponRemoved?: () => void;
   appliedCoupon?: {
@@ -33,7 +33,6 @@ const CouponSection: React.FC<CouponSectionProps> = ({
   onCouponRemoved,
   appliedCoupon
 }) => {
-  
   const [couponCode, setCouponCode] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error" | "">("");
@@ -65,52 +64,59 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       ? `${c.discount_value}% OFF`
       : `₹${c.discount_value} OFF`;
 
- const applyCoupon = async (codeFromList?: string) => {
-  const codeToApply = (codeFromList || couponCode).toUpperCase().trim();
+  const applyCoupon = async (codeFromList?: string) => {
+    const codeToApply = (codeFromList || couponCode).toUpperCase().trim();
 
-  if (!codeToApply) {
-    setMessage("Please enter a coupon code");
-    setMessageType("error");
-    return;
-  }
+    if (!codeToApply) {
+      setMessage("Please enter a coupon code");
+      setMessageType("error");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    // Special logic for AIJIM50 coupon
-   if (codeToApply === "AIJIM50") {
-  const { data: orderData } = await supabase
-    .from("orders")
-    .select("id")
-    .eq("user_id", currentUser?.id)
-    .eq("coupon_code", "AIJIM50");
+    try {
+      // === AIJIM50 Custom Logic ===
+      if (codeToApply === "AIJIM50") {
+        // Check if already used
+        const { data: orderData } = await supabase
+          .from("orders")
+          .select("id")
+          .eq("user_id", currentUser?.id)
+          .eq("coupon_code->>code", "AIJIM50");
 
-  if (orderData && orderData.length > 0) {
-    setMessage("AIJIM50 coupon already used for your first order");
-    setMessageType("error");
-    toast.error("AIJIM50 coupon already used for your first order");
-  } else {
-    // Discount scales per quantity of sizes
-    const totalQuantity = cartItems.reduce((acc, item) => {
-      if (Array.isArray(item.sizes)) {
-        return acc + item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
+        if (orderData && orderData.length > 0) {
+          setMessage("AIJIM50 coupon already used for your first order");
+          setMessageType("error");
+          toast.error("AIJIM50 coupon already used for your first order");
+          return;
+        }
+
+        // Calculate discount based on cart quantity
+        let totalQuantity = 0;
+        cartItems.forEach((item) => {
+          if (Array.isArray(item.sizes)) {
+            totalQuantity += item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
+          } else if (item.quantity) {
+            totalQuantity += item.quantity;
+          }
+        });
+
+        const discountAmount = totalQuantity * 50;
+
+        onCouponApplied(discountAmount, "AIJIM50");
+        setMessage(`AIJIM50 applied: ₹${discountAmount} off!`);
+        setMessageType("success");
+        toast.success(`AIJIM50 applied: ₹${discountAmount} off!`);
+        setCouponCode("");
+        return;
       }
-      return acc;
-    }, 0);
 
-    const discountAmount = totalQuantity * 50;
-    onCouponApplied(discountAmount, "AIJIM50");
-    setMessage(`AIJIM50 applied: ₹${discountAmount} off!`);
-    setMessageType("success");
-    toast.success(`AIJIM50 applied: ₹${discountAmount} off!`);
-  }
-}
- else {
-      // Normal coupon validation via RPC
+      // === Normal Coupon Validation via RPC ===
       const { data, error } = await supabase.rpc("validate_coupon", {
         coupon_code_input: codeToApply,
         cart_total: cartTotal,
-        user_id_input: currentUser?.id || null
+        user_id_input: currentUser?.id || null,
       });
 
       if (error) throw error;
@@ -134,21 +140,17 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         setMessageType("error");
         toast.error(result.message);
       }
+
+      setCouponCode("");
+    } catch (err) {
+      console.error(err);
+      setMessage("Failed to apply coupon. Please try again.");
+      setMessageType("error");
+      toast.error("Failed to apply coupon. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    // Clear input in all cases
-    setCouponCode("");
-  } catch (err) {
-    console.error(err);
-    setMessage("Failed to apply coupon. Please try again.");
-    setMessageType("error");
-    toast.error("Failed to apply coupon. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+  };
 
   const removeCoupon = () => {
     onCouponRemoved?.();
@@ -159,7 +161,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
 
   return (
     <div className="w-full h-full p-1 mb-6">
-      {/* Coupon Input Section */}
+      {/* Coupon Input */}
       <div className="flex gap-3 mb-4">
         {appliedCoupon ? (
           <Input
@@ -198,7 +200,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       </div>
 
       {/* Message */}
-      {message && !appliedCoupon && (
+      {message && (
         <div
           className={`text-xs mb-3 ${
             messageType === "success"
@@ -210,7 +212,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         </div>
       )}
 
-      {/* Applied Coupon Display */}
+      {/* Active Coupon */}
       {appliedCoupon && (
         <div className="space-y-2">
           <div className="text-xs text-gray-100 font-semibold tracking-[1px]">
@@ -222,7 +224,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         </div>
       )}
 
-      {/* Available Coupons Section */}
+      {/* Available Coupons List */}
       <div className="mt-3 w-full border border-gray-700 rounded-none overflow-hidden shadow-md">
         <button
           onClick={() => setExpanded(!expanded)}

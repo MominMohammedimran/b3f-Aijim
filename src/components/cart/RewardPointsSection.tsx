@@ -43,7 +43,6 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
       if (error) throw error;
       setAvailablePoints(data?.reward_points || 0);
     } catch (error) {
-      //console.error("Error fetching reward points:", error);
       toast.error("Failed to load reward points");
     }
   };
@@ -72,7 +71,15 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
     setPointsToUse(newPoints);
   };
 
-  if (!currentUser || availablePoints <= 0) return null;
+  // Show message if no points
+  if (!currentUser) return null;
+  if (availablePoints <= 0) {
+    return (
+      <div className="w-full mb-5 p-3 bg-black text-white border border-gray-700 rounded-none text-center font-semibold">
+        No reward points available
+      </div>
+    );
+  }
 
   const progressPercent =
     (pointsToUse / Math.min(availablePoints, cartTotal)) * 100;
@@ -102,7 +109,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className=" border border-yellow-500/40 rounded-none p-2"
+            className="border border-yellow-500/40 rounded-none p-2"
           >
             <div className="flex justify-between items-center text-sm text-gray-200">
               <div>
