@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ChevronDown, ChevronUp ,Loader2} from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import Layout from '../components/layout/Layout';
 import { toast } from 'sonner';
 import { supabase } from '../integrations/supabase/client';
@@ -37,10 +37,8 @@ const CollapsibleSection = ({
   title,
   children,
   defaultOpen = true,
-  size,
 }: {
   title: string;
-  size?:string;
   children: React.ReactNode;
   defaultOpen?: boolean;
 }) => {
@@ -49,9 +47,7 @@ const CollapsibleSection = ({
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
   useEffect(() => {
-    if (contentRef.current) {
-      setMaxHeight(contentRef.current.scrollHeight);
-    }
+    if (contentRef.current) setMaxHeight(contentRef.current.scrollHeight);
   }, [children]);
 
   return (
@@ -104,8 +100,9 @@ const Checkout = () => {
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
 
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
-  const [appliedPoints, setAppliedPoints] = useState<{ points: number; discount: number } | null>(null);
+  // Coupon & Points
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number }>({ code: '', discount: 0 });
+  const [appliedPoints, setAppliedPoints] = useState<{ points: number; discount: number }>({ points: 0, discount: 0 });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -139,12 +136,7 @@ const Checkout = () => {
           }));
         }
 
-        if (currentLocation) {
-          setFormData(prev => ({
-            ...prev,
-            city: currentLocation.name,
-          }));
-        }
+        if (currentLocation) setFormData(prev => ({ ...prev, city: currentLocation.name }));
 
         if (defaultAddress && !useNewAddress) {
           setSelectedAddressId(defaultAddress.id);
@@ -160,18 +152,17 @@ const Checkout = () => {
             country: defaultAddress.country,
           }));
         }
-      } catch (err) {
-       // console.error('Profile fetch error:', err);
-      }
+      } catch {}
     };
 
     loadProfile();
   }, [currentUser, cartItems, navigate, currentLocation, defaultAddress, useNewAddress]);
 
   const handleCouponApplied = (discount: number, code: string) => setAppliedCoupon({ code, discount });
-  const handleCouponRemoved = () => setAppliedCoupon(null);
+  const handleCouponRemoved = () => setAppliedCoupon({ code: '', discount: 0 });
+
   const handlePointsApplied = (points: number, discount: number) => setAppliedPoints({ points, discount });
-  const handlePointsRemoved = () => setAppliedPoints(null);
+  const handlePointsRemoved = () => setAppliedPoints({ points: 0, discount: 0 });
 
   const handleAddressSelect = (addressId: string) => {
     const address = addresses.find(addr => addr.id === addressId);
@@ -193,7 +184,6 @@ const Checkout = () => {
     }
   };
 
-  const handleAddressSaved = () => setIsAddressSaved(true);
   const handleUseNewAddress = () => {
     setSelectedAddressId(null);
     setUseNewAddress(true);
@@ -240,15 +230,6 @@ const Checkout = () => {
     setIsAddressSaved(false);
   };
 
-  const redirect = (product: { id: string, pd_name: string }) => {
-    if (!currentUser) {
-      navigate('/signin?redirectTo=/checkout');
-      return;
-    } else if (!product.pd_name.toLowerCase().includes('custom printed')) {
-      navigate(`/product/details/${product.id}`);
-    }
-  };
-
   const handleFormSubmit = async (values: FormData) => {
     if (!currentUser || !cartItems || cartItems.length === 0) {
       toast.error('Invalid checkout state');
@@ -274,8 +255,7 @@ const Checkout = () => {
       });
 
       toast.success('Shipping details saved');
-    } catch (error) {
-  //    console.error('Error in checkout:', error);
+    } catch {
       toast.error('Failed to process checkout');
     } finally {
       setIsLoading(false);
@@ -283,10 +263,9 @@ const Checkout = () => {
   };
 
   const subtotal = totalPrice;
-  const couponDiscount = Math.floor(appliedCoupon?.discount || 0);
-  console.log(appliedCoupon)
-  const pointsDiscount = Math.floor(appliedPoints?.discount || 0);
-  const totalDiscount = Math.floor(couponDiscount + pointsDiscount);
+  const couponDiscount = appliedCoupon.discount;
+  const pointsDiscount = appliedPoints.discount;
+  const totalDiscount = couponDiscount + pointsDiscount;
   const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
 
   return (
@@ -301,11 +280,11 @@ const Checkout = () => {
           <h1 className="text-xl font-semibold uppercase tracking-wider">CHECKOUT</h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3  rounded-none ">
+        <div className="grid grid-cols-1 lg:grid-cols-3 rounded-none">
           {/* Left Section */}
-          <div className="lg:col-span-2 rounded-none ">
-            <CollapsibleSection title="Shipping Details"   defaultOpen>
-             {!addressesLoading && addresses.length > 0 && (
+          <div className="lg:col-span-2 rounded-none">
+            <CollapsibleSection title="Shipping Details" defaultOpen>
+              {!addressesLoading && addresses.length > 0 && (
                 <SavedAddresses
                   addresses={addresses}
                   selectedAddressId={selectedAddressId}
@@ -315,8 +294,7 @@ const Checkout = () => {
                   onDeleteAddress={handleDeleteAddress}
                   onEditAddress={handleEditAddress}
                 />
-)}
-
+              )}
 
               {(useNewAddress || addresses.length === 0 || addressesLoading) && (
                 <AddressForm
@@ -324,7 +302,7 @@ const Checkout = () => {
                   setFormData={setFormData}
                   onSubmit={handleFormSubmit}
                   isLoading={isLoading}
-                  onAddressSaved={handleAddressSaved}
+                  onAddressSaved={() => setIsAddressSaved(true)}
                   editingAddress={editingAddress}
                   refetchAddresses={refetchAddresses}
                   onAddressUpdated={(updatedAddress) => {
@@ -339,47 +317,38 @@ const Checkout = () => {
           </div>
 
           {/* Right Sidebar */}
-          <div className=" rounded-none ">
-            {/* Coupon Section */}
+          <div className="rounded-none space-y-4">
             <CollapsibleSection title="Apply Coupon" defaultOpen={false}>
-            <div className='h-auto '>
               <CouponSection
-  cartTotal={totalPrice}
-  cartItems={cartItems} // <-- add this
-  onCouponApplied={handleCouponApplied}
-  onCouponRemoved={handleCouponRemoved}
-  appliedCoupon={appliedCoupon || undefined}
-/>
-
-              </div>
-            </CollapsibleSection>
-
-
-            {/* Reward Points Section */}
-            <CollapsibleSection title="Reward Points" defaultOpen={false}>
-              <RewardPointsSection
-                cartTotal={totalPrice - (appliedCoupon?.discount || 0)}
-                onPointsApplied={handlePointsApplied}
-                onPointsRemoved={handlePointsRemoved}
-                appliedPoints={appliedPoints || undefined}
+                cartTotal={totalPrice}
+                cartItems={cartItems}
+                onCouponApplied={handleCouponApplied}
+                onCouponRemoved={handleCouponRemoved}
+                appliedCoupon={appliedCoupon}
               />
             </CollapsibleSection>
 
-            {/* Order Summary */}
+            <CollapsibleSection title="Reward Points" defaultOpen={false}>
+              <RewardPointsSection
+                cartTotal={totalPrice - appliedCoupon.discount}
+                onPointsApplied={handlePointsApplied}
+                onPointsRemoved={handlePointsRemoved}
+                appliedPoints={appliedPoints}
+              />
+            </CollapsibleSection>
+
             <CollapsibleSection title="Order Summary" defaultOpen={true}>
-              <div className="space-y-4  mb-6">
+              <div className="space-y-3 mb-6">
                 {cartItems.map((item, idx) => (
                   <div key={idx} className="flex items-start gap-4 pb-4 border-b border-border last:border-b-0">
                     <img
                       src={item.image || '/placeholder.svg'}
                       alt={item.name}
-                      onClick={() => redirect({ id: item.code, pd_name: item.name })}
-                      className={`h-16 w-16 object-cover rounded border-2 shadow-sm transition-all duration-300 hover:scale-110
-                        ${!item.name.toLowerCase().includes('custom printed') ? 'cursor-pointer' : 'cursor-default'}`}
+                      className={`h-16 w-16 object-cover rounded border-2 shadow-sm transition-all duration-300`}
                     />
                     <div className="flex-1">
                       <p className="font-bold text-sm uppercase line-clamp-1 tracking-wide">{item.name}</p>
-                      {Array.isArray(item.sizes) ? (
+                      {Array.isArray(item.sizes) && (
                         <div className="flex flex-wrap gap-1 mt-2">
                           {item.sizes.map((s: any, i: number) => (
                             <div key={i} className="bg-secondary border border-border px-2 py-1 rounded text-xs font-bold">
@@ -387,55 +356,41 @@ const Checkout = () => {
                             </div>
                           ))}
                         </div>
-                      ) : (
-                        <p className="text-xs text-muted-foreground">No sizes available</p>
                       )}
                     </div>
                   </div>
                 ))}
-              </div>
 
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between items-center">
-                  <span className='font-bold text-sm uppercase tracking-wider'>SUBTOTAL</span>
-                  <span className='font-bold'>{formatPrice(totalPrice)}</span>
-                </div>
-                {appliedCoupon && (
-                  <div className="flex space-y-0 justify-between items-center text-primary">
-                    <span className='font-bold text-sm uppercase tracking-wider'>COUPON</span>
-                    <span className='font-bold'>- {formatPrice(couponDiscount)} </span>
+                <div className="space-y-2 mt-4">
+                  <div className="flex justify-between">
+                    <span className="font-bold uppercase tracking-wider">Subtotal</span>
+                    <span className="font-bold">{formatPrice(subtotal)}</span>
                   </div>
-                  
-                  
-                )}
-                 {appliedCoupon && (
-                  <div className="flex justify-between items-center text-primary">
-                    <span className='font-bold text-xs text-yellow-500 uppercase tracking-wider'>Applied Coupon</span>
-                    <span className='font-bold text-xs  text-yellow-500'> {appliedCoupon.code} </span>
+
+                  {appliedCoupon.discount > 0 && (
+                    <div className="flex justify-between text-green-400">
+                      <span>Coupon ({appliedCoupon.code})</span>
+                      <span>-{formatPrice(couponDiscount)}</span>
+                    </div>
+                  )}
+
+                  {appliedPoints.discount > 0 && (
+                    <div className="flex justify-between text-blue-400">
+                      <span>Points</span>
+                      <span>-{formatPrice(pointsDiscount)}</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between">
+                    <span className="font-bold uppercase tracking-wider">Shipping</span>
+                    <span className="font-bold">{deliveryFee === 0 ? 'FREE' : `+ ₹${deliveryFee}`}</span>
                   </div>
-                  
-                  
-                )}
-                {appliedPoints && (
-                  <div className="flex justify-between items-center text-primary">
-                    <span className='font-bold text-sm uppercase tracking-wider'>POINTS</span>
-                    <span className='font-bold'>-{formatPrice(pointsDiscount)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between items-center">
-                  <span className='font-bold text-sm uppercase tracking-wider'>SHIPPING</span>
-                  <span className="font-bold">
-                    {deliveryFee === 0 ? (
-                      <span className="text-primary">FREE</span>
-                    ) : (
-                      `+ ₹${deliveryFee}`
-                    )}
-                  </span>
-                </div>
-                <div className="border-t-2 border-border pt-3">
-                  <div className="flex justify-between items-center">
-                    <span className='font-bold uppercase tracking-wider'>TOTAL</span>
-                    <span className="text-xl font-bold text-primary">{formatPrice(finalTotal)}</span>
+
+                  <div className="border-t-2 border-border pt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold uppercase tracking-wider">TOTAL</span>
+                      <span className="text-xl font-bold text-primary">{formatPrice(finalTotal)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -452,7 +407,7 @@ const Checkout = () => {
                 <Button
                   onClick={() => handleFormSubmit(formData)}
                   disabled={isLoading}
-                  className="w-full relative rounded-none  font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="w-full relative rounded-none font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {isLoading ? 'PROCESSING...' : 'CONTINUE TO PAYMENT'}
                 </Button>
