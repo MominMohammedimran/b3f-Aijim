@@ -32,6 +32,7 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }
       
       {/* Reviews Section */}
       <ProductReviewSection productId={product.id} />
+      <RelatedProducts product={product}/>
      
     </div>
   );

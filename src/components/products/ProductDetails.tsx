@@ -20,6 +20,7 @@ import LiveViewingCounter from "./LiveViewingCounter";
 import AvailableCoupons from "./AvailableCoupons";
 import ProductDescription from "./ProductDescription";
 import { validatePincode } from "@/utils/pincodeService";
+import {RelatedProduct} from './RelatedProducts';
 
 interface SizeWithQuantity {
   size: string;

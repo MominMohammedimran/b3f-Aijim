@@ -162,12 +162,12 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
     reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
 
   return (
-    <section className="w-full max-w-6xl mx-auto space-y-6 px-4 sm:px-6">
-      <div className="bg-zinc-950/60 backdrop-blur-md rounded-2xl p-6 border border-zinc-800 shadow-inner">
+    <section className="w-full  mx-auto space-y-6 px-1 sm:px-2">
+      <div className="bg-zinc-950/60 backdrop-blur-md rounded-2xl p-2 border border-zinc-800 shadow-inner">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h3 className="text-xl font-semibold text-white tracking-tight">Customer Reviews</h3>
+            <h3 className="text-md lg:text-xl font-semibold text-white tracking-tight">Customer Reviews</h3>
             <div className="flex items-center gap-3 mt-2">
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((s) => (
@@ -179,7 +179,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
                   />
                 ))}
               </div>
-              <div className="text-sm text-zinc-400">
+              <div className="text-xs lg:text-md font-semibold text-zinc-400">
                 Avg {avgRating.toFixed(1)} • {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
               </div>
             </div>
@@ -189,7 +189,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
             <Button
               variant="outline"
               onClick={() => setShowWriteReview((s) => !s)}
-              className="flex items-center gap-2 border-zinc-700 text-white hover:bg-yellow-500 hover:text-black transition"
+              className="flex items-center gap-2 text-sm lg:text-lg border-zinc-700 text-white hover:bg-yellow-500 hover:text-black transition"
             >
               <Plus className="h-4 w-4" />
               {showWriteReview ? 'Close' : 'Write Review'}
@@ -199,16 +199,16 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
 
         {/* Write review form (full width card) */}
         {showWriteReview && (
-          <div className="mt-6 bg-zinc-900/70 border border-zinc-800 rounded-xl p-6 shadow-md">
-            <div className="flex items-start justify-between">
-              <h4 className="text-lg font-medium text-white">Write your review</h4>
-              <div className="text-sm text-zinc-400">Optional: add up to 3 images</div>
+          <div className="mt-2 bg-zinc-900/70 border border-zinc-800 rounded-xl p-2 shadow-md">
+            <div className=" items-start justify-between">
+              <h4 className="text-sm lg:text-lg font-medium text-white">Write your review</h4>
+              <div className="text-xs lg:text-lg font-medium text-zinc-400">Optional: add up to 3 images</div>
             </div>
 
-            <div className="mt-4 grid grid-cols-1 gap-4">
+            <div className="mt-2 grid grid-cols-1 gap-4">
               <div>
-                <Label className="text-sm text-zinc-300">Your rating</Label>
-                <div className="flex items-center gap-2 mt-2">
+                <Label className="text-sm lg:text-md text-zinc-300">Your rating</Label>
+                <div className="flex items-center gap-2 mt-1">
                   {[1, 2, 3, 4, 5].map((s) => (
                     <button
                       key={s}
@@ -217,7 +217,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
                       className="p-1"
                       aria-label={`Rate ${s}`}
                     >
-                      <Star className={`h-6 w-6 ${s <= newReview.rating ? 'text-yellow-400' : 'text-zinc-500'}`} />
+                      <Star className={`h-5 w-5 ${s <= newReview.rating ? 'text-yellow-400' : 'text-zinc-500'}`} />
                     </button>
                   ))}
                 </div>
@@ -238,14 +238,14 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
               </div>
 
               <div>
-                <Label className="text-sm text-zinc-300">Images (optional)</Label>
+                <Label className="text-xs lg:text-md text-zinc-300">Images (optional)</Label>
                 <div className="mt-3 flex flex-wrap gap-3 items-center">
                   {selectedImages.map((file, idx) => (
                     <div key={idx} className="relative group">
                       <img
                         src={URL.createObjectURL(file)}
                         alt={`preview-${idx}`}
-                        className="h-20 w-20 object-cover rounded-lg border border-zinc-700"
+                        className="h-14 w-14 object-cover rounded-lg border border-zinc-700"
                       />
                       <button
                         type="button"
@@ -258,9 +258,9 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({ productId }
                   ))}
 
                   {selectedImages.length < 3 && (
-                    <label className="h-20 w-20 border-2 border-dashed border-zinc-700 rounded-lg flex items-center justify-center cursor-pointer hover:border-yellow-400 transition">
+                    <label className="h-14 w-14 border-2 border-dashed border-zinc-700 rounded-lg flex items-center justify-center cursor-pointer hover:border-yellow-400 transition">
                       <input type="file" accept="image/*" multiple onChange={handleImageSelect} className="hidden" />
-                      <Upload className="h-6 w-6 text-zinc-500" />
+                      <Upload className="h-4 w-4 text-zinc-500" />
                     </label>
                   )}
                 </div>

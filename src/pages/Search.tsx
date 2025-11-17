@@ -261,7 +261,7 @@ const Search = () => {
                     size="sm"
                     className={
                       tempSelectedSizes.includes(size)
-                        ? 'bg-red-500 text-white'
+                        ? 'bg-red-500 text-white hover:bg-red-600'
                         : 'text-yellow-400 border-yellow-400'
                     }
                     onClick={() => toggleTempSize(size)}
@@ -273,10 +273,10 @@ const Search = () => {
             </div>
 
             <div className="flex justify-between mt-4">
-              <Button className="text-black bg-yellow-400" onClick={applyFilter}>
+              <Button className="text-black bg-yellow-400 hover:bg-yellow-500" onClick={applyFilter}>
                 Apply
               </Button>
-              <Button className="text-black bg-yellow-400" onClick={clearFilter}>
+              <Button className="text-black bg-yellow-400 hover:bg-yellow-500 " onClick={clearFilter}>
                 Clear
               </Button>
             </div>

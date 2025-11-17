@@ -52,7 +52,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
 
   if (!reviews || reviews.length === 0) {
     return (
-      <div className="text-center py-8 text-zinc-500 bg-white shadow-lg mx-auto max-w-md rounded-xl">
+      <div className="text-center py-8 text-white bg-black shadow-lg mx-auto border border-gray-600 w-full rounded-none">
         <p>No reviews yet. Be the first to leave one!</p>
       </div>
     );
@@ -72,8 +72,8 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
 
   return (
     <div className="w-full   relative">
-      <div className="text-center font-semibold text-zinc-200 mb-4">
-        CATEGORY REVIEWS
+      <div className="text-center text-xl underline  font-semibold text-yellow-400 mb-4">
+         REVIEWS
       </div>
       
       {/* Review Card Container */}

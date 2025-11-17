@@ -136,8 +136,8 @@ const ProductVideoSection: React.FC = () => {
 
   return (
     <div className="mb-8 mt-8 px-0 relative">
-      <h2 className="text-xl font-bold mb-4 text-center text-gray-800">Must See Videos</h2>
-      <p className="text-center text-sm mb-6 text-gray-500">Discover what's trending and loved by our customers.</p>
+      <h2 className="text-xl font-bold mb-4 text-center text-gray-200">Must See Videos</h2>
+      <p className="text-center text-sm mb-6 text-gray-500 font-semibold">Discover what's trending and loved by our customers.</p>
 
       {/* ⬅️ Left Navigation Button (Optional based on the image, but good UX) */}
       <button
@@ -169,7 +169,7 @@ const ProductVideoSection: React.FC = () => {
           <div
             key={video.id}
             // Use flex-shrink-0 and explicit width/aspect ratio for consistent sizing
-            className={`flex-shrink-0 snap-center relative w-[50vw] max-w-[280px] aspect-[9/16] bg-gray-900 overflow-hidden rounded-xl shadow-2xl transition-all duration-500 cursor-pointer ${
+            className={`flex-shrink-0 snap-center relative w-[60vw] max-w-[280px] aspect-[9/16] bg-gray-900 overflow-hidden rounded-xl shadow-2xl transition-all duration-500 cursor-pointer ${
                 activeVideo === video.id ? "scale-[1.05] shadow-black-500/50 ring-2 ring-black-400" : "scale-90 opacity-60"
             }`}
             onClick={() => scrollToVideo(videos.findIndex(v => v.id === video.id))} // Tap to center/focus
