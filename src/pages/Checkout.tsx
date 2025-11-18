@@ -376,7 +376,7 @@ const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
                         <div className="flex flex-wrap gap-1 mt-2">
                           {item.sizes.map((s: any, i: number) => (
                             <div key={i} className="bg-secondary border border-border px-2 py-1 rounded text-xs font-bold">
-                              {s.size} - {s.quantity}
+                              {s.size} * {s.quantity}
                             </div>
                           ))}
                         </div>
