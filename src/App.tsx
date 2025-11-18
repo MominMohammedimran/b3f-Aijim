@@ -9,9 +9,6 @@ import { ActiveProductProvider } from "./context/ActiveProductContext";
 import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
-import { cleanupServiceWorkers } from "./utils/cleanup-sw";
-import { startVersionCheck, stopVersionCheck } from "./version-check";
-import { unregisterServiceWorkers } from "./unregisterServiceWorker";
 
 const queryClient = new QueryClient();
 
@@ -19,40 +16,32 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  initializeSecurity();
-  
-  // 🚫 Unregister all existing service workers
-  unregisterServiceWorkers();
+    initializeSecurity();
 
-  cleanupServiceWorkers();
-  startVersionCheck(); // 🚀 start auto version updater
+    /** 🚫 Disable right-click & inspector **/
+    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase()))
+      ) {
+        e.preventDefault();
+        toast.warning("Action disabled for security");
+      }
+    };
 
-  /** 🚫 Disable right-click & inspector **/
-  const handleContextMenu = (e: MouseEvent) => e.preventDefault();
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (
-      e.key === "F12" ||
-      (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase()))
-    ) {
-      e.preventDefault();
-      toast.warning("Action disabled for security");
-    }
-  };
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.userSelect = "none";
 
-  document.addEventListener("contextmenu", handleContextMenu);
-  document.addEventListener("keydown", handleKeyDown);
-  document.body.style.userSelect = "none";
+    const timer = setTimeout(() => setLoading(false), 1000);
 
-  const timer = setTimeout(() => setLoading(false), 1000);
-
-  return () => {
-    document.removeEventListener("contextmenu", handleContextMenu);
-    document.removeEventListener("keydown", handleKeyDown);
-    stopVersionCheck(); // cleanup
-    clearTimeout(timer);
-  };
-}, []);
-
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("keydown", handleKeyDown);
+      clearTimeout(timer);
+    };
+  }, []);
 
   if (loading) return <Preloader onComplete={() => setLoading(false)} />;
 
