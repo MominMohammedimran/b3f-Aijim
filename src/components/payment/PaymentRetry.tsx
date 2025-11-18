@@ -6,8 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { Loader2, CreditCard, ShieldCheck, Gift, Tag } from "lucide-react";
 
 // ⚙️ Global Configuration
-const PAYMENT_GATEWAY = import.meta.env.VITE_PAYMENT_GATEWAY || "cashfree"; // or "razorpay"
-const CASHFREE_MODE = import.meta.env.VITE_CASHFREE_MODE || "production"; // "sandbox" or "production"
+const PAYMENT_GATEWAY = "razorpay"; // forced Razorpay
+const CASHFREE_MODE = import.meta.env.VITE_CASHFREE_MODE || "production";
 
 declare global {
   interface Window {
@@ -39,20 +39,12 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
     const loadSDK = async () => {
       let script = document.createElement("script");
 
-      if (PAYMENT_GATEWAY === "cashfree") {
-        script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
-      } else {
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      }
+      // 🔥 Only Load Razorpay SDK (Cashfree disabled)
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
 
       script.async = true;
-      script.onload = () => {
-        console.log(`✅ ${PAYMENT_GATEWAY} SDK loaded`);
-        setGatewayReady(true);
-      };
-      script.onerror = () => {
-        toast.error(`Failed to load ${PAYMENT_GATEWAY} SDK`);
-      };
+      script.onload = () => setGatewayReady(true);
+      script.onerror = () => toast.error("Failed to load payment SDK");
 
       document.head.appendChild(script);
     };
@@ -60,7 +52,8 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
     loadSDK();
   }, []);
 
-  // ==================== CASHFREE FLOW ====================
+  // ==================== CASHFREE FLOW (DISABLED) ====================
+  /*
   const createCashfreeOrder = async () => {
     const { data: cashfreeOrder, error } = await supabase.functions.invoke(
       "retry-cashfree-order",
@@ -99,27 +92,7 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
       setLoading(false);
     }
   };
-
-  const handleCashfreeSuccess = async (paymentDetails: any) => {
-    setLoading(true);
-    try {
-      await supabase
-        .from("orders")
-        .update({
-          payment_status: "paid",
-          cashfree_order_id: paymentDetails.orderId,
-          cashfree_payment_id: paymentDetails.paymentId,
-        })
-        .eq("id", orderId);
-
-      toast.success("Payment successful! Order confirmed.");
-      navigate(`/orders/${orderId}`);
-    } catch {
-      toast.error("Failed to update order after payment.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  */
 
   // ==================== RAZORPAY FLOW ====================
   const createRazorpayOrder = async () => {
@@ -127,15 +100,18 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
       "retry-razorpay-order",
       { body: { orderId, amount } }
     );
+
     if (error || !razorpayOrder?.success) {
       toast.error("Failed to create Razorpay order");
       return null;
     }
+
     return razorpayOrder;
   };
 
   const handleRazorpayPayment = async () => {
     if (!gatewayReady) return toast.error("Razorpay SDK not ready");
+
     setLoading(true);
     try {
       const razorpayOrder = await createRazorpayOrder();
@@ -189,28 +165,14 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
 
   // ==================== MAIN HANDLER ====================
   const handlePayment = async () => {
-    if (PAYMENT_GATEWAY === "cashfree") await handleCashfreePayment();
-    else await handleRazorpayPayment();
+    // 🔥 Cashfree removed from selection
+    await handleRazorpayPayment();
   };
 
   // ==================== UI ====================
-  const accentColor =
-    PAYMENT_GATEWAY === "cashfree" ? "text-green-400" : "text-yellow-400";
-  const brandName =
-    PAYMENT_GATEWAY === "cashfree" ? "Cashfree" : "Razorpay";
-  const buttonColor =
-    PAYMENT_GATEWAY === "cashfree"
-      ? "bg-green-500 hover:bg-green-400"
-      : "bg-yellow-400 hover:bg-yellow-300";
-
   return (
     <div className="w-full max-w-md mx-auto bg-gradient-to-br from-black via-gray-900 to-black border border-gray-800 shadow-lg rounded-none p-5 mt-8 font-sans">
-      <h2 className="text-center text-xl font-bold text-white mb-1 uppercase tracking-wide">
-        Retry Payment
-      </h2>
-      <p className="text-center text-gray-400 text-sm font-semibold mb-5">
-        #{orderNumber}
-      </p>
+      
 
       {/* Order Items */}
       <div className="space-y-3 mb-4">
@@ -260,7 +222,7 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
         <span className="text-gray-300 text-sm uppercase font-semibold">
           Total
         </span>
-        <span className={`font-bold text-lg ${accentColor}`}>
+        <span className="font-bold text-lg text-yellow-400">
           ₹{data.total.toFixed(2)}
         </span>
       </div>
@@ -274,20 +236,20 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
         <button
           onClick={handlePayment}
           disabled={!gatewayReady}
-          className={`w-full ${buttonColor} text-black font-semibold py-2 uppercase tracking-wide rounded-none shadow transition disabled:opacity-50`}
+          className={`w-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-2 uppercase tracking-wide rounded-none shadow transition disabled:opacity-50`}
         >
           <div className="flex items-center justify-center gap-2">
             <CreditCard className="h-4 w-4" />
             {gatewayReady
-              ? `Pay Securely with ${brandName}`
-              : `Loading ${brandName}...`}
+              ? `Pay Securely with Razorpay`
+              : `Loading Razorpay...`}
           </div>
         </button>
       )}
 
       <div className="flex justify-center mt-3 text-xs text-gray-500">
         <ShieldCheck className="h-3 w-3 mr-1 text-green-500" />
-        Secured by AIJIM & {brandName}
+        Secured by AIJIM & Razorpay
       </div>
     </div>
   );

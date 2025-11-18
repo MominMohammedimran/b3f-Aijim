@@ -171,7 +171,7 @@ const Products = () => {
             {filtered.map((p) => (
               <div
                 key={p.id}
-                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[280px]  flex"
+                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[260px] md:h-[320px]  flex"
               >
                 <ProductCard
                   product={p}

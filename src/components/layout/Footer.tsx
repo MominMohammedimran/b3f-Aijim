@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Instagram, Mail, HandCoins ,Heart} from "lucide-react";
+import { Instagram, Mail, HandCoins ,Heart,Phone} from "lucide-react";
 import Marquee from "react-fast-marquee";
 
 const Footer = () => {
@@ -15,7 +15,12 @@ const Footer = () => {
     { name: "Shipping Info", href: "/shipping-delivery" },
     { name: "Track Orders", href: "/orders" },
   ];
-
+ const getWhatsappMessage = () => {
+    return encodeURIComponent(
+      `Hello, I need help with my order` 
+        
+    );
+  };
   return (
     <footer className="bg-black text-gray-300 border-t border-gray-800 mt-10   pb-24 sm:pb-12">
       {/* 🔥 Reward Marquee */}
@@ -50,23 +55,49 @@ const Footer = () => {
         </p>
 
         {/* Social Icons */}
-        <div className="flex justify-center space-x-4 mt-8">
-          <a
-            href="https://www.instagram.com/aijim.shop?igsh=ZWlnMXl1YzNkYjlx"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-black text-white transition-all duration-300 transform hover:-translate-y-1"
-          >
-            <Instagram className="h-5 w-5" />
-          </a>
+       {/* Social Icons */}
+<div className="flex justify-center space-x-4 mt-8">
 
-          <a
-            href="mailto:aijim.official@gmail.com"
-            className="p-2 rounded-full bg-gray-800 hover:bg-yellow-400 hover:text-black text-white transition-all duration-300 transform hover:-translate-y-1"
-          >
-            <Mail className="h-5 w-5" />
-          </a>
-        </div>
+  {/* Instagram (Gradient) */}
+  <a
+    href="https://www.instagram.com/aijim.shop?igsh=ZWlnMXl1YzNkYjlx"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-12 h-12 flex items-center justify-center rounded-full 
+               bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500
+               text-white shadow-md hover:shadow-pink-400/40 transform
+               transition-all duration-300 hover:-translate-y-1 hover:scale-105"
+  >
+    <Instagram className="h-6 w-6" />
+  </a>
+
+  {/* Gmail */}
+  <a
+    href="mailto:aijim.official@gmail.com"
+    className="w-12 h-12 flex items-center justify-center rounded-full 
+               bg-gradient-to-br from-red-700 to-red-500
+                text-white shadow-md hover:shadow-red-400/40
+               transform transition-all duration-300 hover:-translate-y-1
+               hover:scale-105"
+  >
+    <Mail className="h-6 w-6" />
+  </a>
+
+  {/* WhatsApp */}
+  <a
+    href={`https://wa.me/917672080888?text=${getWhatsappMessage()}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="w-12 h-12 flex items-center justify-center rounded-full 
+               bg-green-600 text-white shadow-md hover:shadow-green-400/40
+               transform transition-all duration-300 hover:-translate-y-1 
+               hover:scale-105"
+  >
+    <Phone className="h-6 w-6 " />
+  </a>
+
+</div>
+
 
         {/* Divider */}
         <div className="border-t border-gray-800 my-6 w-90 mx-1" />

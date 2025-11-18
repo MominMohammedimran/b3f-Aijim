@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import{useLocation} from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -46,7 +46,17 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
   
   const availablePoints = userProfile?.reward_points || 0;
+  const payNowRef = useRef(null);
+
 const location = useLocation();
+
+
+useEffect(() => {
+  if (location.state?.scrollToPayNow && payNowRef.current) {
+    payNowRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}, [location]);
+
  const passedCoupon = location.state?.appliedCoupon||" ";
  const passedPoints =location.state?.appliedPoints||0;
  const [appliedCoupon, setAppliedCoupon] = useState<{
@@ -485,6 +495,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
       {/* Payment Button */}
       <div className="mt-5">
         <Button 
+         ref={payNowRef}
           className="w-full uppercase bg-green-600 hover:bg-green-700 text-white font-bold text-md py-1 rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handlePayment}
           disabled={isProcessing || finalTotal <= 0}

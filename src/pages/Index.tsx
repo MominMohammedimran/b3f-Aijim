@@ -1,3 +1,8 @@
+
+
+
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -11,56 +16,79 @@ import { Product } from '../lib/types';
 import { useIsMobile } from '../hooks/use-mobile';
 import { useLocation } from '../context/LocationContext';
 import { useWishlist } from '../context/WishlistContext';
-import SEOHelmet from '@/components/seo/SEOHelmet';
-import useSEO from '@/hooks/useSEO';
+import useSEO from '@/hooks/useSEO'; // ✅ using this
 import Marquee from "react-fast-marquee"; 
 import NewHero from "@/components/landing/NewHero";
-import HeroSlider from '../components/ui/HeroSlider'
-import IndexFeaturesproducts from '../components/ui/IdexFeaturesproducts'
-import { supabase } from '@/integrations/supabase/client'; // ensure you have this
+import HeroSlider from '../components/ui/HeroSlider';
+import IndexFeaturesproducts from '../components/ui/IdexFeaturesproducts';
+import { supabase } from '@/integrations/supabase/client';
 
 const Index = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { currentLocation } = useLocation();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
-  const [visibleCategories, setVisibleCategories] = useState<number>(4);
-  const [startIndex, setStartIndex] = useState(0);
-  const categoriesRef = useRef<HTMLDivElement>(null);
-  const seo = useSEO('/');
+
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || ""
+  );
+
+  // ----------------------------------------------------------------------
+  // ✅ SEO HERE — dynamic with product list
+  // ----------------------------------------------------------------------
+  useSEO("/", {
+    title: "AIJIM | Premium Fashion, Affordable Price",
+    description: "Shop premium streetwear & custom printed T-shirts by AIJIM.",
+    products, // <- works because I added products support for you
+  });
+
+  // ----------------------------------------------------------------------
+
+  const [visibleCategories, setVisibleCategories] = useState<number>(4);
+  const [startIndex, setStartIndex] = useState(0);
+  const categoriesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
     const handleResize = () => {
       if (window.innerWidth <= 640) setVisibleCategories(4);
       else if (window.innerWidth <= 1024) setVisibleCategories(4);
       else setVisibleCategories(6);
     };
+
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [currentLocation]);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      let query = supabase.from('products').select('*');
-      if (selectedCategory) query = query.eq('category', selectedCategory);
+
+      let query = supabase.from("products").select("*");
+      if (selectedCategory) query = query.eq("category", selectedCategory);
+
       const { data, error } = await query;
       if (error) throw error;
 
       const transformed: Product[] = (data || []).map((item: any) => {
         const rawSizes = Array.isArray(item.variants) ? item.variants : [];
 
-        const normalizedSizes: { size: string; stock: number }[] = rawSizes
-          .filter((s) => typeof s === 'object' && s !== null && 'size' in s && 'stock' in s)
+        const normalizedSizes = rawSizes
+          .filter(
+            (s) =>
+              typeof s === "object" &&
+              s !== null &&
+              "size" in s &&
+              "stock" in s
+          )
           .map((s) => ({
-            size: String((s as any).size),
-            stock: Number((s as any).stock),
+            size: String(s.size),
+            stock: Number(s.stock),
           }));
 
         const totalStock = normalizedSizes.reduce((sum, s) => sum + s.stock, 0);
@@ -70,19 +98,19 @@ const Index = () => {
           productId: item.id,
           code: item.code || `PROD-${item.id.slice(0, 8)}`,
           name: item.name,
-          description: item.description || '',
+          description: item.description || "",
           price: item.price,
           originalPrice: item.original_price || item.price,
           discountPercentage: item.discount_percentage || 0,
-          image: item.image || '',
+          image: item.image || "",
           images: Array.isArray(item.images)
-            ? item.images.filter((img) => typeof img === 'string')
+            ? item.images.filter((img) => typeof img === "string")
             : [],
-          category: item.category || '',
+          category: item.category || "",
           stock: totalStock,
-          variants: normalizedSizes, // ✅ Correct format
+          variants: normalizedSizes,
           tags: Array.isArray(item.tags)
-            ? item.tags.filter((tag) => typeof tag === 'string')
+            ? item.tags.filter((tag) => typeof tag === "string")
             : [],
           inStock: totalStock > 0,
         };
@@ -90,7 +118,7 @@ const Index = () => {
 
       setProducts(transformed);
     } catch (err) {
-      // console.error('Error fetching products:', err);
+      // ignore
     } finally {
       setLoading(false);
     }
@@ -101,37 +129,34 @@ const Index = () => {
   }, [selectedCategory]);
 
   const handleProductClick = (product: Product) => {
-  window.scrollTo(0, 0);
+    window.scrollTo(0, 0);
+    navigate(`/product/details/${product.code}`);
+  };
 
-  navigate(`/product/details/${product.code}`);
-};
-
-
-  // 🔥 Filter featured products based on tag
   const featuredProducts = products.filter(
-    (p) => Array.isArray(p.tags) && p.tags.includes('indexmainimage')
+    (p) => Array.isArray(p.tags) && p.tags.includes("indexmainimage")
   );
 
-  // 👇 Scroll logic for featured products
   const scrollRef = useRef<HTMLDivElement>(null);
-  const scroll = (direction: 'left' | 'right') => {
+  const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
     const scrollAmount = 300;
+
     scrollRef.current.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth',
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
     });
   };
 
   return (
     <Layout>
-      <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
+      {/* No SEOHelmet needed */}
+
       <NewHero />
 
       <div className="bg-black min-h-screen pt-5 text-white">
         <div className="container-custom mt-22 pt-2">
-          
-          {/*<HeroSlider />/*}
+  {/*<HeroSlider />/*}
 
           {/* 🔥 Hot Selling 
       <div className="mb-4 mt-4 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black
@@ -182,8 +207,7 @@ const Index = () => {
       ))}
   </div>
 </div>}/*}
-
-          {/* 🌟 Featured Products Section */}
+          {/* Featured products */}
           <div className="relative mb-8">
             <h2 className="text-xl font-bold mb-5 text-left">Featured Products</h2>
 
@@ -191,9 +215,8 @@ const Index = () => {
               <p className="text-gray-400">Loading Products...</p>
             ) : featuredProducts.length > 0 ? (
               <div className="relative w-full">
-                {/* ➤ Scroll Buttons */}
                 <button
-                  onClick={() => scroll('left')}
+                  onClick={() => scroll("left")}
                   className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 bg-black/60 py-0.5 hover:bg-black hover:text-white transition"
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -206,7 +229,7 @@ const Index = () => {
                   {featuredProducts.map((product, index) => (
                     <div
                       key={product.id}
-                      className="min-w-[48%] sm:min-w-[28%]  animate-fade-in"
+                      className="min-w-[48%] sm:min-w-[28%] animate-fade-in"
                       style={{ animationDelay: `${index * 0.08}s` }}
                     >
                       <ProductCard
@@ -218,7 +241,7 @@ const Index = () => {
                 </div>
 
                 <button
-                  onClick={() => scroll('right')}
+                  onClick={() => scroll("right")}
                   className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/60 py-0.5 hover:bg-black text-gray-500 hover:text-white transition"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -229,11 +252,11 @@ const Index = () => {
             )}
           </div>
 
-          {/* 🎥 Product Videos */}
           <ProductVideoSection />
 
-          {/* 🛍 All Products */}
-          <h2 className="text-xl font-extrabold text-white mt-6 mb-6 tracking-wide"> All Products</h2>
+          <h2 className="text-xl font-extrabold text-white mt-6 mb-6 tracking-wide">
+            All Products
+          </h2>
 
           {loading ? (
             <p className="text-gray-400">Loading products...</p>
@@ -245,7 +268,10 @@ const Index = () => {
                   className="animate-fade-in"
                   style={{ animationDelay: `${i * 0.08}s` }}
                 >
-                  <ProductCard product={product} onClick={handleProductClick} />
+                  <ProductCard
+                    product={product}
+                    onClick={handleProductClick}
+                  />
                 </div>
               ))}
             </div>

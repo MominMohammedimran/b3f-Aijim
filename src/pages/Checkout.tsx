@@ -262,7 +262,7 @@ const Checkout: React.FC = () => {
         fullName: `${values.firstName} ${values.lastName}`,
         ...values,
       };
-
+ window.scrollTo(10, 0);
       navigate('/payment', {
         state: {
           shippingAddress,
@@ -270,6 +270,7 @@ const Checkout: React.FC = () => {
           totalPrice,
           appliedCoupon,
           appliedPoints,
+          scrollToPayNow: true,
         },
       });
 

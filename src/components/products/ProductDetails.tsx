@@ -116,6 +116,28 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     }
     setLoadingPincode(false);
   };
+const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"];
+
+const getAijimSize = (size: string) => {
+  // Regular → AIJIM mapping logic
+  const index = sizeOrder.indexOf(size);
+  if (index === -1) return size;
+
+  // Example: shift 1 size down (you can adjust)
+  const aijimIndex = index - 1 >= 0 ? index - 1 : 0;
+  return sizeOrder[aijimIndex];
+};
+
+const getSizeMeasurements = (size: string) => {
+  const index = sizeOrder.indexOf(size);
+  if (index === -1) return { chest: 0, shoulder: 0 ,length: 0};
+
+  const chest = 40 + index * 2; // XS=40, S=42, M=44...
+   const length= 26 + index * 1; 
+  const shoulder = 19 + index * 0.5; 
+  // XS=19, S=19.5, M=20...
+  return { chest, shoulder ,length};
+};
 
   if (inventoryLoading)
     return (
@@ -165,62 +187,69 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       <LiveViewingCounter productId={product.id} />
       {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
-      {selectedSizes.length === 1 && (
-        <div className="mt-4 text-[11px] text-gray-300 font-medium flex items-center gap-2">
+      {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
+{selectedSizes.length > 0 && (
+  <div className="mt-4 text-[11px] text-gray-300 font-medium flex flex-col gap-1">
+    {(() => {
+      const lastSize = selectedSizes[selectedSizes.length - 1].size;
+      const aijimSize = getAijimSize(lastSize);
+      const { chest, shoulder,length } = getSizeMeasurements(lastSize);
+      return (
+        <>
+         <div className="flex items-center gap-5 ml-2">
           <p>
-            Regular size{" "}
-            <span className="text-yellow-400 font-semibold">
-              {selectedSizes[0].size}
-            </span>{" "}
-            ~ AIJIM size{" "}
-            <span className="text-yellow-400 font-semibold">
-              {selectedSizes[0].size === "XS"
-                ? "XS"
-                : selectedSizes[0].size === "S"
-                ? "XS"
-                : selectedSizes[0].size === "M"
-                ? "S"
-                : selectedSizes[0].size === "L"
-                ? "M"
-                : selectedSizes[0].size === "XL"
-                ? "L"
-                : selectedSizes[0].size === "XXL"
-                ? "XXL"
-                : selectedSizes[0].size}
-            </span>
+            Regular size: <span className="text-yellow-400 font-semibold">{lastSize}</span>  
+            &nbsp;~ AIJIM size: <span className="text-yellow-400 font-semibold">{aijimSize}</span>
           </p>
-          <button
+          
+          <p
             onClick={() => setShowSizeGuide(true)}
             className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
           >
-            AIJIM Size Guide →
-          </button>
+            Size chart →
+          </p>
+          </div>
+         <div className="flex  gap-2  p-0 mt-2 ml-2 rounded-md">
+ 
+      <span className="text-gray-200 text-xs">Chest - {chest} cm </span>
+     
+      <span className="text-gray-200 text-xs">Shoulder - {shoulder} cm</span>
+      
+    
+      <span className="text-gray-200 text-xs">Length - {length} cm </span>
+    
+  </div>
+          
 
           {/* --- Popup Modal --- */}
           {showSizeGuide && (
-            <div className="fixed inset-0  flex bg-none items-center justify-center z-50">
-              <div className="relative w-[90%] max-w-md bg-black p-3 rounded-none shadow-lg ">
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
+              <div className="relative w-[90%] max-w-md bg-black p-3 rounded shadow-lg">
                 <button
                   onClick={() => setShowSizeGuide(false)}
-                  className="absolute top-0 right-1 text-red-500  text-lg font-black"
+                  className="absolute top-1 right-2 text-red-500 text-lg font-bold"
                 >
                   ✕
                 </button>
                 <img
                   src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/size%20guide/aijim-size-guide.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL3NpemUgZ3VpZGUvYWlqaW0tc2l6ZS1ndWlkZS5wbmciLCJpYXQiOjE3NjMzOTAzMjgsImV4cCI6MTc5NDkyNjMyOH0.QILeaKATU2vwJmqRL5tTwhZTzrvLBn315YEF66uC09A"
                   alt="AIJIM Size Guide"
-                  className="rounded-none w-[90%] h-auto object-contain"
+                  className="w-full h-auto object-contain"
                 />
               </div>
             </div>
           )}
-        </div>
-      )}
+        </>
+      );
+    })()}
+  </div>
+)}
+
 
       {/* --- Sizes --- */}
       <div className="px-2">
         <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
-        <div className="grid grid-cols-4 md:grid-cols-5 gap-2 relative">
+        <div className="grid grid-cols-6 md:grid-cols-6 gap-2 relative">
           {productVariants.map(({ size, stock }) => {
             const selected = selectedSizes.some((s) => s.size === size);
             const isOutOfStock = stock === 0;

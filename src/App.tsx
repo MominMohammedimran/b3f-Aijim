@@ -15,12 +15,42 @@ const queryClient = new QueryClient();
 function App() {
   const [loading, setLoading] = useState(true);
 
+  // 🔥 VERSION CHECK — No Service Worker
+  useEffect(() => {
+    let currentVersion = null;
+
+    const checkVersion = async () => {
+      try {
+        const res = await fetch(`/version.json?cache=${Date.now()}`);
+        const data = await res.json();
+
+        if (!currentVersion) {
+          currentVersion = data.version;
+        } else if (currentVersion !== data.version) {
+          // 🔥 NEW UPDATE FOUND → Show Toast
+          toast.info("New update available!", {
+            action: {
+              label: "Refresh",
+              onClick: () => window.location.reload(),
+            },
+          });
+        }
+      } catch (error) {
+        console.log("Version check failed", error);
+      }
+    };
+
+    const interval = setInterval(checkVersion, 30000); // check every 10 sec
+    return () => clearInterval(interval);
+  }, []);
+
+  // 🔐 Security + other effects
   useEffect(() => {
     initializeSecurity();
 
-    /** 🚫 Disable right-click & inspector **/
-    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
-    const handleKeyDown = (e: KeyboardEvent) => {
+    // Disable right click & key combos
+    const handleContextMenu = (e) => e.preventDefault();
+    const handleKeyDown = (e) => {
       if (
         e.key === "F12" ||
         (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase()))

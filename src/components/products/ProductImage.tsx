@@ -160,11 +160,16 @@ const ProductImage: React.FC<ProductImageProps> = ({
             </button>
 
             <div
-              ref={thumbRef}
-              className="flex justify-center items-center gap-2 overflow-x-auto overflow-hidden scrollbar-hide px-8 p-2"
-              onTouchStart={onThumbTouchStart}
-              onTouchEnd={onThumbTouchEnd}
-            >
+  ref={thumbRef}
+  className="
+    flex justify-center items-center gap-2 
+    overflow-x-scroll overflow-y-hidden 
+    scrollbar-hide px-8 p-2
+  "
+  onTouchStart={onThumbTouchStart}
+  onTouchEnd={onThumbTouchEnd}
+>
+
               {media.map((m, i) => (
                 <div key={i} className="flex-shrink-0">
                   {isVideo(m) ? (

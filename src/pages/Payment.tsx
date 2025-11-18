@@ -25,6 +25,7 @@ import { CheckoutStepper } from '@/components/checkout/CheckoutStepper';
 const Payment = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  
   const { currentUser, userProfile } = useAuth();
   const { cartItems, totalPrice, clearCart, removeSizeFromCart, removeFromCart } = useCart();
   const [loading, setLoading] = useState(false);
@@ -122,7 +123,7 @@ const Payment = () => {
                     <div className="flex justify-between  items-center">
                       <span className="text-gray-200 font-medium tracking-[2px]">Coupon Applied - {' '} 
                         <span className="underline font-medium text-md text-yellow-400">
-                      {appliedCoupon.code}
+                      {appliedCoupon.code || 'NOT APPLIED'}
                       </span>
                       </span>
                           </div>
