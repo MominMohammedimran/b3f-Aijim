@@ -85,7 +85,7 @@ const Footer = () => {
 
   {/* WhatsApp */}
   <a
-    href={`https://wa.me/917672080888?text=${getWhatsappMessage()}`}
+    href={`https://wa.me/917672080881?text=${getWhatsappMessage()}`}
     target="_blank"
     rel="noopener noreferrer"
     className="w-12 h-12 flex items-center justify-center rounded-full 

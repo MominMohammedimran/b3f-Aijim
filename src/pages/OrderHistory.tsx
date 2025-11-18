@@ -267,18 +267,23 @@ const OrderHistory = () => {
 
 
                   {/* BOTTOM ACTIONS */}
-<div className="p-4 border-t border-gray-800 grid grid-cols-2 gap-3">
-  <Link to={`/order-preview/${order.order_number}`}>
+<div className="p-4 border-t border-gray-800 flex gap-3">
+  {/* View Details Button */}
+  <Link
+    to={`/order-preview/${order.order_number}`}
+    className={`${["pending", "processing", "confirmed"].includes(order.status) ? "flex-1" : "w-full"}`}
+  >
     <Button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black text-sm font-semibold rounded-none h-10">
       View Details
     </Button>
   </Link>
 
+  {/* Cancel Button (only for certain statuses) */}
   {["pending", "processing", "confirmed"].includes(order.status) && (
     <Button
       onClick={() => handleRemoveOrder(order.id)}
       disabled={expired}
-      className={`w-full text-sm font-semibold rounded-none h-10 ${
+      className={`w-1/2 sm:w-auto text-sm font-semibold rounded-none h-10 ${
         expired
           ? "bg-gray-700 text-gray-400"
           : "bg-red-600 hover:bg-red-700 text-white"
@@ -288,6 +293,7 @@ const OrderHistory = () => {
     </Button>
   )}
 </div>
+
 
 {/* EXTRA BUTTONS */}
 <div className="px-4 pb-4 grid grid-cols-2 gap-3">
