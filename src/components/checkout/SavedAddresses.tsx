@@ -11,6 +11,7 @@ interface SavedAddressesProps {
   onUseNewAddress: () => void;
   useNewAddress: boolean;
   onEditAddress?: (address: Address) => void;
+  onDeleteAddress?: (addressId: string) => void;
 }
 
 const SavedAddresses: React.FC<SavedAddressesProps> = ({
@@ -19,16 +20,12 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
   onAddressSelect,
   onUseNewAddress,
   useNewAddress,
+  onEditAddress,
+  onDeleteAddress,
 }) => {
-  const [hasUserSelected, setHasUserSelected] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
   if (!addresses || addresses.length === 0) return null;
-
-  const handleSelect = (id: string) => {
-    setHasUserSelected(true);
-    onAddressSelect(id);
-  };
 
   const visibleAddresses = showAll ? addresses : addresses.slice(0, 3);
 
@@ -42,8 +39,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
       >
         <AnimatePresence>
           {visibleAddresses.map((address) => {
-            const isSelected =
-              hasUserSelected && selectedAddressId === address.id && !useNewAddress;
+            const isSelected = selectedAddressId === address.id && !useNewAddress;
 
             return (
               <motion.div
@@ -53,7 +49,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 whileHover={{ scale: 1.01 }}
-                onClick={() => handleSelect(address.id)}
+                onClick={() => onAddressSelect(address.id)}
                 className={`border p-3 rounded-none cursor-pointer transition-all duration-300 ${
                   isSelected
                     ? "border-yellow-400 text-yellow-300 shadow-lg shadow-yellow-800/20"
@@ -81,15 +77,37 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                       )}
                     </div>
 
-                    <p className="text-xs text-gray-300 font-medium">
-                      {address.street}
-                    </p>
+                    <p className="text-xs text-gray-300 font-medium">{address.street}</p>
                     <p className="text-xs text-gray-400 font-medium">
                       {address.city}, {address.state} - {address.zipcode}
                     </p>
-                    <p className="text-xs text-gray-400 font-medium">
-                      Phone no - {address.phone}
-                    </p>
+                    <p className="text-xs text-gray-400 font-medium">Phone no - {address.phone}</p>
+                  </div>
+
+                  {/* optional edit / delete small actions */}
+                  <div className="hidden md:flex md:flex-col md:items-end md:gap-2">
+                    {onEditAddress && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditAddress(address);
+                        }}
+                        className="text-xs text-gray-300 underline"
+                      >
+                        Edit
+                      </button>
+                    )}
+                    {onDeleteAddress && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteAddress(address.id);
+                        }}
+                        className="text-xs text-red-400 underline"
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -97,9 +115,11 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
           })}
         </AnimatePresence>
       </div>
-
+ <p className="text-[11px] text-yellow-400 mt-2 text-center font-medium">
+          Please click on any one address to proceed — after selection you'll see the Order Summary.
+        </p>
       {/* --- Show More / Less Button --- */}
-      {addresses.length > 2 && (
+      {addresses.length > 3 && (
         <div className="flex justify-center mt-3">
           <Button
             variant="outline"
@@ -112,25 +132,29 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
         </div>
       )}
 
+      {/* --- Instruction Text: Please click to select address --- */}
+       
+       
+      
+
       {/* --- Use New Address Section --- */}
-      <motion.div
-        layout
-        whileHover={{ scale: 1.01 }}
-        onClick={() => {
-          setHasUserSelected(true);
-          onUseNewAddress();
-        }}
-        className={`border p-2 mt-3 rounded-none cursor-pointer block transition-all duration-300 ${
-          useNewAddress
-            ? "border-yellow-400 bg-black text-white shadow-md"
-            : "border-gray-700 bg-none hover:bg-gray-900 text-white"
-        }`}
-      >
-        <p className="text-xs font-semibold">Use a New Address</p>
-        <p className="text-xs text-gray-400 mt-1">
-          Add a new shipping address below
-        </p>
-      </motion.div>
+     <motion.div
+  layout
+  whileHover={{ scale: 1.01 }}
+  onClick={() => {
+    onUseNewAddress();
+    window.scrollBy({ top: 250, behavior: 'smooth' }); // scroll 20px down
+  }}
+  className={`border p-2 mt-3 rounded-none cursor-pointer block transition-all duration-300 ${
+    useNewAddress
+      ? "border-yellow-400 bg-black text-white shadow-md"
+      : "border-gray-700 bg-none hover:bg-gray-900 text-white"
+  }`}
+>
+  <p className="text-xs font-semibold">Use a New Address</p>
+  <p className="text-xs text-gray-400 mt-1">Add a new shipping address below</p>
+</motion.div>
+
 
       {/* --- Profile Info Message --- */}
       <p className="text-[11px] text-gray-400 mt-3 text-center font-medium">
@@ -148,11 +172,9 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
 
       {/* --- Custom Scrollbar Styling --- */}
       <style>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background-color: rgba(234, 179, 8, 0.7); /* Yellow thumb */
+          background-color: rgba(234, 179, 8, 0.7);
           border-radius: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {

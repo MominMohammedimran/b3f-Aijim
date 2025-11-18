@@ -183,11 +183,13 @@ const CouponSection: React.FC<CouponSectionProps> = ({
 
         {appliedCoupon ? (
           <Button
-            onClick={removeCoupon}
-            className="border border-gray-300 tracking-[1px] rounded-none text-white bg-red-500 hover:bg-red-700 font-inter font-bold uppercase px-6"
-          >
-            REMOVE
-          </Button>
+    onClick={removeCoupon}
+    className={`border border-gray-300 tracking-[1px] rounded-none text-white font-inter font-bold uppercase px-6 ${
+      appliedCoupon ? "bg-red-700 hover:bg-red-800" : "bg-yellow-500 hover:bg-yellow-600"
+    }`}
+  >
+    REMOVE
+  </Button>
         ) : (
           <Button
             onClick={() => applyCoupon()}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import Layout from '../components/layout/Layout';
@@ -32,7 +32,6 @@ type FormData = {
   saveAddress: boolean;
 };
 
-// Collapsible Section with smooth animation
 const CollapsibleSection = ({
   title,
   children,
@@ -43,7 +42,7 @@ const CollapsibleSection = ({
   defaultOpen?: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
   useEffect(() => {
@@ -71,7 +70,7 @@ const CollapsibleSection = ({
   );
 };
 
-const Checkout = () => {
+const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const seo = useSEO('/checkout');
   const { currentUser } = useAuth();
@@ -79,6 +78,9 @@ const Checkout = () => {
   const { cartItems, totalPrice } = useCart();
   const { settings: deliverySettings } = useDeliverySettings();
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
+
+  const couponRef = useRef<HTMLDivElement | null>(null);
+  const savedAddressesRef = useRef<HTMLDivElement | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -95,14 +97,13 @@ const Checkout = () => {
 
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [useNewAddress, setUseNewAddress] = useState(false);
-  const { addresses, defaultAddress, loading: addressesLoading, deleteAddress, refetch: refetchAddresses } = useAddresses(currentUser?.id);
+  const { addresses, loading: addressesLoading, deleteAddress, refetch: refetchAddresses } = useAddresses(currentUser?.id);
   const [isLoading, setIsLoading] = useState(false);
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
 
-  // Coupon & Points
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number }>({ code: '', discount: 0 });
-  const [appliedPoints, setAppliedPoints] = useState<{ points: number; discount: number }>({ points: 0, discount: 0 });
+ const [appliedPoints, setAppliedPoints] = useState<{ points: number; discount: number } | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -111,7 +112,6 @@ const Checkout = () => {
       navigate('/signin?redirectTo=/checkout');
       return;
     }
-
     if (!cartItems || cartItems.length === 0) {
       toast.error('Your cart is empty');
       navigate('/cart');
@@ -137,51 +137,44 @@ const Checkout = () => {
         }
 
         if (currentLocation) setFormData(prev => ({ ...prev, city: currentLocation.name }));
-
-        if (defaultAddress && !useNewAddress) {
-          setSelectedAddressId(defaultAddress.id);
-          setFormData(prev => ({
-            ...prev,
-            firstName: defaultAddress.first_name,
-            lastName: defaultAddress.last_name,
-            phone: defaultAddress.phone || '',
-            address: defaultAddress.street,
-            city: defaultAddress.city,
-            state: defaultAddress.state,
-            zipCode: defaultAddress.zipcode,
-            country: defaultAddress.country,
-          }));
-        }
-      } catch {}
+      } catch (err) {}
     };
 
     loadProfile();
-  }, [currentUser, cartItems, navigate, currentLocation, defaultAddress, useNewAddress]);
+  }, [currentUser, cartItems, navigate, currentLocation]);
 
-  const handleCouponApplied = (discount: number, code: string) => setAppliedCoupon({ code, discount });
-  const handleCouponRemoved = () => setAppliedCoupon({ code: '', discount: 0 });
+  const scrollToCoupon = (offset = -8) => {
+    if (!couponRef.current) return;
+    const top = couponRef.current.getBoundingClientRect().top + window.scrollY + offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
 
-  const handlePointsApplied = (points: number, discount: number) => setAppliedPoints({ points, discount });
-  const handlePointsRemoved = () => setAppliedPoints({ points: 0, discount: 0 });
+  const scrollToSavedAddresses = (offset = -8) => {
+    if (!savedAddressesRef.current) return;
+    const top = savedAddressesRef.current.getBoundingClientRect().top + window.scrollY + offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
 
   const handleAddressSelect = (addressId: string) => {
     const address = addresses.find(addr => addr.id === addressId);
-    if (address) {
-      setSelectedAddressId(addressId);
-      setUseNewAddress(false);
-      setIsAddressSaved(true);
-      setFormData(prev => ({
-        ...prev,
-        firstName: address.first_name,
-        lastName: address.last_name,
-        phone: address.phone || '',
-        address: address.street,
-        city: address.city,
-        state: address.state,
-        zipCode: address.zipcode,
-        country: address.country,
-      }));
-    }
+    if (!address) return;
+
+    setSelectedAddressId(addressId);
+    setUseNewAddress(false);
+    setIsAddressSaved(true);
+    setFormData(prev => ({
+      ...prev,
+      firstName: address.first_name,
+      lastName: address.last_name,
+      phone: address.phone || '',
+      address: address.street,
+      city: address.city,
+      state: address.state,
+      zipCode: address.zipcode,
+      country: address.country,
+    }));
+
+    setTimeout(() => scrollToCoupon(-1), 150);
   };
 
   const handleUseNewAddress = () => {
@@ -189,17 +182,19 @@ const Checkout = () => {
     setUseNewAddress(true);
     setIsAddressSaved(false);
     setEditingAddress(null);
-    setFormData(prev => ({
-      ...prev,
+    setFormData({
       firstName: '',
       lastName: '',
+      email: formData.email,
       phone: '',
       address: '',
       city: '',
       state: '',
       zipCode: '',
       country: 'India',
-    }));
+      saveAddress: false,
+    });
+    
   };
 
   const handleDeleteAddress = async (addressId: string) => {
@@ -228,6 +223,31 @@ const Checkout = () => {
     setUseNewAddress(true);
     setSelectedAddressId(null);
     setIsAddressSaved(false);
+    
+  };
+
+  const handleNewAddressSaved = (newAddress: any) => {
+    refetchAddresses?.();
+    if (newAddress?.id) {
+      setSelectedAddressId(newAddress.id);
+      setUseNewAddress(false);
+      setIsAddressSaved(true);
+
+      setFormData(prev => ({
+        ...prev,
+        firstName: newAddress.first_name || prev.firstName,
+        lastName: newAddress.last_name || prev.lastName,
+        phone: newAddress.phone || prev.phone,
+        address: newAddress.street || prev.address,
+        city: newAddress.city || prev.city,
+        state: newAddress.state || prev.state,
+        zipCode: newAddress.zipcode || prev.zipCode,
+        country: newAddress.country || prev.country,
+      }));
+
+      // Scroll to saved addresses after adding new
+      setTimeout(() => scrollToSavedAddresses(-12), 200);
+    }
   };
 
   const handleFormSubmit = async (values: FormData) => {
@@ -237,7 +257,6 @@ const Checkout = () => {
     }
 
     setIsLoading(true);
-
     try {
       const shippingAddress = {
         fullName: `${values.firstName} ${values.lastName}`,
@@ -264,9 +283,9 @@ const Checkout = () => {
 
   const subtotal = totalPrice;
   const couponDiscount = appliedCoupon.discount;
-  const pointsDiscount = appliedPoints.discount;
-  const totalDiscount = couponDiscount + pointsDiscount;
-  const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
+const pointsDiscount = appliedPoints?.discount || 0;
+const totalDiscount = couponDiscount + pointsDiscount;
+const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee); 
 
   return (
     <Layout>
@@ -280,9 +299,9 @@ const Checkout = () => {
           <h1 className="text-xl font-semibold uppercase tracking-wider">CHECKOUT</h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 rounded-none">
+        <div className="grid grid-cols-1 lg:grid-cols-3 rounded-none gap-6">
           {/* Left Section */}
-          <div className="lg:col-span-2 rounded-none">
+          <div className="lg:col-span-2 rounded-none" ref={savedAddressesRef}>
             <CollapsibleSection title="Shipping Details" defaultOpen>
               {!addressesLoading && addresses.length > 0 && (
                 <SavedAddresses
@@ -302,14 +321,17 @@ const Checkout = () => {
                   setFormData={setFormData}
                   onSubmit={handleFormSubmit}
                   isLoading={isLoading}
-                  onAddressSaved={() => setIsAddressSaved(true)}
+                  onAddressSaved={(newAddress) => handleNewAddressSaved(newAddress)}
                   editingAddress={editingAddress}
                   refetchAddresses={refetchAddresses}
                   onAddressUpdated={(updatedAddress) => {
                     setEditingAddress(null);
                     setUseNewAddress(false);
-                    setSelectedAddressId(updatedAddress.id);
-                    setIsAddressSaved(true);
+                    if (updatedAddress?.id) {
+                      setSelectedAddressId(updatedAddress.id);
+                      setIsAddressSaved(true);
+                      setTimeout(() => scrollToSavedAddresses(-12), 200);
+                    }
                   }}
                 />
               )}
@@ -318,23 +340,25 @@ const Checkout = () => {
 
           {/* Right Sidebar */}
           <div className="rounded-none space-y-4">
-            <CollapsibleSection title="Apply Coupon" defaultOpen={false}>
+            <div ref={couponRef}></div>
+            <CollapsibleSection title="Apply Coupon" defaultOpen={true}>
               <CouponSection
                 cartTotal={totalPrice}
                 cartItems={cartItems}
-                onCouponApplied={handleCouponApplied}
-                onCouponRemoved={handleCouponRemoved}
+                onCouponApplied={(discount, code) => setAppliedCoupon({ code, discount })}
+                onCouponRemoved={() => setAppliedCoupon({ code: '', discount: 0 })}
                 appliedCoupon={appliedCoupon}
               />
             </CollapsibleSection>
 
             <CollapsibleSection title="Reward Points" defaultOpen={false}>
               <RewardPointsSection
-                cartTotal={totalPrice - appliedCoupon.discount}
-                onPointsApplied={handlePointsApplied}
-                onPointsRemoved={handlePointsRemoved}
-                appliedPoints={appliedPoints}
-              />
+  cartTotal={totalPrice - appliedCoupon.discount}
+  onPointsApplied={(points, discount) => setAppliedPoints({ points, discount })}
+  onPointsRemoved={() => setAppliedPoints(null)} // safe now
+  appliedPoints={appliedPoints}
+/>
+
             </CollapsibleSection>
 
             <CollapsibleSection title="Order Summary" defaultOpen={true}>
@@ -344,7 +368,7 @@ const Checkout = () => {
                     <img
                       src={item.image || '/placeholder.svg'}
                       alt={item.name}
-                      className={`h-16 w-16 object-cover rounded border-2 shadow-sm transition-all duration-300`}
+                      className="h-16 w-16 object-cover rounded border-2 shadow-sm transition-all duration-300"
                     />
                     <div className="flex-1">
                       <p className="font-bold text-sm uppercase line-clamp-1 tracking-wide">{item.name}</p>
@@ -374,12 +398,13 @@ const Checkout = () => {
                     </div>
                   )}
 
-                  {appliedPoints.discount > 0 && (
-                    <div className="flex justify-between text-blue-400">
-                      <span>Points</span>
-                      <span>-{formatPrice(pointsDiscount)}</span>
-                    </div>
-                  )}
+                 {appliedPoints?.discount > 0 && (
+  <div className="flex justify-between text-blue-400">
+    <span>Points</span>
+    <span>-{formatPrice(pointsDiscount)}</span>
+  </div>
+)}
+
 
                   <div className="flex justify-between">
                     <span className="font-bold uppercase tracking-wider">Shipping</span>
@@ -405,11 +430,7 @@ const Checkout = () => {
 
               {isAddressSaved && (
                 <Button
-                  onClick={() => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  handleFormSubmit(formData);
-}}
-
+                  onClick={() => handleFormSubmit(formData)}
                   disabled={isLoading}
                   className="w-full relative rounded-none font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
                 >

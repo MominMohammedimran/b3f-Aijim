@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { validatePincode } from '@/utils/pincodeService';
+
 interface AddressFormData {
   firstName: string;
   lastName: string;
@@ -25,7 +26,7 @@ interface AddressFormProps {
   setFormData: React.Dispatch<React.SetStateAction<AddressFormData>>;
   onSubmit: (values: AddressFormData) => void;
   isLoading: boolean;
-  onAddressSaved?: () => void;
+  onAddressSaved?: (newAddress?: any) => void; // Returns newly saved address
   editingAddress?: any;
   onAddressUpdated?: (address: any) => void;
   refetchAddresses?: () => void;
@@ -75,16 +76,16 @@ const AddressForm: React.FC<AddressFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Check if pincode is serviceable before proceeding
+
     if (!pincodeValidation?.isServiceable) {
       toast.error('Please enter a serviceable PIN code before saving address');
       return;
     }
-    
+
     setSaving(true);
+
     try {
-      // If editing an existing address, update it
+      // Update existing address
       if (editingAddress && currentUser) {
         const { error } = await supabase
           .from('addresses')
@@ -101,21 +102,23 @@ const AddressForm: React.FC<AddressFormProps> = ({
           .eq('id', editingAddress.id);
 
         if (error) throw error;
+
         toast.success('Address updated successfully!');
-        onAddressUpdated?.({ 
+        onAddressUpdated?.({
           ...editingAddress,
           first_name: formData.firstName,
           last_name: formData.lastName,
           phone: formData.phone,
-          street: formData.address,
+          address: formData.address,
           city: formData.city,
           state: formData.state,
-          zipcode: formData.zipCode,
+          zip_code: formData.zipCode,
           country: formData.country,
         });
-      } else if (formData.saveAddress && currentUser) {
-        // Save new address if checkbox is checked
-        const { error } = await supabase
+      } 
+      // Save new address
+      else if (formData.saveAddress && currentUser) {
+        const { data: insertedData, error } = await supabase
           .from('addresses')
           .insert({
             user_id: currentUser.id,
@@ -128,25 +131,21 @@ const AddressForm: React.FC<AddressFormProps> = ({
             zip_code: formData.zipCode,
             country: formData.country,
             is_default: false
-          });
+          })
+          .select()
+          .single();
 
         if (error) throw error;
+
         toast.success('Address saved successfully!');
+        onAddressSaved?.(insertedData); // Return new address
+        refetchAddresses?.();
+      } 
+      // If not saving, just notify parent
+      else {
         onAddressSaved?.();
-        refetchAddresses?.(); // Refresh addresses without page reload
-        setSaving(false);
-
-
-      } else {
-        // Just notify that form is complete if not saving
-        onAddressSaved?.();
-        setSaving(false);
-
       }
-      setSaving(false);
-     
     } catch (error: any) {
-     // console.error('Error saving/updating address:', error);
       toast.error(editingAddress ? 'Failed to update address' : 'Failed to save address');
     } finally {
       setSaving(false);
@@ -175,7 +174,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
             onChange={(e) => handleChange('lastName', e.target.value)}
             placeholder="Last Name"
             required
-            className="font-semibold text-xs  text-gray-100"
+            className="font-semibold text-xs text-gray-100"
           />
         </div>
       </div>
@@ -194,7 +193,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
           className="font-semibold text-xs text-gray-100"
         />
         <p className="text-[9px] lowercase font-semibold text-yellow-400 tracking-[1px] mt-1 leading-snug">
-          Enter a valid <span className=" font-semibold tracking-[1px] text-white">10-digit mobile number</span> to receive OTP & Calls for verification and delivery updates.
+          Enter a valid <span className="font-semibold tracking-[1px] text-white">10-digit mobile number</span> to receive OTP & Calls for verification and delivery updates.
         </p>
       </div>
 
@@ -209,9 +208,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
           required
           className="font-semibold text-xs text-gray-100"
         />
-        <p className="text-[9px] tracking-[1px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
-          Please enter a correct & complete address to ensure smooth and timely delivery.
-        </p>
       </div>
 
       <div>
@@ -222,19 +218,19 @@ const AddressForm: React.FC<AddressFormProps> = ({
           onChange={(e) => handleChange('city', e.target.value)}
           placeholder="City"
           required
-          className="font-semibold text-xs text-gray-100 "
+          className="font-semibold text-xs text-gray-100"
         />
       </div>
 
       <div>
         <Label htmlFor="state" className="text-xs font-semibold">State *</Label>
         <Select value={formData.state} onValueChange={(value) => handleChange('state', value)}>
-          <SelectTrigger className=" text-xs font-semibold  text-gray-100">
+          <SelectTrigger className="text-xs font-semibold text-gray-100">
             <SelectValue placeholder="-- Select State --" />
           </SelectTrigger>
           <SelectContent>
             {indianStates.map((state) => (
-              <SelectItem className="font-semibold text-xs"key={state} value={state}>
+              <SelectItem className="font-semibold text-xs" key={state} value={state}>
                 {state}
               </SelectItem>
             ))}
@@ -250,11 +246,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
           onChange={(e) => {
             const value = e.target.value.replace(/\D/g, '');
             handleChange('zipCode', value);
-            if (value.length === 6) {
-              checkPincodeServiceability(value);
-            } else {
-              setPincodeValidation(null);
-            }
+            if (value.length === 6) checkPincodeServiceability(value);
+            else setPincodeValidation(null);
           }}
           placeholder="6-digit PIN Code"
           pattern="[0-9]{6}"
@@ -262,17 +255,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
           required
           className="font-semibold text-xs text-gray-100"
         />
-        {checkingPincode && (
-          <p className="text-[9px] font-semibold text-yellow-400 mt-1">Checking serviceability...</p>
-        )}
-        {pincodeValidation && (
-          <p className={`text-[11px] font-semibold mt-1 ${pincodeValidation.isServiceable ? 'text-green-400' : 'text-red-400'}`}>
-            {pincodeValidation.message}
-          </p>
-        )}
-        {!pincodeValidation && !checkingPincode && (
-          <p className="text-[9px] lowercase tracking-[1px] font-semibold text-yellow-400 mt-1">Enter a valid 6-digit Indian PIN code</p>
-        )}
+        {checkingPincode && <p className="text-[9px] font-semibold text-yellow-400 mt-1">Checking serviceability...</p>}
+        {pincodeValidation && <p className={`text-[11px] font-semibold mt-1 ${pincodeValidation.isServiceable ? 'text-green-400' : 'text-red-400'}`}>{pincodeValidation.message}</p>}
       </div>
 
       <div>
@@ -283,9 +267,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
           readOnly
           className="font-semibold bg-gray-100 text-gray-800"
         />
-        <p className="text-[9px] lowercase font-semibold text-yellow-400 mt-1 leading-snug">
-          Currently deliver available <span className="font-semibold text-white">India</span> only
-        </p>
       </div>
 
       {currentUser && !editingAddress && (
@@ -295,7 +276,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
             checked={formData.saveAddress}
             onCheckedChange={(checked) => handleChange('saveAddress', checked as boolean)}
           />
-          <Label htmlFor="saveAddress" className="text-sm font-semibold text-yellow-400">
+          <Label htmlFor="saveAddress" className="text-xs font-semibold text-yellow-400">
             Save this address for future use
           </Label>
         </div>

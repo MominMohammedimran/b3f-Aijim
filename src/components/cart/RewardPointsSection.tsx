@@ -11,10 +11,7 @@ interface RewardPointsSectionProps {
   cartTotal: number;
   onPointsApplied: (points: number, discount: number) => void;
   onPointsRemoved: () => void;
-  appliedPoints?: {
-    points: number;
-    discount: number;
-  };
+  appliedPoints?: { points: number; discount: number } | null;
 }
 
 const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
@@ -26,7 +23,6 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
   const { currentUser } = useAuth();
   const [pointsToUse, setPointsToUse] = useState(0);
   const [availablePoints, setAvailablePoints] = useState(0);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (currentUser) fetchUserPoints();
@@ -48,7 +44,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
   };
 
   const handleApplyPoints = () => {
-    if (pointsToUse <= 0) return toast.error("Enter valid points to use");
+    if (pointsToUse <= 0) return toast.error("Enter valid points");
     if (pointsToUse > availablePoints) return toast.error("Not enough points");
     if (pointsToUse > cartTotal) return toast.error("Points exceed cart total");
 
@@ -58,8 +54,8 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
   };
 
   const handleRemovePoints = () => {
-    setPointsToUse(0);
-    onPointsRemoved();
+    setPointsToUse(0); // reset input
+    onPointsRemoved(); // set appliedPoints to null in parent
     toast.success("Reward points removed");
   };
 
@@ -71,8 +67,8 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
     setPointsToUse(newPoints);
   };
 
-  // Show message if no points
   if (!currentUser) return null;
+
   if (availablePoints <= 0) {
     return (
       <div className="w-full mb-5 p-3 bg-black text-white border border-gray-700 rounded-none text-center font-semibold">
@@ -85,9 +81,9 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
     (pointsToUse / Math.min(availablePoints, cartTotal)) * 100;
 
   return (
-    <div className="w-full mb-5 p-2 bg-none border border-gray-700 rounded-none transition-all duration-300">
+    <div className="w-full mb-5 p-2 border border-gray-700 rounded-none">
       {/* Header */}
-      <div className="flex items-center justify-start gap-2 border-b border-gray-700 pb-2 mb-3">
+      <div className="flex items-center gap-2 border-b border-gray-700 pb-2 mb-3">
         <Gift className="text-yellow-400 w-5 h-5" />
         <h3 className="text-lg font-semibold text-yellow-400 tracking-wide uppercase">
           Reward Points
@@ -96,14 +92,13 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
 
       {/* Available points info */}
       <div className="text-sm font-medium text-gray-300 mb-2">
-        Available:{" "}
-        <span className="text-yellow-400">{availablePoints} Points</span>{" "}
+        Available: <span className="text-yellow-400">{availablePoints} Points</span>{" "}
         <span className="text-xs text-gray-400">(1 Point = ₹1)</span>
       </div>
 
-      {/* Active / Apply state */}
+      {/* Apply / Remove Section */}
       <AnimatePresence mode="wait">
-        {appliedPoints ? (
+        {appliedPoints && appliedPoints.points > 0 ? (
           <motion.div
             key="applied"
             initial={{ opacity: 0, y: -10 }}
@@ -115,15 +110,13 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
               <div>
                 <p className="font-semibold text-yellow-400">Points Applied</p>
                 <p className="text-xs text-gray-400">
-                  Using {appliedPoints.points} points for ₹
-                  {appliedPoints.discount} off
+                  Using {appliedPoints.points} points for ₹{appliedPoints.discount} off
                 </p>
               </div>
               <Button
                 variant="outline"
-                size="xs"
                 onClick={handleRemovePoints}
-                className="border-none rounded-none px-1.5 py-1 font-semibold text-white hover:text-white bg-red-500 hover:bg-red-600"
+                className="border-none rounded-none px-1.5 py-1 font-semibold text-white bg-red-500 hover:bg-red-600"
               >
                 Remove
               </Button>
@@ -161,7 +154,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
                 }
                 className="text-center bg-gray-800 text-gray-200 border-gray-600 focus:ring-yellow-400"
                 placeholder="Enter points"
-                min="0"
+                min={0}
                 max={Math.min(availablePoints, cartTotal)}
               />
 
@@ -176,7 +169,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
               </Button>
             </div>
 
-            {/* Progress bar */}
+            {/* Progress Bar */}
             <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-yellow-400 rounded-full"
@@ -186,14 +179,14 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
               />
             </div>
 
-            {/* Action buttons */}
-            <div className="flex gap-2">
+            {/* Manual Action Buttons */}
+            <div className="flex gap-2 mb-10">
               <Button
                 onClick={handleApplyPoints}
-                disabled={loading || pointsToUse <= 0}
+                disabled={pointsToUse <= 0}
                 className="flex-1 text-xs font-semibold bg-yellow-500 hover:bg-yellow-600 text-black rounded-none"
               >
-                {loading ? "Applying..." : `Apply ${pointsToUse} Points`}
+                Apply Points
               </Button>
               <Button
                 variant="outline"
@@ -202,7 +195,6 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
                   setPointsToUse(maxUse);
                   toast.info(`Set to max usable points: ${maxUse}`);
                 }}
-                disabled={availablePoints <= 0}
                 className="text-xs border-gray-600 hover:bg-gray-800 text-gray-300"
               >
                 Use Max

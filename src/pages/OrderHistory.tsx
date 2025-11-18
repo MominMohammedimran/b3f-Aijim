@@ -113,7 +113,7 @@ const OrderHistory = () => {
     const secs = Math.floor((diff % (1000 * 60)) / 1000);
     return { text: `${hrs}h ${mins}m ${secs}s`, expired: false };
   };
-console.log(orders)
+
   if (loading) {
     return (
       <Layout>
