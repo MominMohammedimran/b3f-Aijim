@@ -1,75 +1,79 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Truck, RotateCcw, Shield } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Truck, RotateCcw, Shield } from "lucide-react";
 import Marquee from "react-fast-marquee";
-
-// ⭐ Swiper Imports
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
 const NewHero = () => {
-  // 🖼 Add multiple banner images here
-  const bannerImages = [
+  const bannerMobile = [
     "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
     "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
     "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
   ];
 
+  const bannerLargeScreens = [
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/aijim-banner-large-001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9haWppbS1iYW5uZXItbGFyZ2UtMDAxLmpwZyIsImlhdCI6MTc2MzQ1MDAyOCwiZXhwIjoxNzk0OTg2MDI4fQ.rEfCxgTFvx1q8RDeLeW-OtqZoXRliwjBSCx4KdvhBaA",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/aijim-banner-large-001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9haWppbS1iYW5uZXItbGFyZ2UtMDAxLmpwZyIsImlhdCI6MTc2MzQ1MDAyOCwiZXhwIjoxNzk0OTg2MDI4fQ.rEfCxgTFvx1q8RDeLeW-OtqZoXRliwjBSCx4KdvhBaA",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/aijim-banner-large-001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9haWppbS1iYW5uZXItbGFyZ2UtMDAxLmpwZyIsImlhdCI6MTc2MzQ1MDAyOCwiZXhwIjoxNzk0OTg2MDI4fQ.rEfCxgTFvx1q8RDeLeW-OtqZoXRliwjBSCx4KdvhBaA",
+  ];
+
+  const [banners, setBanners] = useState(bannerMobile);
+
+  useEffect(() => {
+    const updateBanner = () => {
+      const width = window.innerWidth;
+      if (width <= 640) {
+        setBanners(bannerMobile);
+      } else {
+        setBanners(bannerLargeScreens);
+      }
+    };
+
+    updateBanner();
+    window.addEventListener("resize", updateBanner);
+    return () => window.removeEventListener("resize", updateBanner);
+  }, []);
+
   return (
-    <div className="relative h-[70vh] mt-4 overflow-hidden">
+    <div className="relative w-full overflow-hidden">
 
-      {/* Hero Background Image (NOW CAROUSEL) */}
-      <div className="absolute inset-0 z-0">
-        <Swiper
-          modules={[Autoplay]}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          loop={true}
-          speed={1200}
-          allowTouchMove={false} // ❌ No user swipe
-          className="w-full h-full"
-        >
-          {bannerImages.map((img, index) => (
-            <SwiperSlide key={index}>
-              <img
-                src={img}
-                alt={`AIJIM lifestyle banner ${index + 1}`}
-                className="w-full h-full object-fit object-center"
-                loading="eager"
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-        <div className="absolute inset-0 bg-black/40"></div>
-      </div>
+      {/* Banner Carousel */}
+      <Swiper
+        modules={[Autoplay]}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        loop={banners.length > 1}
+        speed={1200}
+        allowTouchMove={false}
+        className="w-full h-full"
+      >
+        {banners.map((img, index) => (
+          <SwiperSlide key={index}>
+            <img
+              src={img}
+              alt={`AIJIM lifestyle banner ${index + 1}`}
+              className="
+                w-full
+                object-fill
+                h-full     // Mobile height
+                sm:h-[50vh]   // Tablet height
+                md:h-[70vh]   // Laptop / small desktop
+                lg:h-[75vh] 
+                sm:mb-6
+                md:mb-8
+                mb-6 // Large desktop
+              "
+              loading="eager"
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
 
-      {/* Hero Content 
-      <div className="relative z-10 flex flex-col justify-center min-h-screen px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 tracking-tight">
-            OVERSIZED
-            <span className="block text-accent">PERFECTION</span>
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto font-medium">
-            Premium streetwear that defines your style. Comfort meets attitude in every piece.
-          </p>
-          
-          <Link to="/products">
-            <Button 
-              size="lg" 
-              className="bg-accent hover:bg-accent/90 text-white font-bold text-lg px-12 py-6 rounded-none transition-all duration-300 hover:scale-105"
-            >
-              SHOP NOW
-              <ArrowRight className="ml-2 h-6 w-6" />
-            </Button>
-          </Link>
-        </div>
-      </div>*/}
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/40 mt-5"></div>
 
-      {/* Trust Signals Banner */}
-      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 pt-1 pb-1 md:h-8 md:pt-3 md:pb-3 flex items-center">
+      {/* Trust Messages */}
+      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 pt-1 pb-1 mt-5 md:h-8 md:pt-3 md:pb-3 flex items-center">
         <Marquee gradient={false} speed={5} pauseOnHover className="w-full">
           {Array.from({ length: 14 }).map((_, i) => (
             <span
@@ -83,7 +87,6 @@ const NewHero = () => {
           ))}
         </Marquee>
       </div>
-
     </div>
   );
 };

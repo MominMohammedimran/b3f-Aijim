@@ -154,13 +154,13 @@ const ProductVideoSection: React.FC = () => {
       <div
         ref={carouselRef}
         className="overflow-x-scroll no-scrollbar scroll-smooth snap-x snap-mandatory flex w-full p-4 gap-2"
-        style={{ scrollPaddingLeft: '20%' }} // Helps center the first item visually
+         style={{ scrollBehavior: "smooth", scrollPaddingLeft: "20%" }}
       >
         {videos.map((video) => (
           <div
             key={video.id}
             // Use flex-shrink-0 and explicit width/aspect ratio for consistent sizing
-            className={`flex-shrink-0 snap-center relative w-[60vw] max-w-[280px] aspect-[9/16] bg-gray-900 overflow-hidden rounded-xl shadow-2xl transition-all duration-500 cursor-pointer ${
+            className={`flex-shrink-0 snap-center relative w-[65vw] max-w-[280px] aspect-[9/16] bg-gray-900 overflow-hidden rounded-xl shadow-2xl transition-all duration-500 cursor-pointer ${
                 activeVideo === video.id ? "scale-[1.05] shadow-black-500/50 ring-2 ring-black-400" : "scale-90 opacity-60"
             }`}
             onClick={() => scrollToVideo(videos.findIndex(v => v.id === video.id))} // Tap to center/focus
@@ -196,9 +196,7 @@ const ProductVideoSection: React.FC = () => {
             )}
 
             {/* ⏱️ Video Duration (Mimic the image's duration overlay) */}
-             <div className="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                00:27
-             </div>
+           
 
             {/* 🏷️ Title (Moved off-screen/removed for image-matching simplicity, but you can re-add it) */}
             {/* <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 font-semibold">

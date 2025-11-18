@@ -10,6 +10,7 @@ import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
 import { cleanupServiceWorkers } from "./utils/cleanup-sw";
+import { startVersionCheck, stopVersionCheck } from "./version-check";
 
 const queryClient = new QueryClient();
 
@@ -18,41 +19,31 @@ function App() {
 
   useEffect(() => {
     initializeSecurity();
-
-    /** 🧹 Remove all service workers and caches **/
     cleanupServiceWorkers();
+    startVersionCheck(); // 🚀 start auto version updater
 
-    /** 🚫 Disable right-click, inspect & download **/
-    const disableDevTools = () => {
-      const handleContextMenu = (e: MouseEvent) => e.preventDefault();
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (
-          e.key === "F12" ||
-          (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase()))
-        ) {
-          e.preventDefault();
-          toast.warning("Action disabled for security");
-        }
-      };
-
-      document.addEventListener("contextmenu", handleContextMenu);
-      document.addEventListener("keydown", handleKeyDown);
-
-      document.body.style.userSelect = "none";
-      document.body.style.webkitUserDrag = "none";
-      document.body.style.webkitTouchCallout = "none";
-
-      return () => {
-        document.removeEventListener("contextmenu", handleContextMenu);
-        document.removeEventListener("keydown", handleKeyDown);
-      };
+    /** 🚫 Disable right-click & inspector **/
+    const handleContextMenu = (e) => e.preventDefault();
+    const handleKeyDown = (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase()))
+      ) {
+        e.preventDefault();
+        toast.warning("Action disabled for security");
+      }
     };
 
-    const cleanup = disableDevTools();
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.userSelect = "none";
 
     const timer = setTimeout(() => setLoading(false), 1000);
+
     return () => {
-      cleanup();
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("keydown", handleKeyDown);
+      stopVersionCheck(); // cleanup
       clearTimeout(timer);
     };
   }, []);

@@ -83,12 +83,22 @@ const Navbar = () => {
         {/* Right Icons */}
         <div className="flex items-center gap-4 mr-4 pb-2">
           {/* Search Icon */}
-          <Link to="/search" aria-label="Search" className="text-white hover:text-yellow-400">
+          <Link 
+           onClick={() => {
+                
+               window.scrollTo(0, 0);
+              }}
+               to="/search" aria-label="Search" className="text-white hover:text-yellow-400">
             <Search size={20} />
           </Link>
 
           {/* Cart Icon */}
-          <Link to="/cart" aria-label="Cart" className="relative">
+          <Link
+           onClick={() => {
+                
+               window.scrollTo(0, 0);
+              }} 
+              to="/cart" aria-label="Cart" className="relative">
             <ShoppingCart size={20} className="text-white hover:text-yellow-400" />
             {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">

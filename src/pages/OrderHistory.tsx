@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import Layout from "../components/layout/Layout";
 import SEOHelmet from "@/components/seo/SEOHelmet";
 import useSEO from "@/hooks/useSEO";
@@ -19,6 +19,8 @@ const OrderHistory = () => {
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(new Date());
   const seo = useSEO("/orders");
+    const navigate = useNavigate();
+  
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 1000);
@@ -111,7 +113,7 @@ const OrderHistory = () => {
     const secs = Math.floor((diff % (1000 * 60)) / 1000);
     return { text: `${hrs}h ${mins}m ${secs}s`, expired: false };
   };
-
+console.log(orders)
   if (loading) {
     return (
       <Layout>
@@ -124,6 +126,7 @@ const OrderHistory = () => {
       </Layout>
     );
   }
+
 
   return (
     <Layout>
@@ -209,6 +212,7 @@ const OrderHistory = () => {
                             src={item.image}
                             alt={item.name}
                             loading="lazy"
+                         
                             className="h-14 w-14 object-cover rounded-sm border border-gray-700"
                           />
                           <div className="flex-1">
