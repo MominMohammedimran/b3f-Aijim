@@ -405,7 +405,11 @@ const Checkout = () => {
 
               {isAddressSaved && (
                 <Button
-                  onClick={() => handleFormSubmit(formData)}
+                  onClick={() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  handleFormSubmit(formData);
+}}
+
                   disabled={isLoading}
                   className="w-full relative rounded-none font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
                 >

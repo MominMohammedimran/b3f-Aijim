@@ -268,7 +268,28 @@ console.log(orders)
                       )}
                     </div>
 
-                    <p className="text-xs text-center font-semibold text-gray-400 mb-1">
+                   
+                    <div className="mt-0 flex p-3 gap-2">
+                              {order.status !== "delivered" && (
+                                <Link
+                                  to={`/payment-issue?orderId=${order.order_number}`}
+                                  className="flex-1"
+                                >
+                                  <Button className="bg-red-600 hover:bg-red700 text-white  w-full py-3 rounded-none font-semibold">
+                                    Payment Issue?
+                                  </Button>
+                                </Link>
+                              )}
+                              <Link
+                                to={`/order-related-issue?orderId=${order.order_number}`}
+                                className="flex-1"
+                              >
+                                <Button className="bg-red-600 hover:bg-red-700 text-white w-full py-3 rounded-none font-semibold">
+                                  Order Issue?
+                                </Button>
+                              </Link>
+                            </div>
+                             <p className="text-xs text-center font-semibold text-gray-400 mb-1">
                       Booked on{" "}
                       {new Date(order.created_at).toLocaleDateString("en-US", {
                         weekday: "short",
