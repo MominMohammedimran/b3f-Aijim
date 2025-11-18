@@ -9,6 +9,8 @@ import { ActiveProductProvider } from "./context/ActiveProductContext";
 import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
+import { cleanupServiceWorkers } from "./utils/cleanup-sw";
+import { startVersionCheck, stopVersionCheck } from "./version-check";
 
 const queryClient = new QueryClient();
 
@@ -17,10 +19,12 @@ function App() {
 
   useEffect(() => {
     initializeSecurity();
+    cleanupServiceWorkers();
+    startVersionCheck(); // 🚀 start auto version updater
 
     /** 🚫 Disable right-click & inspector **/
-    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleContextMenu = (e) => e.preventDefault();
+    const handleKeyDown = (e) => {
       if (
         e.key === "F12" ||
         (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase()))
@@ -39,6 +43,7 @@ function App() {
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu);
       document.removeEventListener("keydown", handleKeyDown);
+      stopVersionCheck(); // cleanup
       clearTimeout(timer);
     };
   }, []);
