@@ -19,27 +19,29 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // -----------------------------
 // Static public routes
 // -----------------------------
+const today = new Date().toISOString().split("T")[0];
+
 const staticUrls = [
-  { loc: "/", changefreq: "daily", priority: 1.0 },
-  { loc: "/search", changefreq: "daily", priority: 0.8 },
-  { loc: "/cart", changefreq: "daily", priority: 0.8 },
-  { loc: "/checkout", changefreq: "daily", priority: 0.7 },
-  { loc: "/payment", changefreq: "daily", priority: 0.5 },
-  { loc: "/about-us", changefreq: "monthly", priority: 0.5 },
-  { loc: "/contact-us", changefreq: "monthly", priority: 0.5 },
-  { loc: "/orders", changefreq: "daily", priority: 0.6 },
-  { loc: "/profile", changefreq: "daily", priority: 0.6 },
-  { loc: "/account", changefreq: "daily", priority: 0.5 },
-  { loc: "/track-order", changefreq: "daily", priority: 0.5 },
-  
-  { loc: "/wishlist", changefreq: "daily", priority: 0.5 },
-  { loc: "/thank-you", changefreq: "daily", priority: 0.5 },
-  { loc: "/privacy-policy", changefreq: "yearly", priority: 0.2 },
-  { loc: "/terms-conditions", changefreq: "yearly", priority: 0.2 },
-  { loc: "/shipping-delivery", changefreq: "yearly", priority: 0.2 },
-  { loc: "/cancellation-refund", changefreq: "yearly", priority: 0.2 },
-  { loc: "/forgot-password", changefreq: "monthly", priority: 0.3 },
+  { loc: "/", changefreq: "daily", priority: 1.0, lastmod: today },
+  { loc: "/search", changefreq: "daily", priority: 0.8, lastmod: today },
+  { loc: "/cart", changefreq: "daily", priority: 0.8, lastmod: today },
+  { loc: "/checkout", changefreq: "daily", priority: 0.7, lastmod: today },
+  { loc: "/payment", changefreq: "daily", priority: 0.5, lastmod: today },
+  { loc: "/about-us", changefreq: "monthly", priority: 0.5, lastmod: today },
+  { loc: "/contact-us", changefreq: "monthly", priority: 0.5, lastmod: today },
+  { loc: "/orders", changefreq: "daily", priority: 0.6, lastmod: today },
+  { loc: "/profile", changefreq: "daily", priority: 0.6, lastmod: today },
+  { loc: "/account", changefreq: "daily", priority: 0.5, lastmod: today },
+  { loc: "/track-order", changefreq: "daily", priority: 0.5, lastmod: today },
+  { loc: "/wishlist", changefreq: "daily", priority: 0.5, lastmod: today },
+  { loc: "/thank-you", changefreq: "daily", priority: 0.5, lastmod: today },
+  { loc: "/privacy-policy", changefreq: "yearly", priority: 0.2, lastmod: today },
+  { loc: "/terms-conditions", changefreq: "yearly", priority: 0.2, lastmod: today },
+  { loc: "/shipping-delivery", changefreq: "yearly", priority: 0.2, lastmod: today },
+  { loc: "/cancellation-refund", changefreq: "yearly", priority: 0.2, lastmod: today },
+  { loc: "/forgot-password", changefreq: "monthly", priority: 0.3, lastmod: today },
 ];
+
 
 // -----------------------------
 // Fetch products
