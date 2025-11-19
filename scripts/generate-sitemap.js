@@ -39,9 +39,8 @@ const staticUrls = [
   { loc: "/terms-conditions", changefreq: "yearly", priority: 0.2, lastmod: today },
   { loc: "/shipping-delivery", changefreq: "yearly", priority: 0.2, lastmod: today },
   { loc: "/cancellation-refund", changefreq: "yearly", priority: 0.2, lastmod: today },
-  { loc: "/forgot-password", changefreq: "monthly", priority: 0.3, lastmod: today },
+  
 ];
-
 
 // -----------------------------
 // Fetch products
@@ -75,13 +74,13 @@ function generateProductJsonLd(product) {
     author: "Anonymous",
     datePublished: new Date().toISOString().split("T")[0],
     reviewBody: "This is a great product!",
-    reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" }
+    reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
   };
 
   const aggregateRating = {
     "@type": "AggregateRating",
     ratingValue: "5",
-    reviewCount: 1
+    reviewCount: 1,
   };
 
   return {
@@ -96,10 +95,10 @@ function generateProductJsonLd(product) {
       url,
       priceCurrency: "INR",
       price,
-      availability: "https://schema.org/InStock"
+      availability: "https://schema.org/InStock",
     },
     review: [review],
-    aggregateRating
+    aggregateRating,
   };
 }
 
@@ -109,7 +108,7 @@ function generateProductJsonLd(product) {
 function generateSitemap(products) {
   const productUrls = products.map(p => ({
     loc: `/product/details/${p.code}`,
-    lastmod: p.updated_at ? new Date(p.updated_at).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+    lastmod: p.updated_at ? new Date(p.updated_at).toISOString().split("T")[0] : today,
     changefreq: "weekly",
     priority: 0.9,
   }));
@@ -118,12 +117,13 @@ function generateSitemap(products) {
   const categoryUrls = categories.map(c => ({
     loc: `/products/${encodeURIComponent(c)}`,
     changefreq: "weekly",
-    priority: 0.8
+    priority: 0.8,
+    lastmod: today,
   }));
 
   const allUrls = [
     ...staticUrls,
-    { loc: "/products", changefreq: "daily", priority: 1.0, lastmod: new Date().toISOString().split("T")[0] },
+    { loc: "/products", changefreq: "daily", priority: 1.0, lastmod: today },
     ...categoryUrls,
     ...productUrls,
   ];
@@ -131,8 +131,7 @@ function generateSitemap(products) {
   const header = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
   const footer = '</urlset>';
 
-  const body = allUrls.map(({ loc, lastmod, changefreq, priority }) => `
-  <url>
+  const body = allUrls.map(({ loc, lastmod, changefreq, priority }) => `  <url>
     <loc>${baseUrl}${loc}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${changefreq}</changefreq>

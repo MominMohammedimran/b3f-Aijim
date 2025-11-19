@@ -10,14 +10,19 @@ const videos = [
   },
   {
     id: 2,
-    title: "Tshirt Design",
-    src: "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/aijim-first-video.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2FpamltLWZpcnN0LXZpZGVvLm1wNCIsImlhdCI6MTc2MjY3NTg2NCwiZXhwIjoxNzk0MjExODY0fQ.9bs6lmPAdviCi2rrcjMYowMVA8fSsz3t4KdqN7zG81s",
+    title: "Website Launch",
+    src: "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Index-videos/aijim-launch-video-19-11-2025.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL0luZGV4LXZpZGVvcy9haWppbS1sYXVuY2gtdmlkZW8tMTktMTEtMjAyNS5tcDQiLCJpYXQiOjE3NjM1NDgyMjAsImV4cCI6MTc5NTA4NDIyMH0.Wr63dKcqSf5uhE1Nxv0MWeJCKQ671CV-L7ve7AiRlxI",
  },
-  {
+   {
     id: 3,
-    title: "Tshirt Photoshoot",
+    title: "Aijim Story",
    src: "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/aijim-first-video.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2FpamltLWZpcnN0LXZpZGVvLm1wNCIsImlhdCI6MTc2MjY3NTg2NCwiZXhwIjoxNzk0MjExODY0fQ.9bs6lmPAdviCi2rrcjMYowMVA8fSsz3t4KdqN7zG81s",
-  },
+   },
+  {
+    id: 4,
+    title: "Website Launch",
+    src: "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Index-videos/aijim-launch-video-19-11-2025.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL0luZGV4LXZpZGVvcy9haWppbS1sYXVuY2gtdmlkZW8tMTktMTEtMjAyNS5tcDQiLCJpYXQiOjE3NjM1NDgyMjAsImV4cCI6MTc5NTA4NDIyMH0.Wr63dKcqSf5uhE1Nxv0MWeJCKQ671CV-L7ve7AiRlxI",
+ },
   
   
 ];
