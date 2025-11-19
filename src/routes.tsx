@@ -64,7 +64,7 @@ const AppRoutes = () => {
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
       {/* Auto SEO updates on every route change */}
-       <NewSEOHelmet />
+       
 
       <Routes>
         <Route path="/" element={<Index />} />
@@ -130,6 +130,7 @@ const AppRoutes = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      {/*   <NewSEOHelmet />*/}
     </BrowserRouter>
   );
 };
