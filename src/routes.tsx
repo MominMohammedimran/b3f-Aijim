@@ -2,17 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import useSEO from "@/hooks/useSEO";
 
-// ---------------------------
-// 🔥 Auto SEO Component (Correct Version)
-// ---------------------------
-const AutoSEO = () => {
-  const { pathname } = useLocation();
-
-  // directly pass the pathname to your SEO handler
-  useSEO(pathname);
-
-  return null;
-};
+import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
 
 // ---------------------------
 // 🔥 Main App Routes
@@ -74,7 +64,7 @@ const AppRoutes = () => {
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
       {/* Auto SEO updates on every route change */}
-      <AutoSEO />
+       <NewSEOHelmet />
 
       <Routes>
         <Route path="/" element={<Index />} />

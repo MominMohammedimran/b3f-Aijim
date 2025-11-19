@@ -6,6 +6,8 @@ import useSEO from "@/hooks/useSEO";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../integrations/supabase/client";
 import { Order } from "../lib/types";
+import { ChevronDown, ChevronUp } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { updateInventoryFromPaidOrders } from "@/hooks/useProductInventory";
@@ -19,6 +21,7 @@ const OrderHistory = () => {
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(new Date());
   const seo = useSEO("/orders");
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -122,6 +125,7 @@ const OrderHistory = () => {
       },
     });
   };
+  
 
   if (loading) {
     return (
@@ -219,7 +223,7 @@ const OrderHistory = () => {
                   </div>
 
                   {/* SCROLLABLE ITEMS (equal height cards) */}
-                  <div className="p-4 space-y-1 overflow-y-auto flex-1 custom-scroll">
+                  <div className="p-4  overflow-y-auto flex-1 custom-scroll">
                     {order.items.map((item, i) => (
                       <div
                         key={i}
@@ -249,7 +253,7 @@ const OrderHistory = () => {
 
                   {/* COUNTDOWN */}
                   {order.payment_status === "pending" && !expired && (
-                    <p className="text-xs text-center text-yellow-400 font-medium px-3 pb-2">
+                    <p className="text-xs text-center text-yellow-400 font-medium  pb-2">
                       Complete payment in <span className="text-white">{countdown}</span>
                     </p>
                   )}
@@ -266,28 +270,42 @@ const OrderHistory = () => {
 )}
 
 
-                  {/* BOTTOM ACTIONS */}
-<div className="p-4 border-t border-gray-800 flex gap-3">
-  {/* View Details Button */}
+      <div className="border-t border-gray-800">
+      {/* Dropdown Toggle */}
+      <div
+        className="p-4 flex justify-between items-center cursor-pointer"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="text-sm font-medium text-gray-200">More Details</span>
+        {isOpen ? (
+          <ChevronUp className="w-5 h-5 text-gray-200" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-gray-200" />
+        )}
+      </div>
+
+      {/* Collapsible Buttons */}
+      {isOpen && (
+        <div className="px-4 pb-4 flex flex-col gap-3">
+          {/* Top Row: View Details + Cancel */}
+       <div className="flex gap-3">
   <Link
     to={`/order-preview/${order.order_number}`}
-    className={`${["pending", "processing", "confirmed"].includes(order.status) ? "flex-1" : "w-full"}`}
+    className={`${
+      !(["pending", "processing", "confirmed"].includes(order.status) && !expired)
+        ? "flex-1"
+        : "flex-1" // you can remove flex-1 if you want it to shrink automatically with Cancel
+    }`}
   >
     <Button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black text-sm font-semibold rounded-none h-10">
       View Details
     </Button>
   </Link>
 
-  {/* Cancel Button (only for certain statuses) */}
-  {["pending", "processing", "confirmed"].includes(order.status) && (
+  {["pending", "processing", "confirmed"].includes(order.status) && !expired && (
     <Button
       onClick={() => handleRemoveOrder(order.id)}
-      disabled={expired}
-      className={`w-1/2 sm:w-auto text-sm font-semibold rounded-none h-10 ${
-        expired
-          ? "bg-gray-700 text-gray-400"
-          : "bg-red-600 hover:bg-red-700 text-white"
-      }`}
+      className="w-1/2 sm:w-auto bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-none h-10"
     >
       Cancel
     </Button>
@@ -295,22 +313,33 @@ const OrderHistory = () => {
 </div>
 
 
-{/* EXTRA BUTTONS */}
-<div className="px-4 pb-4 grid grid-cols-2 gap-3">
-  {order.status !== "delivered" && (
-    <Link to={`/payment-issue?orderId=${order.order_number}`}>
-      <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
-        Payment Issue
-      </Button>
-    </Link>
-  )}
+          {/* Bottom Buttons: Payment Issue / Order Issue */}
+          <div className="flex gap-3">
+          {order.status !== "delivered" && (
+            <Link
+              to={`/payment-issue?orderId=${order.order_number}`}
+              className="w-full"
+            >
+              <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
+                Payment Issue
+              </Button>
+            </Link>
+          )}
 
-  <Link to={`/order-related-issue?orderId=${order.order_number}`}>
-    <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
-      Order Issue
-    </Button>
-  </Link>
-</div>
+          <Link
+            to={`/order-related-issue?orderId=${order.order_number}`}
+            className="w-full"
+          >
+            <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
+              Order Issue
+            </Button>
+          </Link>
+          </div>
+        </div>
+      )}
+    </div>
+
+
 
 
                   {/* FOOTER DATE */}
