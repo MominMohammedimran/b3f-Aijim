@@ -7,15 +7,15 @@ import "swiper/css";
 
 const NewHero = () => {
   const bannerMobile = [
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/Banner/aijim-main-banner-001.png",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-mobile-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1tb2JpbGUtYmFubmVyLTAwMS53ZWJwIiwiaWF0IjoxNzYzNTQ1MjA3LCJleHAiOjE3OTUwODEyMDd9.G2BkqoUb1aPI3VSD2iy7VDRVSk3rjxwbWmotEV0YluI",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-mobile-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1tb2JpbGUtYmFubmVyLTAwMS53ZWJwIiwiaWF0IjoxNzYzNTQ1MjA3LCJleHAiOjE3OTUwODEyMDd9.G2BkqoUb1aPI3VSD2iy7VDRVSk3rjxwbWmotEV0YluI",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-mobile-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1tb2JpbGUtYmFubmVyLTAwMS53ZWJwIiwiaWF0IjoxNzYzNTQ1MjA3LCJleHAiOjE3OTUwODEyMDd9.G2BkqoUb1aPI3VSD2iy7VDRVSk3rjxwbWmotEV0YluI",
   ];
 
   const bannerLargeScreens = [
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/aijim-banner-large-001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9haWppbS1iYW5uZXItbGFyZ2UtMDAxLmpwZyIsImlhdCI6MTc2MzQ1MDAyOCwiZXhwIjoxNzk0OTg2MDI4fQ.rEfCxgTFvx1q8RDeLeW-OtqZoXRliwjBSCx4KdvhBaA",
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/aijim-banner-large-001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9haWppbS1iYW5uZXItbGFyZ2UtMDAxLmpwZyIsImlhdCI6MTc2MzQ1MDAyOCwiZXhwIjoxNzk0OTg2MDI4fQ.rEfCxgTFvx1q8RDeLeW-OtqZoXRliwjBSCx4KdvhBaA",
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/aijim-banner-large-001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9haWppbS1iYW5uZXItbGFyZ2UtMDAxLmpwZyIsImlhdCI6MTc2MzQ1MDAyOCwiZXhwIjoxNzk0OTg2MDI4fQ.rEfCxgTFvx1q8RDeLeW-OtqZoXRliwjBSCx4KdvhBaA",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2MzU0NTE4NCwiZXhwIjoxNzk1MDgxMTg0fQ.h-mRicJnUv-G5tLc4pRCtVcNZu18rBB_8_mwjxw7tY4",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2MzU0NTE4NCwiZXhwIjoxNzk1MDgxMTg0fQ.h-mRicJnUv-G5tLc4pRCtVcNZu18rBB_8_mwjxw7tY4",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2MzU0NTE4NCwiZXhwIjoxNzk1MDgxMTg0fQ.h-mRicJnUv-G5tLc4pRCtVcNZu18rBB_8_mwjxw7tY4",
   ];
 
   const [banners, setBanners] = useState(bannerMobile);

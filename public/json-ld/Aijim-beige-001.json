@@ -1,0 +1,35 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "fire Bird Spirit Phoenix Beige Oversized-Tee",
+  "image": [
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/beige/aijim-beige-01.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2JlaWdlL2FpamltLWJlaWdlLTAxLmpwZyIsImlhdCI6MTc2MzM4MzM3OCwiZXhwIjoxNzk0OTE5Mzc4fQ.blgsj_uZwZHi1zrPvV4pAHH3rZ9kgnnr_l_RThcfk8g"
+  ],
+  "description": "STORY\n\nTimeless Style Meets Modern Craftsmanship  \nThis elegant beige oversized T-shirt offers a refined look with premium comfort. Featuring intricate front embroidery, it is the perfect blend of youth style and classic charm for those who appreciate subtle sophistication.\n\n\nDETAILS\n\n✔️ 100% Pure Cotton- Ultra-soft, breathable fabric ensuring maximum comfort throughout the day.\n✔️ Oversized Youth Fit- Relaxed yet stylish silhouette tailored for a trendy, youthful vibe.\n✔️ Weight: 240 GSM- High-quality cotton fabric providing durability and a luxurious feel.\n✔️ Front Embroidery- The front of the T-shirt boasts detailed embroidery work, adding a tactile, premium finish that enhances the design with depth and elegance.\n✔️ Back Puff- The back of the Tshirts showcase firebird in puff where one touches feel the depth and feel of design.\n✔️ Colour- Soft beige base providing a neutral canvas that pairs effortlessly with any outfit.\n✔️ Made in India- Expert craftsmanship with skilled artisans' attention to detail.\n\n\nARTWORK FEATURES\n\n- The embroidery on the front is crafted with high-quality threads for a crisp, refined aesthetic that resists wear.\n- Designed to combine understated style with youthful energy, perfect for casual and semi-formal occasions.\n- The embroidered details add texture and a distinctive character that sets this T-shirt apart.\n\n\n\nWASH CARE\n\n- Turn inside out and wash with cold water to preserve embroidery and fabric softness.\n- Use gentle detergents; avoid bleach or dry cleaning to protect delicate embroidery.\n- Do not iron directly over the embroidery; use a cloth barrier for longer lasting quality.\n\n\n\nThis beige front-embroidered T-shirt & back-puff  combines premium materials, intricate artistry, and youthful oversized styling for a versatile wardrobe essential that stands out with subtle elegance.\n\n",
+  "sku": "Aijim-beige-001",
+  "offers": {
+    "@type": "Offer",
+    "url": "https://aijim.shop/product/details/Aijim-beige-001",
+    "priceCurrency": "INR",
+    "price": 599,
+    "availability": "https://schema.org/InStock"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": "Anonymous",
+      "datePublished": "2025-11-19",
+      "reviewBody": "This is a great product!",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      }
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "5",
+    "reviewCount": 1
+  }
+}

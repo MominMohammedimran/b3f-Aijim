@@ -7,6 +7,7 @@ import { products } from '@/lib/data';
 import ProductDetailsContent from '@/components/products/details/ProductDetailsContent';
 import SEOHelmet from '@/components/seo/SEOHelmet';
 import useSEO from '@/hooks/useSEO';
+import ProductJsonLd from '@/components/products/ProductJsonLd';
 
 const ProductDetailsPage = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -41,7 +42,10 @@ const ProductDetailsPage = () => {
 
         {/* If product exists → show details */}
         {product ? (
+          <>
           <ProductDetailsContent product={product} />
+            <ProductJsonLd product={product} />
+            </>
         ) : (
           // No product found → show message
           <div className="bg-gray-900 shadow-sm p-8 text-center">
