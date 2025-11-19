@@ -8,22 +8,21 @@ interface LiveViewingCounterProps {
 }
 
 const LiveViewingCounter: React.FC<LiveViewingCounterProps> = ({ productId }) => {
-  const [viewCount, setViewCount] = useState(0);
+  const MIN_VIEW_COUNT = 5;
+
+  const [viewCount, setViewCount] = useState(MIN_VIEW_COUNT);
   const [realUserCount, setRealUserCount] = useState(0);
-  const [staticBaseCount, setStaticBaseCount] = useState(0);
 
   useEffect(() => {
-    const baseCount = Math.floor(Math.random() * 8) + 5;
-    setStaticBaseCount(baseCount);
-    setViewCount(baseCount);
-
     const channel = supabase
       .channel(`product-${productId}`)
       .on("presence", { event: "sync" }, () => {
         const state = channel.presenceState();
-        const userCount = Object.keys(state).length;
-        setRealUserCount(userCount);
-        setViewCount(userCount > 0 ? baseCount + userCount : baseCount);
+        const users = Object.keys(state).length;
+        setRealUserCount(users);
+
+        // Final count logic → Minimum 5
+        setViewCount(Math.max(MIN_VIEW_COUNT, MIN_VIEW_COUNT + users));
       });
 
     channel.subscribe(async (status) => {
@@ -35,24 +34,13 @@ const LiveViewingCounter: React.FC<LiveViewingCounterProps> = ({ productId }) =>
       }
     });
 
-    const interval = setInterval(() => {
-      if (realUserCount === 0) {
-        const variation = Math.floor(Math.random() * 3) - 1;
-        const newBaseCount = Math.max(5, Math.min(12, baseCount + variation));
-        setStaticBaseCount(newBaseCount);
-        setViewCount(newBaseCount);
-      }
-    }, Math.random() * 20000 + 15000);
-
     return () => {
-      clearInterval(interval);
       supabase.removeChannel(channel);
     };
   }, [productId]);
 
   return (
     <div className="flex items-center gap-2 m-4 mb-6">
-      {/* Glowing Yellow Live Dot */}
       <motion.div
         animate={{
           scale: [1, 1.4, 1],
@@ -67,10 +55,6 @@ const LiveViewingCounter: React.FC<LiveViewingCounterProps> = ({ productId }) =>
         className="w-3 h-3 bg-yellow-400 rounded-full"
       />
 
-      {/* Eye Icon */}
-      
-
-      {/* View Count Text */}
       <div className="flex items-baseline gap-1 ml-2">
         <span className="text-yellow-300 font-semibold text-sm sm:text-base transition-all duration-300">
           {viewCount}
