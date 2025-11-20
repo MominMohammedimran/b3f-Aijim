@@ -177,271 +177,269 @@ useEffect(() => {
       console.error('Error sending admin notification:', error);
     }
   };
+// ALWAYS Call Courier API
+//ALWAYS Call Courier API
+const triggerCourier = async (order: any) => {
+  try {
+    console.log("🚚 Triggering Delhivery via Supabase Function...");
 
-  const handlePayment = async () => {
-    if (isProcessing) return;
-    
-    setIsProcessing(true);
-    
-    try {
-       // Validate required data
-      if (!shippingAddress?.fullName || !shippingAddress?.email || !shippingAddress?.phone) {
-        throw new Error('Missing shipping address information');
+    const courierPayload = {
+      orderId: order.id,                     // MUST be the Supabase row id (UUID)
+      orderNumber: order.order_number,       // Aijim-XXXX
+      shippingAddress: order.shipping_address,
+      items: order.items,
+      total: order.total,
+      paymentMethod: order.payment_method,
+    };
+
+    const { data, error } = await supabase.functions.invoke(
+      "create-delhivery-order",
+      {
+        body: { orderData: courierPayload },
       }
+    );
 
-      if (finalTotal <= 0) {
-        throw new Error('Invalid payment amount');
+    if (error) {
+      console.error("❌ Delhivery Function Error:", error);
+    } else {
+      console.log("✅ Delhivery Order Created:");
+    }
+  } catch (err) {
+    console.error("⚠️ Delhivery Trigger Failed:", err);
+  }
+};
+
+
+
+ const handlePayment = async () => {
+  if (isProcessing) return;
+  setIsProcessing(true);
+
+  try {
+    // Validate shipping address
+    if (!shippingAddress?.fullName || !shippingAddress?.email || !shippingAddress?.phone) {
+      throw new Error("Missing shipping address information");
+    }
+
+    if (finalTotal <= 0) {
+      throw new Error("Invalid payment amount");
+    }
+
+    // Prepare items for DB
+    const orderItems = cartItems.map(item => ({
+      id: item.id,
+      product_id: item.product_id || item.id,
+      name: item.name,
+      image: item.image,
+      code: item.code,
+      price: item.price,
+      sizes: item.sizes,
+      color: item.color,
+      metadata: item.metadata
+    }));
+
+    // Generate order number
+    const orderNumber = `Aijim-${(userProfile?.firstName || "usr")
+      .substring(0, 4)
+      .toUpperCase()}-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    // Order data for database
+    const orderData = {
+      order_number: orderNumber,
+      user_id: currentUser?.id || "00000000-0000-0000-0000-000000000000",
+      total: finalTotal,
+      status: "pending",
+      payment_status: "pending",
+      items: orderItems,
+      payment_method: "razorpay",
+      delivery_fee: deliveryFee,
+      shipping_address: shippingAddress,
+      user_email: shippingAddress?.email || userProfile?.email,
+      coupon_code: appliedCoupon
+        ? { code: appliedCoupon.code, discount_amount: appliedCoupon.discount || 0 }
+        : null,
+      reward_points_used: appliedPoints
+        ? { points: appliedPoints.points, value_used: appliedPoints.discount || appliedPoints.points }
+        : null,
+      reward_points_earned: 0,
+      discount_applied: couponDiscount + pointsDiscount
+    };
+
+    // Insert into DB
+    const { data: createdOrder, error: dbError } = await supabase
+      .from("orders")
+      .insert(orderData)
+      .select()
+      .single();
+
+    if (dbError) throw new Error("Failed to create order");
+
+    // Prepare payment request
+    const paymentData = {
+      amount: Math.round(finalTotal * 100),
+      currency: "INR",
+      receipt: orderNumber,
+      orderItems,
+      customerInfo: {
+        name: shippingAddress.fullName,
+        email: shippingAddress.email,
+        contact: shippingAddress.phone,
+        user_id: currentUser?.id
       }
+    };
 
-      // First, create order in database
-      const orderItems = cartItems.map(item => ({
-        id: item.id,
-        product_id: item.product_id || item.id,
-        name: item.name,
-        image: item.image,
-        code: item.code,
-        price: item.price,
-        sizes: item.sizes,
-        color: item.color,
-        metadata: item.metadata
-      }));
+    // Call Supabase Edge Function
+    const { data: orderResponse, error: orderError } = await supabase.functions.invoke(
+      "create-razorpay-order",
+      { body: paymentData }
+    );
 
-      // Generate unique order number
- // Generate order number: Aijim + 3 letters + "-" + 5 random digits
-const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
-  .substring(0,4)
-  .toUpperCase()}-${Math.floor(10000 + Math.random() * 90000)}`;
+    if (orderError) throw new Error(orderError.message || "Payment service error");
 
+    if (!orderResponse?.success || !orderResponse?.order_id) {
+      throw new Error("Invalid response from payment service");
+    }
+  
+    // ⛳ RUN Razorpay (new clean version)
+    await makePayment(
+      finalTotal,
+      orderResponse.order_id,
+      paymentData.customerInfo.name,
+      paymentData.customerInfo.email,
+      paymentData.customerInfo.contact,
 
-      const orderData = {
-        order_number: orderNumber,
-        user_id: currentUser?.id || '00000000-0000-0000-0000-000000000000',
-        total: finalTotal,
-        status: 'pending',
-        payment_status: 'pending',
-        items: orderItems,
-        payment_method: 'razorpay',
-        delivery_fee: deliveryFee,
-        shipping_address: shippingAddress,
-        user_email: shippingAddress?.email || userProfile?.email,
-        coupon_code: appliedCoupon ? {
-          code: appliedCoupon.code,
-          discount_amount: appliedCoupon.   discount || 0
-        } : null,
-        reward_points_used: appliedPoints ? {
-          points: appliedPoints.points,
-          value_used: appliedPoints.discount || appliedPoints.points
-        } : null,
-        reward_points_earned: 0,
-        discount_applied: couponDiscount + pointsDiscount
-      };
+      // 🟢 SUCCESS CALLBACK
+      async (paymentId, orderId, signature) => {
+        try {
+          // Update DB
+          await supabase
+            .from("orders")
+            .update({
+              payment_status: "paid",
+              status: "processing",
+              payment_details: JSON.stringify({
+                razorpay_payment_id: paymentId,
+                razorpay_order_id: orderId,
+                razorpay_signature: signature
+              }),
+              updated_at: new Date().toISOString()
+            })
+            .eq("id", createdOrder.id);
 
-    
-      const { data: createdOrder, error: dbError } = await supabase
-        .from('orders')
-        .insert(orderData)
-        .select()
-        .single();
+          // Update inventory
+          const { updateInventoryFromOrder } = await import("@/hooks/useProductInventory");
+          await updateInventoryFromOrder({ id: createdOrder.id, items: cartItems });
+await triggerCourier(createdOrder);
+          // Prepare email images
+          const emailCartItems = cartItems.map(item => ({
+            ...item,
+            image:
+              item.image && !item.image.startsWith("http")
+                ? `https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/${item.image}`
+                : item.image
+          }));
 
-      if (dbError) {
-        console.error('Database error:', dbError);
-        throw new Error('Failed to create order');
-      }
+          // Send user email
+          await sendOrderStatusEmail({
+            orderId: orderData.order_number,
+            customerEmail: shippingAddress.email,
+            customerName: shippingAddress.fullName,
+            status: "processing",
+            orderItems: emailCartItems,
+            totalAmount: finalTotal,
+            shippingAddress,
+            paymentMethod: "razorpay",
+            couponCode: appliedCoupon?.code || null,
+            couponDiscount: appliedCoupon?.discount || 0,
+            rewardPointsUsed: appliedPoints?.points || 0
+          });
 
-    
-      // Prepare payment data for Razorpay
-      const paymentData = {
-        amount: Math.round(finalTotal * 100), // Convert to paise for Razorpay
-        currency: 'INR',
-        receipt: orderNumber,
-        orderItems: orderItems,
-        customerInfo: {
-          name: shippingAddress?.fullName || userProfile?.display_name || 'Customer',
-          email: shippingAddress?.email || userProfile?.email || '',
-          contact: shippingAddress?.phone || userProfile?.phone || '',
-          user_id: currentUser?.id
-        }
-      };
+          // Send admin email
+          await sendOrderStatusEmail({
+            orderId: createdOrder.order_number,
+            customerEmail: "aijim.official@gmail.com",
+            customerName: "Admin",
+            status: "processing",
+            orderItems: emailCartItems,
+            totalAmount: finalTotal,
+            shippingAddress,
+            paymentMethod: "razorpay",
+            couponCode: appliedCoupon?.code || null,
+            couponDiscount: appliedCoupon?.discount || 0,
+            rewardPointsUsed: appliedPoints?.points || 0
+          });
 
-     
-      const { data: orderResponse, error: orderError } = await supabase.functions.invoke('create-razorpay-order', {
-        body: paymentData
-      });
-
-     
-      if (orderError) {
-        console.error('Supabase function error:', orderError);
-        
-        // Better error handling for different error types
-        if (orderError.message?.includes('RAZORPAY_KEY_ID') || 
-            orderError.message?.includes('RAZORPAY_KEY_SECRET') ||
-            orderError.message?.includes('authentication failed')) {
-          throw new Error('Payment gateway credentials are not configured properly. Please contact support.');
-        }
-        
-        if (orderError.message?.includes('network') || orderError.message?.includes('fetch')) {
-          throw new Error('Network error. Please check your connection and try again.');
-        }
-        
-        throw new Error(`Payment service error: ${orderError.message || 'Unknown error'}`);
-      }
-
-      if (!orderResponse?.success || !orderResponse?.order_id) {
-        console.error('Invalid order response:', orderResponse);
-        throw new Error('Invalid response from payment service');
-      }
-
-      
-   
-      // Initialize Razorpay payment with the order data from backend
-      const razorpayOptions = {
-        key: orderResponse.key_id, // Use the key provided by the backend
-        amount: orderResponse.amount,
-        currency: orderResponse.currency,
-        name: 'AIJIM',
-        description: `Payment for order ${orderResponse.receipt}`,
-        order_id: orderResponse.order_id,
-        prefill: {
-          name: paymentData.customerInfo.name,
-          email: paymentData.customerInfo.email,
-          contact: paymentData.customerInfo.contact
-        },
-        theme: {
-          color: '#3399cc'
-        }
-      };
-
-     
-      // Use the enhanced payment method with proper configuration
-      await makePayment(
-        finalTotal, // Pass the actual amount
-        orderResponse.order_id,
-        paymentData.customerInfo.name,
-        paymentData.customerInfo.email,
-        paymentData.customerInfo.contact,
-        async (paymentId, orderId, signature) => {
-        
-          // Update order with payment details
-          try {
-            await supabase
-              .from('orders')
-              .update({
-                payment_status: 'paid',
-                status: 'processing',
-                payment_details: JSON.stringify({
-                  razorpay_payment_id: paymentId,
-                  razorpay_order_id: orderId,
-                  razorpay_signature: signature,
-                  amount: finalTotal * 100,
-                  currency: 'INR'
-                }),
-                updated_at: new Date().toISOString()
-              })
-              .eq('id', createdOrder.id);
-
-           
-          } catch (updateError) {
-            console.error('❌ Failed to update order payment status:', updateError);
-          }
-          
-          // Update inventory immediately when payment is successful
-          try {
-            const { updateInventoryFromOrder } = await import('@/hooks/useProductInventory');
-            await updateInventoryFromOrder({
-              id: createdOrder.id,
-              items: cartItems
-            });
-            // 📩 Send initial order status email (Processing)
-try {
-  const emailCartItems = cartItems.map(item => ({
-    ...item,
-    image: item.image && !item.image.startsWith('http')
-      ? `https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/${item.image}`
-      : item.image,
-  }));
-
-  // Send to User
-  await sendOrderStatusEmail({
-    orderId: orderData.order_number,
-    customerEmail: shippingAddress?.email || userProfile?.email,
-    customerName: shippingAddress?.fullName || userProfile?.display_name,
-    status: "processing",
-    orderItems: emailCartItems,
-    totalAmount: finalTotal,
-    shippingAddress: shippingAddress,
-    paymentMethod: "razorpay",
-    couponCode: appliedCoupon?.code || null,
-    couponDiscount: appliedCoupon?.discount || 0,
-    rewardPointsUsed: appliedPoints?.points || 0,
-  });
-
-  // Send to Admin
-  await sendOrderStatusEmail({
-    orderId: createdOrder.order_number,
-    customerEmail: "aijim.official@gmail.com",
-    customerName: "Admin",
-    status: "processing",
-    orderItems: emailCartItems,
-    totalAmount: finalTotal,
-    shippingAddress: shippingAddress,
-    paymentMethod: "razorpay",
-    couponCode: appliedCoupon?.code || null,
-    couponDiscount: appliedCoupon?.discount || 0,
-    rewardPointsUsed: appliedPoints?.points || 0,
-  });
-
-  console.log("📨 Processing status emails sent to user + admin");
-} catch (err) {
-  console.error("❌ Failed to send processing email:", err);
-}
-
-           
-          } catch (inventoryError) {
-            console.error('❌ Failed to update inventory:', inventoryError);
-            // Don't fail the payment process if inventory update fails
-          }
-
-          // Create Delhivery order after successful payment
-          try {
-            const delhiveryData = {
-              orderId: createdOrder.id,
-              orderNumber: orderNumber,
-              shippingAddress: shippingAddress,
-              items: cartItems,
-              total: finalTotal,
-              paymentMethod: 'razorpay'
-            };
-
-            console.log('Creating Delhivery order...');
-            const { data: delhiveryResponse, error: delhiveryError } = await supabase.functions.invoke('create-delhivery-order', {
-              body: { orderData: delhiveryData }
-            });
-
-            if (delhiveryError) {
-              console.error('Delhivery order creation failed:', delhiveryError);
-            } else {
-              console.log('Delhivery order created successfully:', delhiveryResponse);
+          // Create Delhivery order
+          await supabase.functions.invoke("create-delhivery-order", {
+            body: {
+              orderData: {
+                orderId: createdOrder.id,
+                orderNumber,
+                shippingAddress,
+                items: cartItems,
+                total: finalTotal,
+                paymentMethod: "razorpay"
+              }
             }
-          } catch (delhiveryErr) {
-            console.error('Error calling Delhivery function:', delhiveryErr);
-          }
+          });
+
+          toast.success("Payment Successful");
+          setTimeout(() => {
+window.location.href = `/order-complete/${createdOrder.id}`;
+}, 30000); // 60000ms = 1 minute
+
           
-          toast.success('Payment completed successfully!');
-          window.location.href = `/order-complete/${createdOrder.id}`;
-          onSuccess?.();
-        },
-        () => {
-         
-          toast.error('Payment was cancelled');
+        } catch (e) {
+          console.error("Error in success handler:", e);
+        }
+      },
+
+      // 🔴 FAILURE CALLBACK
+      async () => {
+        await supabase
+          .from("orders")
+          .update({
+            payment_status: "failed",
+            status: "pending"
+          })
           
-          onError?.();
-        },
-        orderResponse.key_id // ✅ use key from backend response
-      );
+          .eq("id", createdOrder.id);
 
 
-      
-    } catch (error: any) {
+          await triggerCourier(createdOrder);
+           const emailCartItems = cartItems.map(item => ({
+            ...item,
+            image:
+              item.image && !item.image.startsWith("http")
+                ? `https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/${item.image}`
+                : item.image
+          }));
+           await sendOrderStatusEmail({
+            orderId: createdOrder.order_number,
+            customerEmail: "aijim.official@gmail.com",
+            customerName: "Admin",
+            status: "pending",
+            orderItems: emailCartItems,
+            totalAmount: finalTotal,
+            shippingAddress,
+            paymentMethod: "razorpay",
+            couponCode: appliedCoupon?.code || null,
+            couponDiscount: appliedCoupon?.discount || 0,
+            rewardPointsUsed: appliedPoints?.points || 0
+          });
+
+        toast.error("Payment Failed ");
+       setTimeout(() => {
+  window.location.href = "/orders";
+}, 60000); // 60000ms = 1 minute
+
+      },
+
+      // Razorpay Key
+      orderResponse.key_id
+    );
+
+  } catch (error: any) {
       console.error('Payment process error:', error);
       
       let errorMessage = 'Failed to process payment. Please try again.';
