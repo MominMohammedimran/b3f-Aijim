@@ -34,7 +34,7 @@ const OrderHistory = () => {
       if (!currentUser) return;
       try {
         setLoading(true);
-        await updateInventoryFromPaidOrders();
+
 
         const twentyFourHoursAgo = new Date();
         twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
@@ -87,6 +87,21 @@ const OrderHistory = () => {
 
     fetchOrders();
   }, [currentUser, clearCart]);
+  // CONFIRM BEFORE CANCEL
+const confirmCancelOrder = (orderId: string) => {
+  toast.warning("Are you sure you want to cancel this order?", {
+    description: "This action cannot be undone.",
+    action: {
+      label: "Yes, Cancel",
+      onClick: () => handleRemoveOrder(orderId),
+    },
+    cancel: {
+      label: "No",
+      onClick: () => {},
+    },
+  });
+};
+
 
   const handleRemoveOrder = async (orderId: string) => {
     try {
@@ -304,7 +319,7 @@ const OrderHistory = () => {
 
   {["pending", "processing", "confirmed"].includes(order.status) && !expired && (
     <Button
-      onClick={() => handleRemoveOrder(order.id)}
+      onClick={() => confirmCancelOrder(order.id)}
       className="w-1/2 sm:w-auto bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-none h-10"
     >
       Cancel

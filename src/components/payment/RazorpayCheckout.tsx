@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { makePayment } from '@/services/paymentServices/razorpay/RazorpayService';
 import { getRazorpayConfig } from '@/services/paymentServices/razorpay/RazorpayConfig';
 import { supabase } from '@/integrations/supabase/client';
-import { sendOrderConfirmationEmail } from '@/services/unifiedEmailService';
+import {sendOrderStatusEmail } from '@/components/admin/OrderStatusEmailService';
 import { formatPrice } from '@/lib/utils';
 interface RazorpayCheckoutProps {
   amount?: number;
@@ -127,7 +127,7 @@ useEffect(() => {
         paymentMethod: paymentMethod
       };
 
-      if (emailData.customerEmail && emailData.customerEmail !== 'N/A') {
+      {/*if (emailData.customerEmail && emailData.customerEmail !== 'N/A') {
         const emailSent = await sendOrderConfirmationEmail(emailData);
         if (emailSent) {
          
@@ -139,7 +139,7 @@ useEffect(() => {
       } else {
         console.warn('⚠️ No email address available for confirmation');
         toast.warning('Order confirmed but no email address provided');
-      }
+      }*/}
     } catch (emailError) {
       console.error('Error sending confirmation email:', emailError);
       toast.error('Order confirmed but failed to send confirmation email');
@@ -327,7 +327,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
               .from('orders')
               .update({
                 payment_status: 'paid',
-                status: 'confirmed',
+                status: 'processing',
                 payment_details: JSON.stringify({
                   razorpay_payment_id: paymentId,
                   razorpay_order_id: orderId,
@@ -351,6 +351,50 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
               id: createdOrder.id,
               items: cartItems
             });
+            // 📩 Send initial order status email (Processing)
+try {
+  const emailCartItems = cartItems.map(item => ({
+    ...item,
+    image: item.image && !item.image.startsWith('http')
+      ? `https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/${item.image}`
+      : item.image,
+  }));
+
+  // Send to User
+  await sendOrderStatusEmail({
+    orderId: orderData.order_number,
+    customerEmail: shippingAddress?.email || userProfile?.email,
+    customerName: shippingAddress?.fullName || userProfile?.display_name,
+    status: "processing",
+    orderItems: emailCartItems,
+    totalAmount: finalTotal,
+    shippingAddress: shippingAddress,
+    paymentMethod: "razorpay",
+    couponCode: appliedCoupon?.code || null,
+    couponDiscount: appliedCoupon?.discount || 0,
+    rewardPointsUsed: appliedPoints?.points || 0,
+  });
+
+  // Send to Admin
+  await sendOrderStatusEmail({
+    orderId: createdOrder.order_number,
+    customerEmail: "aijim.official@gmail.com",
+    customerName: "Admin",
+    status: "processing",
+    orderItems: emailCartItems,
+    totalAmount: finalTotal,
+    shippingAddress: shippingAddress,
+    paymentMethod: "razorpay",
+    couponCode: appliedCoupon?.code || null,
+    couponDiscount: appliedCoupon?.discount || 0,
+    rewardPointsUsed: appliedPoints?.points || 0,
+  });
+
+  console.log("📨 Processing status emails sent to user + admin");
+} catch (err) {
+  console.error("❌ Failed to send processing email:", err);
+}
+
            
           } catch (inventoryError) {
             console.error('❌ Failed to update inventory:', inventoryError);
@@ -383,7 +427,7 @@ const orderNumber = `Aijim-${(userProfile?.firstName || 'usr')
           }
           
           toast.success('Payment completed successfully!');
-          window.location.href = `/order-complete/${order.id}`;
+          window.location.href = `/order-complete/${createdOrder.id}`;
           onSuccess?.();
         },
         () => {

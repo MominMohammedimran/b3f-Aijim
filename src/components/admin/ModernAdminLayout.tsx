@@ -1,5 +1,4 @@
-
-import React,{useEffect,useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,11 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   Package,
   ShoppingCart,
@@ -32,8 +27,8 @@ import { Input } from '@/components/ui/input';
 import AdminBottomNavigation from './AdminBottomNavigation';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-interface ModernAdminLayoutProps {
 
+interface ModernAdminLayoutProps {
   children: React.ReactNode;
   title: string;
   subtitle?: string;
@@ -41,16 +36,18 @@ interface ModernAdminLayoutProps {
 }
 
 const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
- 
   children,
   title,
   subtitle,
-  actionButton
+  actionButton,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [ordersNum, setOrdersNum] = useState(0);
+  const { currentUser, signOut } = useAuth();
+  const [confirmLogoutAll, setConfirmLogoutAll] = useState(false);
 
+  // Fetch number of pending orders
   useEffect(() => {
     fetchOrderCount();
   }, []);
@@ -64,12 +61,47 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
       if (error) throw error;
 
       setOrdersNum(count || 0);
-    } catch (error) {
+    } catch {
       toast.error('Unable to fetch order count');
-     // console.error(error);
-      setOrdersNum(0); // fallback
+      setOrdersNum(0);
     }
   };
+
+  // Logout current device
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success('Signed out successfully');
+      navigate('/admin/login');
+    } catch {
+      toast.error('Failed to sign out');
+    }
+  };
+
+  // Logout from all devices (via Edge Function)
+ const handleLogoutAllDevices = async () => {
+ try {
+    if (!currentUser) throw new Error("No current user");
+
+    const { data, error } = await supabase.functions.invoke("logout-all", {
+      body: { userId: currentUser.id },
+    });
+
+    if (error) throw error;
+
+    toast.success("Logged out from all devices successfully");
+    navigate("/admin/login");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to log out from all devices");
+  }
+};
+
+
+
+
+
+  const redirectToOrders = () => navigate('/admin/orders');
 
   const sidebarItems = [
     { icon: Home, label: 'Dashboard', path: '/admin', exact: true },
@@ -77,30 +109,11 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
     { icon: Package, label: 'Products', path: '/admin/products' },
     { icon: Users, label: 'Users', path: '/admin/profiles' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
-    { icon: CreditCard , label: 'Payments', path: '/admin/order-manager' },
+    { icon: CreditCard, label: 'Payments', path: '/admin/order-manager' },
   ];
 
-  const isActive = (path: string, exact = false) => {
-    if (exact) {
-      return location.pathname === path;
-    }
-    return location.pathname.startsWith(path);
-  };
-  const { currentUser, signOut } = useAuth();
-  const handleLogout = async() => {
-    
-   try {
-      await signOut();
-      toast.success('Signed out successfully');
-      navigate('/admin/login');
-    } catch (error) {
-      //console.error('Error signing out:', error);
-      toast.error('Failed to sign out');
-    }
-  };
-  const redirectToOrders=()=>{
-    navigate('/admin/orders')
-  }
+  const isActive = (path: string, exact = false) =>
+    exact ? location.pathname === path : location.pathname.startsWith(path);
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -108,12 +121,12 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
         <h2 className="text-xl font-bold text-white">Aijim Admin</h2>
         <p className="text-sm text-blue-100 mt-1">Management Panel</p>
       </div>
-      
+
       <nav className="flex-1 p-4 space-y-2">
         {sidebarItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path, item.exact);
-          
+
           return (
             <Link
               key={item.path}
@@ -130,8 +143,8 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
           );
         })}
       </nav>
-      
-      <div className="p-4 border-t bg-gray-50">
+
+      <div className="p-4 border-t bg-gray-50 space-y-2">
         <Button
           variant="ghost"
           onClick={handleLogout}
@@ -140,6 +153,15 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
           <LogOut size={20} className="mr-3" />
           Logout
         </Button>
+
+      {/*  <Button
+          variant="ghost"
+          onClick={() => setConfirmLogoutAll(true)}
+          className="w-full justify-start text-red-600 hover:text-red-700"
+        >
+          <LogOut size={20} className="mr-3" />
+          Logout from all devices
+        </Button>*/}
       </div>
     </div>
   );
@@ -157,8 +179,11 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
       <div className="md:hidden bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-gray-800 border border-gray-800 hover:bg-gray-400 hover:text-white"
->
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-gray-800 border border-gray-800 hover:bg-gray-400 hover:text-white"
+            >
               <Menu size={20} />
             </Button>
           </SheetTrigger>
@@ -166,32 +191,32 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
             <SidebarContent />
           </SheetContent>
         </Sheet>
-        
+
         <h1 className="text-lg font-semibold text-gray-900 truncate">{title}</h1>
-        
-     <div className="flex items-center gap-3">
-  {/* 🔔 Notification Bell with Badge */}
-  <Button 
-  onClick={redirectToOrders} variant="ghost" size="icon" className="relative hover:bg-yellow-400">
-    <Bell className="text-gray-800"size={20} />
-    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500">
-      {ordersNum}
-    </Badge>
-  </Button>
 
-  {/* 🚪 Logout Icon Button */}
-  <Button
-    variant="ghost"
-    size="icon"
-    className=" text-red-600"
-    onClick={handleLogout}
-    title="Sign Out"
-  >
-    <LogOut    size={20} />
-  </Button>
-</div>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={redirectToOrders}
+            variant="ghost"
+            size="icon"
+            className="relative hover:bg-yellow-400"
+          >
+            <Bell className="text-gray-800" size={20} />
+            <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500">
+              {ordersNum}
+            </Badge>
+          </Button>
 
-
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-red-600"
+            onClick={handleLogout}
+            title="Sign Out"
+          >
+            <LogOut size={20} />
+          </Button>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -204,38 +229,22 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {title}
                 </h1>
-                {subtitle && (
-                  <p className="text-gray-600 mt-1">{subtitle}</p>
-                )}
+                {subtitle && <p className="text-gray-600 mt-1">{subtitle}</p>}
               </div>
-              
+
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                  <Search
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={16}
+                  />
                   <Input
                     placeholder="Search..."
                     className="pl-10 w-64 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
                   />
                 </div>
-                
+
                 {actionButton}
-                
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="relative hover:bg-yellow-400">
-                      <Bell className="text-gray-800"size={20} />
-                      <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500 hover:bg-pink-400">
-                       {ordersNum}
-                      </Badge>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut size={16} className="mr-2" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
             </div>
           </div>
@@ -243,9 +252,7 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
           {/* Content */}
           <div className="p-4 md:p-6 bg-gray-800">
             <Card className="shadow-lg border-0 bg-gray-800 backdrop-blur-sm">
-              <CardContent className="p-6">
-                {children}
-              </CardContent>
+              <CardContent className="p-6">{children}</CardContent>
             </Card>
           </div>
         </div>
@@ -253,8 +260,38 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
 
       {/* Bottom Navigation for Mobile */}
       <AdminBottomNavigation />
+
+      {/* Logout All Devices Confirmation Modal 
+      {confirmLogoutAll && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-96">
+            <h2 className="text-xl font-bold mb-4 text-black">Confirm Logout</h2>
+            <p className="mb-6 text-black">
+              Are you sure you want to log out from all devices?
+            </p>
+            <div className="flex justify-end gap-4">
+              <Button
+                variant="outline"
+                onClick={() => setConfirmLogoutAll(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  handleLogoutAllDevices();
+                  setConfirmLogoutAll(false);
+                }}
+              >
+                Logout All
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}*/}
     </div>
   );
 };
 
 export default ModernAdminLayout;
+

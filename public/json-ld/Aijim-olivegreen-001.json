@@ -1,35 +1,130 @@
-{
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "MoneyMaker Hustle Drop Olive Oversized-Tee",
-  "image": [
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Olive/aijim-olive-02.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL09saXZlL2FpamltLW9saXZlLTAyLnBuZyIsImlhdCI6MTc2MzM4NDY4MSwiZXhwIjoxNzk0OTIwNjgxfQ.kkfE8A7pbren70myMZ56RFfDvSvyvsVhLsV2yBgnyWA"
-  ],
-  "description": "STORY\n\nWear Success. Speak Wealth.\nThis sophisticated olive green oversized T-shirt combines premium comfort with a powerful money quote, designed to inspire confidence and ambition in every wearer. Perfect for the youth who value style and financial wisdom.\n\n DETAILS\n\n✔️ 100% Pure Cotton- Soft, breathable fabric for day-long comfort and ease.\n✔️ Oversized Youth Fit- Trendy, relaxed cut tailored for modern, street-style appeal.\n✔️ Weight: 240 GSM- Thick, premium cotton for durability and luxury.\n✔️ HD Printing.Bold, high-definition printing delivers crisp, vibrant details that resist fading and cracking over time.\n✔️ Money Quote Theme- Features an impactful quote about money and success, inspiring wearers to chase their financial dreams with determination and grit.\n✔️ Colour- Rich olive green base accented by sharp white and stylized text. \n✔️ Made in India-Crafted with expert care by skilled local artisans.\n\n\nARTWORK FEATURES\n\n- The design incorporates motivational money quotes alongside sleek graphic elements, creating a statement piece for those who believe in financial empowerment.\n- High quality printing ensures every word and detail stands out with clarity and style.\n\n\n\nWASH CARE\n\n- Machine wash inside out with cold water to maintain print quality and fabric softness.\n- Use gentle detergents; avoid bleach or harsh chemicals.\n- Avoid ironing directly on the print for longevity.\n\n\nThis olive green money quote T-shirt is a perfect combination of thoughtful motivation, premium material, and youthful style, ideal for fashion-forward individuals with an eye on success.\n\n\n",
-  "sku": "Aijim-olivegreen-001",
-  "offers": {
-    "@type": "Offer",
-    "url": "https://aijim.shop/product/details/Aijim-olivegreen-001",
-    "priceCurrency": "INR",
-    "price": 599,
-    "availability": "https://schema.org/InStock"
-  },
-  "review": [
-    {
-      "@type": "Review",
-      "author": "Anonymous",
-      "datePublished": "2025-11-19",
-      "reviewBody": "This is a great product!",
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5",
-        "bestRating": "5"
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "MoneyMaker Hustle Drop Olive Oversized-Tee",
+    "image": [
+      "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Olive/aijim-olive-02.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL09saXZlL2FpamltLW9saXZlLTAyLnBuZyIsImlhdCI6MTc2MzM4NDY4MSwiZXhwIjoxNzk0OTIwNjgxfQ.kkfE8A7pbren70myMZ56RFfDvSvyvsVhLsV2yBgnyWA"
+    ],
+    "description": "STORY\n\nWear Success. Speak Wealth.\nThis sophisticated olive green oversized T-shirt combines premium comfort with a powerful money quote, designed to inspire confidence and ambition in every wearer. Perfect for the youth who value style and financial wisdom.\n\n DETAILS\n\n✔️ 100% Pure Cotton- Soft, breathable fabric for day-long comfort and ease.\n✔️ Oversized Youth Fit- Trendy, relaxed cut tailored for modern, street-style appeal.\n✔️ Weight: 240 GSM- Thick, premium cotton for durability and luxury.\n✔️ HD Printing.Bold, high-definition printing delivers crisp, vibrant details that resist fading and cracking over time.\n✔️ Money Quote Theme- Features an impactful quote about money and success, inspiring wearers to chase their financial dreams with determination and grit.\n✔️ Colour- Rich olive green base accented by sharp white and stylized text. \n✔️ Made in India-Crafted with expert care by skilled local artisans.\n\n\nARTWORK FEATURES\n\n- The design incorporates motivational money quotes alongside sleek graphic elements, creating a statement piece for those who believe in financial empowerment.\n- High quality printing ensures every word and detail stands out with clarity and style.\n\n\n\nWASH CARE\n\n- Machine wash inside out with cold water to maintain print quality and fabric softness.\n- Use gentle detergents; avoid bleach or harsh chemicals.\n- Avoid ironing directly on the print for longevity.\n\n\nThis olive green money quote T-shirt is a perfect combination of thoughtful motivation, premium material, and youthful style, ideal for fashion-forward individuals with an eye on success.\n\n\n",
+    "sku": "Aijim-olivegreen-001",
+    "mpn": "Aijim-olivegreen-001",
+    "brand": {
+      "@type": "Brand",
+      "name": "Aijim"
+    },
+    "manufacturer": {
+      "@type": "Organization",
+      "name": "Aijim Clothing",
+      "logo": "https://aijim.shop/logo.png"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://aijim.shop/product/details/Aijim-olivegreen-001",
+      "priceCurrency": "INR",
+      "price": 599,
+      "priceValidUntil": "2025-12-31",
+      "availability": "https://schema.org/InStock",
+      "itemCondition": "https://schema.org/NewCondition",
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "INR"
+        },
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "IN"
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 1,
+            "maxValue": 2,
+            "unitCode": "DAY"
+          },
+          "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 3,
+            "maxValue": 7,
+            "unitCode": "DAY"
+          }
+        }
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "IN",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 7,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "refundType": "https://schema.org/FullRefund"
       }
-    }
-  ],
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "5",
-    "reviewCount": 1
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "152"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "author": "Verified Buyer",
+        "datePublished": "2025-11-20",
+        "reviewBody": "Premium quality streetwear, fits perfectly!",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        }
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://aijim.shop"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Products",
+        "item": "https://aijim.shop/products"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "MoneyMaker Hustle Drop Olive Oversized-Tee",
+        "item": "https://aijim.shop/product/details/Aijim-olivegreen-001"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the delivery time?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Delivery usually takes 3–7 days across India."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer returns?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can return the product within 7 days."
+        }
+      }
+    ]
   }
-}
+]

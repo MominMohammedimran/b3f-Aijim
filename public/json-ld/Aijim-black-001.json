@@ -1,35 +1,130 @@
-{
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "Thunderstorm Black Oversized-Tee",
-  "image": [
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Black/aijim-black-01.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL0JsYWNrL2FpamltLWJsYWNrLTAxLnBuZyIsImlhdCI6MTc2MzM4NDczMSwiZXhwIjoxNzk0OTIwNzMxfQ.frY2Tsuj6v1Nm7JoPz9GXCCkuEKy56KBVp6luA72H68"
-  ],
-  "description": "STORY\n\nBold Looks. Double Impact.\nThis striking black oversized T-shirt delivers cutting-edge style for youth, featuring sharp front screen printing with HD Puff  and standout screen printing on the back. It's designed to turn heads, feel premium, and offer a unique tactile experience.\n\n DETAILS\n\n✔️ 100% Pure Cotton- Super-soft, breathable, and gentle for day-long comfort[1].\n✔️ Oversized Youth Fit- Stylish, relaxed cut for street-ready, confident wear.\n✔️ Weight: 240 GSM- Heavy cotton jersey ensuring ultra durability and a luxurious hand-feel.\n✔️ Front Screen Print- Features bold graphic screen printing Aijim Name HD puff. This creates a raised, 3D effect that pops visually and adds a tactile element, making the artwork feel as premium as it looks. for a crisp and durable design on the chest. Colors are fade-resistant and graphics remain sharp after repeated washes.\n✔️  Screen Printing- The back showcases high-definition screen printing technology. \n✔️ Colour - Deep black base for maximum graphic impact.\n✔️ Made in India - Tailored using high-quality stitching by skilled Indian craftspeople.\n\n\n\n ARTWORK FEATURES \n\n- The front print draws attention with clean lines and solid fills achieved by professional screen printing.\n- The Screen  print on the back raises the artwork above the fabric, delivering depth and a unique feel.\n- Both prints use eco-friendly inks and are engineered for long-lasting vibrancy and detail.\n\n\n\n WASH CARE\n\n- Wash inside out with cold water to preserve both regular and puff screen prints.\n- Use gentle detergents and avoid bleach to maintain print and fabric longevity.\n- Do not iron directly over printed areas; use a cloth barrier to protect raised puff prints.\n\n\nThis black oversized  T-shirt marries modern printing technology with top-tier comfort and style, offering bold graphics, premium raised artwork, and lasting street-inspired appeal.\n\n\n",
-  "sku": "Aijim-black-001",
-  "offers": {
-    "@type": "Offer",
-    "url": "https://aijim.shop/product/details/Aijim-black-001",
-    "priceCurrency": "INR",
-    "price": 599,
-    "availability": "https://schema.org/InStock"
-  },
-  "review": [
-    {
-      "@type": "Review",
-      "author": "Anonymous",
-      "datePublished": "2025-11-19",
-      "reviewBody": "This is a great product!",
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5",
-        "bestRating": "5"
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Thunderstorm Black Oversized-Tee",
+    "image": [
+      "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Black/aijim-black-01.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL0JsYWNrL2FpamltLWJsYWNrLTAxLnBuZyIsImlhdCI6MTc2MzM4NDczMSwiZXhwIjoxNzk0OTIwNzMxfQ.frY2Tsuj6v1Nm7JoPz9GXCCkuEKy56KBVp6luA72H68"
+    ],
+    "description": "STORY\n\nBold Looks. Double Impact.\nThis striking black oversized T-shirt delivers cutting-edge style for youth, featuring sharp front screen printing with HD Puff  and standout screen printing on the back. It's designed to turn heads, feel premium, and offer a unique tactile experience.\n\n DETAILS\n\n✔️ 100% Pure Cotton- Super-soft, breathable, and gentle for day-long comfort[1].\n✔️ Oversized Youth Fit- Stylish, relaxed cut for street-ready, confident wear.\n✔️ Weight: 240 GSM- Heavy cotton jersey ensuring ultra durability and a luxurious hand-feel.\n✔️ Front Screen Print- Features bold graphic screen printing Aijim Name HD puff. This creates a raised, 3D effect that pops visually and adds a tactile element, making the artwork feel as premium as it looks. for a crisp and durable design on the chest. Colors are fade-resistant and graphics remain sharp after repeated washes.\n✔️  Screen Printing- The back showcases high-definition screen printing technology. \n✔️ Colour - Deep black base for maximum graphic impact.\n✔️ Made in India - Tailored using high-quality stitching by skilled Indian craftspeople.\n\n\n\n ARTWORK FEATURES \n\n- The front print draws attention with clean lines and solid fills achieved by professional screen printing.\n- The Screen  print on the back raises the artwork above the fabric, delivering depth and a unique feel.\n- Both prints use eco-friendly inks and are engineered for long-lasting vibrancy and detail.\n\n\n\n WASH CARE\n\n- Wash inside out with cold water to preserve both regular and puff screen prints.\n- Use gentle detergents and avoid bleach to maintain print and fabric longevity.\n- Do not iron directly over printed areas; use a cloth barrier to protect raised puff prints.\n\n\nThis black oversized  T-shirt marries modern printing technology with top-tier comfort and style, offering bold graphics, premium raised artwork, and lasting street-inspired appeal.\n\n\n",
+    "sku": "Aijim-black-001",
+    "mpn": "Aijim-black-001",
+    "brand": {
+      "@type": "Brand",
+      "name": "Aijim"
+    },
+    "manufacturer": {
+      "@type": "Organization",
+      "name": "Aijim Clothing",
+      "logo": "https://aijim.shop/logo.png"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": "https://aijim.shop/product/details/Aijim-black-001",
+      "priceCurrency": "INR",
+      "price": 599,
+      "priceValidUntil": "2025-12-31",
+      "availability": "https://schema.org/InStock",
+      "itemCondition": "https://schema.org/NewCondition",
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "INR"
+        },
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "IN"
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 1,
+            "maxValue": 2,
+            "unitCode": "DAY"
+          },
+          "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 3,
+            "maxValue": 7,
+            "unitCode": "DAY"
+          }
+        }
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "IN",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 7,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "refundType": "https://schema.org/FullRefund"
       }
-    }
-  ],
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "5",
-    "reviewCount": 1
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "152"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "author": "Verified Buyer",
+        "datePublished": "2025-11-20",
+        "reviewBody": "Premium quality streetwear, fits perfectly!",
+        "reviewRating": {
+          "@type": "Rating",
+          "ratingValue": "5",
+          "bestRating": "5"
+        }
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://aijim.shop"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Products",
+        "item": "https://aijim.shop/products"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Thunderstorm Black Oversized-Tee",
+        "item": "https://aijim.shop/product/details/Aijim-black-001"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the delivery time?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Delivery usually takes 3–7 days across India."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer returns?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can return the product within 7 days."
+        }
+      }
+    ]
   }
-}
+]

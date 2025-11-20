@@ -80,7 +80,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
       {/* MAIN IMAGE */}
       <div className="w-full flex flex-col items-center">
         <div
-          className="relative w-full h-[55vh] lg:h-[80vh] overflow-hidden bg-black"
+          className="relative w-full h-[60vh] lg:h-[80vh] overflow-hidden bg-black"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
@@ -119,13 +119,13 @@ const ProductImage: React.FC<ProductImageProps> = ({
             <>
               <button
                 onClick={prev}
-                className="absolute left-2 top-1/2 -translate-y-1/2  p-2 rounded-none text-gray-400 hover:text-white"
+                className="absolute left-1 top-1/2 -translate-y-1/2  p-2 rounded-none text-gray-400 hover:text-white"
               >
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={next}
-                className="absolute right-2 top-1/2 -translate-y-1/2  p-2 rounded-none text-gray-400 hover:text-white"
+                className="absolute right-1 top-1/2 -translate-y-1/2  p-2 rounded-none text-gray-400 hover:text-white"
               >
                 <ChevronRight size={24} />
               </button>

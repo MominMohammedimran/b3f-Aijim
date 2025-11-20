@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "@/components/layout/Layout";
 import { Target, Heart, Leaf, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
 
 const AboutUs = () => {
   const values = [
@@ -33,6 +34,9 @@ const AboutUs = () => {
 
   return (
     <Layout>
+       <NewSEOHelmet 
+        pageSEO={{ title: "About Us | AIJIM", description: "Learn about AIJIM brand & story." }}
+      />
       <div className="min-h-screen bg-black text-white overflow-hidden">
         {/* --- HERO SECTION --- */}
         <section className="relative h-[50vh] flex flex-col p-2 justify-center items-center text-center px-4 bg-[url('/aijim-uploads/aijim.svg')] bg-fit bg-center">

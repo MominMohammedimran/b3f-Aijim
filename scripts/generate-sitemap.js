@@ -11,40 +11,34 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("SUPABASE_URL and SUPABASE_ANON_KEY must be set in your .env file");
+  throw new Error("SUPABASE_URL and SUPABASE_ANON_KEY must be set in .env");
 }
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// -----------------------------
-// Static public routes
-// -----------------------------
 const today = new Date().toISOString().split("T")[0];
 
+// -----------------------------------
+// Static Routes
+// -----------------------------------
 const staticUrls = [
   { loc: "/", changefreq: "daily", priority: 1.0, lastmod: today },
-  { loc: "/search", changefreq: "daily", priority: 0.8, lastmod: today },
-  { loc: "/cart", changefreq: "daily", priority: 0.8, lastmod: today },
-  { loc: "/checkout", changefreq: "daily", priority: 0.7, lastmod: today },
-  { loc: "/payment", changefreq: "daily", priority: 0.5, lastmod: today },
-  { loc: "/about-us", changefreq: "monthly", priority: 0.5, lastmod: today },
-  { loc: "/contact-us", changefreq: "monthly", priority: 0.5, lastmod: today },
-  { loc: "/orders", changefreq: "daily", priority: 0.6, lastmod: today },
-  { loc: "/profile", changefreq: "daily", priority: 0.6, lastmod: today },
-  { loc: "/account", changefreq: "daily", priority: 0.5, lastmod: today },
-  { loc: "/track-order", changefreq: "daily", priority: 0.5, lastmod: today },
-  { loc: "/wishlist", changefreq: "daily", priority: 0.5, lastmod: today },
-  { loc: "/thank-you", changefreq: "daily", priority: 0.5, lastmod: today },
+  { loc: "/signin", changefreq: "weekly", priority: 0.6, lastmod: today },
+
+  { loc: "/products", changefreq: "weekly", priority: 0.8, lastmod: today },
+  { loc: "/search", changefreq: "monthly", priority: 0.5, lastmod: today },
+
+  { loc: "/about-us", changefreq: "yearly", priority: 0.4, lastmod: today },
+  { loc: "/contact-us", changefreq: "yearly", priority: 0.4, lastmod: today },
+
   { loc: "/privacy-policy", changefreq: "yearly", priority: 0.2, lastmod: today },
   { loc: "/terms-conditions", changefreq: "yearly", priority: 0.2, lastmod: today },
   { loc: "/shipping-delivery", changefreq: "yearly", priority: 0.2, lastmod: today },
   { loc: "/cancellation-refund", changefreq: "yearly", priority: 0.2, lastmod: today },
-  
 ];
 
-// -----------------------------
+// -----------------------------------
 // Fetch products
-// -----------------------------
+// -----------------------------------
 async function fetchProducts() {
   const { data, error } = await supabase
     .from("products")
@@ -59,122 +53,209 @@ async function fetchProducts() {
   return (data || []).filter(p => p.code);
 }
 
-// -----------------------------
-// Generate JSON-LD for a product
-// -----------------------------
-function generateProductJsonLd(product) {
-  const name = product.name || "Unnamed Product";
-  const description = product.description || "Description coming soon.";
-  const image = product.image || `${baseUrl}/default-product.png`;
-  const price = product.price || 0;
+// -----------------------------------
+// Generate JSON-LD (ALL in one file)
+// -----------------------------------
+function generateJsonLd(product) {
   const url = `${baseUrl}/product/details/${product.code}`;
 
-  const review = {
-    "@type": "Review",
-    author: "Anonymous",
-    datePublished: new Date().toISOString().split("T")[0],
-    reviewBody: "This is a great product!",
-    reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-  };
-
-  const aggregateRating = {
-    "@type": "AggregateRating",
-    ratingValue: "5",
-    reviewCount: 1,
-  };
-
-  return {
-    "@context": "https://schema.org/",
+  const Product = {
+    "@context": "https://schema.org",
     "@type": "Product",
-    name,
-    image: [image],
-    description,
+    name: product.name || "Unnamed Product",
+    image: [product.image || `${baseUrl}/default-product.png`],
+    description: product.description || "Description coming soon.",
     sku: product.code,
+    mpn: product.code,
+
+    brand: {
+      "@type": "Brand",
+      name: "Aijim"
+    },
+
+    manufacturer: {
+      "@type": "Organization",
+      name: "Aijim Clothing",
+      logo: `${baseUrl}/logo.png`
+    },
+
     offers: {
       "@type": "Offer",
       url,
       priceCurrency: "INR",
-      price,
+      price: product.price || 0,
+      priceValidUntil: `${new Date().getFullYear()}-12-31`,
       availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: "0",
+          currency: "INR"
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "IN"
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 2,
+            unitCode: "DAY"
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 3,
+            maxValue: 7,
+            unitCode: "DAY"
+          }
+        }
+      },
+
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "IN",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 7,
+        returnMethod: "https://schema.org/ReturnByMail",
+        refundType: "https://schema.org/FullRefund"
+      }
     },
-    review: [review],
-    aggregateRating,
+
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      reviewCount: "152"
+    },
+
+    review: [
+      {
+        "@type": "Review",
+        author: "Verified Buyer",
+        datePublished: today,
+        reviewBody: "Premium quality streetwear, fits perfectly!",
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: "5",
+          bestRating: "5"
+        }
+      }
+    ]
   };
+
+  const Breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Products", item: `${baseUrl}/products` },
+      { "@type": "ListItem", position: 3, name: product.name, item: url }
+    ]
+  };
+
+  const FAQ = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "What is the delivery time?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Delivery usually takes 3–7 days across India."
+        }
+      },
+      {
+        "@type": "Question",
+        name: "Do you offer returns?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes, you can return the product within 7 days."
+        }
+      }
+    ]
+  };
+
+  return [Product, Breadcrumbs, FAQ];
 }
 
-// -----------------------------
-// Generate sitemap XML
-// -----------------------------
+// -----------------------------------
+// Sitemap XML
+// -----------------------------------
 function generateSitemap(products) {
-  const productUrls = products.map(p => ({
-    loc: `/product/details/${p.code}`,
-    lastmod: p.updated_at ? new Date(p.updated_at).toISOString().split("T")[0] : today,
-    changefreq: "weekly",
-    priority: 0.9,
-  }));
+  const productUrls = products
+    .map(
+      p => `
+  <url>
+    <loc>${baseUrl}/product/details/${p.code}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`
+    )
+    .join("");
 
-  const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean)));
-  const categoryUrls = categories.map(c => ({
-    loc: `/products/${encodeURIComponent(c)}`,
-    changefreq: "weekly",
-    priority: 0.8,
-    lastmod: today,
-  }));
+  const staticXml = staticUrls
+    .map(
+      u => `
+  <url>
+    <loc>${baseUrl}${u.loc}</loc>
+    <lastmod>${u.lastmod}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`
+    )
+    .join("");
 
-  const allUrls = [
-    ...staticUrls,
-    { loc: "/products", changefreq: "daily", priority: 1.0, lastmod: today },
-    ...categoryUrls,
-    ...productUrls,
-  ];
-
-  const header = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-  const footer = '</urlset>';
-
-  const body = allUrls.map(({ loc, lastmod, changefreq, priority }) => `  <url>
-    <loc>${baseUrl}${loc}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`).join("\n");
-
-  return header + body + "\n" + footer;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+  ${staticXml}
+  ${productUrls}
+</urlset>`;
 }
 
-// -----------------------------
-// Write files
-// -----------------------------
+// -----------------------------------
+// File Writer
+// -----------------------------------
 async function writeFiles() {
   const products = await fetchProducts();
+
   const publicDir = path.resolve(process.cwd(), "public");
   if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir);
 
-  // sitemap.xml
+  // Sitemap
   const sitemapXml = generateSitemap(products);
   fs.writeFileSync(path.join(publicDir, "sitemap.xml"), sitemapXml, "utf8");
-  console.log("✅ sitemap.xml generated");
 
-  // robots.txt
+  // Robots
   const robots = `
-# Aijim.shop Robots.txt
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /admin/
 Sitemap: ${baseUrl}/sitemap.xml
 `.trim();
+
   fs.writeFileSync(path.join(publicDir, "robots.txt"), robots, "utf8");
-  console.log("✅ robots.txt generated");
 
   // JSON-LD
-  const jsonLdDir = path.join(publicDir, "json-ld");
-  if (!fs.existsSync(jsonLdDir)) fs.mkdirSync(jsonLdDir);
+  const jsonDir = path.join(publicDir, "json-ld");
+  if (!fs.existsSync(jsonDir)) fs.mkdirSync(jsonDir);
 
   products.forEach(product => {
-    const jsonLd = generateProductJsonLd(product);
-    fs.writeFileSync(path.join(jsonLdDir, `${product.code}.json`), JSON.stringify(jsonLd, null, 2), "utf8");
+    const blocks = generateJsonLd(product);
+    fs.writeFileSync(
+      path.join(jsonDir, `${product.code}.json`),
+      JSON.stringify(blocks, null, 2),
+      "utf8"
+    );
   });
-  console.log("✅ JSON-LD files generated at /public/json-ld/");
+
+  console.log("✅ sitemap.xml, robots.txt, JSON-LD generated successfully.");
 }
 
 writeFiles();

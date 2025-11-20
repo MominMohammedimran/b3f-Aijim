@@ -2,169 +2,156 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import useSEO from "@/hooks/useSEO";
 
 interface ProductSEO {
+  id?: string;
   name: string;
   description: string;
   image: string;
   price?: number;
   currency?: string;
+  rating?: number;
+  reviewCount?: number;
 }
 
-const defaultSEO = {
+interface PageSEO {
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+}
+
+interface SEOProps {
+  pageSEO?: PageSEO;
+  productProp?: ProductSEO; // optional product prop
+}
+
+const defaultSEO: PageSEO = {
   title: "AIJIM | Premium Fashion, Affordable Price",
   description: "Shop premium streetwear & custom printed T-shirts by AIJIM.",
   url: "https://aijim.shop",
   image: "https://aijim.shop/og-image.jpg",
 };
 
-const NewSEOHelmet: React.FC = () => {
+const routeSEO: Record<string, Partial<PageSEO>> = {
+  "/": {
+    title: "AIJIM | Premium Fashion, Affordable Price",
+    description: "Explore the latest trends and premium printed products by AIJIM.",
+  },
+  "/about-us": { title: "About Us | AIJIM", description: "Learn about AIJIM brand & story." },
+  "/contact-us": { title: "Contact | AIJIM", description: "Get in touch with AIJIM support." },
+  "/signin": { title: "Sign In | AIJIM", description: "Access your AIJIM account." },
+
+  "/cart": { title: "Your Cart | AIJIM", description: "Review your AIJIM products." },
+  "/search": { title: "Search | AIJIM", description: "Search your desired products. " },
+  "/products": { title: "Shop All Products | AIJIM", description: "Browse AIJIM streetwear." },
+  "/product/details": { title: "Product Details | AIJIM", description: "View product details." },
+};
+
+export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
   const { pathname } = useLocation();
-  const params = useParams();
+  const params = useParams<{ productId?: string }>();
+  const [product, setProduct] = useState<ProductSEO | null>(productProp || null);
 
-  const [products, setProducts] = useState<ProductSEO[]>([]);
-  const [seoData, setSeoData] = useState(defaultSEO);
-  const [canonical, setCanonical] = useState(defaultSEO.url);
-
-  useSEO(pathname); // updates page title/keywords
-
+  // Fetch product if not passed as prop
   useEffect(() => {
-    const fetchProducts = async () => {
+    if (productProp || !params.productId) return;
+
+    const fetchProduct = async () => {
       try {
-        let fetchedProducts: ProductSEO[] = [];
+        const { data, error } = await supabase
+          .from("products")
+          .select("id, name, description, image, price, rating")
+          .eq("id", params.productId)
+          .single();
 
-        // Fetch product data for listing pages or individual product
-        if (pathname === "/" || pathname.startsWith("/products")) {
-          const { data, error } = await supabase
-            .from("products")
-            .select("id, name, description, image, price, category");
-          if (!error && data) {
-            fetchedProducts = data.map((p: any) => ({
-              name: p.name,
-              description: p.description,
-              image: p.image,
-              price: p.price,
-              currency: "INR",
-            }));
-          }
+        if (!error && data) {
+          setProduct({
+            id: data.id,
+            name: data.name,
+            description: data.description,
+            image: data.image,
+            price: data.price,
+            currency: "INR",
+            rating: data.rating,
+            reviewCount:2,
+          });
         }
-
-        if (pathname.startsWith("/product/details") && params.productId) {
-          const { data, error } = await supabase
-            .from("products")
-            .select("id, name, description, image, price")
-            .eq("id", params.productId)
-            .single();
-          if (!error && data) {
-            fetchedProducts = [
-              {
-                name: data.name,
-                description: data.description,
-                image: data.image,
-                price: data.price,
-                currency: "INR",
-              },
-            ];
-          }
-        }
-
-        setProducts(fetchedProducts);
       } catch (err) {
         console.error("SEO fetch error:", err);
       }
     };
 
-    fetchProducts();
+    fetchProduct();
+  }, [params.productId, productProp]);
 
-    // -----------------------
-    // Set SEO meta per route
-    // -----------------------
-    let title = defaultSEO.title;
-    let description = defaultSEO.description;
-    let image = defaultSEO.image;
-
-    if (pathname === "/") {
-      title = "AIJIM | Premium Fashion, Affordable Price";
-      description = "Shop premium streetwear & custom printed T-shirts by AIJIM.";
-    } else if (pathname.startsWith("/products")) {
-      title = "Shop All Products | AIJIM";
-      description = "Browse AIJIM’s full collection of streetwear.";
-    } else if (pathname.startsWith("/product/details") && params.productId) {
-      const product = products[0];
-      if (product) {
-        title = `${product.name} | AIJIM`;
-        description = product.description || defaultSEO.description;
-        image = product.image || defaultSEO.image;
-      } else {
-        title = "Product Details | AIJIM";
-        description = "Check out design, sizing, and features before you buy.";
-      }
-    }
-
-    setSeoData({
-      title,
-      description,
-      url: defaultSEO.url,
-      image,
-    });
-
-    // -----------------------
-    // Set dynamic canonical URL
-    // -----------------------
-    if (pathname.startsWith("/product/details") && params.productId) {
-      setCanonical(`${defaultSEO.url}/product/details/${params.productId}`);
-    } else if (pathname.startsWith("/products/:category") && params.category) {
-      setCanonical(`${defaultSEO.url}/products/${params.category}`);
-    } else {
-      setCanonical(`${defaultSEO.url}${pathname}`);
-    }
-  }, [pathname, params, products]);
-
-  const fullTitle = seoData.title.includes("AIJIM")
-    ? seoData.title
-    : `${seoData.title} | AIJIM`;
+  // Determine SEO metadata
+  const matchedSEO = routeSEO[pathname] || {};
+  const seo = {
+    ...defaultSEO,
+    ...matchedSEO,
+    ...pageSEO,
+    title: product ? `${product.name} | AIJIM` : matchedSEO.title || pageSEO?.title || defaultSEO.title,
+    description: product?.description || matchedSEO.description || pageSEO?.description || defaultSEO.description,
+    image: product?.image || pageSEO?.image || defaultSEO.image,
+    url: product ? `${defaultSEO.url}/product/details/${product.id}` : defaultSEO.url + pathname,
+  };
 
   return (
     <Helmet>
-      <title>{fullTitle}</title>
-      <meta name="description" content={seoData.description} />
-      <meta property="og:title" content={fullTitle} />
-      <meta property="og:description" content={seoData.description} />
-      <meta property="og:image" content={seoData.image} />
-      <meta property="og:url" content={canonical} />
-      <link rel="canonical" href={canonical} />
+      <title>{seo.title}</title>
+      <meta name="description" content={seo.description} />
+      <meta property="og:title" content={seo.title} />
+      <meta property="og:description" content={seo.description} />
+      <meta property="og:image" content={seo.image} />
+      <meta property="og:url" content={seo.url} />
+      <link rel="canonical" href={seo.url} />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={fullTitle} />
-      <meta name="twitter:description" content={seoData.description} />
-      <meta name="twitter:image" content={seoData.image} />
+      <meta name="twitter:title" content={seo.title} />
+      <meta name="twitter:description" content={seo.description} />
+      <meta name="twitter:image" content={seo.image} />
 
-      {/* JSON-LD structured data for products */}
-      {products.length > 0 && (
+      {/* JSON-LD structured data */}
+      {product && (
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            name: product.name,
+            image: [product.image],
+            description: product.description,
+            sku: product.id,
+            offers: product.price
+              ? {
+                  "@type": "Offer",
+                  priceCurrency: product.currency || "INR",
+                  price: product.price,
+                  availability: "https://schema.org/InStock",
+                  url: seo.url,
+                }
+              : undefined,
+            aggregateRating:
+              product.rating && product.reviewCount
+                ? {
+                    "@type": "AggregateRating",
+                    ratingValue: product.rating,
+                    reviewCount: product.reviewCount,
+                  }
+                : undefined,
+          })}
+        </script>
+      )}
+      {!product && (
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "ItemList",
-            itemListElement: products.map((p, i) => ({
-              "@type": "Product",
-              position: i + 1,
-              name: p.name,
-              description: p.description,
-              image: p.image,
-              ...(p.price && {
-                offers: {
-                  "@type": "Offer",
-                  price: p.price,
-                  priceCurrency: p.currency,
-                  availability: "https://schema.org/InStock",
-                },
-              }),
-            })),
+            "@type": "WebPage",
+            name: seo.title,
+            description: seo.description,
+            url: seo.url,
           })}
         </script>
       )}
     </Helmet>
   );
-};
-
-export default NewSEOHelmet;
+}

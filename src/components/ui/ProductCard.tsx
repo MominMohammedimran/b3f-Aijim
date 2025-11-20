@@ -11,28 +11,33 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
-  const images =
-    Array.isArray(product.images) && product.images.length > 0
-      ? product.images
-      : [product.image];
+  // Always ensure first image is product.image
+  const images = (() => {
+    const arr = Array.isArray(product.images) ? [...product.images] : [];
+    // Add product.image at first if missing
+    if (!arr.includes(product.image)) arr.unshift(product.image);
+    return arr;
+  })();
 
-  // Determine effective original price (if not provided fallback to price)
-  const originalPrice = typeof product.originalPrice === "number" && product.originalPrice > 0
-    ? product.originalPrice
-    : product.price;
+  const originalPrice =
+    typeof product.originalPrice === "number" && product.originalPrice > 0
+      ? product.originalPrice
+      : product.price;
 
-  // Calculate discount percentage when originalPrice is greater than price
   const hasDiscount = originalPrice > product.price;
+
   const discountPercent = hasDiscount
     ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
     : 0;
 
   useEffect(() => {
     if (!isHovered || images.length <= 1) return;
+
     const interval = setInterval(
-      () => setCurrentImage((p) => (p + 1) % images.length),
-      1500
+      () => setCurrentImage((prev) => (prev + 1) % images.length),
+      1200
     );
+
     return () => clearInterval(interval);
   }, [isHovered, images.length]);
 
@@ -44,18 +49,18 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
-        setCurrentImage(0);
+        setCurrentImage(0); // reset back to product.image
       }}
       className={`cursor-pointer bg-[#0b0b0b] rounded-none overflow-hidden group transition-all duration-500 hover:shadow-[0_6px_14px_rgba(255,255,255,0.07)] hover:-translate-y-1 h-full flex flex-col ${className}`}
     >
       {/* Image Section */}
-      <div className="relative aspect-[5/6]  overflow-hidden bg-neutral-900 flex-shrink-0">
+      <div className="relative aspect-[5/6] overflow-hidden bg-neutral-900 flex-shrink-0">
         {images.map((img, i) => (
           <img
             key={i}
             src={img}
             alt={product.name}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
               i === currentImage ? "opacity-100" : "opacity-0"
             } ${outOfStock ? "opacity-50 grayscale" : ""}`}
           />
@@ -68,7 +73,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
           </div>
         )}
 
-        {/* SOLD Overlay (still clickable) */}
+        {/* SOLD Overlay */}
         {outOfStock && (
           <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/40 pointer-events-none">
             <div className="bg-red-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide px-4 py-2 rounded-md shadow-lg select-none">

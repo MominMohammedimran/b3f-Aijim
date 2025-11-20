@@ -155,7 +155,7 @@ const PaymentRetry: React.FC<PaymentRetryProps> = ({
         .eq("id", orderId);
 
       toast.success("Payment successful! Order confirmed.");
-      navigate(`/orders/${orderId}`);
+     window.location.href = `/order-complete/${orderId}`;
     } catch {
       toast.error("Failed to update order after payment.");
     } finally {
