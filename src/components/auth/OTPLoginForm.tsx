@@ -100,7 +100,7 @@ const OTPLoginForm: React.FC<OTPLoginFormProps> = ({ onSuccess }) => {
   return (
     <form onSubmit={verifyOTP} className="space-y-4">
       <h2 className="text-2xl font-bold text-center">Enter OTP</h2>
-      <p className="text-sm text-gray-600 text-center">
+      <p className="text-sm text-gray-200 text-center">
         We've sent a 6-digit code to {email}
       </p>
       

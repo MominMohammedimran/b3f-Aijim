@@ -16,6 +16,9 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({ mode = 'signin' }
   const [currentMode, setCurrentMode] = useState(mode);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+const switchAuthTab = (target: 'signin' | 'signup') => {
+  window.dispatchEvent(new CustomEvent("switch-tab", { detail: target }));
+};
 
   const handleSignUp = async () => {
     // SignUp success handling is done in the SignUpForm component
@@ -59,17 +62,17 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({ mode = 'signin' }
 
 
   return (
-    <div className="flex justify-center pb-10 bg-gray-50 px-4 sm:px-4 lg:px-4">
-   <div className="max-w-md w-full space-y-4 mt-10">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">
+    <div className="flex justify-center  bg-black rounded-none ">
+   <div className="max-w-md w-full space-y-1 bg-black rounded-none">
+        {/*<div className="text-center">
+          <h2 className="text-xl font-bold text-center text-gray-900">
             {currentMode === 'signin' ? 'Sign in to your account' : 'Create your account'}
           </h2>
-        </div>
+        </div>*/}
 
         {currentMode === 'signin' ? (
-          <Card>
-            <CardContent className="pt-6">
+       
+            <div className=" p-6 pt-6 bg-black rounded-none">
               <LoginForm onSubmit={handleSignIn} loading={loading} />
               <div className="mt-4 text-center">
                 <span className="text-sm text-gray-300">
@@ -77,14 +80,20 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({ mode = 'signin' }
                   <Button
                     variant="link"
                     className="p-0 h-auto font-semibold"
-                    onClick={() => setCurrentMode('signup')}
+                    
+            onClick={() => {
+  switchAuthTab("signup");
+  setCurrentMode("signup");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}}
+
                   >
                     Sign up
                   </Button>
                 </span>
               </div>
-            </CardContent>
-          </Card>
+              </div>
+          
         ) : (
           <div>
             <SignUpForm onSuccess={handleSignUp} />
@@ -93,8 +102,14 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({ mode = 'signin' }
                 Already have an account ? {' '}
                 <Button
                   variant="link"
+                  
                   className="p-0 h-auto font-semibold"
-                  onClick={() => setCurrentMode('signin')}
+          onClick={() => {
+  switchAuthTab("signin");
+  setCurrentMode("signin");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}}
+
                 >
                   Sign in
                 </Button>

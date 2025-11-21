@@ -38,8 +38,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, onOTPSuccess }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-2xl font-bold text-center">Welcome Back 👋</h2>
+    <form onSubmit={handleSubmit} className="space-y-4 bg-black rounded-none">
+      <h2 className="text-xl font-bold text-center">Welcome Back 👋</h2>
 
       <div>
         <Label htmlFor="email">Email</Label>
@@ -49,6 +49,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, onOTPSuccess }
           type="email"
           value={formData.email}
           onChange={handleChange}
+          placeholder="yourname@gmail.com"
           required
         />
       </div>
@@ -62,6 +63,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, onOTPSuccess }
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={handleChange}
+            placeholder="passowrd"
             required
             className="pr-10"
           />
@@ -101,7 +103,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, onOTPSuccess }
         </div>
       </div>
 
-      <GoogleSignInButton />
+      <GoogleSignInButton title='login'/>
     </form>
   );
 };

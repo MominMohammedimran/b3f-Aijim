@@ -38,7 +38,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
-const scrollToDiv = (id: string, offset: number = 0) => {
+const scrollToDiv = (id: string, offset: number = -8) => {
   const el = document.getElementById(id);
   if (!el) return;
 
@@ -89,10 +89,15 @@ const scrollToDiv = (id: string, offset: number = 0) => {
     );
   };
 
-  const discountPercent = product.originalPrice
-    ? Math.round(
-        ((product.originalPrice - product.price) / product.originalPrice) * 100
-      )
+const originalPrice =
+    typeof product.original_price === "number" && product.original_price > 0
+      ? product.original_price
+      : product.price;
+
+  const hasDiscount = originalPrice > product.price;
+
+  const discountPercent = hasDiscount
+    ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
     : 0;
 
   const totalPrice = selectedSizes.reduce(
@@ -180,17 +185,18 @@ const getSizeMeasurements = (size: string) => {
       </div>
 
       {/* --- Product Info --- */}
-      <div className="px-2 mt-2">
+      <div id="sizeSection"  className="px-2 mt-2">
         <h2  className="text-lg font-semibold mb-1">{product.name}</h2>
         <div className="flex items-center gap-2 mb-2">
-          {product.originalPrice && product.originalPrice > product.price && (
+          {product.original_price && product.original_price > product.price && (
             <span className="text-md text-gray-400 line-through">
-              ₹{product.originalPrice}
+              ₹{product.original_price}
             </span>
           )}
-          <span className="text-xl font-bold text-yellow-300">
-            ₹{product.price}
+          <span  className="text-xl font-bold text-yellow-300">
+            ₹{product.price}  
           </span>
+          
           {discountPercent > 0 && (
             <span className="text-[10px] bg-red-600 text-white px-1 py-0.5 rounded">
               {discountPercent}% OFF
@@ -262,15 +268,16 @@ const getSizeMeasurements = (size: string) => {
 
 
       {/* --- Sizes --- */}
-      <div id="sizeSection" className="px-2" >
-  
-        <div   className="grid grid-cols-6 md:grid-cols-6 gap-2 relative">
+      <div className="px-2" >
+
+  <span className="text-gray-200 text-lg font-medium">Select Size </span>
+        <div   className="grid grid-cols-6 md:grid-cols-6 gap-2 relative border-t border-gray-200">
           {productVariants.map(({ size, stock }) => {
             const selected = selectedSizes.some((s) => s.size === size);
             const isOutOfStock = stock === 0;
 
             return (
-              <div key={size} className="relative">
+              <div key={size} className="relative mt-2">
                 <button
                   onClick={() => toggleSize(size)}
                   disabled={isOutOfStock}

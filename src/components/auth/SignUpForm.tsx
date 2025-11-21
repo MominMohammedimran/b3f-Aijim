@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import { useSupabaseClient } from "@/hooks/useSupabaseClient";
-
+import GoogleSignInButton from './GoogleSignInButton';
 const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const supabase = useSupabaseClient();
 
@@ -134,7 +134,7 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       >
         <h2 className="text-center text-xl">Verify OTP</h2>
 
-        <p className="text-center text-sm text-gray-300">
+        <p className="text-center text-sm text-gray-200">
           A 6-digit code has been sent to {email}
         </p>
 
@@ -169,9 +169,9 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   return (
     <form
       onSubmit={handleSignup}
-      className="space-y-6 w-full max-w-md bg-gray-900 text-white p-6 rounded-xl"
+      className="space-y-6 w-full max-w-md bg-black text-white p-6 rounded-none"
     >
-      <h2 className="text-center text-xl">Create Your Account</h2>
+      <h2 className="text-xl font-bold text-center">Create Your Account</h2>
 
       {/* Full Name */}
       <div>
@@ -179,6 +179,7 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         <Input
           className="bg-gray-800 text-white border-gray-700"
           value={fullName}
+          placeholder="your full name example-john dee"
           onChange={(e) => setFullName(e.target.value)}
           required
         />
@@ -189,6 +190,7 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         <Label className="text-white">Email</Label>
         <Input
           type="email"
+          placeholder="yourname@gmail.com"
           className="bg-gray-800 text-white border-gray-700"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -204,6 +206,7 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
             className="bg-gray-800 text-white border-gray-700 pr-10"
             type={showPassword ? "text" : "password"}
             value={password}
+            placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
             required
           />
@@ -225,6 +228,7 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
             className="bg-gray-800 text-white border-gray-700 pr-10"
             type={showConfirmPassword ? "text" : "password"}
             value={confirmPassword}
+            placeholder="password"
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
@@ -241,7 +245,18 @@ const SignUpForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Sending OTP..." : "Create Account"}
       </Button>
+   <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="px-2 text-gray-300">Or continue with</span>
+        </div>
+      </div>
+
+      <GoogleSignInButton title="signup"/>
     </form>
+    
   );
 };
 

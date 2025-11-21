@@ -111,6 +111,7 @@ export interface Product {
   description: string;
   price: number;
   originalPrice?: number;
+  original_price?:number;
   discountPercentage?: number;
   image: string;
   images?: string[];
