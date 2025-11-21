@@ -38,15 +38,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
-const couponRef = useRef<HTMLDivElement | null>(null);
-  const savedAddressesRef = useRef<HTMLDivElement | null>(null);
-  // Function remains the same
-const scrollToCoupon = (offset = -1) => {
-  if (!couponRef.current) return;
-  const top = couponRef.current.getBoundingClientRect().top + window.scrollY + offset;
-  window.scrollTo({ top, behavior: 'smooth' });
+const scrollToDiv = (id: string, offset: number = 0) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const y = el.getBoundingClientRect().top + window.scrollY + offset;
+
+  window.scrollTo({
+    top: y,
+    behavior: "smooth",
+  });
 };
 
+
+
+ 
   // --- Prepare variants ---
   const productVariants = useMemo(() => {
     return Array.isArray(product.variants)
@@ -175,7 +181,7 @@ const getSizeMeasurements = (size: string) => {
 
       {/* --- Product Info --- */}
       <div className="px-2 mt-2">
-        <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
+        <h2  className="text-lg font-semibold mb-1">{product.name}</h2>
         <div className="flex items-center gap-2 mb-2">
           {product.originalPrice && product.originalPrice > product.price && (
             <span className="text-md text-gray-400 line-through">
@@ -194,6 +200,7 @@ const getSizeMeasurements = (size: string) => {
       </div>
 
       <LiveViewingCounter productId={product.id} />
+       
       {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
       {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
 {selectedSizes.length > 0 && (
@@ -255,11 +262,9 @@ const getSizeMeasurements = (size: string) => {
 
 
       {/* --- Sizes --- */}
-      <div className="px-2" >
-       
-        <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
-         <div ref={savedAddressesRef}></div>
-        <div className="grid grid-cols-6 md:grid-cols-6 gap-2 relative">
+      <div id="sizeSection" className="px-2" >
+  
+        <div   className="grid grid-cols-6 md:grid-cols-6 gap-2 relative">
           {productVariants.map(({ size, stock }) => {
             const selected = selectedSizes.some((s) => s.size === size);
             const isOutOfStock = stock === 0;
@@ -369,10 +374,13 @@ const getSizeMeasurements = (size: string) => {
         </div>
       )}
 
+
       {/* --- Action Buttons (hide if all out of stock) --- */}
       {!allOutOfStock ? (
-        <div  onClick={() => setTimeout(() => scrollToCoupon(-1), 100)}
-className="w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 left-0 right-0 z-10 items-center justify-center"ref={couponRef}>
+        <div
+onClick={() => scrollToDiv("sizeSection")}
+  className="w-100 flex flex-row fixed lg:relative bottom-8 left-0 right-0 z-10 items-center justify-center"
+>
           <ProductActionButtons
             product={product}
             selectedSizes={selectedSizes.map((s) => s.size)}
@@ -403,7 +411,7 @@ className="w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 l
 
       {/* --- Delivery Section --- */}
       <div className="p-4 bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none m-2 mt-4">
-        <h3 className="text-md font-semibold text-yellow-300 mb-2">
+        <h3  className="text-md font-semibold text-yellow-300 mb-2">
           Delivery & Returns
         </h3>
         <div className="space-y-3">
@@ -441,6 +449,7 @@ className="w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 l
           <div className="border-t border-gray-700 pt-2">
             <button
               onClick={() => setShowInstructions((prev) => !prev)}
+              
               className="w-full flex items-center justify-between text-xs font-semibold text-gray-200 hover:text-yellow-400 transition-colors"
             >
               Delivery Instructions
@@ -472,45 +481,35 @@ className="w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 l
       </div>
 
       {/* --- Description + Features + Coupons --- */}
-<div className="grid grid-cols-4 gap-3 mt-4 mb-3 text-center">
+<div className="px-2 pb-4">
+  {/* Product Description */}
+  <ProductDescription desc={product.description} />
 
+  {/* --- Feature Highlights (Lucide Icons) --- */}
+  <div className="grid grid-cols-4  gap-2 mt-2 mb-2 text-center">
   {[
     { icon: IndianRupee, label: "Free Delivery" },
     { icon: Truck, label: "Fast Delivery (5–7 Days)" },
-    { icon: Shirt, label: "100% Cotton Fabric" },
-    { icon: Coins, label: "Earn Reward Points" },
+    { icon: Shirt, label: "100% Cotton" },
+    { icon: Coins, label: "Reward Points" },
   ].map(({ icon: Icon, label }, index) => (
     <div
       key={index}
-      className="group flex flex-col items-center justify-center 
-                 rounded-2xl p-3
-                 bg-[#111] backdrop-blur-md border border-white/10
-                 shadow-sm 
-                 transition-all duration-300
-                 hover:scale-[1.03] hover:border-indigo-500/40 hover:shadow-indigo-500/20"
+      className="group flex flex-col items-center justify-center  border border-gray-700 hover:border-gray-500 transition-all duration-300 p-3 rounded-lg text-white shadow-md hover:shadow-lg hover:shadow-indigo-500/20"
     >
-
-      {/* Icon container */}
-      <div
-        className="flex items-center justify-center 
-                   w-10 h-10 mb-2 rounded-xl
-                   bg-gradient-to-br from-gray-800 to-gray-900
-                   group-hover:from-indigo-600 group-hover:to-purple-600
-                   transition-all duration-300 shadow-inner"
-      >
-        <Icon className="w-5 h-5 text-white group-hover:scale-110 transition-transform duration-300" />
+      <div className="flex items-center justify-center bg-gray-800 group-hover:bg-indigo-600 transition-all duration-300 rounded-full w-8 h-8 mb-1">
+        <Icon className="w-4 h-4 text-white transition-transform duration-300 group-hover:scale-110" />
       </div>
-
-      {/* Label */}
-      <p className="text-[10px] sm:text-[13px] font-medium tracking-wide 
-                    text-gray-300 group-hover:text-white transition-all duration-300">
+      <p className="text-[10px] sm:text-[13px] font-medium leading-tight group-hover:text-yellow-400">
         {label}
       </p>
-
     </div>
   ))}
 </div>
 
+  {/* Available Coupons */}
+  <AvailableCoupons />
+</div>
 
       {/* --- Share Modal --- */}
       <ShareModal
