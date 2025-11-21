@@ -147,6 +147,14 @@ const Index = () => {
       behavior: "smooth",
     });
   };
+  useEffect(() => {
+  const interval = setInterval(() => {
+    scroll("right");
+  }, 3000); // 3 seconds auto-scroll
+
+  return () => clearInterval(interval);
+}, []);
+
 
   return (
     <Layout>
@@ -216,6 +224,7 @@ const Index = () => {
             ) : featuredProducts.length > 0 ? (
               <div className="relative w-full">
                 <button
+                  aria-label="Scroll Left"
                   onClick={() => scroll("left")}
                   className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 bg-black/60 py-0.5 hover:bg-black hover:text-white transition"
                 >
@@ -241,6 +250,7 @@ const Index = () => {
                 </div>
 
                 <button
+                  aria-label="Scroll right"
                   onClick={() => scroll("right")}
                   className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/60 py-0.5 hover:bg-black text-gray-500 hover:text-white transition"
                 >

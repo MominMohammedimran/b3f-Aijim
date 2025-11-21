@@ -18,6 +18,7 @@ interface TrackingData {
   courierPartner: string;
   statusDateTime: string | null;
   instructions: string | null;
+   statusLocation: string | null;
 }
 
 interface Order {
@@ -114,6 +115,7 @@ const TrackOrder = () => {
         currentStatus,
         currentLocation,
         history,
+        statusLocation: shipment.Status?.StatusLocation,
         expectedDelivery: shipment.ExpectedDeliveryDate || shipment.PromisedDeliveryDate || null,
         destination: shipment.Destination || null,
         pickupDate: shipment.PickedupDate || shipment.PickUpDate || null,
@@ -174,14 +176,15 @@ const TrackOrder = () => {
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-lg flex justify-between flex-col md:flex-row">
           <div className="mb-4 md:mb-0">
             <h2 className="text-xl lg:text-2xl font-bold text-yellow-400">{tracking.order_number}</h2>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-400 font-semibold mt-1">
               Placed on {new Date(tracking.created_at).toLocaleDateString()}
               {tracking.total && <span className="ml-4 text-white">| Total: ₹{tracking.total.toFixed(2)}</span>}
             </p>
           </div>
-          <div className={`flex  text-center rounded-none px-2 py-1 `}>
-            <p className="text-sm font-bold text-white">Payment - &nbsp;             </p>
-            <span className={`text-sm font-semibold text-green-500 `}>
+          <div className={`  lg:flex gap-5 text-left rounded-none px-2 py-1 `}>
+            <p className="text-sm font-bold text-white">Payment        </p>
+          <span className={`text-sm font-semibold   rounded-full ${tracking.payment_status === 'paid' ? 'text-yellow-400' : 'text-red-500'}`}>
+             
               {tracking.payment_status.toUpperCase()}
             </span>
           </div>
@@ -198,11 +201,11 @@ const TrackOrder = () => {
             <div className="space-y-4">
               <div className="p-3 bg-gray-800 rounded-lg border-l-4 border-yellow-400">
                 <p className="text-yellow-400 font-semibold text-sm mb-1">Current Status</p>
-                <p className="text-xs text-gray-300">{trackingData.currentStatus.toUpperCase()}</p>
+                <p className="text-xs text-gray-300">{trackingData.currentLocation}</p>
               </div>
               <div className="p-3 bg-gray-800 rounded-lg">
                 <p className="text-yellow-400 font-semibold text-sm mb-1">Current Location</p>
-                <p className="text-xs text-gray-300">{trackingData.currentLocation}</p>
+                <p className="text-xs text-gray-300">{trackingData.statusLocation}</p>
               </div>
               <div className="p-3 bg-gray-800 rounded-lg">
                 <p className="text-yellow-400 font-semibold text-sm mb-1">Expected Delivery</p>
@@ -233,7 +236,7 @@ const TrackOrder = () => {
           <div className="mt-6 border border-yellow-400/50 rounded-xl p-4 bg-gray-800/50">
             <h3 className="text-lg font-bold text-yellow-400 mb-2 flex items-center gap-2"><MapPin className="h-4 w-4" /> Latest Scan</h3>
             <div className="space-y-1 text-sm text-gray-300">
-              <p  className="font-medium text-yellow-400"><span className="font-medium text-white">Status -</span> {trackingData.currentStatus}</p>
+              <p  className="font-medium text-yellow-400"><span className="font-medium text-white">Status -</span> {trackingData.currentLocation}</p>
               {trackingData.statusDateTime && <p className="font-medium text-yellow-400"><span className="font-medium text-white">Time -</span> {new Date(trackingData.statusDateTime).toLocaleString()}</p>}
               {trackingData.instructions && <p className="font-medium text-yellow-400"><span className="font-medium text-white">Note -</span> {trackingData.instructions}</p>}
             </div>

@@ -157,6 +157,7 @@ const Products = () => {
         <div className="relative">
           {/* Left Button */}
           <button
+            aria-label="Scroll Left"
             onClick={() => scroll("left")}
             className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-1 rounded-none z-10"
           >
@@ -183,6 +184,7 @@ const Products = () => {
 
           {/* Right Button */}
           <button
+            aria-label="Scroll Right"
             onClick={() => scroll("right")}
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-1 rounded-none z-10"
           >

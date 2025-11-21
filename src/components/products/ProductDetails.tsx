@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo ,useRef} from "react";
 import { 
 Loader2,
   Share,
@@ -20,7 +20,7 @@ import LiveViewingCounter from "./LiveViewingCounter";
 import AvailableCoupons from "./AvailableCoupons";
 import ProductDescription from "./ProductDescription";
 import { validatePincode } from "@/utils/pincodeService";
-import {RelatedProduct} from './RelatedProducts';
+
 
 interface SizeWithQuantity {
   size: string;
@@ -38,6 +38,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
+const couponRef = useRef<HTMLDivElement | null>(null);
+  const savedAddressesRef = useRef<HTMLDivElement | null>(null);
+  // Function remains the same
+const scrollToCoupon = (offset = -1) => {
+  if (!couponRef.current) return;
+  const top = couponRef.current.getBoundingClientRect().top + window.scrollY + offset;
+  window.scrollTo({ top, behavior: 'smooth' });
+};
 
   // --- Prepare variants ---
   const productVariants = useMemo(() => {
@@ -247,8 +255,10 @@ const getSizeMeasurements = (size: string) => {
 
 
       {/* --- Sizes --- */}
-      <div className="px-2">
+      <div className="px-2" >
+       
         <h4 className="text-sm font-semibold mt-4 mb-2">Select Size</h4>
+         <div ref={savedAddressesRef}></div>
         <div className="grid grid-cols-6 md:grid-cols-6 gap-2 relative">
           {productVariants.map(({ size, stock }) => {
             const selected = selectedSizes.some((s) => s.size === size);
@@ -361,7 +371,8 @@ const getSizeMeasurements = (size: string) => {
 
       {/* --- Action Buttons (hide if all out of stock) --- */}
       {!allOutOfStock ? (
-        <div className="w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 left-0 right-0 z-10 items-center justify-center">
+        <div  onClick={() => setTimeout(() => scrollToCoupon(-1), 100)}
+className="w-100 flex flex-row fixed lg:relative lg:flex-col lg:mt-10 bottom-8 left-0 right-0 z-10 items-center justify-center"ref={couponRef}>
           <ProductActionButtons
             product={product}
             selectedSizes={selectedSizes.map((s) => s.size)}
@@ -461,35 +472,45 @@ const getSizeMeasurements = (size: string) => {
       </div>
 
       {/* --- Description + Features + Coupons --- */}
-<div className="px-2 pb-4">
-  {/* Product Description */}
-  <ProductDescription desc={product.description} />
+<div className="grid grid-cols-4 gap-3 mt-4 mb-3 text-center">
 
-  {/* --- Feature Highlights (Lucide Icons) --- */}
-  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 mb-2 text-center">
   {[
     { icon: IndianRupee, label: "Free Delivery" },
     { icon: Truck, label: "Fast Delivery (5–7 Days)" },
-    { icon: Shirt, label: "100% Cotton" },
-    { icon: Coins, label: "Reward Points" },
+    { icon: Shirt, label: "100% Cotton Fabric" },
+    { icon: Coins, label: "Earn Reward Points" },
   ].map(({ icon: Icon, label }, index) => (
     <div
       key={index}
-      className="group flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 border border-gray-700 hover:border-gray-500 transition-all duration-300 p-3 rounded-lg text-white shadow-md hover:shadow-lg hover:shadow-indigo-500/20"
+      className="group flex flex-col items-center justify-center 
+                 rounded-2xl p-3
+                 bg-[#111] backdrop-blur-md border border-white/10
+                 shadow-sm 
+                 transition-all duration-300
+                 hover:scale-[1.03] hover:border-indigo-500/40 hover:shadow-indigo-500/20"
     >
-      <div className="flex items-center justify-center bg-gray-800 group-hover:bg-indigo-600 transition-all duration-300 rounded-full w-8 h-8 mb-1">
-        <Icon className="w-4 h-4 text-white transition-transform duration-300 group-hover:scale-110" />
+
+      {/* Icon container */}
+      <div
+        className="flex items-center justify-center 
+                   w-10 h-10 mb-2 rounded-xl
+                   bg-gradient-to-br from-gray-800 to-gray-900
+                   group-hover:from-indigo-600 group-hover:to-purple-600
+                   transition-all duration-300 shadow-inner"
+      >
+        <Icon className="w-5 h-5 text-white group-hover:scale-110 transition-transform duration-300" />
       </div>
-      <p className="text-[12px] sm:text-[13px] font-medium leading-tight group-hover:text-yellow-400">
+
+      {/* Label */}
+      <p className="text-[10px] sm:text-[13px] font-medium tracking-wide 
+                    text-gray-300 group-hover:text-white transition-all duration-300">
         {label}
       </p>
+
     </div>
   ))}
 </div>
 
-  {/* Available Coupons */}
-  <AvailableCoupons />
-</div>
 
       {/* --- Share Modal --- */}
       <ShareModal

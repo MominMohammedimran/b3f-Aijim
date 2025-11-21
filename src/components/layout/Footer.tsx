@@ -56,31 +56,38 @@ const Footer = () => {
 
         {/* Social Icons */}
        {/* Social Icons */}
-<div className="flex justify-center space-x-4 mt-8">
+<div className="flex justify-center gap-5 mt-10">
 
-  {/* Instagram (Gradient) */}
+  {/* Instagram */}
   <a
     href="https://www.instagram.com/aijim.shop?igsh=ZWlnMXl1YzNkYjlx"
     target="_blank"
     rel="noopener noreferrer"
-    className="w-12 h-12 flex items-center justify-center rounded-full 
-               bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500
-               text-white shadow-md hover:shadow-pink-400/40 transform
-               transition-all duration-300 hover:-translate-y-1 hover:scale-105"
+    aria-label="Visit Aijim on Instagram"
+    className="
+      w-10 h-10 flex items-center justify-center rounded-full
+      bg-gradient-to-br from-pink-500 via-purple-500 to-orange-500
+      text-white shadow-lg shadow-pink-500/20
+      hover:shadow-pink-500/40
+      transition-all duration-300 hover:-translate-y-1 hover:scale-110
+    "
   >
-    <Instagram className="h-6 w-6" />
+    <Instagram className="h-4 w-4" aria-label="Instagram" />
   </a>
 
   {/* Gmail */}
   <a
     href="mailto:aijim.official@gmail.com"
-    className="w-12 h-12 flex items-center justify-center rounded-full 
-               bg-gradient-to-br from-red-700 to-red-500
-                text-white shadow-md hover:shadow-red-400/40
-               transform transition-all duration-300 hover:-translate-y-1
-               hover:scale-105"
+    aria-label="Send Mail to Aijim"
+    className="
+     w-10 h-10 flex items-center justify-center rounded-full
+      bg-gradient-to-br from-red-600 to-red-400
+      text-white shadow-lg shadow-red-500/20
+      hover:shadow-red-500/40
+      transition-all duration-300 hover:-translate-y-1 hover:scale-110
+    "
   >
-    <Mail className="h-6 w-6" />
+    <Mail className="h-4 w-4" aria-label="Email Aijim" />
   </a>
 
   {/* WhatsApp */}
@@ -88,15 +95,20 @@ const Footer = () => {
     href={`https://wa.me/917672080881?text=${getWhatsappMessage()}`}
     target="_blank"
     rel="noopener noreferrer"
-    className="w-12 h-12 flex items-center justify-center rounded-full 
-               bg-green-600 text-white shadow-md hover:shadow-green-400/40
-               transform transition-all duration-300 hover:-translate-y-1 
-               hover:scale-105"
+    aria-label="Chat with Aijim on WhatsApp"
+    className="
+      w-10 h-10 flex items-center justify-center rounded-full
+      bg-gradient-to-br from-green-600 to-green-500
+      text-white shadow-lg shadow-green-500/20
+      hover:shadow-green-500/40
+      transition-all duration-300 hover:-translate-y-1 hover:scale-110
+    "
   >
-    <Phone className="h-6 w-6 " />
+    <Phone className="h-4 w-4" aria-label="WhatsApp Aijim" />
   </a>
 
 </div>
+
 
 
         {/* Divider */}

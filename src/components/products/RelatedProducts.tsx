@@ -36,6 +36,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ product }) => {
 
         {/* Arrow Buttons */}
         <button
+          aria-label="Scroll Left"
           onClick={scrollLeft}
           className="absolute left-0 top-1/2 -translate-y-1/1 z-10 bg-black/70 text-white backdrop-blur-md shadow rounded-none p-1 hover:bg-red-500"
         >
@@ -43,6 +44,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ product }) => {
         </button>
 
         <button
+          aria-label="Scroll Right"
           onClick={scrollRight}
           className="absolute right-0 top-1/2 -translate-y-1/1 z-10 bg-black/70 text-white backdrop-blur-md shadow rounded-none p-1 hover:bg-red-500"
         >

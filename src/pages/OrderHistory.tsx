@@ -6,36 +6,37 @@ import useSEO from "@/hooks/useSEO";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../integrations/supabase/client";
 import { Order } from "../lib/types";
-import { ChevronDown, ChevronUp } from "lucide-react";
-
+import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { updateInventoryFromPaidOrders } from "@/hooks/useProductInventory";
-import { Loader2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
 
 const OrderHistory = () => {
   const { currentUser } = useAuth();
   const { clearCart } = useCart();
+  const navigate = useNavigate();
+  const seo = useSEO("/orders");
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(new Date());
-  const seo = useSEO("/orders");
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
+  // LIVE TICK FOR TIMER
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(interval);
   }, []);
 
+  // FETCH ORDERS
   useEffect(() => {
     const fetchOrders = async () => {
       if (!currentUser) return;
       try {
         setLoading(true);
 
-
+        // Delete pending expired orders
         const twentyFourHoursAgo = new Date();
         twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
@@ -54,32 +55,25 @@ const OrderHistory = () => {
 
         if (error) throw error;
 
-        const transformed: Order[] =
-          data?.map((order: any) => ({
-            ...order,
-            items: Array.isArray(order.items)
-              ? order.items.map((item: any) => ({
-                  ...item,
-                  sizes: Array.isArray(item.sizes) ? item.sizes : [],
-                }))
-              : [],
-          })) || [];
+        const formatted = data?.map((order: any) => ({
+          ...order,
+          items: Array.isArray(order.items) ? order.items : [],
+        }));
 
-        setOrders(transformed);
+        setOrders(formatted);
 
-        // clear cart after fresh order placement
-        if (transformed.length > 0) {
-          const latestOrderId = transformed[0].id;
-          const lastClearedOrder = localStorage.getItem("lastOrderId");
-
-          if (lastClearedOrder !== latestOrderId) {
+        // Clear cart after successful order
+        if (formatted.length > 0) {
+          const latestOrderId = formatted[0].id;
+          const lastCleared = localStorage.getItem("lastOrderId");
+          if (lastCleared !== latestOrderId) {
             await clearCart();
             localStorage.setItem("lastOrderId", latestOrderId);
-            toast.success("Your cart has been cleared after order placement.");
+            toast.success("Your cart has been cleared.");
           }
         }
       } catch (err) {
-        console.error("Error fetching orders:", err);
+        console.error("Order fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -87,23 +81,31 @@ const OrderHistory = () => {
 
     fetchOrders();
   }, [currentUser, clearCart]);
-  // CONFIRM BEFORE CANCEL
-const confirmCancelOrder = (orderId: string) => {
-  toast.warning("Are you sure you want to cancel this order?", {
-    description: "This action cannot be undone.",
-    action: {
-      label: "Yes, Cancel",
-      onClick: () => handleRemoveOrder(orderId),
-    },
-    cancel: {
-      label: "No",
-      onClick: () => {},
-    },
-  });
-};
 
+  const getCountdown = (createdAt: string) => {
+    const expiry = new Date(createdAt).getTime() + 24 * 60 * 60 * 1000;
+    const diff = expiry - now.getTime();
+    if (diff <= 0) return { expired: true, text: "Expired" };
 
-  const handleRemoveOrder = async (orderId: string) => {
+    const h = Math.floor(diff / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return { expired: false, text: `${h}h ${m}m ${s}s` };
+  };
+
+  const confirmCancelOrder = (orderId: string) => {
+    toast.warning("Cancel this order?", {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Yes, Cancel",
+        onClick: () => cancelOrder(orderId),
+      },
+      cancel: { label: "No" },
+    });
+  };
+
+  const cancelOrder = async (orderId: string) => {
     try {
       const { error } = await supabase
         .from("orders")
@@ -112,22 +114,11 @@ const confirmCancelOrder = (orderId: string) => {
 
       if (error) throw error;
 
-      toast.success("Order cancelled successfully");
+      toast.success("Order cancelled");
       setOrders((prev) => prev.filter((o) => o.id !== orderId));
     } catch {
-      toast.error("Failed to cancel order");
+      toast.error("Cancel failed");
     }
-  };
-
-  const getCountdown = (createdAt: string) => {
-    const expiry = new Date(createdAt).getTime() + 24 * 60 * 60 * 1000;
-    const diff = expiry - now.getTime();
-    if (diff <= 0) return { text: "Expired", expired: true };
-
-    const hrs = Math.floor(diff / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const secs = Math.floor((diff % (1000 * 60)) / 1000);
-    return { text: `${hrs}h ${mins}m ${secs}s`, expired: false };
   };
 
   const handleRetryPayment = (order: any) => {
@@ -140,243 +131,241 @@ const confirmCancelOrder = (orderId: string) => {
       },
     });
   };
-  
 
   if (loading) {
     return (
       <Layout>
-        <div className="flex flex-col items-center justify-center pt-20 text-center h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin text-yellow-400 mb-4" />
-          <p className="text-gray-400 text-sm font-semibold">
-            Fetching your orders...
+        <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+          <Loader2 className="w-10 h-10 animate-spin text-yellow-400 mb-3" />
+          <p className="text-gray-400 text-sm font-medium">
+            Loading your order history...
           </p>
         </div>
       </Layout>
     );
   }
 
- return (
-  <Layout>
-    <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(", ") }} />
+  return (
+    <Layout>
+      <NewSEOHelmet {...seo} />
 
-    <div className="min-h-screen bg-black text-white pt-20">
-      <div className="container mx-auto px-4">
+      <div className="min-h-screen bg-black text-white pt-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-2xl font-bold text-yellow-400">Your Orders</h1>
+          <p className="text-gray-400 mb-6 text-sm">
+            View, track & manage all your orders.
+          </p>
 
-        {/* HEADER */}
-        <h1 className="text-2xl font-bold text-yellow-400">Your Orders</h1>
-        <p className="text-gray-400 mb-6 text-sm">
-          Track & manage your orders easily.
-        </p>
+          {/* EMPTY STATE */}
+          {orders.length === 0 ? (
+            <div className="text-center py-16 bg-gray-900/40 border border-gray-800 rounded-xl">
+              <h3 className="text-lg font-semibold text-white">
+                No Orders Yet
+              </h3>
+              <p className="text-gray-400 text-sm mt-1">
+                Start shopping your favourite apparel.
+              </p>
+              <Link to="/">
+                <Button className="mt-5 bg-yellow-400 text-black font-semibold px-6 py-2 rounded-none hover:bg-yellow-500">
+                  Shop Now
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10">
+              {orders.map((order) => {
+                const { expired, text: timer } = getCountdown(order.created_at);
 
-        {/* EMPTY STATE */}
-        {orders.length === 0 ? (
-          <div className="text-center py-14 border border-gray-800 bg-gray-900/40 rounded-none shadow-xl backdrop-blur-sm">
-            <h3 className="text-lg font-semibold mb-2 text-white">No Orders Found</h3>
-            <p className="text-gray-400 mb-4 text-sm">
-              You haven’t placed any order yet.
-            </p>
-            <Link to="/">
-              <Button className="bg-yellow-400 text-black px-6 py-2 hover:bg-yellow-500 font-semibold rounded-none">
-                Start Shopping
-              </Button>
-            </Link>
-          </div>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 pb-10">
+                if (expired && order.payment_status === "pending") return null;
 
-            {orders.map((order) => {
-              const { text: countdown, expired } = getCountdown(order.created_at);
+                return (
+                  <div
+                    key={order.id}
+                    className="bg-gray-900 border border-gray-800 rounded-xl shadow-lg flex flex-col overflow-hidden"
+                  >
+                    {/* HEADER */}
+                    <div className="p-4 border-b border-gray-800">
+                      <h4 className="font-semibold text-md text-white">
+                        #{order.order_number}
+                      </h4>
 
-              if (expired && ["pending", "cancelled"].includes(order.payment_status))
-                return null;
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        <span
+                          className={`px-2 py-1 text-[10px] font-semibold rounded-none ${
+                            order.payment_status === "paid"
+                              ? "bg-green-400 text-black"
+                              : order.payment_status === "pending"
+                              ? "bg-yellow-400 text-black"
+                              : "bg-red-500 text-white"
+                          }`}
+                        >
+                          Payment – {order.payment_status}
+                        </span>
 
-              return (
-                <div
-                  key={order.id}
-                  className="
-                    bg-gray-900 border border-gray-800 
-                    rounded-none shadow-lg hover:shadow-yellow-400/10 
-                    transition-all duration-300 flex flex-col
-                    h-[420px]
-                  "
-                >
-                  {/* HEADER */}
-                  <div className="p-4 border-b border-gray-800">
-                    <h4 className="font-bold text-md text-white mb-2">
-                      Order #{order.order_number}
-                    </h4>
-
-                    <div className="flex flex-wrap gap-1">
-                      <span
-                        className={`px-2 py-1 text-[10px] font-semibold rounded-none ${
-                          order.payment_status === "paid"
-                            ? "bg-green-400 text-black"
-                            : order.payment_status === "pending"
-                            ? "bg-yellow-400 text-black"
-                            : "bg-red-500 text-white"
-                        }`}
-                      >
-                        Payment - {order.payment_status}
-                      </span>
-
-                      <span
-                        className={`px-2 py-1 text-[10px] font-semibold rounded-none ${
-                          order.status === "delivered"
-                            ? "bg-green-500 text-black"
-                            : order.status === "cancelled"
-                            ? "bg-red-500 text-white"
-                            : order.status === "confirmed"
-                            ? "bg-blue-500 text-black"
-                            : order.status === "processing"
-                            ? "bg-yellow-500 text-black"
-                            : "bg-gray-600 text-white"
-                        }`}
-                      >
-                        Status - {order.status}
-                      </span>
+                        <span
+                          className={`px-2 py-1 text-[10px] font-semibold rounded-none ${
+                            order.status === "delivered"
+                              ? "bg-green-500 text-black"
+                              : order.status === "cancelled"
+                              ? "bg-red-500 text-white"
+                              : order.status === "confirmed"
+                              ? "bg-blue-500 text-black"
+                              : order.status === "processing"
+                              ? "bg-yellow-500 text-black"
+                              : "bg-gray-600 text-white"
+                          }`}
+                        >
+                          Status – {order.status}
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* SCROLLABLE ITEMS (equal height cards) */}
-                  <div className="p-4  overflow-y-auto flex-1 custom-scroll">
-                    {order.items.map((item, i) => (
-                      <div
-                        key={i}
-                        className="flex gap-3 bg-black border border-gray-700 p-2 rounded-none"
-                      >
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="h-16 w-16 object-cover border border-gray-700 rounded-none"
-                        />
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold text-white line-clamp-2">
-                            {item.name}
-                          </p>
+                    {/* ITEMS LIST */}
+                    <div className="p-4 space-y-3 overflow-y-auto h-auto custom-scroll">
+                      {order.items.map((item, i) => (
+                        <div
+                          key={i}
+                          className="flex gap-3 bg-black border border-gray-700 p-2 rounded-md"
+                        >
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="h-16 w-16 object-cover rounded-md border border-gray-700"
+                          />
 
-                          <div className="flex gap-3 flex-wrap mt-1">
-                            {item.sizes?.map((s, j) => (
-                              <span key={j} className="text-xs text-gray-300">
-                                <b>{s.size}</b> × {s.quantity}
-                              </span>
-                            ))}
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-white line-clamp-2">
+                              {item.name}
+                            </p>
+
+                            {/* SIZE × QTY */}
+                            <div className="flex flex-wrap gap-2 mt-1">
+                              {item.sizes?.map((s, j) => (
+                                <span
+                                  key={j}
+                                  className="text-xs text-gray-300 bg-gray-800 px-2 py-1 rounded"
+                                >
+                                  {s.size} × {s.quantity}
+                                </span>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
 
-                  {/* COUNTDOWN */}
-                  {order.payment_status === "pending" && !expired && (
-                    <p className="text-xs text-center text-yellow-400 font-medium  pb-2">
-                      Complete payment in <span className="text-white">{countdown}</span>
+                    {/* COUNTDOWN */}
+                    {!expired && order.payment_status === "pending" && (
+                      <p className="text-xs text-center py-2 bg-black text-yellow-400 font-medium">
+                        Complete payment in{" "}
+                        <span className="text-white">{timer}</span>
+                      </p>
+                    )}
+
+                    {/* PAYMENT BUTTON */}
+                    {order.payment_status === "pending" &&
+                      order.status !== "cancelled" && (
+                        <Button
+                          onClick={() => handleRetryPayment(order)}
+                          className="bg-green-600 hover:bg-green-700 w-full rounded-none py-2 text-sm font-semibold"
+                        >
+                          Complete Payment
+                        </Button>
+                      )}
+          
+                      <Link
+                              to={`/order-preview/${order.order_number}`}
+                              className="flex-1 items-center text-center  p-4"
+                            >
+                              <Button className="bg-yellow-400 hover:bg-yellow-500  w-full text-black text-sm rounded-none h-10">
+                                View Details
+                              </Button>
+                            </Link>
+                        
+
+
+                    {/* DROPDOWN */}
+                    <div className="border-t border-gray-800">
+                      <button
+                        onClick={() =>
+                          setOpenDropdown(
+                            openDropdown === order.id ? null : order.id
+                          )
+                        }
+                        className="flex justify-between items-center w-full p-4 text-sm"
+                      >
+                        <span className="text-gray-300">Report issue</span>
+                        {openDropdown === order.id ? (
+                          <ChevronUp className="w-5 h-5" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5" />
+                        )}
+                      </button>
+
+                      {openDropdown === order.id && (
+                        <div className="p-4 pt-0 space-y-3">
+                          {/* View Details + Cancel */}
+                          <div className="flex gap-3">
+                            
+
+                            {["pending", "processing", "confirmed"].includes(
+                              order.status
+                            ) && !expired && (
+                              <Button
+                                onClick={() =>
+                                  confirmCancelOrder(order.id)
+                                }
+                                className="bg-red-600 hover:bg-red-700 text-white text-sm rounded-none h-10 w-1/2"
+                              >
+                                Cancel
+                              </Button>
+                            )}
+                          </div>
+
+                          {/* Issues */}
+                          <div className="flex gap-3">
+                            {order.status !== "delivered" && (
+                              <Link
+                                to={`/payment-issue?orderId=${order.order_number}`}
+                                className="w-full"
+                              >
+                                <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
+                                  Payment Issue
+                                </Button>
+                              </Link>
+                            )}
+
+                            <Link
+                              to={`/order-related-issue?orderId=${order.order_number}`}
+                              className="w-full"
+                            >
+                              <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
+                                Order Issue
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* DATE */}
+                    <p className="text-[11px] text-center text-gray-500 py-3">
+                      Placed on{" "}
+                      {new Date(order.created_at).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </p>
-                  )}
-
-                  {/* PAYMENT BUTTON */}
-                {!["cancelled", "paid", "refunded", "refund-ss"].includes(order.payment_status) &&
-  order.status !== "cancelled" && (
-    <Button
-      onClick={() => handleRetryPayment(order)}
-      className="bg-green-600 hover:bg-green-700 text-white w-full text-sm font-semibold rounded-none py-2 mx-auto block"
-    >
-      Complete Payment
-    </Button>
-)}
-
-
-      <div className="border-t border-gray-800">
-      {/* Dropdown Toggle */}
-      <div
-        className="p-4 flex justify-between items-center cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className="text-sm font-medium text-gray-200">More Details</span>
-        {isOpen ? (
-          <ChevronUp className="w-5 h-5 text-gray-200" />
-        ) : (
-          <ChevronDown className="w-5 h-5 text-gray-200" />
-        )}
-      </div>
-
-      {/* Collapsible Buttons */}
-      {isOpen && (
-        <div className="px-4 pb-4 flex flex-col gap-3">
-          {/* Top Row: View Details + Cancel */}
-       <div className="flex gap-3">
-  <Link
-    to={`/order-preview/${order.order_number}`}
-    className={`${
-      !(["pending", "processing", "confirmed"].includes(order.status) && !expired)
-        ? "flex-1"
-        : "flex-1" // you can remove flex-1 if you want it to shrink automatically with Cancel
-    }`}
-  >
-    <Button className="w-full bg-yellow-400 hover:bg-yellow-500 text-black text-sm font-semibold rounded-none h-10">
-      View Details
-    </Button>
-  </Link>
-
-  {["pending", "processing", "confirmed"].includes(order.status) && !expired && (
-    <Button
-      onClick={() => confirmCancelOrder(order.id)}
-      className="w-1/2 sm:w-auto bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-none h-10"
-    >
-      Cancel
-    </Button>
-  )}
-</div>
-
-
-          {/* Bottom Buttons: Payment Issue / Order Issue */}
-          <div className="flex gap-3">
-          {order.status !== "delivered" && (
-            <Link
-              to={`/payment-issue?orderId=${order.order_number}`}
-              className="w-full"
-            >
-              <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
-                Payment Issue
-              </Button>
-            </Link>
+                  </div>
+                );
+              })}
+            </div>
           )}
-
-          <Link
-            to={`/order-related-issue?orderId=${order.order_number}`}
-            className="w-full"
-          >
-            <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
-              Order Issue
-            </Button>
-          </Link>
-          </div>
         </div>
-      )}
-    </div>
-
-
-
-
-                  {/* FOOTER DATE */}
-                  <p className="text-[11px] text-center text-gray-400 pb-3">
-                    Booked on{" "}
-                    {new Date(order.created_at).toLocaleDateString("en-US", {
-                      weekday: "short",
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
-    </div>
-  </Layout>
-);
-
+    </Layout>
+  );
 };
 
 export default OrderHistory;
