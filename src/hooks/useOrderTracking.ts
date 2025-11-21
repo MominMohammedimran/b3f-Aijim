@@ -44,6 +44,7 @@ export const useOrderTracking = () => {
           status: order.order_status as 'processing' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'pending',
           paymentMethod: order.payment_method,
           payment_method: order.payment_method,
+          payment_status: order.payment_status,
           shippingAddress: typeof order.shipping_address === 'string' 
             ? JSON.parse(order.shipping_address) 
             : order.shipping_address,

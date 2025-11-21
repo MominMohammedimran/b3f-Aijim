@@ -1,282 +1,270 @@
-import React from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
-import Layout from '../components/layout/Layout';
-import SEOHelmet from '../components/seo/SEOHelmet';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, Package, Truck, MapPin, Clock } from 'lucide-react';
-import OrderTrackingStatus from '../components/orders/OrderTrackingStatus';
-import { useOrderTracking } from '@/hooks/useOrderTracking';
-import OrderLoadingState from '../components/orders/OrderLoadingState';
-import OrderErrorState from '../components/orders/OrderErrorState';
+import React, { useEffect, useState, useCallback } from "react";
+import { useParams, Link } from "react-router-dom";
+import Layout from "../components/layout/Layout";
+import { ArrowLeft, Truck, Package, MapPin } from "lucide-react"; 
+import OrderLoadingState from "../components/orders/OrderLoadingState";
+import OrderErrorState from "../components/orders/OrderErrorState";
+import { useOrderTracking } from "@/hooks/useOrderTracking";
+import { supabase } from "@/integrations/supabase/client";
+
+interface TrackingData {
+  shipment: any;
+  currentStatus: string;
+  currentLocation: string;
+  history: any[];
+  expectedDelivery: string | null;
+  destination: string | null;
+  pickupDate: string | null;
+  courierPartner: string;
+  statusDateTime: string | null;
+  instructions: string | null;
+}
+
+interface Order {
+  order_number: string;
+  status: string;
+  created_at: string;
+  payment_status: string;
+  total: number;
+  cancellation_reason: string | null;
+  courier?: { awb?: string };
+  shippingAddress?: {
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    country: string;
+    phone: string;
+    email: string;
+  };
+}
+
+const TRACKING_RETRY_INTERVAL = 10000;
+const COURIER_STATUS_MAP: Record<string, string> = {
+  Dispatched: "shipped",
+  "In transit": "shipped",
+  "Out for Delivery": "out-for-delivery",
+  Delivered: "delivered",
+  Undelivered: "shipped",
+  RTO: "return-picked",
+  Cancelled: "cancelled",
+};
 
 const TrackOrder = () => {
   const { id } = useParams<{ id: string }>();
-  const { orders, loading, error } = useOrderTracking();
+  const { orders, loading, error } = useOrderTracking() as { orders: Order[], loading: boolean, error: string | null };
   const tracking = orders.find((order) => order.order_number === id);
-  const location = useLocation();
-  const order = location.state?.order;
 
-  const orderStatus = order?.status ?? 'pending';
+  const [trackingData, setTrackingData] = useState<TrackingData | null>(null);
+  const [loadingTracking, setLoadingTracking] = useState(false);
+  const [trackingError, setTrackingError] = useState<string | null>(null);
 
-  const getEstimatedDeliveryMessage = (orderStatus: string) => {
-    switch (orderStatus) {
-      case 'processing':
-        return 'Processing at warehouse';
-      case 'confirmed':
-        return 'Estimated delivery in 5–7 days';
-      case 'shipped':
-        return 'Estimated delivery in 5–8 days';
-      case 'delivered':
-        return 'Delivered successfully';
-      case 'return-acpt':
-        return 'Return request accepted';
-      case 'return-pcs':
-        return 'Return is being processed';
-      case 'return-pkd':
-        return 'Item picked by courier';
-      case 'return-wh':
-        return 'Returned to warehouse';
-      case 'payment-rf':
-        return 'Refund initiated';
-      case 'payment-rf-ss':
-        return 'Refund completed';
-      default:
-        return 'To be confirmed';
+  const getEstimatedDeliveryMessage = useCallback((status: string) => {
+    switch (status) {
+      case "processing": return "Processing at warehouse";
+      case "shipped": return "Estimated delivery in 5–8 days";
+      case "out-for-delivery": return "Out for delivery today";
+      case "delivered": return "Delivered successfully";
+      case "return-picked": return "Return processing initiated";
+      case "cancelled": return "Order cancelled";
+      default: return "To be confirmed";
     }
-  };
+  }, []);
 
-  const getCurrentLocation = (orderStatus: string) => {
-    const courierData = tracking?.courier?.rawData?.ShipmentData?.[0]?.Shipment;
-    if (courierData?.Status?.StatusLocation) return courierData.Status.StatusLocation;
+  const currentTrackingStatus = trackingData?.currentStatus || tracking?.status || 'processing';
+  const estimatedDeliveryMessage = getEstimatedDeliveryMessage(currentTrackingStatus);
 
-    switch (orderStatus) {
-      case 'processing':
-      case 'confirmed':
-        return 'Processing at warehouse';
-      case 'shipped':
-        return 'Shipped from warehouse';
-      case 'out_for_delivery':
-        return 'Out for delivery';
-      case 'delivered':
-        return tracking.shippingAddress.address || 'Delivered to customer';
-      case 'cancelled':
-        return 'Order cancelled';
-      case 'return-acpt':
-        return 'Return approved';
-      case 'return-pcs':
-        return 'Return processing';
-      case 'return-pkd':
-        return 'Courier picked the item';
-      case 'return-wh':
-        return 'Item at warehouse';
-      case 'payment-rf':
-        return 'Refund is being processed';
-      case 'payment-rf-ss':
-        return 'Refund sent to customer';
-      default:
-        return 'Awaiting fulfillment';
-    }
-  };
-
-  const getTrackingInfo = () => {
-    const courierData = tracking?.courier?.rawData?.ShipmentData?.[0]?.Shipment;
-    return {
-      expectedDelivery: courierData?.ExpectedDeliveryDate || courierData?.PromisedDeliveryDate,
-      destination: courierData?.Destination,
-      pickupDate: courierData?.PickedupDate || courierData?.PickUpDate,
-      courierPartner: 'Delhivery',
-      currentStatus: courierData?.Status?.Status,
-      statusLocation: courierData?.Status?.StatusLocation,
-      statusDateTime: courierData?.Status?.StatusDateTime,
-      receivedBy: courierData?.Status?.RecievedBy,
-      instructions: courierData?.Status?.Instructions,
-      scans: courierData?.Scans || []
-    };
-  };
-
-  const getWhatsappMessage = () => {
-    const statusText = getEstimatedDeliveryMessage(tracking.status);
+  const getWhatsappMessage = useCallback((order: Order | undefined) => {
+    if (!order) return "";
+    const statusText = getEstimatedDeliveryMessage(currentTrackingStatus);
     return encodeURIComponent(
-      `Hello, I need help with my order.\n\n` +
-        `Order ID: ${tracking.order_number}\n` +
-        `Status: ${tracking.status}\n` +
-        `Total: ₹${tracking.total || 'N/A'}\n` +
-        `Estimated Delivery: ${statusText}\n\n` +
-        `I have an issue with this order.`
+      `Hello, I need help with my order.\n\nOrder ID: ${order.order_number}\nStatus: ${currentTrackingStatus}\nTotal: ₹${order.total || 'N/A'}\nEstimated Delivery: ${statusText}\n\nI have an issue with this order.`
     );
-  };
+  }, [getEstimatedDeliveryMessage, currentTrackingStatus]);
 
-  if (loading) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <OrderLoadingState />
-        </div>
-      </Layout>
-    );
-  }
+  const fetchTracking = useCallback(async (awb: string, orderId: string) => {
+    try {
+      setLoadingTracking(true);
+      setTrackingError(null);
 
-  if (error || !tracking) {
-    return (
-      <Layout>
-        <div className="px-4 py-10">
-          <OrderErrorState error={error || 'Error loading tracking information'} />
-        </div>
-      </Layout>
-    );
-  }
+      const { data, error } = await supabase.functions.invoke("track-delhivery", { body: JSON.stringify({ awb, orderId }) });
+      if (error) throw new Error(error.message);
+
+      const shipment = data?.data?.ShipmentData?.[0]?.Shipment || null;
+      if (!shipment) throw new Error("No shipment data found from courier.");
+
+      const courierStatus = shipment.Status?.Status || "Unknown";
+      const currentStatus = COURIER_STATUS_MAP[courierStatus] || "processing";
+      const currentLocation = shipment.Status?.Status || shipment.Origin || shipment.Destination || "In transit";
+
+      const history = Array.isArray(shipment.Scans)
+        ? shipment.Scans.map((scanObj: any) => ({
+            status: scanObj.ScanDetail?.Scan || "In Transit",
+            location: scanObj.ScanDetail?.ScannedLocation || "",
+            timestamp: scanObj.ScanDetail?.ScanDateTime || new Date().toISOString(),
+            instructions: scanObj.ScanDetail?.Instructions || "",
+          })).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        : [];
+
+      setTrackingData({
+        shipment,
+        currentStatus,
+        currentLocation,
+        history,
+        expectedDelivery: shipment.ExpectedDeliveryDate || shipment.PromisedDeliveryDate || null,
+        destination: shipment.Destination || null,
+        pickupDate: shipment.PickedupDate || shipment.PickUpDate || null,
+        courierPartner: "Delhivery",
+        statusDateTime: shipment.Status?.StatusDateTime || null,
+        instructions: shipment.Status?.Instructions || null,
+      });
+
+    } catch (err: any) {
+      console.error("Tracking Error:", err);
+      setTrackingError(err.message || "Failed to fetch tracking data.");
+    } finally {
+      setLoadingTracking(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!tracking?.courier?.awb) {
+      setTrackingError("AWB number not available for this order.");
+      setLoadingTracking(false);
+      return;
+    }
+
+    let isMounted = true;
+    let timeout: NodeJS.Timeout;
+
+    const fetchWithRetry = async () => {
+      if (!isMounted) return;
+      if (!trackingData) {
+        await fetchTracking(tracking.courier!.awb!, tracking.order_number);
+        timeout = setTimeout(fetchWithRetry, TRACKING_RETRY_INTERVAL);
+      }
+    };
+
+    fetchWithRetry();
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeout);
+    };
+  }, [tracking, fetchTracking, trackingData]);
+
+  if (loading || (loadingTracking && !trackingData)) return <Layout><OrderLoadingState /></Layout>;
+  if (error || trackingError || !tracking) return <Layout><OrderErrorState error={error || trackingError || "Order not found."} /></Layout>;
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto px-4 py-8 mt-10 space-y-8">
+      <div className="max-w-4xl mx-auto px-4 py-8 mt-10 pt-10 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <Link
-            to={`/order-preview/${id}`}
-            className="flex items-center text-yellow-400 hover:text-yellow-500 transition-colors font-semibold"
-          >
+          <Link to={`/order-preview/${id}`} className="flex items-center text-md uppercase text-yellow-400 hover:text-yellow-500 transition-colors font-semibold">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back
           </Link>
-          <h1 className="text-lg font-semibold text-white tracking-wide">Track Order</h1>
+          
         </div>
 
         {/* Order Summary */}
-        <div className="bg-gray-900 border border-gray-800 rounded-x p-6 shadow-lg">
-          <div className="flex flex-row items-center justify-between mb-3">
-            <div>
-              <h2 className="text-lg lg:text-xl font-bold text-yellow-400">{tracking.order_number}</h2>
-              <p className="text-sm text-gray-400">
-                Placed on {new Date(tracking.created_at).toLocaleDateString()}
-              </p>
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-lg flex justify-between flex-col md:flex-row">
+          <div className="mb-4 md:mb-0">
+            <h2 className="text-xl lg:text-2xl font-bold text-yellow-400">{tracking.order_number}</h2>
+            <p className="text-sm text-gray-400 mt-1">
+              Placed on {new Date(tracking.created_at).toLocaleDateString()}
+              {tracking.total && <span className="ml-4 text-white">| Total: ₹{tracking.total.toFixed(2)}</span>}
+            </p>
+          </div>
+          <div className={`flex  text-center rounded-none px-2 py-1 `}>
+            <p className="text-sm font-bold text-white">Payment - &nbsp;             </p>
+            <span className={`text-sm font-semibold text-green-500 `}>
+              {tracking.payment_status.toUpperCase()}
+            </span>
+          </div>
+        </div>
+
+        {/* Tracking Progress */}
+        
+        {tracking.cancellation_reason && <p className="text-center bg-red-900/50 border border-red-700 p-3 rounded text-red-400 mt-2 text-sm font-medium">❌ Cancellation Reason: {tracking.cancellation_reason}</p>}
+
+        {/* Courier Info */}
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-2 space-y-2">
+          <h2 className="text-lg font-semibold text-white flex items-center gap-2 border-b border-gray-700 pb-3"><Truck className="h-5 w-5 text-yellow-400" /> Delivery Details</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="p-3 bg-gray-800 rounded-lg border-l-4 border-yellow-400">
+                <p className="text-yellow-400 font-semibold text-sm mb-1">Current Status</p>
+                <p className="text-xs text-gray-300">{trackingData.currentStatus.toUpperCase()}</p>
+              </div>
+              <div className="p-3 bg-gray-800 rounded-lg">
+                <p className="text-yellow-400 font-semibold text-sm mb-1">Current Location</p>
+                <p className="text-xs text-gray-300">{trackingData.currentLocation}</p>
+              </div>
+              <div className="p-3 bg-gray-800 rounded-lg">
+                <p className="text-yellow-400 font-semibold text-sm mb-1">Expected Delivery</p>
+                <p className="text-xs text-gray-300">{trackingData.expectedDelivery ? new Date(trackingData.expectedDelivery).toLocaleDateString("en-IN",{year:'numeric',month:'long',day:'numeric'}) : "To be confirmed"}</p>
+              </div>
+              {trackingData.destination && <div className="p-3 bg-gray-800 rounded-lg">
+                <p className="text-yellow-400 font-semibold text-sm mb-1">Final Destination</p>
+                <p className="text-xs text-gray-300">{trackingData.destination}</p>
+              </div>}
             </div>
-            <div className="grid items-center justify-center text-center   font-semibold  text-white text-xs px-1 py-1  rounded-none">
-              <p className='uppercase' >
-              Payment
-              </p>
-              <h3 className='w-full bg-green-500 px-2 py-1'>
-                    {order.payment_status}
-              </h3>
-             
+            <div className="space-y-4">
+              <div className="p-3 bg-gray-800 rounded-lg">
+                <p className="text-yellow-400 font-semibold text-sm mb-1">AWB Number</p>
+                <p className="text-xs text-gray-300">{tracking.courier?.awb || 'N/A'}</p>
+              </div>
+              {trackingData.pickupDate && <div className="p-3 bg-gray-800 rounded-lg">
+                <p className="text-yellow-400 font-semibold text-sm mb-1">Pickup Date</p>
+                <p className="text-xs text-gray-300">{new Date(trackingData.pickupDate).toLocaleString()}</p>
+              </div>}
+              <div className="p-3 bg-gray-800 rounded-lg">
+                <p className="text-yellow-400 font-semibold text-sm mb-1">Courier Partner</p>
+                <p className="text-xs text-gray-300">{trackingData.courierPartner}</p>
+              </div>
             </div>
           </div>
-         
-        </div>
 
-        {/* Progress */}
-        <div className="bg-black border border-gray-800 rounded-xl p-1">
-          <OrderTrackingStatus
-            currentStatus={orderStatus}
-            estimatedDelivery={getEstimatedDeliveryMessage(orderStatus)}
-            cancellationReason={tracking.cancellation_reason}
-          />
-        </div>
-
-        {/* Courier Section */}
-        {tracking.status !== 'cancelled' && (
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-6">
-            <h2 className="text-sm font-semibold text-yellow-400 flex items-center gap-2">
-              <Truck className="h-5 w-5" /> Delivery Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <p className="text-yellow-400 font-semibold text-sm ">Current Location</p>
-                  <p className="text-sm text-gray-300 text-xs">{getCurrentLocation(orderStatus)}</p>
-                </div>
-                <div>
-                  <p className="text-yellow-400 font-semibold text-sm ">Expected Delivery</p>
-                  <p className="text-sm text-gray-300 text-xs">
-                    {getTrackingInfo().expectedDelivery
-                      ? new Date(getTrackingInfo().expectedDelivery).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })
-                      : getEstimatedDeliveryMessage(orderStatus)}
-                  </p>
-                </div>
-                {getTrackingInfo().destination && (
-                  <div>
-                    <p className="text-yellow-400 font-semibold text-sm">Destination</p>
-                    <p className="text-sm text-gray-300 text-xs">{getTrackingInfo().destination}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <p className="text-yellow-400 font-semibold text-sm">AWB Number</p>
-                  <p className="text-xs text-gray-300">{tracking?.courier?.awb || 'Not yet assigned'}</p>
-                </div>
-                {getTrackingInfo().pickupDate && (
-                  <div>
-                    <p className="text-yellow-400 font-semibold text-sm">Pickup Date</p>
-                    <p className="text-xs text-gray-300">
-                      {new Date(getTrackingInfo().pickupDate).toLocaleString()}
-                    </p>
-                  </div>
-                )}
-                <div>
-                  <p className="text-yellow-400 font-semibold text-sm">Courier Partner</p>
-                  <p className="text-xs text-gray-300">{getTrackingInfo().courierPartner}</p>
-                </div>
-              </div>
+          {/* Latest Scan */}
+          <div className="mt-6 border border-yellow-400/50 rounded-xl p-4 bg-gray-800/50">
+            <h3 className="text-lg font-bold text-yellow-400 mb-2 flex items-center gap-2"><MapPin className="h-4 w-4" /> Latest Scan</h3>
+            <div className="space-y-1 text-sm text-gray-300">
+              <p  className="font-medium text-yellow-400"><span className="font-medium text-white">Status -</span> {trackingData.currentStatus}</p>
+              {trackingData.statusDateTime && <p className="font-medium text-yellow-400"><span className="font-medium text-white">Time -</span> {new Date(trackingData.statusDateTime).toLocaleString()}</p>}
+              {trackingData.instructions && <p className="font-medium text-yellow-400"><span className="font-medium text-white">Note -</span> {trackingData.instructions}</p>}
             </div>
-
-            {getTrackingInfo().currentStatus && (
-              <div className="mt-6 bg-gray-800 rounded-xl p-4">
-                <h3 className="text-yellow-400 font-semibold mb-2 text-sm">Current Courier Update</h3>
-                <p className="text-xs text-gray-300">
-                  <span className="text-yellow-400 font-medium">Status:</span> {getTrackingInfo().currentStatus}
-                </p>
-                {getTrackingInfo().instructions && (
-                  <p className="text-sm text-gray-300">
-                    <span className="text-yellow-400 font-medium text-xs">Note:</span> {getTrackingInfo().instructions}
-                  </p>
-                )}
-                {getTrackingInfo().statusDateTime && (
-                  <p className="text-sm text-gray-300">
-                    <span className="text-yellow-400 font-medium text-sm">Last Updated:</span>{' '}
-                    {new Date(getTrackingInfo().statusDateTime).toLocaleString()}
-                  </p>
-                )}
-              </div>
-            )}
           </div>
-        )}
 
-        {/* WhatsApp Support */}
-        <div className="text-center space-y-2">
-          <p className="text-gray-400 text-sm">
-            💡 For any issue related to this order, contact us on WhatsApp
-          </p>
-          <a
-            href={`https://wa.me/917672080881?text=${getWhatsappMessage()}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-5 rounded-full transition"
-          >
-            💬 Chat on WhatsApp
-          </a>
-        </div>
+          {/* WhatsApp Support */}
+          <div className="text-center pt-4 border-t border-gray-800">
+            <p className="text-gray-400 text-sm mb-3">💡 Need help? Chat with support:</p>
+            <a href={`https://wa.me/917672080881?text=${getWhatsappMessage(tracking)}`} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-md">
+              💬 Chat on WhatsApp
+            </a>
+          </div>
 
-        {/* Shipping Address */}
-        {tracking.shippingAddress && (
-          <div className="bg-gray-900 text-white rounded-none shadow-lg p-6 max-w-lg mx-auto">
-            <h3 className="text-lg font-semibold text-yellow-400 mb-3">📦 Shipping Address</h3>
-            <div className="text-xs text-gray-300">
-              <p>{tracking.shippingAddress.fullName || `${tracking.shippingAddress.firstName} ${tracking.shippingAddress.lastName}`}</p>
+          {/* Shipping Address */}
+          {tracking.shippingAddress && <div className="mt-6 max-w-md mx-auto bg-gray-800 rounded-xl p-5 shadow-inner border border-gray-700">
+            <div className=" items-center  mb-3 border-b border-gray-700 pb-2">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">📦 Shipping Address</h3>
+              <span className="text-xs font-semibold text-gray-300 ml-5">used for this delivery</span>
+            </div>
+            <div className="text-sm text-gray-300 leading-relaxed space-y-1 mt-3">
+              <p className="font-bold text-yellow-400">{tracking.shippingAddress.fullName || `${tracking.shippingAddress.firstName} ${tracking.shippingAddress.lastName}`}</p>
               <p>{tracking.shippingAddress.address}</p>
-              <p>
-                {tracking.shippingAddress.city}, {tracking.shippingAddress.state} - {tracking.shippingAddress.zipCode}
-              </p>
+              <p>{tracking.shippingAddress.city}, {tracking.shippingAddress.state} - <span className="font-semibold">{tracking.shippingAddress.zipCode}</span></p>
               <p>{tracking.shippingAddress.country}</p>
               <hr className="my-2 border-gray-700" />
-              <p>📞 {tracking.shippingAddress.phone}</p>
-              <p>📧 {tracking.shippingAddress.email}</p>
+              <p>📞 <span className="font-medium">{tracking.shippingAddress.phone}</span></p>
+              <p>📧 <span className="font-medium">{tracking.shippingAddress.email}</span></p>
             </div>
-          </div>
-        )}
+          </div>}
+        </div>
       </div>
     </Layout>
   );

@@ -429,10 +429,7 @@ window.location.href = `/order-complete/${createdOrder.id}`;
           });
 
         toast.error("Payment Failed ");
-       setTimeout(() => {
-  window.location.href = "/orders";
-}, 60000); // 60000ms = 1 minute
-
+       
       },
 
       // Razorpay Key
