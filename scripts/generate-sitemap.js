@@ -18,13 +18,13 @@ function generateJsonLd(product) {
 
     brand: {
       "@type": "Brand",
-      name: "Aijim"
+      name: "Aijim",
     },
 
     manufacturer: {
       "@type": "Organization",
       name: "Aijim Clothing",
-      logo: `${baseUrl}/logo.png`
+      logo: `${baseUrl}/logo.png`,
     },
 
     offers: {
@@ -46,11 +46,11 @@ function generateJsonLd(product) {
           shippingRate: {
             "@type": "MonetaryAmount",
             currency: "INR",
-            value: "0"
+            value: "0",
           },
           shippingDestination: {
             "@type": "DefinedRegion",
-            addressCountry: "IN"
+            addressCountry: "IN",
           },
           deliveryTime: {
             "@type": "ShippingDeliveryTime",
@@ -58,16 +58,16 @@ function generateJsonLd(product) {
               "@type": "QuantitativeValue",
               minValue: 1,
               maxValue: 2,
-              unitCode: "DAY"
+              unitCode: "DAY",
             },
             transitTime: {
               "@type": "QuantitativeValue",
               minValue: 3,
               maxValue: 5,
-              unitCode: "DAY"
-            }
-          }
-        }
+              unitCode: "DAY",
+            },
+          },
+        },
       ],
 
       // Google requires complete return policy
@@ -78,8 +78,8 @@ function generateJsonLd(product) {
           "https://schema.org/MerchantReturnFiniteReturnWindow",
         merchantReturnDays: 5,
         returnMethod: "https://schema.org/ReturnByMail",
-        refundType: "https://schema.org/FullRefund"
-      }
+        refundType: "https://schema.org/FullRefund",
+      },
     },
 
     // Optional but good for SEO
@@ -87,7 +87,7 @@ function generateJsonLd(product) {
       ? {
           "@type": "AggregateRating",
           ratingValue: String(product.rating),
-          reviewCount: String(product.reviewCount || 10)
+          reviewCount: String(product.reviewCount || 10),
         }
       : undefined,
 
@@ -101,10 +101,10 @@ function generateJsonLd(product) {
           "@type": "Rating",
           ratingValue: "5",
           bestRating: "5",
-          worstRating: "1"
-        }
-      }
-    ]
+          worstRating: "1",
+        },
+      },
+    ],
   };
 
   // ------------------------------
@@ -118,21 +118,21 @@ function generateJsonLd(product) {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: baseUrl
+        item: baseUrl,
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Products",
-        item: `${baseUrl}/products`
+        item: `${baseUrl}/products`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: product.name,
-        item: url
-      }
-    ]
+        item: url,
+      },
+    ],
   };
 
   // ------------------------------
@@ -147,18 +147,18 @@ function generateJsonLd(product) {
         name: "What is the delivery time?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Delivery usually takes 5–7 days across India."
-        }
+          text: "Delivery usually takes 5–7 days across India.",
+        },
       },
       {
         "@type": "Question",
         name: "Do you offer returns?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Yes, you can return the product within 5 days."
-        }
-      }
-    ]
+          text: "Yes, you can return the product within 5 days.",
+        },
+      },
+    ],
   };
 
   return [Product, Breadcrumbs, FAQ];
