@@ -198,7 +198,7 @@ const Index = () => {
               <div>
                 <div className="font-bold text-black">{item.name}</div>
                 <div className="text-sm text-black">
-                  Still in your cart — complete your order!
+                  Still in your cart — complete your order now!
                 </div>
               </div>
             </div>
