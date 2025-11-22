@@ -3,20 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/lib/types";
 import Layout from "@/components/layout/Layout";
-import {
-  Loader2,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Loader2, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
 import ProductCard from "@/components/ui/ProductCard";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState<"default" | "low" | "newest">("default");
-  const [openMenu, setOpenMenu] = useState<"hot" | "edition" | "all" | null>(null);
+  const [openMenu, setOpenMenu] = useState<"hot" | "edition" | "all" | null>(
+    null
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +29,9 @@ const Products = () => {
       const transformed = (data || []).map((p: any) => {
         const sizes = Array.isArray(p.variants)
           ? p.variants
-              .filter((v) => v && typeof v === "object" && v.size && v.stock != null)
+              .filter(
+                (v) => v && typeof v === "object" && v.size && v.stock != null
+              )
               .map((v) => ({ size: String(v.size), stock: Number(v.stock) }))
           : [];
         const totalStock = sizes.reduce((s, x) => s + (x.stock || 0), 0);
@@ -48,10 +48,12 @@ const Products = () => {
           description: p.description || "",
           tags: Array.isArray(p.tags) ? p.tags : [],
           inStock: totalStock > 0,
-          stock:totalStock,
+          stock: totalStock,
           discountPercentage:
             p.original_price && p.original_price > p.price
-              ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
+              ? Math.round(
+                  ((p.original_price - p.price) / p.original_price) * 100
+                )
               : 0,
         } as Product;
       });
@@ -64,13 +66,18 @@ const Products = () => {
   const sortProducts = useMemo(() => {
     const sorter = (list: Product[]) => {
       if (sort === "low") return [...list].sort((a, b) => a.price - b.price);
-      if (sort === "newest") return [...list].sort((a, b) => b.id.localeCompare(a.id));
+      if (sort === "newest")
+        return [...list].sort((a, b) => b.id.localeCompare(a.id));
       return list;
     };
     return sorter;
   }, [sort]);
 
-  const SortDropdown = ({ section }: { section: "hot" | "edition" | "all" }) => (
+  const SortDropdown = ({
+    section,
+  }: {
+    section: "hot" | "edition" | "all";
+  }) => (
     <div className="relative inline-block">
       <Button
         variant="outline"
@@ -144,7 +151,9 @@ const Products = () => {
       return () => clearInterval(interval);
     }, []);
 
-    const filtered = sortProducts(products.filter((p) => p.tags?.includes(tag)));
+    const filtered = sortProducts(
+      products.filter((p) => p.tags?.includes(tag))
+    );
     if (!filtered.length) return null;
 
     return (
@@ -176,7 +185,7 @@ const Products = () => {
               >
                 <ProductCard
                   product={p}
-                  onClick={() => navigate(`/product/details/${p.code}`)}
+                  onClick={() => navigate(`/product/${p.code}`)}
                 />
               </div>
             ))}
@@ -197,6 +206,12 @@ const Products = () => {
 
   return (
     <Layout>
+      <NewSEOHelmet
+        pageSEO={{
+          title: "Shop All Products | AIJIM",
+          description: "Browse AIJIM streetwear.",
+        }}
+      />
       <div className="bg-black text-white py-16 mt-4 min-h-screen">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-xl font-semibold mb-3 pt-4 px-4">
@@ -210,7 +225,11 @@ const Products = () => {
           ) : (
             <>
               {/* 🔥 Hot Selling Section */}
-              <HorizontalSection title="🔥 Hot Selling" tag="hot" sectionKey="hot" />
+              <HorizontalSection
+                title="🔥 Hot Selling"
+                tag="hot"
+                sectionKey="hot"
+              />
 
               {/* ✨ Edition 1 Section 
               <HorizontalSection title="✨ Edition 1" tag="edition1" sectionKey="edition" />
@@ -227,7 +246,7 @@ const Products = () => {
                     <ProductCard
                       key={p.id}
                       product={p}
-                      onClick={() => navigate(`/product/details/${p.code}`)}
+                      onClick={() => navigate(`/product/${p.code}`)}
                       className="w-full"
                     />
                   ))}

@@ -385,7 +385,7 @@ await triggerCourier(createdOrder);
 
           toast.success("Payment Successful");
           setTimeout(() => {
-window.location.href = `/order-complete/${createdOrder.id}`;
+window.location.href = `/order-complete/${orderNumber}`;
 }, 30000); // 60000ms = 1 minute
 
           

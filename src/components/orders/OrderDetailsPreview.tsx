@@ -51,7 +51,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
       return;
     }
     if (!product.pd_name.toLowerCase().includes("custom printed")) {
-      navigate(`/product/details/${product.id}`);
+      navigate(`/product/${product.id}`);
     }
   };
 
@@ -100,7 +100,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
           <div className="flex justify-between items-start mb-3">
             <div>
               <h1 className="text-sm md:text-md font-semibold text-white tracking-wide">
-                 #{order.order_number}
+                #{order.order_number}
               </h1>
               <p className="text-xs text-gray-400">
                 Placed on{" "}
@@ -120,7 +120,10 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
                   return (
                     t +
                     (Array.isArray(item.sizes)
-                      ? item.sizes.reduce((s: number, x: any) => s + x.quantity, 0)
+                      ? item.sizes.reduce(
+                          (s: number, x: any) => s + x.quantity,
+                          0
+                        )
                       : item.quantity || 1)
                   );
                 }, 0)}{" "}
@@ -137,7 +140,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
             >
               <img
                 src={item.image || "/placeholder.svg"}
-                alt={item.name}                                                                                                                                                                                                                                    
+                alt={item.name}
                 onClick={() => redirect({ id: item.code, pd_name: item.name })}
                 className={`w-16 h-16 rounded-md object-cover border border-gray-700 ${
                   item.name.toLowerCase().includes("custom printed")
@@ -156,22 +159,21 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
                         key={i}
                         className="text-sm text-gray-300 font-medium leading-tight"
                       >
-                        {s.size} × {s.quantity} 
-                        
+                        {s.size} × {s.quantity}
                       </p>
-                    ))}                                                                   
+                    ))}
                   </div>
                 ) : (
                   <p className="text-xs text-gray-300 mt-1">
                     Qty {item.quantity} ×{" "}
-                    <span className="text-yellow-400 font-semibold">                                            
+                    <span className="text-yellow-400 font-semibold">
                       {formatPrice(item.price)}
                     </span>
                   </p>
                 )}
-                <span className='text-yellow-400 mt-2 text-xs font-semibold'>
-                  {formatPrice(item.price)} Each Item                 
-                  </span>
+                <span className="text-yellow-400 mt-2 text-xs font-semibold">
+                  {formatPrice(item.price)} Each Item
+                </span>
               </div>
             </div>
           ))}
@@ -180,7 +182,10 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
           {order.payment_status !== "pending" &&
             order.payment_status !== "failed" && (
               <div className="mt-3 text-center">
-                <Link to={`/track-order/${order.order_number}`} state={{ order }}>
+                <Link
+                  to={`/track-order/${order.order_number}`}
+                  state={{ order }}
+                >
                   <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold w-full py-3 rounded-none shadow-md hover:shadow-yellow-500/40 transition-all">
                     <Truck className="w-4 h-4 mr-2" /> Track Order
                   </Button>
@@ -191,71 +196,73 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
 
         {/* Info Cards */}
         {/* Info Cards */}
-<div className="space-y-0 mt-4">
-  {/* Payment Status */}
-  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
-    <div className="flex items-center justify-center gap-2 ">
-      <CreditCard className="w-5 h-5 text-yellow-400" />
-      <h3 className="text-sm font-semibold text-yellow-400 uppercase">
-        Payment Status
-      </h3>
-    </div>
-    <p className="text-sm text-white font-medium mb-1">
-      {getPaymentStatusText(order.payment_status)}
-    </p>
-    <p className="text-xs text-gray-400 mb-2">
-    Transction Id - {order.payment_method || "N/A"}
-    </p>
+        <div className="space-y-0 mt-4">
+          {/* Payment Status */}
+          <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center gap-2 ">
+              <CreditCard className="w-5 h-5 text-yellow-400" />
+              <h3 className="text-sm font-semibold text-yellow-400 uppercase">
+                Payment Status
+              </h3>
+            </div>
+            <p className="text-sm text-white font-medium mb-1">
+              {getPaymentStatusText(order.payment_status)}
+            </p>
+            <p className="text-xs text-gray-400 mb-2">
+              Transction Id - {order.payment_method || "N/A"}
+            </p>
 
-    {!["cancelled", "paid", "refunded", "refund-ss"].includes(
-      order.payment_status
-    ) && !["cancelled"].includes(order.status)&& (
-      <Button
-        onClick={() => handleRetryPayment(order)}
-        className="bg-green-600 hover:bg-green-700 text-white w-full mt-2 mb-2 text-sm font-semibold rounded-none"
-      >
-        Complete Payment
-      </Button>
-    )}
-  </div>
+            {!["cancelled", "paid", "refunded", "refund-ss"].includes(
+              order.payment_status
+            ) &&
+              !["cancelled"].includes(order.status) && (
+                <Button
+                  onClick={() => handleRetryPayment(order)}
+                  className="bg-green-600 hover:bg-green-700 text-white w-full mt-2 mb-2 text-sm font-semibold rounded-none"
+                >
+                  Complete Payment
+                </Button>
+              )}
+          </div>
 
-  {/* Order Status */}
-  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
-    <div className="flex items-center justify-center gap-2 ">
-      <Package className="w-5 h-5 text-yellow-400" />
-      <h3 className="text-sm font-semibold text-yellow-400 uppercase">
-        Order Status
-      </h3>
-    </div>
-    <p className="text-sm text-white font-medium mb-1">
-      {getOrderStatusText(order.status)}
-    </p>
-    <p className="text-xs text-gray-400">{order.status_note || "N/A"}</p>
-  </div>
+          {/* Order Status */}
+          <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center gap-2 ">
+              <Package className="w-5 h-5 text-yellow-400" />
+              <h3 className="text-sm font-semibold text-yellow-400 uppercase">
+                Order Status
+              </h3>
+            </div>
+            <p className="text-sm text-white font-medium mb-1">
+              {getOrderStatusText(order.status)}
+            </p>
+            <p className="text-xs text-gray-400">
+              {order.status_note || "N/A"}
+            </p>
+          </div>
 
-  {/* Rewards / Coupon */}
-  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
-    <div className="flex items-center justify-center gap-2 mb-2">
-      <Gift className="w-5 h-5 text-yellow-400" />
-      <h3 className="text-sm font-semibold text-yellow-400 uppercase">
-        Rewards / Coupon
-      </h3>
-    </div>
-    <p className="text-sm text-white font-medium mb-1">
-      Points Used:{" "}
-      <span className="text-yellow-400 font-semibold">
-        {(order.reward_points_used as any)?.points || 0}
-      </span>
-    </p>
-    <p className="text-sm text-white">
-      Coupon:{" "}
-      <span className="text-yellow-400 font-semibold">
-        {(order.coupon_code as any)?.code || "None"}
-      </span>
-    </p>
-  </div>
-</div>
-
+          {/* Rewards / Coupon */}
+          <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Gift className="w-5 h-5 text-yellow-400" />
+              <h3 className="text-sm font-semibold text-yellow-400 uppercase">
+                Rewards / Coupon
+              </h3>
+            </div>
+            <p className="text-sm text-white font-medium mb-1">
+              Points Used:{" "}
+              <span className="text-yellow-400 font-semibold">
+                {(order.reward_points_used as any)?.points || 0}
+              </span>
+            </p>
+            <p className="text-sm text-white">
+              Coupon:{" "}
+              <span className="text-yellow-400 font-semibold">
+                {(order.coupon_code as any)?.code || "None"}
+              </span>
+            </p>
+          </div>
+        </div>
 
         {/* Issue Buttons */}
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">

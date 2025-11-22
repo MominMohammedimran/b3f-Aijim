@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, ShoppingBag, X } from 'lucide-react';
 import Layout from '../components/layout/Layout';
-import SEOHelmet from '@/components/seo/SEOHelmet';
+import NewSEOHelmet from '@/components/seo/NewSEOHelmet';
 import useSEO from '@/hooks/useSEO';
 import { Button } from '@/components/ui/button';
 import { useCart } from '../context/CartContext';
@@ -48,7 +48,7 @@ const Cart = () => {
       return;
     }
     else if (!product.pd_name.toLowerCase().includes('custom printed')) {
-      navigate(`/product/details/${product.code}`);
+      navigate(`/product/${product.code}`);
     }
   };
 
@@ -105,6 +105,10 @@ const Cart = () => {
       });
     });
   }, [cartItems, productStocks]);
+
+
+
+
 
   // Fetch stocks on component mount and when cart changes
   React.useEffect(() => {
@@ -175,7 +179,7 @@ const Cart = () => {
    if (loading) {
   return (
     <Layout>
-        <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
+  
       <div className="container mx-auto px-4 py-8 mt-10 text-center">
         <div className="flex justify-center items-center h-64 mt-6">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>

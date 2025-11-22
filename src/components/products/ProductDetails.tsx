@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useMemo ,useRef} from "react";
-import { 
-Loader2,
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import {
+  Loader2,
   Share,
   ChevronDown,
   IndianRupee,
   Truck,
   Shirt,
-  Coins, } from "lucide-react";
+  Coins,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,6 @@ import LiveViewingCounter from "./LiveViewingCounter";
 import AvailableCoupons from "./AvailableCoupons";
 import ProductDescription from "./ProductDescription";
 import { validatePincode } from "@/utils/pincodeService";
-
 
 interface SizeWithQuantity {
   size: string;
@@ -38,21 +38,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
-const scrollToDiv = (id: string, offset: number = -8) => {
-  const el = document.getElementById(id);
-  if (!el) return;
+  const scrollToDiv = (id: string, offset: number = -8) => {
+    const el = document.getElementById(id);
+    if (!el) return;
 
-  const y = el.getBoundingClientRect().top + window.scrollY + offset;
+    const y = el.getBoundingClientRect().top + window.scrollY + offset;
 
-  window.scrollTo({
-    top: y,
-    behavior: "smooth",
-  });
-};
+    window.scrollTo({
+      top: y,
+      behavior: "smooth",
+    });
+  };
 
-
-
- 
   // --- Prepare variants ---
   const productVariants = useMemo(() => {
     return Array.isArray(product.variants)
@@ -79,7 +76,9 @@ const scrollToDiv = (id: string, offset: number = -8) => {
     const already = selectedSizes.some((s) => s.size === size);
     if (stock === 0 && !already) return;
     setSelectedSizes((prev) =>
-      already ? prev.filter((s) => s.size !== size) : [...prev, { size, quantity: 1 }]
+      already
+        ? prev.filter((s) => s.size !== size)
+        : [...prev, { size, quantity: 1 }]
     );
   };
 
@@ -89,7 +88,7 @@ const scrollToDiv = (id: string, offset: number = -8) => {
     );
   };
 
-const originalPrice =
+  const originalPrice =
     typeof product.original_price === "number" && product.original_price > 0
       ? product.original_price
       : product.price;
@@ -135,28 +134,28 @@ const originalPrice =
     }
     setLoadingPincode(false);
   };
-const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"];
+  const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"];
 
-const getAijimSize = (size: string) => {
-  // Regular → AIJIM mapping logic
-  const index = sizeOrder.indexOf(size);
-  if (index === -1) return size;
+  const getAijimSize = (size: string) => {
+    // Regular → AIJIM mapping logic
+    const index = sizeOrder.indexOf(size);
+    if (index === -1) return size;
 
-  // Example: shift 1 size down (you can adjust)
-  const aijimIndex = index - 1 >= 0 ? index - 1 : 0;
-  return sizeOrder[aijimIndex];
-};
+    // Example: shift 1 size down (you can adjust)
+    const aijimIndex = index - 1 >= 0 ? index - 1 : 0;
+    return sizeOrder[aijimIndex];
+  };
 
-const getSizeMeasurements = (size: string) => {
-  const index = sizeOrder.indexOf(size);
-  if (index === -1) return { chest: 0, shoulder: 0 ,length: 0};
+  const getSizeMeasurements = (size: string) => {
+    const index = sizeOrder.indexOf(size);
+    if (index === -1) return { chest: 0, shoulder: 0, length: 0 };
 
-  const chest = 40 + index * 2; // XS=40, S=42, M=44...
-   const length= 26 + index * 1; 
-  const shoulder = 19 + index * 0.5; 
-  // XS=19, S=19.5, M=20...
-  return { chest, shoulder ,length};
-};
+    const chest = 40 + index * 2; // XS=40, S=42, M=44...
+    const length = 26 + index * 1;
+    const shoulder = 19 + index * 0.5;
+    // XS=19, S=19.5, M=20...
+    return { chest, shoulder, length };
+  };
 
   if (inventoryLoading)
     return (
@@ -185,18 +184,18 @@ const getSizeMeasurements = (size: string) => {
       </div>
 
       {/* --- Product Info --- */}
-      <div id="sizeSection"  className="px-2 mt-2">
-        <h2  className="text-lg font-semibold mb-1">{product.name}</h2>
+      <div id="sizeSection" className="px-2 mt-2">
+        <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
         <div className="flex items-center gap-2 mb-2">
           {product.original_price && product.original_price > product.price && (
             <span className="text-md text-gray-400 line-through">
               ₹{product.original_price}
             </span>
           )}
-          <span  className="text-xl font-bold text-yellow-300">
-            ₹{product.price}  
+          <span className="text-xl font-bold text-yellow-300">
+            ₹{product.price}
           </span>
-          
+
           {discountPercent > 0 && (
             <span className="text-[10px] bg-red-600 text-white px-1 py-0.5 rounded">
               {discountPercent}% OFF
@@ -206,72 +205,78 @@ const getSizeMeasurements = (size: string) => {
       </div>
 
       <LiveViewingCounter productId={product.id} />
-       
+
       {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
       {/* --- AIJIM Size Conversion Note (auto updates, popup) --- */}
-{selectedSizes.length > 0 && (
-  <div className="mt-4 text-[11px] text-gray-300 font-medium flex flex-col gap-1">
-    {(() => {
-      const lastSize = selectedSizes[selectedSizes.length - 1].size;
-      const aijimSize = getAijimSize(lastSize);
-      const { chest, shoulder,length } = getSizeMeasurements(lastSize);
-      return (
-        <>
-         <div className="flex items-center gap-5 ml-2">
-          <p>
-            Regular size: <span className="text-yellow-400 font-semibold">{lastSize}</span>  
-            &nbsp;~ AIJIM size: <span className="text-yellow-400 font-semibold">{aijimSize}</span>
-          </p>
-          
-          <p
-            onClick={() => setShowSizeGuide(true)}
-            className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
-          >
-            Size chart →
-          </p>
-          </div>
-         <div className="flex  gap-2  p-0 mt-2 ml-2 rounded-md">
- 
-      <span className="text-gray-200 text-xs">Chest - {chest} cm </span>
-     
-      <span className="text-gray-200 text-xs">Shoulder - {shoulder} cm</span>
-      
-    
-      <span className="text-gray-200 text-xs">Length - {length} cm </span>
-    
-  </div>
-          
+      {selectedSizes.length > 0 && (
+        <div className="mt-4 text-[11px] text-gray-300 font-medium flex flex-col gap-1">
+          {(() => {
+            const lastSize = selectedSizes[selectedSizes.length - 1].size;
+            const aijimSize = getAijimSize(lastSize);
+            const { chest, shoulder, length } = getSizeMeasurements(lastSize);
+            return (
+              <>
+                <div className="flex items-center gap-5 ml-2">
+                  <p>
+                    Regular size:{" "}
+                    <span className="text-yellow-400 font-semibold">
+                      {lastSize}
+                    </span>
+                    &nbsp;~ AIJIM size:{" "}
+                    <span className="text-yellow-400 font-semibold">
+                      {aijimSize}
+                    </span>
+                  </p>
 
-          {/* --- Popup Modal --- */}
-          {showSizeGuide && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
-              <div className="relative w-[90%] max-w-md bg-black p-3 rounded shadow-lg">
-                <button
-                  onClick={() => setShowSizeGuide(false)}
-                  className="absolute top-1 right-2 text-red-500 text-lg font-bold"
-                >
-                  ✕
-                </button>
-                <img
-                  src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/size%20guide/aijim-size-guide.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL3NpemUgZ3VpZGUvYWlqaW0tc2l6ZS1ndWlkZS5wbmciLCJpYXQiOjE3NjMzOTAzMjgsImV4cCI6MTc5NDkyNjMyOH0.QILeaKATU2vwJmqRL5tTwhZTzrvLBn315YEF66uC09A"
-                  alt="AIJIM Size Guide"
-                  className="w-full h-auto object-contain"
-                />
-              </div>
-            </div>
-          )}
-        </>
-      );
-    })()}
-  </div>
-)}
+                  <p
+                    onClick={() => setShowSizeGuide(true)}
+                    className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
+                  >
+                    Size chart →
+                  </p>
+                </div>
+                <div className="flex  gap-2  p-0 mt-2 ml-2 rounded-md">
+                  <span className="text-gray-200 text-xs">
+                    Chest - {chest} cm{" "}
+                  </span>
 
+                  <span className="text-gray-200 text-xs">
+                    Shoulder - {shoulder} cm
+                  </span>
+
+                  <span className="text-gray-200 text-xs">
+                    Length - {length} cm{" "}
+                  </span>
+                </div>
+
+                {/* --- Popup Modal --- */}
+                {showSizeGuide && (
+                  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
+                    <div className="relative w-[90%] max-w-md bg-black p-3 rounded shadow-lg">
+                      <button
+                        onClick={() => setShowSizeGuide(false)}
+                        className="absolute top-1 right-2 text-red-500 text-lg font-bold"
+                      >
+                        ✕
+                      </button>
+                      <img
+                        src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/size%20guide/aijim-size-guide.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL3NpemUgZ3VpZGUvYWlqaW0tc2l6ZS1ndWlkZS5wbmciLCJpYXQiOjE3NjMzOTAzMjgsImV4cCI6MTc5NDkyNjMyOH0.QILeaKATU2vwJmqRL5tTwhZTzrvLBn315YEF66uC09A"
+                        alt="AIJIM Size Guide"
+                        className="w-full h-auto object-contain"
+                      />
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })()}
+        </div>
+      )}
 
       {/* --- Sizes --- */}
-      <div className="px-2" >
-
-  <span className="text-gray-200 text-lg font-medium">Select Size </span>
-        <div   className="grid grid-cols-6 md:grid-cols-6 gap-2 relative border-t border-gray-200">
+      <div className="px-2">
+        <span className="text-gray-200 text-lg font-medium">Select Size </span>
+        <div className="grid grid-cols-6 md:grid-cols-6 gap-2 relative border-t border-gray-200">
           {productVariants.map(({ size, stock }) => {
             const selected = selectedSizes.some((s) => s.size === size);
             const isOutOfStock = stock === 0;
@@ -312,7 +317,9 @@ const getSizeMeasurements = (size: string) => {
             {selectedSizes.map((sel) => {
               const variant = productVariants.find((v) => v.size === sel.size);
               const maxStock = variant?.stock ?? 0;
-              const cartItem = cartItems.find((c) => c.product_id === product.id);
+              const cartItem = cartItems.find(
+                (c) => c.product_id === product.id
+              );
               const cartSizeInfo = cartItem?.sizes.find(
                 (s) => s.size === sel.size
               );
@@ -321,10 +328,10 @@ const getSizeMeasurements = (size: string) => {
               return (
                 <div
                   key={sel.size}
-                  className="min-w-[110px] p-2 border border-gray-500 bg-gradient-to-br from-black via-gray-900 to-black rounded-sm"
+                  className="w-auto p-2 border border-gray-500 bg-gradient-to-br from-black via-gray-900 to-black rounded-sm"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold uppercase text-lg mr-2">
+                    <span className="font-semibold uppercase text-md mr-2">
                       {sel.size}
                     </span>
                     <div className="flex items-center gap-2.5">
@@ -333,7 +340,7 @@ const getSizeMeasurements = (size: string) => {
                         onClick={() =>
                           changeQuantity(sel.size, sel.quantity - 1)
                         }
-                        className={`px-1.5 py-0 text-lg font-bold rounded ${
+                        className={`px-1.5 py-0 text-md font-bold rounded ${
                           sel.quantity <= 1 || isLocked
                             ? "text-gray-500 cursor-not-allowed opacity-50"
                             : "hover:bg-gray-200 hover:text-black text-white"
@@ -341,7 +348,7 @@ const getSizeMeasurements = (size: string) => {
                       >
                         −
                       </button>
-                      <span className="text-gray-200 text-lg font-semibold">
+                      <span className="text-gray-200 text-md font-semibold">
                         {sel.quantity}
                       </span>
                       <button
@@ -349,7 +356,7 @@ const getSizeMeasurements = (size: string) => {
                         onClick={() =>
                           changeQuantity(sel.size, sel.quantity + 1)
                         }
-                        className={`px-1.5 py-0 text-lg font-bold rounded ${
+                        className={`px-1.5 py-0 text-md font-bold rounded ${
                           sel.quantity >= maxStock || isLocked
                             ? "text-gray-500 cursor-not-allowed opacity-50"
                             : "hover:bg-gray-200 hover:text-black text-white"
@@ -381,13 +388,12 @@ const getSizeMeasurements = (size: string) => {
         </div>
       )}
 
-
       {/* --- Action Buttons (hide if all out of stock) --- */}
       {!allOutOfStock ? (
         <div
-onClick={() => scrollToDiv("sizeSection")}
-  className="w-100 flex flex-row fixed lg:relative bottom-8 left-0 right-0 z-10 items-center justify-center"
->
+          onClick={() => scrollToDiv("sizeSection")}
+          className="w-100 flex flex-row fixed lg:relative bottom-8 left-0 right-0 z-10 items-center justify-center"
+        >
           <ProductActionButtons
             product={product}
             selectedSizes={selectedSizes.map((s) => s.size)}
@@ -411,14 +417,15 @@ onClick={() => scrollToDiv("sizeSection")}
       ) : (
         <div className="flex items-center justify-center py-4 m-3 bg-gray-900 border-t  border-gray-800">
           <p className="text-sm text-gray-400 font-semibold">
-            ❌ Currently <span className="text-yellow-400">Out of Stock</span> — Coming Soon!
+            ❌ Currently <span className="text-yellow-400">Out of Stock</span> —
+            Coming Soon!
           </p>
         </div>
       )}
 
       {/* --- Delivery Section --- */}
       <div className="p-4 bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none m-2 mt-4">
-        <h3  className="text-md font-semibold text-yellow-300 mb-2">
+        <h3 className="text-md font-semibold text-yellow-300 mb-2">
           Delivery & Returns
         </h3>
         <div className="space-y-3">
@@ -456,7 +463,6 @@ onClick={() => scrollToDiv("sizeSection")}
           <div className="border-t border-gray-700 pt-2">
             <button
               onClick={() => setShowInstructions((prev) => !prev)}
-              
               className="w-full flex items-center justify-between text-xs font-semibold text-gray-200 hover:text-yellow-400 transition-colors"
             >
               Delivery Instructions
@@ -488,35 +494,35 @@ onClick={() => scrollToDiv("sizeSection")}
       </div>
 
       {/* --- Description + Features + Coupons --- */}
-<div className="px-2 pb-4">
-  {/* Product Description */}
-  <ProductDescription desc={product.description} />
+      <div className="px-2 pb-4">
+        {/* Product Description */}
+        <ProductDescription desc={product.description} />
 
-  {/* --- Feature Highlights (Lucide Icons) --- */}
-  <div className="grid grid-cols-4  gap-2 mt-2 mb-2 text-center">
-  {[
-    { icon: IndianRupee, label: "Free Delivery" },
-    { icon: Truck, label: "Fast Delivery (5–7 Days)" },
-    { icon: Shirt, label: "100% Cotton" },
-    { icon: Coins, label: "Reward Points" },
-  ].map(({ icon: Icon, label }, index) => (
-    <div
-      key={index}
-      className="group flex flex-col items-center justify-center  border border-gray-700 hover:border-gray-500 transition-all duration-300 p-3 rounded-lg text-white shadow-md hover:shadow-lg hover:shadow-indigo-500/20"
-    >
-      <div className="flex items-center justify-center bg-gray-800 group-hover:bg-indigo-600 transition-all duration-300 rounded-full w-8 h-8 mb-1">
-        <Icon className="w-4 h-4 text-white transition-transform duration-300 group-hover:scale-110" />
+        {/* --- Feature Highlights (Lucide Icons) --- */}
+        <div className="grid grid-cols-4  gap-2 mt-2 mb-2 text-center">
+          {[
+            { icon: IndianRupee, label: "Free Delivery" },
+            { icon: Truck, label: "Delhivery Fast" },
+            { icon: Shirt, label: "100% Cotton" },
+            { icon: Coins, label: "Reward Points" },
+          ].map(({ icon: Icon, label }, index) => (
+            <div
+              key={index}
+              className="group flex flex-col items-center justify-center  transition-all duration-300 p-3 rounded-lg text-white shadow-md "
+            >
+              <div className="flex items-center gap-2 justify-center bg-gray-800 hover:bg-indigo-600 transition-all duration-300 rounded-full w-8 h-8 mb-1">
+                <Icon className="w-4 h-4 text-white transition-transform duration-300 group-hover:scale-110" />
+              </div>
+              <p className="text-[10px] sm:text-[13px] font-medium leading-tight group-hover:text-yellow-400">
+                {label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Available Coupons */}
+        <AvailableCoupons />
       </div>
-      <p className="text-[10px] sm:text-[13px] font-medium leading-tight group-hover:text-yellow-400">
-        {label}
-      </p>
-    </div>
-  ))}
-</div>
-
-  {/* Available Coupons */}
-  <AvailableCoupons />
-</div>
 
       {/* --- Share Modal --- */}
       <ShareModal

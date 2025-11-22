@@ -31,7 +31,7 @@ const OrderComplete = () => {
   const fetchOrder = async () => {
     try {
       // Assuming 'order_number' is also fetched from the Supabase 'orders' table
-      const { data, error } = await supabase.from("orders").select("*").eq("id", orderId).single();
+      const { data, error } = await supabase.from("orders").select("*").eq("order_number", orderId).single();
       if (error || !data) throw error;
       setOrder(data);
       clearCart();

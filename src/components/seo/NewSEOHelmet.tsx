@@ -36,22 +36,42 @@ const defaultSEO: PageSEO = {
 const routeSEO: Record<string, Partial<PageSEO>> = {
   "/": {
     title: "AIJIM | Premium Fashion, Affordable Price",
-    description: "Explore the latest trends and premium printed products by AIJIM.",
+    description:
+      "Explore the latest trends and premium printed products by AIJIM.",
   },
-  "/about-us": { title: "About Us | AIJIM", description: "Learn about AIJIM brand & story." },
-  "/contact-us": { title: "Contact | AIJIM", description: "Get in touch with AIJIM support." },
-  "/signin": { title: "Sign In | AIJIM", description: "Access your AIJIM account." },
+  "/about-us": {
+    title: "About Us | AIJIM",
+    description: "Learn about AIJIM brand & story.",
+  },
+  "/contact-us": {
+    title: "Contact | AIJIM",
+    description: "Get in touch with AIJIM support.",
+  },
+  "/signin": {
+    title: "Sign In | AIJIM",
+    description: "Access your AIJIM account.",
+  },
 
-  "/cart": { title: "Your Cart | AIJIM", description: "Review your AIJIM products." },
-  "/search": { title: "Search | AIJIM", description: "Search your desired products. " },
-  "/products": { title: "Shop All Products | AIJIM", description: "Browse AIJIM streetwear." },
-  "/product/details": { title: "Product Details | AIJIM", description: "View product details." },
+  "/search": {
+    title: "Search | AIJIM",
+    description: "Search your desired products. ",
+  },
+  "/products": {
+    title: "Shop All Products | AIJIM",
+    description: "Browse AIJIM streetwear.",
+  },
+  "/product/details": {
+    title: "Product Details | AIJIM",
+    description: "View product details.",
+  },
 };
 
 export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
   const { pathname } = useLocation();
   const params = useParams<{ productId?: string }>();
-  const [product, setProduct] = useState<ProductSEO | null>(productProp || null);
+  const [product, setProduct] = useState<ProductSEO | null>(
+    productProp || null
+  );
 
   // Fetch product if not passed as prop
   useEffect(() => {
@@ -74,7 +94,7 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
             price: data.price,
             currency: "INR",
             rating: data.rating,
-            reviewCount:2,
+            reviewCount: 2,
           });
         }
       } catch (err) {
@@ -91,10 +111,18 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
     ...defaultSEO,
     ...matchedSEO,
     ...pageSEO,
-    title: product ? `${product.name} | AIJIM` : matchedSEO.title || pageSEO?.title || defaultSEO.title,
-    description: product?.description || matchedSEO.description || pageSEO?.description || defaultSEO.description,
+    title: product
+      ? `${product.name} | AIJIM`
+      : matchedSEO.title || pageSEO?.title || defaultSEO.title,
+    description:
+      product?.description ||
+      matchedSEO.description ||
+      pageSEO?.description ||
+      defaultSEO.description,
     image: product?.image || pageSEO?.image || defaultSEO.image,
-    url: product ? `${defaultSEO.url}/product/details/${product.id}` : defaultSEO.url + pathname,
+    url: product
+      ? `${defaultSEO.url}/product/${product.id}`
+      : defaultSEO.url + pathname,
   };
 
   return (

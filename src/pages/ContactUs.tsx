@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Mail, Phone, MapPin, Send, MessageCircle, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  MessageCircle,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-
+import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
 const ContactUs = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
@@ -17,7 +29,7 @@ const ContactUs = () => {
     setLoading(true);
 
     const data = {
-      access_key:"e695e1f9-0c1a-4e6f-88ab-b7aa04b23dae",
+      access_key: "e695e1f9-0c1a-4e6f-88ab-b7aa04b23dae",
       name: formData.name,
       email: formData.email,
       message: formData.message,
@@ -81,14 +93,25 @@ const ContactUs = () => {
 
   return (
     <Layout>
+      <NewSEOHelmet
+        pageSEO={{
+          title: "About Us | AIJIM",
+          description: "Learn about AIJIM brand & story.",
+        }}
+      />
       <div className="min-h-screen bg-background relative">
         <div className="container-custom pt-16">
           <div className="flex items-center mb-4">
-            <Link to="/" className="mr-4 text-foreground hover:text-foreground transition-colors">
+            <Link
+              to="/"
+              className="mr-4 text-foreground hover:text-foreground transition-colors"
+            >
               <ArrowLeft size={24} />
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-foreground tracking-tight">CONTACT US</h1>
+              <h1 className="text-xl font-bold text-foreground tracking-tight">
+                CONTACT US
+              </h1>
               <p className="text-muted-foreground not-italic font-semibold">
                 Get in touch with our team
               </p>
@@ -104,8 +127,9 @@ const ContactUs = () => {
                 GET IN TOUCH
               </h2>
               <p className="text-muted-foreground font-semibold text-sm leading-snug mb-8">
-                Have questions about our products, need style advice, or want to share feedback?
-                We're here to help. Choose the best way to reach us below.
+                Have questions about our products, need style advice, or want to
+                share feedback? We're here to help. Choose the best way to reach
+                us below.
               </p>
 
               <div className="space-y-6">
@@ -160,7 +184,9 @@ const ContactUs = () => {
                     type="text"
                     placeholder="Full Name"
                     value={formData.name}
-                    onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((p) => ({ ...p, name: e.target.value }))
+                    }
                     required
                     className="bg-background border-border focus:border-accent h-12 font-medium"
                   />
@@ -168,14 +194,18 @@ const ContactUs = () => {
                     type="email"
                     placeholder="Email Address"
                     value={formData.email}
-                    onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((p) => ({ ...p, email: e.target.value }))
+                    }
                     required
                     className="bg-background border-border focus:border-accent h-12 font-medium"
                   />
                   <Textarea
                     placeholder="Your Message..."
                     value={formData.message}
-                    onChange={(e) => setFormData((p) => ({ ...p, message: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((p) => ({ ...p, message: e.target.value }))
+                    }
                     required
                     className="bg-background border-border focus:border-accent min-h-32 font-medium resize-none"
                   />
@@ -207,7 +237,8 @@ const ContactUs = () => {
               <h2 className="text-xl font-bold mb-2">Thank You!</h2>
               <p className="text-sm text-gray-600 font-medium">
                 Your message has been sent to <b>AIJIM</b>.<br />
-                We appreciate you reaching out to us. Our team will reply within 24 hours.
+                We appreciate you reaching out to us. Our team will reply within
+                24 hours.
               </p>
               <div className="mt-4">
                 <Button
@@ -217,7 +248,9 @@ const ContactUs = () => {
                   Close
                 </Button>
               </div>
-              <p className="mt-3 text-xs text-gray-400">(This popup will close automatically)</p>
+              <p className="mt-3 text-xs text-gray-400">
+                (This popup will close automatically)
+              </p>
             </div>
           </div>
         )}

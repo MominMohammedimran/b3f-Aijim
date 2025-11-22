@@ -1,37 +1,41 @@
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, X } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import { Product } from '../lib/types';
-import { Button } from '@/components/ui/button';
-import SearchBox from '../components/search/SearchBox';
-import Pagination from '../components/search/Pagination';
-import { supabase } from '@/integrations/supabase/client';
-import ProductCard from '@/components/ui/ProductCard';
-
-type SortOption = 'default' | 'price-low-high' | 'price-high-low';
-const allAvailableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { ArrowLeft, X } from "lucide-react";
+import Layout from "../components/layout/Layout";
+import { Product } from "../lib/types";
+import { Button } from "@/components/ui/button";
+import SearchBox from "../components/search/SearchBox";
+import Pagination from "../components/search/Pagination";
+import { supabase } from "@/integrations/supabase/client";
+import ProductCard from "@/components/ui/ProductCard";
+import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
+type SortOption = "default" | "price-low-high" | "price-high-low";
+const allAvailableSizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const Search = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
-  const categoryParam = queryParams.get('category');
-  const queryParam = queryParams.get('query');
+  const categoryParam = queryParams.get("category");
+  const queryParam = queryParams.get("query");
 
-  const [searchQuery, setSearchQuery] = useState(queryParam || '');
+  const [searchQuery, setSearchQuery] = useState(queryParam || "");
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
   const [isSortPopupOpen, setIsSortPopupOpen] = useState(false);
 
   const [tempSelectedSizes, setTempSelectedSizes] = useState<string[]>([]);
-  const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
+  const [tempSelectedCategories, setTempSelectedCategories] = useState<
+    string[]
+  >([]);
 
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [sortOption, setSortOption] = useState<SortOption>('default');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryParam);
+  const [sortOption, setSortOption] = useState<SortOption>("default");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
+    categoryParam
+  );
   const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,8 +44,8 @@ const Search = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      let query = supabase.from('products').select('*');
-      if (selectedCategory) query = query.eq('category', selectedCategory);
+      let query = supabase.from("products").select("*");
+      if (selectedCategory) query = query.eq("category", selectedCategory);
 
       const { data, error } = await query;
       if (error) throw error;
@@ -49,7 +53,9 @@ const Search = () => {
       const transformed: Product[] = (data || []).map((item: any) => {
         const rawVariants = Array.isArray(item.variants) ? item.variants : [];
         const variants = rawVariants
-          .filter((v) => v && typeof v === 'object' && 'size' in v && 'stock' in v)
+          .filter(
+            (v) => v && typeof v === "object" && "size" in v && "stock" in v
+          )
           .map((v) => ({
             size: String((v as any).size),
             stock: Number((v as any).stock),
@@ -62,23 +68,27 @@ const Search = () => {
           productId: item.id,
           code: item.code || `PROD-${item.id.slice(0, 8)}`,
           name: item.name,
-          description: item.description || '',
+          description: item.description || "",
           price: item.price,
           originalPrice: item.original_price || item.price,
           discountPercentage: item.discount_percentage || 0,
-          image: item.image || '',
-          images: Array.isArray(item.images) ? item.images.filter((img) => typeof img === 'string') : [],
-          category: item.category || '',
+          image: item.image || "",
+          images: Array.isArray(item.images)
+            ? item.images.filter((img) => typeof img === "string")
+            : [],
+          category: item.category || "",
           stock: totalStock,
           variants: variants,
-          tags: Array.isArray(item.tags) ? item.tags.filter((t) => typeof t === 'string') : [],
+          tags: Array.isArray(item.tags)
+            ? item.tags.filter((t) => typeof t === "string")
+            : [],
           inStock: totalStock > 0,
         };
       });
 
       setAllProducts(transformed);
     } catch (err) {
-      console.error('Error fetching products:', err);
+      console.error("Error fetching products:", err);
     } finally {
       setLoading(false);
     }
@@ -104,21 +114,25 @@ const Search = () => {
 
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((p) =>
-        selectedCategories.some((cat) => p.category?.toLowerCase() === cat.toLowerCase())
+        selectedCategories.some(
+          (cat) => p.category?.toLowerCase() === cat.toLowerCase()
+        )
       );
     }
 
     if (selectedSizes.length > 0) {
       filtered = filtered.filter((p) =>
-        (p.variants || []).some((v) => selectedSizes.includes(v.size?.toUpperCase()))
+        (p.variants || []).some((v) =>
+          selectedSizes.includes(v.size?.toUpperCase())
+        )
       );
     }
 
     switch (sortOption) {
-      case 'price-low-high':
+      case "price-low-high":
         filtered.sort((a, b) => a.price - b.price);
         break;
-      case 'price-high-low':
+      case "price-high-low":
         filtered.sort((a, b) => b.price - a.price);
         break;
     }
@@ -129,30 +143,41 @@ const Search = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(searchQuery.trim() ? `/search?query=${encodeURIComponent(searchQuery)}` : '/search');
+    navigate(
+      searchQuery.trim()
+        ? `/search?query=${encodeURIComponent(searchQuery)}`
+        : "/search"
+    );
     setSelectedCategory(null);
   };
 
   const clearSearch = () => {
-    setSearchQuery('');
+    setSearchQuery("");
     setSelectedCategory(null);
-    navigate('/search');
+    navigate("/search");
   };
 
   const handleProductClick = (product: Product) => {
-    if (product.code.includes('TSHIRT-PRINT') || product.code.includes('MUG-PRINT')) {
+    if (
+      product.code.includes("TSHIRT-PRINT") ||
+      product.code.includes("MUG-PRINT")
+    ) {
       navigate(`/design-tool`);
     } else {
-      navigate(`/product/details/${product.code}`);
+      navigate(`/product/${product.code}`);
     }
   };
 
   const toggleTempSize = (size: string) =>
-    setTempSelectedSizes((prev) => (prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]));
+    setTempSelectedSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+    );
 
   const toggleTempCategory = (category: string) =>
     setTempSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
     );
 
   const applyFilter = () => {
@@ -175,13 +200,22 @@ const Search = () => {
     currentPage * productsPerPage
   );
 
-  const nextPage = () => currentPage < totalPages && setCurrentPage((p) => p + 1);
+  const nextPage = () =>
+    currentPage < totalPages && setCurrentPage((p) => p + 1);
   const prevPage = () => currentPage > 1 && setCurrentPage((p) => p - 1);
 
-  const uniqueCategories = Array.from(new Set(allProducts.map((p) => p.category))).filter(Boolean);
+  const uniqueCategories = Array.from(
+    new Set(allProducts.map((p) => p.category))
+  ).filter(Boolean);
 
   return (
     <Layout>
+      <NewSEOHelmet
+        pageSEO={{
+          title: "Search | AIJIM",
+          description: "Search your desired products. ",
+        }}
+      />
       <div className="container-custom mt-16 pb-28">
         <div className="flex items-center mb-4 pt-8 animate-fade-in">
           <Link to="/" className="mr-2">
@@ -202,14 +236,25 @@ const Search = () => {
         ) : currentProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 py-6">
             {currentProducts.map((product) => (
-              <ProductCard key={product.id} product={product} onClick={() => handleProductClick(product)} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onClick={() => handleProductClick(product)}
+              />
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-400 py-10">No products found for your selection.</p>
+          <p className="text-center text-gray-400 py-10">
+            No products found for your selection.
+          </p>
         )}
 
-        <Pagination currentPage={currentPage} totalPages={totalPages} onNextPage={nextPage} onPrevPage={prevPage} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onNextPage={nextPage}
+          onPrevPage={prevPage}
+        />
 
         {/* Overlay */}
         {(isFilterPopupOpen || isSortPopupOpen) && (
@@ -227,7 +272,11 @@ const Search = () => {
           <div className="fixed w-full bottom-16 mb-5 left-1/2 -translate-x-1/2 z-50 bg-black p-5 rounded shadow-lg w-[90%] max-w-md text-yellow-400">
             <div className="flex justify-between items-center mb-3">
               <h2 className="font-bold text-lg">Filter By</h2>
-              <X className="cursor-pointer" size={20} onClick={() => setIsFilterPopupOpen(false)} />
+              <X
+                className="cursor-pointer"
+                size={20}
+                onClick={() => setIsFilterPopupOpen(false)}
+              />
             </div>
 
             <div className="mb-4">
@@ -236,12 +285,16 @@ const Search = () => {
                 {uniqueCategories.map((cat) => (
                   <Button
                     key={cat}
-                    variant={tempSelectedCategories.includes(cat) ? 'default' : 'outline'}
+                    variant={
+                      tempSelectedCategories.includes(cat)
+                        ? "default"
+                        : "outline"
+                    }
                     size="sm"
                     className={
                       tempSelectedCategories.includes(cat)
-                        ? 'bg-red-500 text-white'
-                        : 'text-yellow-400 border-yellow-400'
+                        ? "bg-red-500 text-white"
+                        : "text-yellow-400 border-yellow-400"
                     }
                     onClick={() => toggleTempCategory(cat)}
                   >
@@ -257,12 +310,14 @@ const Search = () => {
                 {allAvailableSizes.map((size) => (
                   <Button
                     key={size}
-                    variant={tempSelectedSizes.includes(size) ? 'default' : 'outline'}
+                    variant={
+                      tempSelectedSizes.includes(size) ? "default" : "outline"
+                    }
                     size="sm"
                     className={
                       tempSelectedSizes.includes(size)
-                        ? 'bg-red-500 text-white hover:bg-red-600'
-                        : 'text-yellow-400 border-yellow-400'
+                        ? "bg-red-500 text-white hover:bg-red-600"
+                        : "text-yellow-400 border-yellow-400"
                     }
                     onClick={() => toggleTempSize(size)}
                   >
@@ -273,10 +328,16 @@ const Search = () => {
             </div>
 
             <div className="flex justify-between mt-4">
-              <Button className="text-black bg-yellow-400 hover:bg-yellow-500" onClick={applyFilter}>
+              <Button
+                className="text-black bg-yellow-400 hover:bg-yellow-500"
+                onClick={applyFilter}
+              >
                 Apply
               </Button>
-              <Button className="text-black bg-yellow-400 hover:bg-yellow-500 " onClick={clearFilter}>
+              <Button
+                className="text-black bg-yellow-400 hover:bg-yellow-500 "
+                onClick={clearFilter}
+              >
                 Clear
               </Button>
             </div>
@@ -288,41 +349,57 @@ const Search = () => {
           <div className="w-full fixed bottom-16 mb-5 left-1/2 -translate-x-1/2 z-50 bg-black p-5 rounded shadow-lg w-[90%] max-w-xs text-yellow-400">
             <div className="flex justify-between items-center mb-3">
               <h2 className="font-bold text-lg">Sort By</h2>
-              <X className="cursor-pointer" size={20} onClick={() => setIsSortPopupOpen(false)} />
+              <X
+                className="cursor-pointer"
+                size={20}
+                onClick={() => setIsSortPopupOpen(false)}
+              />
             </div>
             <div className="flex flex-col gap-2">
               <Button
-                variant={sortOption === 'default' ? 'default' : 'outline'}
+                variant={sortOption === "default" ? "default" : "outline"}
                 size="sm"
-                className={sortOption === 'default' ? 'bg-red-500 text-white' : 'text-yellow-400 border-yellow-400'}
+                className={
+                  sortOption === "default"
+                    ? "bg-red-500 text-white"
+                    : "text-yellow-400 border-yellow-400"
+                }
                 onClick={() => {
-                  setSortOption('default');
+                  setSortOption("default");
                   setIsSortPopupOpen(false);
                 }}
               >
                 Default
               </Button>
               <Button
-                variant={sortOption === 'price-low-high' ? 'default' : 'outline'}
+                variant={
+                  sortOption === "price-low-high" ? "default" : "outline"
+                }
                 size="sm"
                 className={
-                  sortOption === 'price-low-high' ? 'bg-red-500 text-white' : 'text-yellow-400 border-yellow-400'
+                  sortOption === "price-low-high"
+                    ? "bg-red-500 text-white"
+                    : "text-yellow-400 border-yellow-400"
                 }
                 onClick={() => {
-                  setSortOption('price-low-high');
+                  setSortOption("price-low-high");
                   setIsSortPopupOpen(false);
                 }}
               >
                 Price: Low to High
               </Button>
               <Button
-                variant={sortOption === 'price-high-low' ? 'default' : 'outline'}
+                variant={
+                  sortOption === "price-high-low" ? "default" : "outline"
+                }
                 size="sm"
                 className={
-                  sortOption === 'price-high-low' ? 'bg-red-500 text-white' : 'text-yellow-400 border-yellow-400'
+                  sortOption === "price-high-low"
+                    ? "bg-red-500 text-white"
+                    : "text-yellow-400 border-yellow-400"
                 }
                 onClick={() => {
-                  setSortOption('price-high-low');
+                  setSortOption("price-high-low");
                   setIsSortPopupOpen(false);
                 }}
               >

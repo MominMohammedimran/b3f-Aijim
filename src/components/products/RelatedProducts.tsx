@@ -60,11 +60,10 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ product }) => {
             <div
               key={item.id}
               className="min-w-[180px] md:min-w-[220px] relative group cursor-pointer"
-          onClick={() => {
-  window.scrollTo({ top: 0, behavior: 'smooth' }); // Smooth scroll to top
-  navigate(`/product/details/${item.code}`);
-}}
-
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "smooth" }); // Smooth scroll to top
+                navigate(`/product/${item.code}`);
+              }}
             >
               <ProductCard product={item} />
 

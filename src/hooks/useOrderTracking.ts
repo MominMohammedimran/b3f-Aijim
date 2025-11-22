@@ -1,8 +1,7 @@
-
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Order, TrackingInfo } from '@/lib/types';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Order, TrackingInfo } from "@/lib/types";
+import { toast } from "sonner";
 
 export const useOrderTracking = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -15,12 +14,12 @@ export const useOrderTracking = () => {
       setError(null);
 
       let query = supabase
-        .from('orders')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (userId) {
-        query = query.eq('user_id', userId);
+        query = query.eq("user_id", userId);
       }
 
       const { data, error: fetchError } = await query;
@@ -37,17 +36,24 @@ export const useOrderTracking = () => {
           order_number: order.order_number,
           userId: order.user_id,
           user_id: order.user_id,
-          userEmail: order.user_email || '',
-          user_email: order.user_email || '',
+          userEmail: order.user_email || "",
+          user_email: order.user_email || "",
           items: Array.isArray(order.items) ? order.items : [],
           total: Number(order.total),
-          status: order.order_status as 'processing' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'pending',
+          status: order.status as
+            | "processing"
+            | "confirmed"
+            | "shipped"
+            | "delivered"
+            | "cancelled"
+            | "pending",
           paymentMethod: order.payment_method,
           payment_method: order.payment_method,
           payment_status: order.payment_status,
-          shippingAddress: typeof order.shipping_address === 'string' 
-            ? JSON.parse(order.shipping_address) 
-            : order.shipping_address,
+          shippingAddress:
+            typeof order.shipping_address === "string"
+              ? JSON.parse(order.shipping_address)
+              : order.shipping_address,
           shipping_address: order.shipping_address,
           deliveryFee: Number(order.delivery_fee || 100),
           delivery_fee: Number(order.delivery_fee || 100),
@@ -55,7 +61,7 @@ export const useOrderTracking = () => {
           created_at: order.created_at,
           updatedAt: order.updated_at,
           updated_at: order.updated_at,
-          courier:order.courier,
+          courier: order.courier,
           date: order.date || order.created_at,
           cancellationReason: order.cancellation_reason || undefined,
           cancellation_reason: order.cancellation_reason || undefined,
@@ -64,10 +70,11 @@ export const useOrderTracking = () => {
         setOrders(transformedOrders);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch orders';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to fetch orders";
       setError(errorMessage);
-      console.error('Error fetching orders:', err);
-      toast.error('Failed to load orders');
+      console.error("Error fetching orders:", err);
+      toast.error("Failed to load orders");
     } finally {
       setLoading(false);
     }
@@ -76,33 +83,41 @@ export const useOrderTracking = () => {
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
       const { error } = await supabase
-        .from('orders')
-        .update({ 
+        .from("orders")
+        .update({
           status: newStatus,
           updated_at: new Date().toISOString(),
-          upi_input: '' // Add required upi_input field
+          upi_input: "", // Add required upi_input field
         })
-        .eq('id', orderId);
+        .eq("id", orderId);
 
       if (error) throw error;
 
       // Update local state
-      setOrders(prev => prev.map(order => 
-        order.id === orderId 
-          ? { 
-              ...order, 
-              status: newStatus as 'processing' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'pending', 
-              updatedAt: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            }
-          : order
-      ));
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.id === orderId
+            ? {
+                ...order,
+                status: newStatus as
+                  | "processing"
+                  | "confirmed"
+                  | "shipped"
+                  | "delivered"
+                  | "cancelled"
+                  | "pending",
+                updatedAt: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              }
+            : order
+        )
+      );
 
-      toast.success('Order status updated successfully');
+      toast.success("Order status updated successfully");
       return true;
     } catch (err) {
-      console.error('Error updating order status:', err);
-      toast.error('Failed to update order status');
+      console.error("Error updating order status:", err);
+      toast.error("Failed to update order status");
       return false;
     }
   };
@@ -111,7 +126,7 @@ export const useOrderTracking = () => {
   const getOrderWithCancellation = (order: any) => {
     return {
       ...order,
-      cancellation_reason: order.cancellation_reason || undefined
+      cancellation_reason: order.cancellation_reason || undefined,
     };
   };
 
@@ -125,6 +140,6 @@ export const useOrderTracking = () => {
     error,
     fetchOrders,
     updateOrderStatus,
-    getOrderWithCancellation
+    getOrderWithCancellation,
   };
 };

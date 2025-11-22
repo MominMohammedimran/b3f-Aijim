@@ -5,15 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Download, Eye, Trash2, Award, Plus } from 'lucide-react';
+import { Search, Download, Eye, Award, Plus } from 'lucide-react';
+
 import OrderDetailsDialog from '../../components/admin/OrderDetailsDialog';
-import AdminOrderDownload from '../../components/admin/AdminOrderDownload';
-import AdminDownloadDesign from '../../components/admin/AdminDownloadDesign';
 import PaymentStatusUpdateDialog from '../../components/admin/PaymentStatusUpdateDialog';
 import RewardPointsUpdateDialog from '../../components/admin/orders/RewardPointsUpdateDialog';
 import CreateOrderDialog from '../../components/admin/CreateOrderDialog';
 import ModernAdminLayout from '../../components/admin/ModernAdminLayout';
-import { sendOrderStatusEmail } from '../../components/admin/OrderStatusEmailService';
+// import { sendOrderStatusEmail } from '../../components/admin/OrderStatusEmailService';
 
 interface Order {
   id: string;
@@ -26,11 +25,24 @@ interface Order {
   shipping_address: any;
   payment_method: string;
   payment_status?: string;
-  coupon_code?: {code: string, discount_amount: number};
-  reward_points_used?: {points: number, value_used: number};
+  coupon_code?: { code: string; discount_amount: number };
+  reward_points_used?: { points: number; value_used: number };
   reward_points_earned?: number;
   delivery_fee?: number;
+  courier?: any;
+  trackingNote?: string;
 }
+
+const statusColors: Record<string, string> = {
+  delivered: 'default',
+  shipped: 'secondary',
+  'on-the-way': 'warning',
+  'out-for-delivery': 'warning',
+  cancelled: 'destructive',
+  'return-picked': 'destructive',
+  processing: 'secondary',
+  undelivered: 'destructive',
+};
 
 const AdminOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -66,19 +78,23 @@ const AdminOrders: React.FC = () => {
           total: order.total,
           status: order.status,
           created_at: order.created_at,
-          items: Array.isArray(order.items) ? order.items : 
-                 (typeof order.items === 'string' ? JSON.parse(order.items || '[]') : []),
+          items: Array.isArray(order.items)
+            ? order.items
+            : typeof order.items === 'string'
+            ? JSON.parse(order.items || '[]')
+            : [],
           shipping_address: order.shipping_address,
           payment_method: order.payment_method,
           payment_status: order.payment_status,
           reward_points_earned: order.reward_points_earned || 0,
-          coupon_code: order.coupon_code?.code || "",
+          coupon_code: order.coupon_code?.code || '',
           coupon_code_discount: order.coupon_code?.discount_amount || 0,
           reward_points_used: order.reward_points_used?.value_used || 0,
           reward_points_used_available: order.reward_points?.points || 0,
           delivery_fee: order.delivery_fee || 0,
+          courier: order.courier,
+          trackingNote: order.trackingNote || '',
         }));
-
         setOrders(transformedOrders);
       }
     } catch (error) {
@@ -93,70 +109,71 @@ const AdminOrders: React.FC = () => {
     try {
       const { error } = await supabase
         .from('orders')
-        .update({
-          status: newStatus,
-          updated_at: new Date().toISOString()
-        })
+        .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq('id', orderId);
 
       if (error) throw error;
 
-      const updatedOrder = orders.find(order => order.id === orderId);
-
-      if (updatedOrder) {
-        const shipping = updatedOrder.shipping_address;
-        const emailToSend = shipping?.email || updatedOrder.user_email;
-
-        if (emailToSend && emailToSend !== 'N/A') {
-          try {
-            // 📴 Temporarily disabled email sending
-            /*
-            await sendOrderStatusEmail({
-              orderId: updatedOrder.order_number,
-              customerEmail: emailToSend,
-              customerName: shipping?.name || shipping?.fullName || 'Customer',
-              status: newStatus,
-              orderItems: updatedOrder.items || [],
-              totalAmount: updatedOrder.total || 0,
-              shippingAddress: {
-                name: shipping?.fullName || shipping?.name || 'Customer',
-                phone: shipping?.phone || '',
-                email: emailToSend,
-                address: shipping?.address || '',
-                city: shipping?.city || '',
-                state: shipping?.state || '',
-                zipCode: shipping?.zipCode || '',
-                country: shipping?.country || ''
-              },
-              paymentMethod: updatedOrder.payment_method,
-              couponCode: updatedOrder.coupon_code?.code || "",
-              couponDiscount: updatedOrder.coupon_code?.discount_amount || 0,
-              rewardPointsUsed: updatedOrder.reward_points_used?.value_used || 0,
-              deliveryFee: updatedOrder.delivery_fee,
-            });
-            console.log(updatedOrder);
-            */
-
-            console.log('✉️ Email sending disabled (skipped sendOrderStatusEmail)');
-          } catch (emailError) {
-            console.error('Failed to send status update email:', emailError);
-            toast.error('Status updated but failed to send email notification');
-          }
-        } else {
-          toast.warning('⚠️ No email found for this customer');
-        }
-      }
-
       setOrders(prev =>
-        prev.map(order =>
-          order.id === orderId ? { ...order, status: newStatus } : order
-        )
+        prev.map(order => (order.id === orderId ? { ...order, status: newStatus } : order))
       );
 
       toast.success('✅ Order status updated');
     } catch (err) {
-      console.error('❌ Error updating status:', err);
+      console.error('Error updating status:', err);
       toast.error('Failed to update order status');
+    }
+  };
+
+  const fetchDelhiveryStatus = async (awb: string, orderId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('track-delhivery', {
+        body: JSON.stringify({ awb, orderId }),
+      });
+
+      if (error || !data?.data?.ShipmentData?.[0]?.Shipment) {
+        toast.error('Failed to fetch tracking status');
+        return null;
+      }
+
+      const shipment = data.data.ShipmentData[0].Shipment;
+      console.log(shipment)
+
+      const statusMap: Record<string, string> = {
+        Dispatched: 'shipped',
+        'In transit': 'on-the-way',
+        'Out for Delivery': 'out-for-delivery',
+        Delivered: 'delivered',
+        Undelivered: 'undelivered',
+        RTO: 'return-picked',
+        Cancelled: 'cancelled',
+      };
+
+      const currentStatus = statusMap[shipment.Status?.Status || ''] || 'processing';
+      const note = shipment.Status?.Instructions || 'N/A';
+
+      const { error: updateError } = await supabase
+        .from('orders')
+        .update({  trackingNote: note, updated_at: new Date().toISOString() })
+        .eq('id', orderId);
+
+      if (updateError) {
+        toast.error('Failed to update order status in database');
+        console.error(updateError);
+      } else {
+        setOrders(prev =>
+          prev.map(order =>
+            order.id === orderId ? { ...order, status: currentStatus, trackingNote: note } : order
+          )
+        );
+        toast.success(`✅ Order status updated to "${currentStatus}"`);
+      }
+
+      return { status: currentStatus, note };
+    } catch (err) {
+      console.error(err);
+      toast.error('Error fetching Delhivery status');
+      return null;
     }
   };
 
@@ -168,7 +185,7 @@ const AdminOrders: React.FC = () => {
   const handlePaymentUpdateComplete = () => {
     setShowPaymentUpdate(false);
     setSelectedOrderForPayment(null);
-    fetchOrders(); // Refresh orders after payment update
+    fetchOrders();
   };
 
   const handleRewardPointsUpdate = (order: Order) => {
@@ -179,7 +196,7 @@ const AdminOrders: React.FC = () => {
   const handleRewardPointsUpdateComplete = () => {
     setShowRewardPointsUpdate(false);
     setSelectedOrderForRewards(null);
-    fetchOrders(); // Refresh orders after reward points update
+    fetchOrders();
   };
 
   const handleViewOrder = (order: Order) => {
@@ -191,11 +208,7 @@ const AdminOrders: React.FC = () => {
     if (!confirm('Are you sure you want to delete this order?')) return;
 
     try {
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .eq('id', orderId);
-
+      const { error } = await supabase.from('orders').delete().eq('id', orderId);
       if (error) throw error;
 
       setOrders(prev => prev.filter(order => order.id !== orderId));
@@ -208,15 +221,33 @@ const AdminOrders: React.FC = () => {
 
   const handleExportOrders = () => {
     const csvContent = [
-      ['Order Number', 'Date', 'Customer', 'Status', 'Total'],
+      [
+        'Order Number',
+        'Date',
+        'Customer',
+        'Status',
+        'Payment',
+        'Total',
+        'Reward Points Used',
+        'Reward Points Earned',
+        'Coupon Code',
+        'Courier AWB',
+      ],
       ...orders.map(order => [
         order.order_number,
         new Date(order.created_at).toLocaleDateString(),
         order.user_email,
         order.status,
-        order.total.toString()
-      ])
-    ].map(row => row.join(',')).join('\n');
+        order.payment_status || 'N/A',
+        order.total.toString(),
+        order.reward_points_used,
+        order.reward_points_earned,
+        order.coupon_code || '',
+        order.courier?.awb || '',
+      ]),
+    ]
+      .map(row => row.join(','))
+      .join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -227,31 +258,34 @@ const AdminOrders: React.FC = () => {
     window.URL.revokeObjectURL(url);
   };
 
-  const filteredOrders = orders.filter(order =>
-    order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.user_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.status.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredOrders = orders.filter(
+    order =>
+      order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Split orders
   const paidOrders = filteredOrders.filter(order => order.payment_status === 'paid');
   const otherOrders = filteredOrders.filter(order => order.payment_status !== 'paid');
 
   return (
-    <ModernAdminLayout 
-      title="Orders Management" 
+    <ModernAdminLayout
+      title="Orders Management"
       subtitle="Manage customer orders and track status"
       actionButton={
-          <div className="flex gap-2">
-            <Button onClick={() => setShowCreateOrder(true)} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-              <Plus size={16} />
-              Create Order
-            </Button>
-            <Button variant="outline" onClick={handleExportOrders} className="gap-2">
-              <Download size={16} />
-              Export Orders
-            </Button>
-          </div>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setShowCreateOrder(true)}
+            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            <Plus size={16} />
+            Create Order
+          </Button>
+          <Button variant="outline" onClick={handleExportOrders} className="gap-2">
+            <Download size={16} />
+            Export Orders
+          </Button>
+        </div>
       }
     >
       <div className="space-y-6">
@@ -261,11 +295,10 @@ const AdminOrders: React.FC = () => {
             <Input
               placeholder="Search orders..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={e => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
-          
           <div className="flex gap-2 text-sm text-gray-600">
             <Badge variant="outline">{filteredOrders.length} orders</Badge>
           </div>
@@ -277,31 +310,32 @@ const AdminOrders: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-8">
-
-            {/* Paid Orders Table */}
             {paidOrders.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold mb-2">Paid Orders</h3>
                 <OrderTable
                   orders={paidOrders}
                   handleViewOrder={handleViewOrder}
+                  fetchDelhiveryStatus={fetchDelhiveryStatus}
                   handlePaymentUpdate={handlePaymentUpdate}
                   handleRewardPointsUpdate={handleRewardPointsUpdate}
                   handleStatusUpdate={handleStatusUpdate}
+                  setOrders={setOrders}
                 />
               </div>
             )}
 
-            {/* Other Orders Table */}
             {otherOrders.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold mb-2">Other Orders</h3>
                 <OrderTable
                   orders={otherOrders}
                   handleViewOrder={handleViewOrder}
+                  fetchDelhiveryStatus={fetchDelhiveryStatus}
                   handlePaymentUpdate={handlePaymentUpdate}
                   handleRewardPointsUpdate={handleRewardPointsUpdate}
                   handleStatusUpdate={handleStatusUpdate}
+                  setOrders={setOrders}
                 />
               </div>
             )}
@@ -318,7 +352,7 @@ const AdminOrders: React.FC = () => {
           <OrderDetailsDialog
             order={selectedOrder}
             open={showOrderDetails}
-            onOpenChange={(open) => setShowOrderDetails(open)}
+            onOpenChange={setShowOrderDetails}
             onStatusUpdate={handleStatusUpdate}
             onDeleteOrder={() => handleDeleteOrder(selectedOrder.id)}
           />
@@ -356,40 +390,54 @@ const AdminOrders: React.FC = () => {
 
 export default AdminOrders;
 
-// Helper OrderTable component
+// ---------------- Helper Table -----------------
 interface OrderTableProps {
   orders: Order[];
+  fetchDelhiveryStatus: (awb: string, orderId: string) => Promise<{ status: string; note: string } | null>;
   handleViewOrder: (order: Order) => void;
   handlePaymentUpdate: (order: Order) => void;
   handleRewardPointsUpdate: (order: Order) => void;
   handleStatusUpdate: (orderId: string, newStatus: string) => void;
+  setOrders: React.Dispatch<React.SetStateAction<Order[]>>;
 }
 
-const OrderTable: React.FC<OrderTableProps> = ({ orders, handleViewOrder, handlePaymentUpdate, handleRewardPointsUpdate, handleStatusUpdate }) => (
+const OrderTable: React.FC<OrderTableProps> = ({
+  orders,
+  setOrders,
+  handleViewOrder,
+  handlePaymentUpdate,
+  fetchDelhiveryStatus,
+  handleRewardPointsUpdate,
+  handleStatusUpdate,
+}) => (
   <div className="rounded-lg border overflow-hidden">
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50 hover:bg-gray-50">
-            <TableHead className="font-semibold text-gray-800 hover:bg-gray-200 ">Order</TableHead>
-            <TableHead className="font-semibold  text-gray-800 hover:bg-gray-200">Date</TableHead>
-            <TableHead className="font-semibold  text-gray-800 hover:bg-gray-200">Customer</TableHead>
-            <TableHead className="font-semibold  text-gray-800 hover:bg-gray-200">Payment</TableHead>
-            <TableHead className="font-semibold text-gray-800 hover:bg-gray-200">Payment Update</TableHead>
-            <TableHead className="font-semibold text-gray-800 hover:bg-gray-200">Rewards</TableHead>
-            <TableHead className="font-semibold text-gray-800  hover:bg-gray-200">Status</TableHead>
-            <TableHead className="font-semibold text-gray-800 text-right hover:bg-gray-200">Total</TableHead>
-            <TableHead className="font-semibold text-gray-800 text-center hover:bg-gray-200">Actions</TableHead>
+            <TableHead>Order</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Customer</TableHead>
+            <TableHead>Payment</TableHead>
+            <TableHead>Payment Update</TableHead>
+            <TableHead>Delhivery</TableHead>
+            <TableHead>Rewards</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className="text-right">Total</TableHead>
+            <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orders.map((order) => (
-            <TableRow key={order.id} className="hover:bg-gray-800">
+          {orders.map(order => (
+            <TableRow key={order.id} className="">
               <TableCell className="font-medium">{order.order_number}</TableCell>
               <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
               <TableCell className="max-w-[200px] truncate">{order.user_email}</TableCell>
               <TableCell>
-                <Badge variant={order.payment_status === 'paid' ? 'default' : 'destructive'} className="text-xs">
+                <Badge
+                  variant={order.payment_status === 'paid' ? 'default' : 'destructive'}
+                  className="text-xs"
+                >
                   {order.payment_status || 'N/A'}
                 </Badge>
               </TableCell>
@@ -401,6 +449,28 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, handleViewOrder, handle
                   className="text-xs px-2 py-1 h-8"
                 >
                   Update Payment
+                </Button>
+              </TableCell>
+              <TableCell>
+              <span className="text-xs">{order.trackingNote || 'N/A'}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    if (!order.courier?.awb) {
+                      toast.error('AWB not found for this order');
+                      return;
+                    }
+                    const result = await fetchDelhiveryStatus(order.courier.awb, order.id);
+                    if (!result) return;
+                    handleStatusUpdate(order.id, result.status);
+                    setOrders(prev =>
+                      prev.map(o => (o.id === order.id ? { ...o, trackingNote: result.note } : o))
+                    );
+                  }}
+                  className="text-xs px-2 py-1 h-8"
+                >
+                  Check
                 </Button>
               </TableCell>
               <TableCell>
@@ -418,20 +488,20 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, handleViewOrder, handle
                 </div>
               </TableCell>
               <TableCell>
-                <Badge variant={order.status === 'delivered' ? 'default' : 'secondary'} className="text-xs">
+                <Badge variant={statusColors[order.status] || 'secondary'} className="text-xs">
                   {order.status}
                 </Badge>
               </TableCell>
               <TableCell className="text-right font-medium">₹{order.total}</TableCell>
               <TableCell>
                 <div className="flex justify-center gap-2 flex-wrap">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => handleViewOrder(order)}
                     className="h-8 w-8 p-0"
                   >
-                    <Eye size={14} /> Update 
+                    <Eye size={14} />
                   </Button>
                   {order.status !== 'delivered' && (
                     <Button

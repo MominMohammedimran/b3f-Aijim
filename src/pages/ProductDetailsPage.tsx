@@ -8,18 +8,22 @@ import SEOHelmet from "@/components/seo/SEOHelmet";
 import useSEO from "@/hooks/useSEO";
 import ProductJsonLd from "@/components/products/ProductJsonLd";
 import { supabase } from "@/integrations/supabase/client";
+import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
 
 interface ProductDetailsPageProps {
   product?: Product; // Optional prop
 }
 
-const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({ product: propProduct }) => {
+const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
+  product: propProduct,
+}) => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(propProduct || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const canonicalUrl = `https://aijim.shop/product/${productId}`;
 
-  const seo = useSEO("/product/details/:productId");
+  const seo = useSEO("/product/:productId");
 
   useEffect(() => {
     if (propProduct) return; // Already have product via props
@@ -32,11 +36,10 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({ product: propPr
         setError(null);
 
         const { data, error } = await supabase
-  .from("products")
-  .select("*")
-  .eq("code", productId)
-  .single<Product>();
-
+          .from("products")
+          .select("*")
+          .eq("code", productId)
+          .single<Product>();
 
         if (error) throw error;
         if (!data) throw new Error("Product not found");
@@ -56,7 +59,12 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({ product: propPr
 
   return (
     <Layout>
-      <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(", ") }} />
+      <NewSEOHelmet
+        pageSEO={{
+          title: product?.name || "Product Details",
+          description: product?.description || "",
+        }}
+      />
 
       <div className="container-custom mt-14">
         <div className="hidden lg:flex items-center pt-5">

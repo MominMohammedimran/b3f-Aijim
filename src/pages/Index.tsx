@@ -1,28 +1,25 @@
-
-
-
-
-
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Layout from '../components/layout/Layout';
-import ProductCard from '../components/ui/ProductCard';
-import CategoryItem from '../components/ui/CategoryItem';
-import Banner from '../components/ui/Banner';
-import ProductVideoSection from '../components/ui/ProductVideoSection';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { Product } from '../lib/types';
-import { useIsMobile } from '../hooks/use-mobile';
-import { useLocation } from '../context/LocationContext';
-import { useWishlist } from '../context/WishlistContext';
-import useSEO from '@/hooks/useSEO'; // ✅ using this
-import Marquee from "react-fast-marquee"; 
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Layout from "../components/layout/Layout";
+import ProductCard from "../components/ui/ProductCard";
+import CategoryItem from "../components/ui/CategoryItem";
+import Banner from "../components/ui/Banner";
+import ProductVideoSection from "../components/ui/ProductVideoSection";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Product } from "../lib/types";
+import { useIsMobile } from "../hooks/use-mobile";
+import { useLocation } from "../context/LocationContext";
+import { useWishlist } from "../context/WishlistContext";
+import useSEO from "@/hooks/useSEO"; // ✅ using this
+import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
+import Marquee from "react-fast-marquee";
 import NewHero from "@/components/landing/NewHero";
-import HeroSlider from '../components/ui/HeroSlider';
-import IndexFeaturesproducts from '../components/ui/IdexFeaturesproducts';
-import { supabase } from '@/integrations/supabase/client';
-
+import HeroSlider from "../components/ui/HeroSlider";
+import IndexFeaturesproducts from "../components/ui/IdexFeaturesproducts";
+import { supabase } from "@/integrations/supabase/client";
+import { useCart } from "../context/CartContext";
+import { toast } from "sonner";
 const Index = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -81,10 +78,7 @@ const Index = () => {
         const normalizedSizes = rawSizes
           .filter(
             (s) =>
-              typeof s === "object" &&
-              s !== null &&
-              "size" in s &&
-              "stock" in s
+              typeof s === "object" && s !== null && "size" in s && "stock" in s
           )
           .map((s) => ({
             size: String(s.size),
@@ -123,6 +117,7 @@ const Index = () => {
       setLoading(false);
     }
   };
+  const { cartItems } = useCart();
 
   useEffect(() => {
     fetchProducts();
@@ -130,7 +125,7 @@ const Index = () => {
 
   const handleProductClick = (product: Product) => {
     window.scrollTo(0, 0);
-    navigate(`/product/details/${product.code}`);
+    navigate(`/product/${product.code}`);
   };
 
   const featuredProducts = products.filter(
@@ -148,23 +143,90 @@ const Index = () => {
     });
   };
   useEffect(() => {
-  const interval = setInterval(() => {
-    scroll("right");
-  }, 3000); // 3 seconds auto-scroll
+    const interval = setInterval(() => {
+      scroll("right");
+    }, 3000); // 3 seconds auto-scroll
 
-  return () => clearInterval(interval);
-}, []);
+    return () => clearInterval(interval);
+  }, []);
 
+  // 🔔 Hourly toast reminder system (Works with Supabase cart)
+  React.useEffect(() => {
+    const now = Date.now();
+    const ONE_HOUR = 60 * 60 * 1000;
+
+    // -----------------------------------------
+    // 🟦 1. If cart is empty → show toast every 1 hour
+    // -----------------------------------------
+    if (!cartItems || cartItems.length === 0) {
+      const key = "toast_empty_cart_last";
+      const last = Number(localStorage.getItem(key) || 0);
+
+      if (now - last >= ONE_HOUR) {
+        toast.custom(
+          () => (
+            <div className="p-3 rounded-lg shadow bg-white border flex gap-2 items-center">
+              <span className="text-sm font-medium text-black">
+                Your cart is empty 🛒 — Continue shopping!
+              </span>
+            </div>
+          ),
+          { duration: 4000 }
+        );
+
+        localStorage.setItem(key, now.toString());
+      }
+      return;
+    }
+
+    // -----------------------------------------
+    // 🟥 2. Cart has items — hourly reminder per product
+    // -----------------------------------------
+    cartItems.forEach((item) => {
+      const key = `toast_item_${item.id}_last`;
+      const lastShown = Number(localStorage.getItem(key) || 0);
+
+      if (now - lastShown >= ONE_HOUR) {
+        toast.custom(
+          () => (
+            <div className="p-3 rounded-lg shadow bg-white border flex gap-3 items-center w-[260px]">
+              <img
+                src={item.image}
+                className="w-12 h-12 rounded-md object-cover"
+                alt={item.name}
+              />
+              <div>
+                <div className="font-bold text-black">{item.name}</div>
+                <div className="text-sm text-black">
+                  Still in your cart — complete your order!
+                </div>
+              </div>
+            </div>
+          ),
+          { duration: 4000 }
+        );
+
+        localStorage.setItem(key, now.toString());
+      }
+    });
+  }, [cartItems]);
 
   return (
     <Layout>
       {/* No SEOHelmet needed */}
+      <NewSEOHelmet
+        pageSEO={{
+          title: "AIJIM | Premium Fashion, Affordable Price",
+          description:
+            "Explore the latest trends and premium printed products by AIJIM.",
+        }}
+      />
 
       <NewHero />
 
       <div className="bg-black min-h-screen pt-5 text-white">
         <div className="container-custom mt-22 pt-2">
-  {/*<HeroSlider />/*}
+          {/*<HeroSlider />/*}
 
           {/* 🔥 Hot Selling 
       <div className="mb-4 mt-4 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black
@@ -204,7 +266,7 @@ const Index = () => {
 
           {/*<div className="flex justify-center">
             <Link
-              to={`/product/details/${product.id}`}
+              to={`/product/${product.id}`}
               className=" px-2 py-1 text-m font-bold bg-white text-black hover:bg-gray-200 shadow transition"
             >
               Shop Now
@@ -217,7 +279,9 @@ const Index = () => {
 </div>}/*}
           {/* Featured products */}
           <div className="relative mb-8">
-            <h2 className="text-xl font-bold mb-5 text-left">Featured Products</h2>
+            <h2 className="text-xl font-bold mb-5 text-left">
+              Featured Products
+            </h2>
 
             {loading ? (
               <p className="text-gray-400">Loading Products...</p>
@@ -258,7 +322,9 @@ const Index = () => {
                 </button>
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">No featured products available.</p>
+              <p className="text-gray-500 text-sm">
+                No featured products available.
+              </p>
             )}
           </div>
 
@@ -278,10 +344,7 @@ const Index = () => {
                   className="animate-fade-in"
                   style={{ animationDelay: `${i * 0.08}s` }}
                 >
-                  <ProductCard
-                    product={product}
-                    onClick={handleProductClick}
-                  />
+                  <ProductCard product={product} onClick={handleProductClick} />
                 </div>
               ))}
             </div>

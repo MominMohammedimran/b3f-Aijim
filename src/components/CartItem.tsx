@@ -1,9 +1,8 @@
-
-import { Trash2, Minus, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useCart } from '@/context/CartContext';
-import { Link } from 'react-router-dom';
+import { Trash2, Minus, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useCart } from "@/context/CartContext";
+import { Link } from "react-router-dom";
 
 interface CartItemProps {
   id: string;
@@ -14,8 +13,16 @@ interface CartItemProps {
   options?: Record<string, string>;
 }
 
-const CartItem = ({ id, image, name, price, sizes, options }: CartItemProps) => {
-  const { updateCartItemQuantity, removeFromCart, removeSizeFromCart } = useCart();
+const CartItem = ({
+  id,
+  image,
+  name,
+  price,
+  sizes,
+  options,
+}: CartItemProps) => {
+  const { updateCartItemQuantity, removeFromCart, removeSizeFromCart } =
+    useCart();
 
   const handleQuantityChange = (size: string, value: number) => {
     if (value > 0) updateCartItemQuantity(id, size, value);
@@ -35,7 +42,10 @@ const CartItem = ({ id, image, name, price, sizes, options }: CartItemProps) => 
   return (
     <div className="flex flex-col sm:flex-row gap-4 py-6 border-b">
       {/* Product Image */}
-      <Link to={`/product/details/${id}`} className="w-full sm:w-24 h-24 overflow-hidden rounded-md bg-gray-100">
+      <Link
+        to={`/product/${id}`}
+        className="w-full sm:w-24 h-24 overflow-hidden rounded-md bg-gray-100"
+      >
         <img
           src={image}
           alt={name}
@@ -47,14 +57,19 @@ const CartItem = ({ id, image, name, price, sizes, options }: CartItemProps) => 
       <div className="flex-1">
         <div className="flex justify-between items-start">
           <div>
-            <Link to={`/product/details/${id}`} className="text-lg font-semibold text-gray-900 hover:text-primary">
+            <Link
+              to={`/product/${id}`}
+              className="text-lg font-semibold text-gray-900 hover:text-primary"
+            >
               {name}
             </Link>
 
             {options && Object.keys(options).length > 0 && (
               <div className="mt-1 text-sm text-gray-500">
                 {Object.entries(options).map(([key, value]) => (
-                  <span key={key} className="mr-4">{key}: <span className="font-medium">{value}</span></span>
+                  <span key={key} className="mr-4">
+                    {key}: <span className="font-medium">{value}</span>
+                  </span>
                 ))}
               </div>
             )}
@@ -65,7 +80,10 @@ const CartItem = ({ id, image, name, price, sizes, options }: CartItemProps) => 
         {/* Sizes and Quantities */}
         <div className="mt-4 space-y-3">
           {sizes.map((s, index) => (
-            <div key={`${s.size}-${index}`} className="flex items-center justify-between">
+            <div
+              key={`${s.size}-${index}`}
+              className="flex items-center justify-between"
+            >
               <div className="flex items-center space-x-4">
                 <span className="text-sm text-gray-600">Size: {s.size}</span>
 
@@ -82,7 +100,9 @@ const CartItem = ({ id, image, name, price, sizes, options }: CartItemProps) => 
                     type="number"
                     min={1}
                     value={s.quantity}
-                    onChange={(e) => handleQuantityChange(s.size, parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleQuantityChange(s.size, parseInt(e.target.value))
+                    }
                     className="h-8 w-16 rounded-none text-center border-x-0"
                   />
                   <Button
