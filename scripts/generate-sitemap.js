@@ -1,45 +1,86 @@
+// scripts/generate-sitemap.js
+
+import fs from "fs";
+import path from "path";
+import "dotenv/config";
+import { createClient } from "@supabase/supabase-js";
+
+// ------------------------------------------
+// ENV
+// ------------------------------------------
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const baseUrl = "https://aijim.shop";
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error("SUPABASE_URL and SUPABASE_ANON_KEY must be set in .env");
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const today = new Date().toISOString().split("T")[0];
+
+// ------------------------------------------
+// STATIC ROUTES
+// ------------------------------------------
+const staticUrls = [
+  { loc: "/", changefreq: "daily", priority: 1.0 },
+  { loc: "/search", changefreq: "daily", priority: 0.8 },
+  { loc: "/about-us", changefreq: "monthly", priority: 0.5 },
+  { loc: "/contact-us", changefreq: "monthly", priority: 0.5 },
+  { loc: "/signin", changefreq: "weekly", priority: 0.6 },
+  { loc: "/products", changefreq: "daily", priority: 1.0 },
+
+  // Policies
+  { loc: "/privacy-policy", changefreq: "yearly", priority: 0.3 },
+  { loc: "/terms-conditions", changefreq: "yearly", priority: 0.3 },
+  { loc: "/shipping-delivery", changefreq: "yearly", priority: 0.3 },
+  { loc: "/cancellation-refund", changefreq: "yearly", priority: 0.3 },
+];
+
+// ------------------------------------------
+// FETCH PRODUCTS FROM SUPABASE
+// ------------------------------------------
+async function fetchProducts() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("code, name, description, image, price, updated_at, category");
+
+  if (error) {
+    console.error("Supabase Error:", error);
+    return [];
+  }
+
+  return (data || []).filter((p) => p.code);
+}
+
+// ------------------------------------------
+// JSON-LD GENERATOR (Correct Version)
+// ------------------------------------------
 function generateJsonLd(product) {
-  const today = new Date().toISOString().split("T")[0];
-  const baseUrl = "https://aijim.shop";
   const url = `${baseUrl}/product/${product.code}`;
 
-  // ------------------------------
-  // PRODUCT SCHEMA
-  // ------------------------------
   const Product = {
     "@context": "https://schema.org",
     "@type": "Product",
-
     name: product.name || "Unnamed Product",
     description: product.description || "Description coming soon.",
     image: [product.image || `${baseUrl}/default-product.png`],
     sku: product.code,
     mpn: product.code,
-
-    brand: {
-      "@type": "Brand",
-      name: "Aijim",
-    },
-
+    brand: { "@type": "Brand", name: "Aijim" },
     manufacturer: {
       "@type": "Organization",
       name: "Aijim Clothing",
       logo: `${baseUrl}/logo.png`,
     },
-
     offers: {
       "@type": "Offer",
       url,
       priceCurrency: "INR",
       price: product.price || 0,
-
-      // Must exist for Google Merchant/Shopping
       priceValidUntil: `${new Date().getFullYear()}-12-31`,
-
       availability: "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",
-
-      // Google-valid shipping schema
       shippingDetails: [
         {
           "@type": "OfferShippingDetails",
@@ -69,8 +110,6 @@ function generateJsonLd(product) {
           },
         },
       ],
-
-      // Google requires complete return policy
       hasMerchantReturnPolicy: {
         "@type": "MerchantReturnPolicy",
         applicableCountry: "IN",
@@ -81,8 +120,6 @@ function generateJsonLd(product) {
         refundType: "https://schema.org/FullRefund",
       },
     },
-
-    // Optional but good for SEO
     aggregateRating: product.rating
       ? {
           "@type": "AggregateRating",
@@ -90,7 +127,6 @@ function generateJsonLd(product) {
           reviewCount: String(product.reviewCount || 10),
         }
       : undefined,
-
     review: [
       {
         "@type": "Review",
@@ -107,19 +143,11 @@ function generateJsonLd(product) {
     ],
   };
 
-  // ------------------------------
-  // BREADCRUMB SCHEMA
-  // ------------------------------
   const Breadcrumbs = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: baseUrl,
-      },
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
       {
         "@type": "ListItem",
         position: 2,
@@ -135,9 +163,6 @@ function generateJsonLd(product) {
     ],
   };
 
-  // ------------------------------
-  // FAQ SCHEMA
-  // ------------------------------
   const FAQ = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -163,3 +188,89 @@ function generateJsonLd(product) {
 
   return [Product, Breadcrumbs, FAQ];
 }
+
+// ------------------------------------------
+// GENERATE SITEMAP.XML
+// ------------------------------------------
+function generateSitemap(products) {
+  const productUrls = products.map((p) => ({
+    loc: `/product/${p.code}`,
+    lastmod: p.updated_at
+      ? new Date(p.updated_at).toISOString().split("T")[0]
+      : today,
+    changefreq: "weekly",
+    priority: 0.9,
+  }));
+
+  const categoryUrls = Array.from(
+    new Set(products.map((p) => p.category).filter(Boolean))
+  ).map((category) => ({
+    loc: `/products/${encodeURIComponent(category)}`,
+    changefreq: "weekly",
+    priority: 0.8,
+    lastmod: today,
+  }));
+
+  const allUrls = [...staticUrls, ...categoryUrls, ...productUrls];
+
+  const xmlBody = allUrls
+    .map(
+      (u) => `
+  <url>
+    <loc>${baseUrl}${u.loc}</loc>
+    <lastmod>${u.lastmod || today}</lastmod>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`
+    )
+    .join("");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+${xmlBody}
+</urlset>`;
+}
+
+// ------------------------------------------
+// WRITE ALL FILES
+// ------------------------------------------
+async function writeFiles() {
+  const products = await fetchProducts();
+  const publicDir = path.resolve(process.cwd(), "public");
+
+  if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir);
+
+  // SITEMAP
+  fs.writeFileSync(
+    path.join(publicDir, "sitemap.xml"),
+    generateSitemap(products),
+    "utf8"
+  );
+  console.log("✅ sitemap.xml generated");
+
+  // ROBOTS
+  const robots = `
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Sitemap: ${baseUrl}/sitemap.xml
+`.trim();
+  fs.writeFileSync(path.join(publicDir, "robots.txt"), robots, "utf8");
+
+  // JSON-LD FOLDER
+  const jsonDir = path.join(publicDir, "json-ld");
+  if (!fs.existsSync(jsonDir)) fs.mkdirSync(jsonDir);
+
+  products.forEach((product) => {
+    fs.writeFileSync(
+      path.join(jsonDir, `${product.code}.json`),
+      JSON.stringify(generateJsonLd(product), null, 2),
+      "utf8"
+    );
+  });
+
+  console.log("🎉 All SEO files generated successfully.");
+}
+
+writeFiles();

@@ -3,10 +3,10 @@
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "Village Essence Royal Blue Oversized-Tee",
+    "description": "STORY\n\nCelebrate Village Life in Style.\nExperience the spirit of rural India with this vibrant blue oversized T-shirt featuring traditional village art, meticulously crafted through high-quality screen printing for lasting clarity and vibrance.\n\nDETAILS\n\n✔️ 100% Pure Cotton - Ultra-soft, breathable fabric, gentle on skin.\n✔️ Oversized Youth Fit -Relaxed, street-inspired unisex design for all-day comfort.\n✔️ Weight : 240 GSM - Premium thickness, offering a heavy yet soft feel.\n✔️ Made in India -  Crafted with skill by local artisans.\n✔️  Screen Printed Artwork - Village graphics are applied using professional screen printing, ensuring sharp details, strong color contrast, and resistance to fading or cracking.\n✔️ Color - Deep blue base with crisp white village scenes.\n\n\n\nARTWORK FEATURES\n\n- Each motif is applied via multi-layer screen printing for enhanced durability and consistent coverage[1].\n- The print will retain its shape and color even after many washes, thanks to the robust screen-printed layer.\n- Designed to highlight cultural nuances, from farming and festivities to traditional dance and rural nature.\n\n\n\nWASH CARE\n\n- Wash inside out in cold water to maintain the print’s integrity.\n- Use mild detergents and avoid bleach to protect fabric and artistic details.\n- Do not directly iron on the print area for lasting vibrancy.\n\n\n\nThis village-themed T-shirt, highlighting its traditional art and the durability provided by professional screen printining\n\n",
     "image": [
       "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Blue/aijim-blue-01.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL0JsdWUvYWlqaW0tYmx1ZS0wMS5wbmciLCJpYXQiOjE3NjMzODQwODcsImV4cCI6MTc5NDkyMDA4N30.nEjllsellFZP75GFGbLj2oIJMLZN2_VbhOPCVPey6tg"
     ],
-    "description": "STORY\n\nCelebrate Village Life in Style.\nExperience the spirit of rural India with this vibrant blue oversized T-shirt featuring traditional village art, meticulously crafted through high-quality screen printing for lasting clarity and vibrance.\n\nDETAILS\n\n✔️ 100% Pure Cotton - Ultra-soft, breathable fabric, gentle on skin.\n✔️ Oversized Youth Fit -Relaxed, street-inspired unisex design for all-day comfort.\n✔️ Weight : 240 GSM - Premium thickness, offering a heavy yet soft feel.\n✔️ Made in India -  Crafted with skill by local artisans.\n✔️  Screen Printed Artwork - Village graphics are applied using professional screen printing, ensuring sharp details, strong color contrast, and resistance to fading or cracking.\n✔️ Color - Deep blue base with crisp white village scenes.\n\n\n\nARTWORK FEATURES\n\n- Each motif is applied via multi-layer screen printing for enhanced durability and consistent coverage[1].\n- The print will retain its shape and color even after many washes, thanks to the robust screen-printed layer.\n- Designed to highlight cultural nuances, from farming and festivities to traditional dance and rural nature.\n\n\n\nWASH CARE\n\n- Wash inside out in cold water to maintain the print’s integrity.\n- Use mild detergents and avoid bleach to protect fabric and artistic details.\n- Do not directly iron on the print area for lasting vibrancy.\n\n\n\nThis village-themed T-shirt, highlighting its traditional art and the durability provided by professional screen printining\n\n",
     "sku": "Aijim-blue-001",
     "mpn": "Aijim-blue-001",
     "brand": {
@@ -20,63 +20,64 @@
     },
     "offers": {
       "@type": "Offer",
-      "url": "https://aijim.shop/product/details/Aijim-blue-001",
+      "url": "https://aijim.shop/product/Aijim-blue-001",
       "priceCurrency": "INR",
       "price": 599,
       "priceValidUntil": "2025-12-31",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition",
-      "shippingDetails": {
-        "@type": "OfferShippingDetails",
-        "shippingRate": {
-          "@type": "MonetaryAmount",
-          "value": "0",
-          "currency": "INR"
-        },
-        "shippingDestination": {
-          "@type": "DefinedRegion",
-          "addressCountry": "IN"
-        },
-        "deliveryTime": {
-          "@type": "ShippingDeliveryTime",
-          "handlingTime": {
-            "@type": "QuantitativeValue",
-            "minValue": 1,
-            "maxValue": 2,
-            "unitCode": "DAY"
+      "shippingDetails": [
+        {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "currency": "INR",
+            "value": "0"
           },
-          "transitTime": {
-            "@type": "QuantitativeValue",
-            "minValue": 3,
-            "maxValue": 7,
-            "unitCode": "DAY"
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "IN"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 2,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 3,
+              "maxValue": 5,
+              "unitCode": "DAY"
+            }
           }
         }
-      },
+      ],
       "hasMerchantReturnPolicy": {
         "@type": "MerchantReturnPolicy",
         "applicableCountry": "IN",
         "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-        "merchantReturnDays": 7,
+        "merchantReturnDays": 5,
         "returnMethod": "https://schema.org/ReturnByMail",
         "refundType": "https://schema.org/FullRefund"
       }
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "152"
-    },
     "review": [
       {
         "@type": "Review",
-        "author": "Verified Buyer",
-        "datePublished": "2025-11-21",
+        "author": {
+          "@type": "Person",
+          "name": "Verified Buyer"
+        },
+        "datePublished": "2025-11-22",
         "reviewBody": "Premium quality streetwear, fits perfectly!",
         "reviewRating": {
           "@type": "Rating",
           "ratingValue": "5",
-          "bestRating": "5"
+          "bestRating": "5",
+          "worstRating": "1"
         }
       }
     ]
@@ -101,7 +102,7 @@
         "@type": "ListItem",
         "position": 3,
         "name": "Village Essence Royal Blue Oversized-Tee",
-        "item": "https://aijim.shop/product/details/Aijim-blue-001"
+        "item": "https://aijim.shop/product/Aijim-blue-001"
       }
     ]
   },
@@ -114,7 +115,7 @@
         "name": "What is the delivery time?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Delivery usually takes 3–7 days across India."
+          "text": "Delivery usually takes 5–7 days across India."
         }
       },
       {
@@ -122,7 +123,7 @@
         "name": "Do you offer returns?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, you can return the product within 7 days."
+          "text": "Yes, you can return the product within 5 days."
         }
       }
     ]

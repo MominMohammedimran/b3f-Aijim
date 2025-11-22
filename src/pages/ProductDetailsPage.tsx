@@ -61,9 +61,12 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
     <Layout>
       <NewSEOHelmet
         pageSEO={{
-          title: product?.name || "Product Details",
-          description: product?.description || "",
+          title: product?.name,
+          description: product?.description,
+          image: product?.image,
+          url: canonicalUrl, // optional
         }}
+        productProp={product}
       />
 
       <div className="container-custom mt-14">

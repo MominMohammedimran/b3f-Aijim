@@ -3,10 +3,10 @@
     "@context": "https://schema.org",
     "@type": "Product",
     "name": "Tortoise Embroidery White Oversized-Tee",
+    "description": "STORY \n\nEmbrace Persistence. Wear Your Success.\nThis classic white oversized T-shirt combines modern comfort with symbolic artistry. The front side features exquisite tortoise embroidery, celebrating the timeless moral—slow and steady wins the race—to inspire resilience, patience, and confidence in every wearer.\n\n\n DETAILS\n\n✔️ 100% Pure Cotton - Crafted from ultra-soft, breathable cotton for premium daily comfort.\n✔️ Oversized Youth Fit - Relaxed, trendy silhouette for a stylish and youthful look.\n✔️ Weight: 240 GSM - Premium, heavy cotton ensuring durability and a luxurious texture.\n✔️ Front-Side Tortoise Embroidery - Skillfully embroidered tortoise design on the front, adding tactile detail and a touch of storytelling.\n✔️ Colour - Solid white base, offering a clean and versatile canvas for the textured embroidery.\n ✔️ Made in India - Expertly crafted under strict quality standards, reflecting local artisans’ skill.\n\n\nArtwork features\n\n- The tortoise, embroidered with fine threads, stands as a symbol of perseverance, patience, and steadfast progress.\n- Blends cultural inspiration with contemporary fashion, making it perfect for those who seek both style and meaning in their wardrobe.\n- The embroidery offers depth, visual interest, and lasting quality.\n\n\nWASH CARE\n\n- Turn inside out and wash with cold water to maintain the embroidery and fabric’s original softness.\n- Use gentle detergents and avoid harsh chemicals to protect intricate embroidery.\n- Iron on the reverse side or with a cloth barrier, never directly over the embroidery.\n\n\nThis white oversized T-shirt with front tortoise embroidery is an ideal choice for those who want to showcase quietly powerful style and motivational symbolism in everyday wear.\n\n\n",
     "image": [
       "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/White/aijim-white-01.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL1doaXRlL2FpamltLXdoaXRlLTAxLnBuZyIsImlhdCI6MTc2MzM4NDM5NSwiZXhwIjoxNzk0OTIwMzk1fQ.fd8Fw_Zb97LVPVNAfOKssk28gY_bxZdSIzv4NXtjlxU"
     ],
-    "description": "STORY \n\nEmbrace Persistence. Wear Your Success.\nThis classic white oversized T-shirt combines modern comfort with symbolic artistry. The front side features exquisite tortoise embroidery, celebrating the timeless moral—slow and steady wins the race—to inspire resilience, patience, and confidence in every wearer.\n\n\n DETAILS\n\n✔️ 100% Pure Cotton - Crafted from ultra-soft, breathable cotton for premium daily comfort.\n✔️ Oversized Youth Fit - Relaxed, trendy silhouette for a stylish and youthful look.\n✔️ Weight: 240 GSM - Premium, heavy cotton ensuring durability and a luxurious texture.\n✔️ Front-Side Tortoise Embroidery - Skillfully embroidered tortoise design on the front, adding tactile detail and a touch of storytelling.\n✔️ Colour - Solid white base, offering a clean and versatile canvas for the textured embroidery.\n ✔️ Made in India - Expertly crafted under strict quality standards, reflecting local artisans’ skill.\n\n\nArtwork features\n\n- The tortoise, embroidered with fine threads, stands as a symbol of perseverance, patience, and steadfast progress.\n- Blends cultural inspiration with contemporary fashion, making it perfect for those who seek both style and meaning in their wardrobe.\n- The embroidery offers depth, visual interest, and lasting quality.\n\n\nWASH CARE\n\n- Turn inside out and wash with cold water to maintain the embroidery and fabric’s original softness.\n- Use gentle detergents and avoid harsh chemicals to protect intricate embroidery.\n- Iron on the reverse side or with a cloth barrier, never directly over the embroidery.\n\n\nThis white oversized T-shirt with front tortoise embroidery is an ideal choice for those who want to showcase quietly powerful style and motivational symbolism in everyday wear.\n\n\n",
     "sku": "Aijim-white-001",
     "mpn": "Aijim-white-001",
     "brand": {
@@ -20,63 +20,64 @@
     },
     "offers": {
       "@type": "Offer",
-      "url": "https://aijim.shop/product/details/Aijim-white-001",
+      "url": "https://aijim.shop/product/Aijim-white-001",
       "priceCurrency": "INR",
       "price": 599,
       "priceValidUntil": "2025-12-31",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition",
-      "shippingDetails": {
-        "@type": "OfferShippingDetails",
-        "shippingRate": {
-          "@type": "MonetaryAmount",
-          "value": "0",
-          "currency": "INR"
-        },
-        "shippingDestination": {
-          "@type": "DefinedRegion",
-          "addressCountry": "IN"
-        },
-        "deliveryTime": {
-          "@type": "ShippingDeliveryTime",
-          "handlingTime": {
-            "@type": "QuantitativeValue",
-            "minValue": 1,
-            "maxValue": 2,
-            "unitCode": "DAY"
+      "shippingDetails": [
+        {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "currency": "INR",
+            "value": "0"
           },
-          "transitTime": {
-            "@type": "QuantitativeValue",
-            "minValue": 3,
-            "maxValue": 7,
-            "unitCode": "DAY"
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "IN"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 2,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 3,
+              "maxValue": 5,
+              "unitCode": "DAY"
+            }
           }
         }
-      },
+      ],
       "hasMerchantReturnPolicy": {
         "@type": "MerchantReturnPolicy",
         "applicableCountry": "IN",
         "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-        "merchantReturnDays": 7,
+        "merchantReturnDays": 5,
         "returnMethod": "https://schema.org/ReturnByMail",
         "refundType": "https://schema.org/FullRefund"
       }
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "152"
-    },
     "review": [
       {
         "@type": "Review",
-        "author": "Verified Buyer",
-        "datePublished": "2025-11-21",
+        "author": {
+          "@type": "Person",
+          "name": "Verified Buyer"
+        },
+        "datePublished": "2025-11-22",
         "reviewBody": "Premium quality streetwear, fits perfectly!",
         "reviewRating": {
           "@type": "Rating",
           "ratingValue": "5",
-          "bestRating": "5"
+          "bestRating": "5",
+          "worstRating": "1"
         }
       }
     ]
@@ -101,7 +102,7 @@
         "@type": "ListItem",
         "position": 3,
         "name": "Tortoise Embroidery White Oversized-Tee",
-        "item": "https://aijim.shop/product/details/Aijim-white-001"
+        "item": "https://aijim.shop/product/Aijim-white-001"
       }
     ]
   },
@@ -114,7 +115,7 @@
         "name": "What is the delivery time?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Delivery usually takes 3–7 days across India."
+          "text": "Delivery usually takes 5–7 days across India."
         }
       },
       {
@@ -122,7 +123,7 @@
         "name": "Do you offer returns?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, you can return the product within 7 days."
+          "text": "Yes, you can return the product within 5 days."
         }
       }
     ]
