@@ -13,11 +13,6 @@
       "@type": "Brand",
       "name": "Aijim"
     },
-    "manufacturer": {
-      "@type": "Organization",
-      "name": "Aijim Clothing",
-      "logo": "https://aijim.shop/logo.png"
-    },
     "offers": {
       "@type": "Offer",
       "url": "https://aijim.shop/product/Aijim-beige-001",
@@ -26,6 +21,14 @@
       "priceValidUntil": "2025-12-31",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition",
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "IN",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 5,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "refundType": "https://schema.org/FullRefund"
+      },
       "shippingDetails": [
         {
           "@type": "OfferShippingDetails",
@@ -54,25 +57,22 @@
             }
           }
         }
-      ],
-      "hasMerchantReturnPolicy": {
-        "@type": "MerchantReturnPolicy",
-        "applicableCountry": "IN",
-        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-        "merchantReturnDays": 5,
-        "returnMethod": "https://schema.org/ReturnByMail",
-        "refundType": "https://schema.org/FullRefund"
-      }
+      ]
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "25"
     },
     "review": [
       {
         "@type": "Review",
         "author": {
           "@type": "Person",
-          "name": "Verified Buyer"
+          "name": "Verified Customer"
         },
         "datePublished": "2025-11-22",
-        "reviewBody": "Premium quality streetwear, fits perfectly!",
+        "reviewBody": "Amazing fabric and premium stitching. Highly recommended!",
         "reviewRating": {
           "@type": "Rating",
           "ratingValue": "5",
@@ -115,15 +115,15 @@
         "name": "What is the delivery time?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Delivery usually takes 5–7 days across India."
+          "text": "Delivery usually takes 5–7 business days across India."
         }
       },
       {
         "@type": "Question",
-        "name": "Do you offer returns?",
+        "name": "Can I return the product?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, you can return the product within 5 days."
+          "text": "Yes, returns are accepted within 5 days of delivery."
         }
       }
     ]
