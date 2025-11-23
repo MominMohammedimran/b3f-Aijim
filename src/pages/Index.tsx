@@ -152,66 +152,6 @@ const Index = () => {
   }, []);
 
   // 🔔 Hourly toast reminder system (Works with Supabase cart)
-  React.useEffect(() => {
-    const now = Date.now();
-    const ONE_HOUR = 60 * 60 * 1000;
-
-    // -----------------------------------------
-    // 🟦 1. If cart is empty → show toast every 1 hour
-    // -----------------------------------------
-    if (!cartItems || cartItems.length === 0) {
-      const key = "toast_empty_cart_last";
-      const last = Number(localStorage.getItem(key) || 0);
-
-      if (now - last >= ONE_HOUR) {
-        toast.custom(
-          () => (
-            <div className="p-3 rounded-lg shadow bg-white border flex gap-2 items-center">
-              <span className="text-sm font-medium text-black">
-                Your cart is empty 🛒 — Continue shopping!
-              </span>
-            </div>
-          ),
-          { duration: 4000 }
-        );
-
-        localStorage.setItem(key, now.toString());
-      }
-      return;
-    }
-
-    // -----------------------------------------
-    // 🟥 2. Cart has items — hourly reminder per product
-    // -----------------------------------------
-    cartItems.forEach((item) => {
-      const key = `toast_item_${item.id}_last`;
-      const lastShown = Number(localStorage.getItem(key) || 0);
-
-      if (now - lastShown >= ONE_HOUR) {
-        toast.custom(
-          () => (
-            <div className="p-3 rounded-lg shadow bg-white border flex gap-3 items-center w-[260px]">
-              <img
-                src={item.image}
-                className="w-12 h-12 rounded-md object-cover"
-                alt={item.name}
-              />
-              <div>
-                <div className="font-bold text-black">{item.name}</div>
-                <div className="text-sm text-black">
-                  Still in your cart — complete your order now!
-                </div>
-              </div>
-            </div>
-          ),
-          { duration: 4000 }
-        );
-
-        localStorage.setItem(key, now.toString());
-        triggerCartReminder(item.id);
-      }
-    });
-  }, [cartItems]);
 
   return (
     <Layout>

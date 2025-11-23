@@ -9,32 +9,97 @@ import { ActiveProductProvider } from "./context/ActiveProductContext";
 import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
-import InitFCM from "@/components/InitFCM";
-
+import { useCart } from "@/context/CartContext";
 const queryClient = new QueryClient();
+function CartReminders() {
+  const { cartItems } = useCart();
+
+  React.useEffect(() => {
+    const now = Date.now();
+    const ONE_HOUR = 60 * 60 * 1000;
+
+    if (!cartItems || cartItems.length === 0) {
+      const key = "toast_empty_cart_last";
+      const last = Number(localStorage.getItem(key) || 0);
+      if (now - last >= ONE_HOUR) {
+        toast.custom(
+          () => (
+            <div className="p-3 rounded-lg shadow bg-white border flex gap-2 items-center">
+              <span className="text-sm font-medium text-black">
+                Your cart is empty 🛒 — Continue shopping!
+              </span>
+            </div>
+          ),
+          { duration: 4000 }
+        );
+        localStorage.setItem(key, now.toString());
+      }
+      return;
+    }
+
+    cartItems.forEach((item) => {
+      const key = `toast_item_${item.id}_last`;
+      const lastShown = Number(localStorage.getItem(key) || 0);
+
+      if (now - lastShown >= ONE_HOUR) {
+        toast.custom(
+          () => (
+            <div className="p-1 rounded-none shadow bg-white border flex gap-3 items-center w-full">
+              <img
+                src={item.image}
+                className="w-12 h-12 rounded-md object-cover"
+                alt={item.name}
+              />
+              <div>
+                <div className="font-semibold text-sm text-black">
+                  {item.name}
+                </div>
+                <div className="flex flex-col text-xs font-semibold text-blue-500 gap-1">
+                  <span>Still in your cart — complete your order now!</span>
+                  <a
+                    href="/cart"
+                    className="bg-red-500 text-white text-center w-full px-2 py-1 rounded"
+                  >
+                    Make Payment
+                  </a>
+                </div>
+              </div>
+            </div>
+          ),
+          { duration: 5000 }
+        );
+        localStorage.setItem(key, now.toString());
+      }
+    });
+  }, [cartItems]);
+
+  return null;
+}
 
 function App() {
   const [loading, setLoading] = useState(true);
 
-  // 🔵 FCM + Service Worker
+  // ❌ DISABLE SERVICE WORKER
   useEffect(() => {
-    // Register service worker
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/firebase-messaging-sw.js")
-        .then((reg) => console.log("Service Worker registered:"))
-        .catch((err) => console.error("SW registration failed:", err));
-    }
-
-    // Request notification permission
-    if (Notification.permission === "default") {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("User granted notifications");
-        } else {
-          console.log("User denied notifications");
-        }
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          registration.unregister().then(() => {
+            console.log("Service Worker unregistered:");
+          });
+        });
       });
+
+      // Clear SW caches
+      if ("caches" in window) {
+        caches.keys().then((cacheNames) => {
+          cacheNames.forEach((cacheName) => {
+            caches.delete(cacheName).then(() => {
+              console.log("Cache cleared:");
+            });
+          });
+        });
+      }
     }
   }, []);
 
@@ -99,13 +164,12 @@ function App() {
   return (
     <div className="bg-black min-h-screen">
       <HelmetProvider>
-        {/* FCM Init — gets token & saves in Supabase */}
-        <InitFCM />
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <CartProvider>
               <ActiveProductProvider>
                 <TooltipProvider>
+                  <CartReminders />
                   <AppRoutes />
                   <Toaster position="top-right" expand />
                 </TooltipProvider>

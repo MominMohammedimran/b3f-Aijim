@@ -18,7 +18,6 @@
       "url": "https://aijim.shop/product/Aijim-beige-001",
       "priceCurrency": "INR",
       "price": 599,
-      
       "priceValidUntil": "2025-12-31",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition",
@@ -72,7 +71,7 @@
           "@type": "Person",
           "name": "Verified Customer"
         },
-        "datePublished": "2025-11-22",
+        "datePublished": "2025-11-23",
         "reviewBody": "Amazing fabric and premium stitching. Highly recommended!",
         "reviewRating": {
           "@type": "Rating",
