@@ -154,6 +154,12 @@ function App() {
           serviceWorkerUpdaterPath: "/OneSignalSDKUpdaterWorker.js",
           notifyButton: { enable: true },
           allowLocalhostAsSecureOrigin: true,
+          promptOptions: {
+            slidedown: {
+              enabled: true,
+              autoPrompt: true, // 🔥 automatically ask user
+            },
+          },
         });
 
         (OneSignal as any)._initialized = true;

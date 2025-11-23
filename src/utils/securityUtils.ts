@@ -25,32 +25,54 @@ export const setContentSecurityPolicy = (): void => {
     const existingCSP = document.querySelector(
       'meta[http-equiv="Content-Security-Policy"]'
     );
+
     if (!existingCSP) {
       const meta = document.createElement("meta");
       meta.setAttribute("http-equiv", "Content-Security-Policy");
+
       meta.setAttribute(
         "content",
         [
           "default-src 'self';",
-          // ✅ Allow Razorpay + Cashfree SDKs
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com;", // ✅ Added OneSignal
-          // ✅ Allow styles and Google Fonts
+
+          // -------------------------------
+          // Scripts (Razorpay, Cashfree, OneSignal)
+          // -------------------------------
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com;",
+
+          // Styles
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
+
+          // Fonts
           "font-src 'self' https://fonts.gstatic.com;",
-          // ✅ Allow Supabase, data URLs, and OneSignal images
+
+          // Images (Supabase, OneSignal)
           "img-src 'self' data: blob: https: https://*.onesignal.com;",
-          // ✅ Allow API and websocket connections (Razorpay, Cashfree, Supabase, OneSignal)
+
+          // API connections (Supabase, OneSignal, Razorpay, Cashfree)
           "connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://payments.cashfree.com https://cmpggiyuiattqjmddcac.supabase.co https://zfdsrtwjxwzwbrtfgypm.supabase.co https://onesignal.com https://*.onesignal.com;",
-          // ✅ Allow iframes for Razorpay, Cashfree, OneSignal
+
+          // Iframes
           "frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://onesignal.com https://*.onesignal.com;",
-          // ✅ Allow Supabase storage for media
+
+          // Service workers (required for OneSignal)
+          "worker-src 'self' https://cdn.onesignal.com;",
+
+          // Child workers for service worker update
+          "child-src 'self' https://cdn.onesignal.com;",
+
+          // Web manifest (OneSignal uses manifest.json)
+          "manifest-src 'self' https://cdn.onesignal.com;",
+
+          // Supabase media
           "media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co;",
         ].join(" ")
       );
+
       document.head.appendChild(meta);
     }
 
-    // Strict Transport Security (HSTS)
+    // HSTS
     const hsts = document.createElement("meta");
     hsts.setAttribute("http-equiv", "Strict-Transport-Security");
     hsts.setAttribute(
@@ -65,7 +87,7 @@ export const setContentSecurityPolicy = (): void => {
     xcto.setAttribute("content", "nosniff");
     document.head.appendChild(xcto);
 
-    // Referrer Policy
+    // Referrer policy
     const ref = document.createElement("meta");
     ref.setAttribute("name", "referrer");
     ref.setAttribute("content", "strict-origin-when-cross-origin");
