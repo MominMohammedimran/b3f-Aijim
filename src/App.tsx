@@ -148,14 +148,12 @@ function App() {
     if (!(OneSignal as any)._initialized) {
       OneSignal.push(() => {
         OneSignal.init({
-          appId: "9867ac44-19fe-4be8-8f13-810abd725e82",
+          appId: "c7a8a632-b947-44d9-90f2-8044adf9fdcc",
+          serviceWorkerParam: { scope: "/" },
+          serviceWorkerPath: "/OneSignalSDKWorker.js",
+          serviceWorkerUpdaterPath: "/OneSignalSDKUpdaterWorker.js",
           notifyButton: { enable: true },
           allowLocalhostAsSecureOrigin: true,
-          welcomeNotification: {
-            title: "Welcome!",
-            message: "Thanks for subscribing to Aijim Shop",
-          },
-          serviceWorkerPath: "/OneSignalSDKWorker.js",
         });
 
         (OneSignal as any)._initialized = true;
