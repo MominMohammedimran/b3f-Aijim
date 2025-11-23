@@ -79,6 +79,17 @@ function CartReminders() {
 
 function App() {
   const [loading, setLoading] = useState(true);
+  // 🧹 Auto-Unregister All Service Workers (runs once)
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        regs.forEach((reg) => {
+          reg.unregister();
+          console.log("Service Worker auto-unregistered");
+        });
+      });
+    }
+  }, []);
 
   // 🔥 VERSION CHECK — auto refresh if new version
   useEffect(() => {
@@ -137,44 +148,6 @@ function App() {
   }, []);
 
   // ✅ OneSignal setup (singleton, safe)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    // @ts-ignore
-    window.OneSignal = window.OneSignal || [];
-    // @ts-ignore
-    const OneSignal = window.OneSignal;
-
-    if (!(OneSignal as any)._initialized) {
-      OneSignal.push(() => {
-        OneSignal.init({
-          appId: "c7a8a632-b947-44d9-90f2-8044adf9fdcc",
-          serviceWorkerParam: { scope: "/" },
-          serviceWorkerPath: "/OneSignalSDKWorker.js",
-          serviceWorkerUpdaterPath: "/OneSignalSDKUpdaterWorker.js",
-          notifyButton: { enable: true },
-          allowLocalhostAsSecureOrigin: true,
-          promptOptions: {
-            slidedown: {
-              enabled: true,
-              autoPrompt: true, // 🔥 automatically ask user
-            },
-          },
-        });
-
-        (OneSignal as any)._initialized = true;
-
-        // Attach event listeners safely
-        OneSignal.on("subscriptionChange", (isSubscribed: boolean) => {
-          console.log("User subscription changed:", isSubscribed);
-        });
-
-        OneSignal.on("notificationDisplay", (event: any) => {
-          console.log("Notification displayed:", event);
-        });
-      });
-    }
-  }, []);
 
   if (loading) return <Preloader onComplete={() => setLoading(false)} />;
 
