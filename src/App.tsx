@@ -4,17 +4,18 @@ import { HelmetProvider } from "react-helmet-async";
 import { Toaster, toast } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "./context/AuthContext";
-import CartProvider from "./context/CartContext";
+import CartProvider, { useCart } from "./context/CartContext";
 import { ActiveProductProvider } from "./context/ActiveProductContext";
 import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
-import { useCart } from "@/context/CartContext";
+
 const queryClient = new QueryClient();
+
 function CartReminders() {
   const { cartItems } = useCart();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const now = Date.now();
     const ONE_HOUR = 60 * 60 * 1000;
 
@@ -79,30 +80,6 @@ function CartReminders() {
 function App() {
   const [loading, setLoading] = useState(true);
 
-  // ❌ DISABLE SERVICE WORKER
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => {
-          registration.unregister().then(() => {
-            console.log("Service Worker unregistered:");
-          });
-        });
-      });
-
-      // Clear SW caches
-      if ("caches" in window) {
-        caches.keys().then((cacheNames) => {
-          cacheNames.forEach((cacheName) => {
-            caches.delete(cacheName).then(() => {
-              console.log("Cache cleared:");
-            });
-          });
-        });
-      }
-    }
-  }, []);
-
   // 🔥 VERSION CHECK — auto refresh if new version
   useEffect(() => {
     let currentVersion: string | null = null;
@@ -157,6 +134,42 @@ function App() {
       document.removeEventListener("keydown", handleKeyDown);
       clearTimeout(timer);
     };
+  }, []);
+
+  // ✅ OneSignal setup (singleton, safe)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // @ts-ignore
+    window.OneSignal = window.OneSignal || [];
+    // @ts-ignore
+    const OneSignal = window.OneSignal;
+
+    if (!(OneSignal as any)._initialized) {
+      OneSignal.push(() => {
+        OneSignal.init({
+          appId: "9867ac44-19fe-4be8-8f13-810abd725e82",
+          notifyButton: { enable: true },
+          allowLocalhostAsSecureOrigin: true,
+          welcomeNotification: {
+            title: "Welcome!",
+            message: "Thanks for subscribing to Aijim Shop",
+          },
+          serviceWorkerPath: "/OneSignalSDKWorker.js",
+        });
+
+        (OneSignal as any)._initialized = true;
+
+        // Attach event listeners safely
+        OneSignal.on("subscriptionChange", (isSubscribed: boolean) => {
+          console.log("User subscription changed:", isSubscribed);
+        });
+
+        OneSignal.on("notificationDisplay", (event: any) => {
+          console.log("Notification displayed:", event);
+        });
+      });
+    }
   }, []);
 
   if (loading) return <Preloader onComplete={() => setLoading(false)} />;

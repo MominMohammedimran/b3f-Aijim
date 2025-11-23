@@ -1,10 +1,11 @@
 {
-    "name": "AIJIM",
-    "short_name": "AIJIM",
+    "short_name": "Aijim",
+    "name": "Aijim Shop",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
+    "background_color": "#000000",
     "theme_color": "#000000",
+    "description": "Aijim Shop - Streetwear & More",
     "icons": [
       {
         "src": "/aijim-black.svg",

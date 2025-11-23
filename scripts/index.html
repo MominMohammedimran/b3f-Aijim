@@ -37,6 +37,20 @@
     <!-- Google tag (gtag.js) -->
     <script type="module" src="/src/main.tsx"></script>
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function (OneSignal) {
+        await OneSignal.init({
+          appId: "9867ac44-19fe-4be8-8f13-810abd725e82",
+          safari_web_id:
+            "web.onesignal.auto.5cadd501-3597-404f-b8f7-8075876e5307",
+          notifyButton: {
+            enable: true,
+          },
+        });
+      });
+    </script>
     <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>

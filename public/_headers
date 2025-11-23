@@ -21,7 +21,8 @@ Content-Security-Policy:
     https://api.razorpay.com
     https://sdk.cashfree.com
     https://api.cashfree.com
-    https://cdn.gpteng.co;
+    https://cdn.gpteng.co
+    https://cdn.onesignal.com;   # ✅ Added OneSignal
   style-src
     'self'
     'unsafe-inline'
@@ -41,12 +42,16 @@ Content-Security-Policy:
     https://api.razorpay.com
     https://api.cashfree.com
     https://sdk.cashfree.com
-    https://zfdsrtwjxwzwbrtfgypm.supabase.co;
+    https://zfdsrtwjxwzwbrtfgypm.supabase.co
+    https://onesignal.com
+    https://*.onesignal.com;   # ✅ Added OneSignal endpoints
   frame-src
     'self'
     https://checkout.razorpay.com
     https://sdk.cashfree.com
-    https://api.cashfree.com;
+    https://api.cashfree.com
+    https://onesignal.com
+    https://*.onesignal.com;   # ✅ Added OneSignal frames
   media-src
     'self'
     https://zfdsrtwjxwzwbrtfgypm.supabase.co;

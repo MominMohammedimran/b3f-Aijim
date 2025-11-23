@@ -1,4 +1,3 @@
-
 /**
  * Security utility functions for the application
  */
@@ -7,8 +6,14 @@
  * Enforce HTTPS in production environment
  */
 export const enforceHttps = (): void => {
-  if (typeof window !== 'undefined' && window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
-    window.location.replace(`https:${window.location.href.substring(window.location.protocol.length)}`);
+  if (
+    typeof window !== "undefined" &&
+    window.location.protocol !== "https:" &&
+    window.location.hostname !== "localhost"
+  ) {
+    window.location.replace(
+      `https:${window.location.href.substring(window.location.protocol.length)}`
+    );
   }
 };
 
@@ -16,100 +21,106 @@ export const enforceHttps = (): void => {
  * Set comprehensive security headers via meta tags
  */
 export const setContentSecurityPolicy = (): void => {
-  if (typeof document !== 'undefined') {
-    const existingCSP = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+  if (typeof document !== "undefined") {
+    const existingCSP = document.querySelector(
+      'meta[http-equiv="Content-Security-Policy"]'
+    );
     if (!existingCSP) {
-      const meta = document.createElement('meta');
-      meta.setAttribute('http-equiv', 'Content-Security-Policy');
+      const meta = document.createElement("meta");
+      meta.setAttribute("http-equiv", "Content-Security-Policy");
       meta.setAttribute(
-        'content',
+        "content",
         [
           "default-src 'self';",
           // ✅ Allow Razorpay + Cashfree SDKs
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co;",
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com;", // ✅ Added OneSignal
           // ✅ Allow styles and Google Fonts
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
           "font-src 'self' https://fonts.gstatic.com;",
-          // ✅ Allow Supabase and data URLs for images
-          "img-src 'self' data: blob: https:;",
-          // ✅ Allow API and websocket connections (Razorpay, Cashfree, Supabase, etc.)
-          "connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://payments.cashfree.com https://cmpggiyuiattqjmddcac.supabase.co https://zfdsrtwjxwzwbrtfgypm.supabase.co;",
-          // ✅ Allow iframes for Razorpay + Cashfree checkout
-          "frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com;",
+          // ✅ Allow Supabase, data URLs, and OneSignal images
+          "img-src 'self' data: blob: https: https://*.onesignal.com;",
+          // ✅ Allow API and websocket connections (Razorpay, Cashfree, Supabase, OneSignal)
+          "connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://payments.cashfree.com https://cmpggiyuiattqjmddcac.supabase.co https://zfdsrtwjxwzwbrtfgypm.supabase.co https://onesignal.com https://*.onesignal.com;",
+          // ✅ Allow iframes for Razorpay, Cashfree, OneSignal
+          "frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://onesignal.com https://*.onesignal.com;",
           // ✅ Allow Supabase storage for media
-          "media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co;"
-        ].join(' ')
+          "media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co;",
+        ].join(" ")
       );
       document.head.appendChild(meta);
     }
 
     // Strict Transport Security (HSTS)
-    const hsts = document.createElement('meta');
-    hsts.setAttribute('http-equiv', 'Strict-Transport-Security');
-    hsts.setAttribute('content', 'max-age=31536000; includeSubDomains; preload');
+    const hsts = document.createElement("meta");
+    hsts.setAttribute("http-equiv", "Strict-Transport-Security");
+    hsts.setAttribute(
+      "content",
+      "max-age=31536000; includeSubDomains; preload"
+    );
     document.head.appendChild(hsts);
 
     // X-Content-Type-Options
-    const xcto = document.createElement('meta');
-    xcto.setAttribute('http-equiv', 'X-Content-Type-Options');
-    xcto.setAttribute('content', 'nosniff');
+    const xcto = document.createElement("meta");
+    xcto.setAttribute("http-equiv", "X-Content-Type-Options");
+    xcto.setAttribute("content", "nosniff");
     document.head.appendChild(xcto);
 
     // Referrer Policy
-    const ref = document.createElement('meta');
-    ref.setAttribute('name', 'referrer');
-    ref.setAttribute('content', 'strict-origin-when-cross-origin');
+    const ref = document.createElement("meta");
+    ref.setAttribute("name", "referrer");
+    ref.setAttribute("content", "strict-origin-when-cross-origin");
     document.head.appendChild(ref);
   }
 };
 
-
 /**
  * Check password strength
  */
-export const checkPasswordStrength = (password: string): { score: number; feedback: string[]; strength: string; message: string } => {
+export const checkPasswordStrength = (
+  password: string
+): { score: number; feedback: string[]; strength: string; message: string } => {
   const feedback: string[] = [];
   let score = 0;
 
   if (password.length >= 8) {
     score += 1;
   } else {
-    feedback.push('Password should be at least 8 characters long');
+    feedback.push("Password should be at least 8 characters long");
   }
 
   if (/[a-z]/.test(password)) {
     score += 1;
   } else {
-    feedback.push('Include lowercase letters');
+    feedback.push("Include lowercase letters");
   }
 
   if (/[A-Z]/.test(password)) {
     score += 1;
   } else {
-    feedback.push('Include uppercase letters');
+    feedback.push("Include uppercase letters");
   }
 
   if (/\d/.test(password)) {
     score += 1;
   } else {
-    feedback.push('Include numbers');
+    feedback.push("Include numbers");
   }
 
   if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
     score += 1;
   } else {
-    feedback.push('Include special characters');
+    feedback.push("Include special characters");
   }
 
-  let strength = 'Weak';
-  let message = 'Password is too weak';
+  let strength = "Weak";
+  let message = "Password is too weak";
 
   if (score >= 4) {
-    strength = 'Strong';
-    message = 'Password is strong';
+    strength = "Strong";
+    message = "Password is strong";
   } else if (score >= 3) {
-    strength = 'Medium';
-    message = 'Password is medium strength';
+    strength = "Medium";
+    message = "Password is medium strength";
   }
 
   return { score, feedback, strength, message };
@@ -120,8 +131,7 @@ export const checkPasswordStrength = (password: string): { score: number; feedba
  */
 export const checkSessionSecurity = (): boolean => {
   // Basic session security checks
-  return typeof window !== 'undefined' && 
-         window.location.protocol === 'https:';
+  return typeof window !== "undefined" && window.location.protocol === "https:";
 };
 
 /**
@@ -138,5 +148,5 @@ export default {
   setContentSecurityPolicy,
   checkPasswordStrength,
   checkSessionSecurity,
-  initializeSecurity
+  initializeSecurity,
 };
