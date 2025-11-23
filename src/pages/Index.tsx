@@ -18,6 +18,7 @@ import NewHero from "@/components/landing/NewHero";
 import HeroSlider from "../components/ui/HeroSlider";
 import IndexFeaturesproducts from "../components/ui/IdexFeaturesproducts";
 import { supabase } from "@/integrations/supabase/client";
+import { triggerCartReminder } from "@/utils/triggerCartReminder";
 import { useCart } from "../context/CartContext";
 import { toast } from "sonner";
 const Index = () => {
@@ -207,6 +208,7 @@ const Index = () => {
         );
 
         localStorage.setItem(key, now.toString());
+        triggerCartReminder(item.id);
       }
     });
   }, [cartItems]);

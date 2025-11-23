@@ -8,9 +8,9 @@ export interface Issue {
   custom_reason: string;
   screenshot_url: string;
   createdat: string;
-  status: 'pending' | 'resolved' | 'rejected';
+  status: "pending" | "resolved" | "rejected";
   admin_response?: string;
-  admin_uploaded_image?: string;          // Transaction ID (specific to payment issues)
+  admin_uploaded_image?: string; // Transaction ID (specific to payment issues)
 }
 
 export interface Order {
@@ -23,7 +23,15 @@ export interface Order {
   user_email?: string;
   items: CartItem[];
   total: number;
-  status: 'processing' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'pending' | 'refunded' | 'failed';
+  status:
+    | "processing"
+    | "confirmed"
+    | "shipped"
+    | "delivered"
+    | "cancelled"
+    | "pending"
+    | "refunded"
+    | "failed";
   paymentMethod: string;
   payment_method: string;
   shippingAddress: any;
@@ -42,9 +50,9 @@ export interface Order {
   order_status?: string;
   reward_points?: number;
   reward_points_earned?: number;
-  reward_points_used?: {points: number, value_used: number} | null;
-  coupon_code?: {code: string, discount_amount: number} | null;
-  status_note?:string;
+  reward_points_used?: { points: number; value_used: number } | null;
+  coupon_code?: { code: string; discount_amount: number } | null;
+  status_note?: string;
   courier?: {
     awb?: string;
     provider?: string;
@@ -72,7 +80,7 @@ export interface CartItem {
   image?: string;
   price: number;
   sizes: SizeQuantity[];
-  code?:string;
+  code?: string;
   color?: string;
   metadata?: any;
 }
@@ -89,6 +97,7 @@ export interface UserProfile {
   created_at: string;
   updated_at: string;
   reward_points?: number;
+  device_token?: string;
   auth_user?: {
     email: string;
   };
@@ -101,8 +110,6 @@ export interface UserProfile {
   };
 }
 
-
-
 export interface Product {
   id: string;
   productId?: string;
@@ -111,7 +118,7 @@ export interface Product {
   description: string;
   price: number;
   originalPrice?: number;
-  original_price?:number;
+  original_price?: number;
   discountPercentage?: number;
   image: string;
   images?: string[];
@@ -121,7 +128,7 @@ export interface Product {
   tags?: string[];
   stock?: number;
   sizes?: ProductVariant[];
-  variants?: ProductVariant[];  // Add variants as alias for sizes
+  variants?: ProductVariant[]; // Add variants as alias for sizes
   inStock?: boolean;
 }
 export interface ProductVariant {

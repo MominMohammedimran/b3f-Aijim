@@ -360,6 +360,7 @@ export interface Database {
           phone_number: string | null
           reward_points: number | null
           updated_at: string
+          device_token?:string|null
         }
         Insert: {
           avatar_url?: string | null
@@ -372,6 +373,7 @@ export interface Database {
           phone_number?: string | null
           reward_points?: number | null
           updated_at?: string
+          device_token?:string|null
         }
         Update: {
           avatar_url?: string | null
@@ -384,6 +386,7 @@ export interface Database {
           phone_number?: string | null
           reward_points?: number | null
           updated_at?: string
+          device_token?:string|null
         }
         Relationships: []
       }

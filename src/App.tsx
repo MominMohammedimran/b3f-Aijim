@@ -9,15 +9,38 @@ import { ActiveProductProvider } from "./context/ActiveProductContext";
 import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
+import InitFCM from "@/components/InitFCM";
 
 const queryClient = new QueryClient();
 
 function App() {
   const [loading, setLoading] = useState(true);
 
-  // 🔥 VERSION CHECK — No Service Worker
+  // 🔵 FCM + Service Worker
   useEffect(() => {
-    let currentVersion = null;
+    // Register service worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then((reg) => console.log("Service Worker registered:", reg))
+        .catch((err) => console.error("SW registration failed:", err));
+    }
+
+    // Request notification permission
+    if (Notification.permission === "default") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          console.log("User granted notifications");
+        } else {
+          console.log("User denied notifications");
+        }
+      });
+    }
+  }, []);
+
+  // 🔥 VERSION CHECK — auto refresh if new version
+  useEffect(() => {
+    let currentVersion: string | null = null;
 
     const checkVersion = async () => {
       try {
@@ -27,7 +50,6 @@ function App() {
         if (!currentVersion) {
           currentVersion = data.version;
         } else if (currentVersion !== data.version) {
-          // 🔥 NEW UPDATE FOUND → Show Toast
           toast.info("New update available!", {
             action: {
               label: "Refresh",
@@ -40,17 +62,16 @@ function App() {
       }
     };
 
-    const interval = setInterval(checkVersion, 30000); // check every 10 sec
+    const interval = setInterval(checkVersion, 30000); // every 30 sec
     return () => clearInterval(interval);
   }, []);
 
-  // 🔐 Security + other effects
+  // 🔐 Security + preloader
   useEffect(() => {
     initializeSecurity();
 
-    // Disable right click & key combos
-    const handleContextMenu = (e) => e.preventDefault();
-    const handleKeyDown = (e) => {
+    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (
         e.key === "F12" ||
         (e.ctrlKey && ["s", "u", "i", "j", "p"].includes(e.key.toLowerCase()))
@@ -78,6 +99,8 @@ function App() {
   return (
     <div className="bg-black min-h-screen">
       <HelmetProvider>
+        {/* FCM Init — gets token & saves in Supabase */}
+        <InitFCM />
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <CartProvider>
