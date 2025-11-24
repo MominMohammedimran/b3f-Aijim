@@ -13,7 +13,7 @@ const Footer = () => {
     { name: "Terms & Condition", href: "/terms-conditions" },
     { name: "Cancellation & Returns", href: "/cancellation-refund" },
     { name: "Shipping Info", href: "/shipping-delivery" },
-    { name: "Track Orders", href: "/orders" },
+    
   ];
  const getWhatsappMessage = () => {
     return encodeURIComponent(

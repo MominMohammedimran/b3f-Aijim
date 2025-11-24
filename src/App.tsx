@@ -48,7 +48,7 @@ function CartReminders() {
             <div className="p-1 rounded-none shadow bg-white border flex gap-3 items-center w-full">
               <img
                 src={item.image}
-                className="w-12 h-12 rounded-md object-cover"
+                className="w-13 h-15 rounded-md object-cover"
                 alt={item.name}
               />
               <div>
