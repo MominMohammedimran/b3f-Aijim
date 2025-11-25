@@ -1,15 +1,14 @@
-
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { formatDate } from '@/lib/utils';
-import { Edit, Trash2, Plus } from 'lucide-react';
-import { toast } from 'sonner';
-import ModernAdminLayout from '../../components/admin/ModernAdminLayout';
-import AddProductForm from '../../components/admin/product/AddProductForm';
-import EditProductForm from '../../components/admin/product/EditProductForm';
+import React, { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/lib/utils";
+import { Edit, Trash2, Plus } from "lucide-react";
+import { toast } from "sonner";
+import ModernAdminLayout from "../../components/admin/ModernAdminLayout";
+import AddProductForm from "../../components/admin/product/AddProductForm";
+import EditProductForm from "../../components/admin/product/EditProductForm";
 
 const AdminProducts = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -21,16 +20,16 @@ const AdminProducts = () => {
   const fetchProducts = async () => {
     try {
       const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("products")
+        .select("*") // includes seo_keywords JSONB
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
       setProducts(data || []);
     } catch (error) {
-      console.error('Error fetching products:', error);
-      toast.error('Failed to load products');
+      console.error("Error fetching products:", error);
+      toast.error("Failed to load products");
     } finally {
       setLoading(false);
     }
@@ -53,24 +52,23 @@ const AdminProducts = () => {
   };
 
   const handleDeleteProduct = async (productId: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+    if (!confirm("Are you sure you want to delete this product?")) return;
 
     try {
       const { error } = await supabase
-        .from('products')
+        .from("products")
         .delete()
-        .eq('id', productId);
+        .eq("id", productId);
 
       if (error) throw error;
-      
-      toast.success('Product deleted successfully');
+
+      toast.success("Product deleted successfully");
       fetchProducts();
     } catch (error) {
-      console.error('Error deleting product:', error);
-      toast.error('Failed to delete product');
+      console.error("Error deleting product:", error);
+      toast.error("Failed to delete product");
     }
   };
-
 
   useEffect(() => {
     fetchProducts();
@@ -86,9 +84,8 @@ const AdminProducts = () => {
     );
   }
 
-
   return (
-    <ModernAdminLayout title='Products'>
+    <ModernAdminLayout title="Products">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold">Product Management</h2>
@@ -99,7 +96,7 @@ const AdminProducts = () => {
         </div>
 
         {showAddForm && (
-          <AddProductForm 
+          <AddProductForm
             onProductAdded={handleProductAdded}
             onClose={() => setShowAddForm(false)}
           />
@@ -126,13 +123,23 @@ const AdminProducts = () => {
                   <div className="flex justify-between items-center">
                     <CardTitle className="text-lg">{product.name}</CardTitle>
                     <div className="flex gap-2">
-                      <Badge variant={product.is_active ? 'default' : 'secondary'}>
-                        {product.is_active ? 'Active' : 'Inactive'}
+                      <Badge
+                        variant={product.is_active ? "default" : "secondary"}
+                      >
+                        {product.is_active ? "Active" : "Inactive"}
                       </Badge>
-                      <Button variant="outline" size="sm" onClick={() => handleEditProduct(product)}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEditProduct(product)}
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="destructive" size="sm" onClick={() => handleDeleteProduct(product.id)}>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteProduct(product.id)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -141,28 +148,69 @@ const AdminProducts = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <p><strong>Code:</strong> {product.code}</p>
-                      <p><strong>Price:</strong> ₹{product.price}</p>
-                      <p><strong>Original Price:</strong> ₹{product.original_price || 'N/A'}</p>
-                      <p><strong>Category:</strong> {product.category}</p>
+                      <p>
+                        <strong>Code:</strong> {product.code}
+                      </p>
+                      <p>
+                        <strong>Price:</strong> ₹{product.price}
+                      </p>
+                      <p>
+                        <strong>Original Price:</strong> ₹
+                        {product.original_price || "N/A"}
+                      </p>
+                      <p>
+                        <strong>Category:</strong> {product.category}
+                      </p>
                     </div>
                     <div>
-                      <p><strong>Stock:</strong> {product.stock || 0}</p>
-                      <p><strong>Rating:</strong> {product.rating || 0}</p>
-                      <p><strong>Created:</strong> {formatDate(product.created_at)}</p>
+                      <p>
+                        <strong>Stock:</strong> {product.stock || 0}
+                      </p>
+                      <p>
+                        <strong>Rating:</strong> {product.rating || 0}
+                      </p>
+                      <p>
+                        <strong>Created:</strong>{" "}
+                        {formatDate(product.created_at)}
+                      </p>
                     </div>
                   </div>
+
                   {product.description && (
                     <div className="mt-4">
-                      <p className="text-sm text-gray-600">{product.description}</p>
+                      <p className="text-sm text-gray-600">
+                        {product.description}
+                      </p>
                     </div>
                   )}
+
+                  {/* ⭐ ADDING SEO KEYWORDS DISPLAY */}
+                  {product.seo_keywords && product.seo_keywords.length > 0 && (
+                    <div className="mt-3">
+                      <p className="font-medium text-sm mb-1">SEO Keywords:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {product.seo_keywords.map((kw: string, idx: number) => (
+                          <Badge key={idx} variant="outline">
+                            {kw}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {product.images && product.images.length > 0 && (
                     <div className="mt-4">
-                      <p className="text-sm font-medium mb-2">Additional Images:</p>
+                      <p className="text-sm font-medium mb-2">
+                        Additional Images:
+                      </p>
                       <div className="flex gap-2 flex-wrap">
                         {product.images.map((img: string, idx: number) => (
-                          <img key={idx} src={img} alt={`Product ${idx + 1}`} className="w-16 h-16 object-cover rounded border" />
+                          <img
+                            key={idx}
+                            src={img}
+                            alt={`Product ${idx + 1}`}
+                            className="w-16 h-16 object-cover rounded border"
+                          />
                         ))}
                       </div>
                     </div>

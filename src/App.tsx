@@ -56,7 +56,7 @@ function CartReminders() {
                   {item.name}
                 </div>
                 <div className="flex flex-col text-xs font-semibold text-blue-500 gap-1">
-                  <span>Still in your cart — complete your order now!</span>
+                  <span>Still in your cart — complete order now!</span>
                   <a
                     href="/cart"
                     className="bg-red-500 text-white text-center w-full px-2 py-1 rounded"

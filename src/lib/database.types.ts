@@ -307,6 +307,7 @@ export interface Database {
           stock: number | null;
           created_at: string;
           updated_at: string;
+          seo_keywords?: string;
         };
         Insert: {
           id?: string;
@@ -327,6 +328,7 @@ export interface Database {
           stock?: number | null;
           created_at?: string;
           updated_at?: string;
+          seo_keywords?: string;
         };
         Update: {
           id?: string;
@@ -346,6 +348,7 @@ export interface Database {
           variants?: Json | null;
           stock?: number | null;
           created_at?: string;
+          seo_keywords?: string;
           updated_at?: string;
         };
         Relationships: [];

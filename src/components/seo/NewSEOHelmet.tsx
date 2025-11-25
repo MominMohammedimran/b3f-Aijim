@@ -69,21 +69,22 @@ const routeSEO: Record<string, Partial<PageSEO>> = {
 
 export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
   const { pathname } = useLocation();
-  const params = useParams<{ productId?: string }>();
+  const { productId } = useParams<{ productId?: string }>();
+
   const [product, setProduct] = useState<ProductSEO | null>(
     productProp || null
   );
 
-  // Fetch product
+  // Fetch product BY SLUG (IMPORTANT FIX)
   useEffect(() => {
-    if (productProp || !params.productId) return;
+    if (productProp || !productId) return;
 
     const fetchProduct = async () => {
       try {
         const { data, error } = await supabase
           .from("products")
           .select("id, name, description, image, price, rating, code")
-          .eq("id", params.productId)
+          .eq("code", productId) // ← IMPORTANT: Use slug, not id
           .single();
 
         if (!error && data) {
@@ -93,7 +94,7 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
             description: data.description,
             image: data.image,
             price: data.price,
-            code: data.code, // slug
+            code: data.code,
             currency: "INR",
             rating: data.rating,
             reviewCount: 2,
@@ -105,9 +106,9 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
     };
 
     fetchProduct();
-  }, [params.productId, productProp]);
+  }, [productId, productProp]);
 
-  // Clean keywords from slug
+  // Convert slug to keyword string
   const formatSlugKeywords = (slug?: string) =>
     slug ? slug.replace(/-/g, ", ") : "";
 
@@ -161,7 +162,7 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
       <meta name="twitter:description" content={seo.description} />
       <meta name="twitter:image" content={seo.image} />
 
-      {/* JSON-LD Structured Data */}
+      {/* JSON-LD Schema */}
       {product ? (
         <script type="application/ld+json">
           {JSON.stringify({
@@ -180,14 +181,6 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
                   availability: "https://schema.org/InStock",
                 }
               : undefined,
-            aggregateRating:
-              product.rating && product.reviewCount
-                ? {
-                    "@type": "AggregateRating",
-                    ratingValue: product.rating,
-                    reviewCount: product.reviewCount,
-                  }
-                : undefined,
           })}
         </script>
       ) : (

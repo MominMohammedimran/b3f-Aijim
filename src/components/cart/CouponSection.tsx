@@ -31,7 +31,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
   cartItems,
   onCouponApplied,
   onCouponRemoved,
-  appliedCoupon
+  appliedCoupon,
 }) => {
   const [couponCode, setCouponCode] = useState("");
   const [message, setMessage] = useState("");
@@ -55,9 +55,12 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         .from("coupons")
         .select("id, code, discount_type, discount_value, valid_to, valid_from")
         .eq("active", true);
+
       setCoupons(data || []);
     })();
   }, []);
+
+  const noCouponsAvailable = coupons.length === 0;
 
   const formatDiscount = (c: Coupon) =>
     c.discount_type === "percent"
@@ -78,7 +81,6 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     try {
       // === AIJIM50 Custom Logic ===
       if (codeToApply === "AIJIM50") {
-        // Check if already used
         const { data: orderData } = await supabase
           .from("orders")
           .select("id")
@@ -92,11 +94,13 @@ const CouponSection: React.FC<CouponSectionProps> = ({
           return;
         }
 
-        // Calculate discount based on cart quantity
         let totalQuantity = 0;
         cartItems.forEach((item) => {
           if (Array.isArray(item.sizes)) {
-            totalQuantity += item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
+            totalQuantity += item.sizes.reduce(
+              (sum, s) => sum + (s.quantity || 0),
+              0
+            );
           } else if (item.quantity) {
             totalQuantity += item.quantity;
           }
@@ -161,45 +165,51 @@ const CouponSection: React.FC<CouponSectionProps> = ({
 
   return (
     <div className="w-full h-full p-1 mb-6">
-      {/* Coupon Input */}
-      <div className="flex gap-3 mb-4">
-        {appliedCoupon ? (
-          <Input
-            type="text"
-            value={appliedCoupon.code}
-            readOnly
-            className="flex-1 text-xs shadow-sm tracking-[1px] rounded-none bg-black border border-gray-300 text-white font-semibold"
-          />
-        ) : (
-          <Input
-            type="text"
-            placeholder="Enter coupon code"
-            value={couponCode}
-            onChange={(e) => setCouponCode(e.target.value)}
-            className="flex-1 text-xs tracking-[1px] shadow-sm rounded-none"
-            disabled={loading}
-          />
-        )}
+      {/* ------------------------------------------- */}
+      {/* HIDE INPUT SECTION IF NO COUPONS AVAILABLE */}
+      {/* ------------------------------------------- */}
+      {!noCouponsAvailable && (
+        <div className="flex gap-3 mb-4">
+          {appliedCoupon ? (
+            <Input
+              type="text"
+              value={appliedCoupon.code}
+              readOnly
+              className="flex-1 text-xs shadow-sm tracking-[1px] rounded-none bg-black border border-gray-300 text-white font-semibold"
+            />
+          ) : (
+            <Input
+              type="text"
+              placeholder="Enter coupon code"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+              className="flex-1 text-xs tracking-[1px] shadow-sm rounded-none"
+              disabled={loading}
+            />
+          )}
 
-        {appliedCoupon ? (
-          <Button
-    onClick={removeCoupon}
-    className={`border border-gray-300 tracking-[1px] rounded-none text-white font-inter font-bold uppercase px-6 ${
-      appliedCoupon ? "bg-red-700 hover:bg-red-800" : "bg-yellow-500 hover:bg-yellow-600"
-    }`}
-  >
-    REMOVE
-  </Button>
-        ) : (
-          <Button
-            onClick={() => applyCoupon()}
-            disabled={loading}
-            className="bg-black border text-xs border-gray-300 tracking-[1px] text-white rounded-none hover:bg-gray-900 font-inter font-bold uppercase px-6"
-          >
-            {loading ? "APPLYING..." : "APPLY"}
-          </Button>
-        )}
-      </div>
+          {appliedCoupon ? (
+            <Button
+              onClick={removeCoupon}
+              className={`border border-gray-300 tracking-[1px] rounded-none text-white font-inter font-bold uppercase px-6 ${
+                appliedCoupon
+                  ? "bg-red-700 hover:bg-red-800"
+                  : "bg-yellow-500 hover:bg-yellow-600"
+              }`}
+            >
+              REMOVE
+            </Button>
+          ) : (
+            <Button
+              onClick={() => applyCoupon()}
+              disabled={loading}
+              className="bg-black border text-xs border-gray-300 tracking-[1px] text-white rounded-none hover:bg-gray-900 font-inter font-bold uppercase px-6"
+            >
+              {loading ? "APPLYING..." : "APPLY"}
+            </Button>
+          )}
+        </div>
+      )}
 
       {/* Message */}
       {message && (
@@ -217,7 +227,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       {/* Active Coupon */}
       {appliedCoupon && (
         <div className="space-y-2">
-          <div className="text-xs text-gray-100 font-semibold tracking-[1px]">
+          <div className="text-sm text-white font-bold tracking-[1px]">
             Active coupon:{" "}
             <span className="font-semibold text-sm text-yellow-300 underline tracking-[1px]">
               {appliedCoupon.code}
@@ -226,66 +236,71 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         </div>
       )}
 
-      {/* Available Coupons List */}
+      {/* ------------------------------------------- */}
+      {/* COUPON LIST / OR NO COUPONS MESSAGE */}
+      {/* ------------------------------------------- */}
       <div className="mt-3 w-full border border-gray-700 rounded-none overflow-hidden shadow-md">
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="flex justify-between items-center w-full p-3 border-b border-gray-700"
-        >
-          <div className="flex items-center gap-2">
-            <Ticket className="w-4 h-4 text-yellow-400" />
-            <h3 className="text-sm font-semibold text-yellow-400 uppercase tracking-wide">
-              Available Coupons
-            </h3>
+        {/* If no coupons – show only message */}
+        {noCouponsAvailable ? (
+          <div className="p-4 text-center bg-black text-white text-md font-semibold">
+            No coupons available.
           </div>
-          {expanded ? (
-            <ChevronUp className="w-4 h-4 text-gray-400" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-gray-400" />
-          )}
-        </button>
+        ) : (
+          <>
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="flex justify-between items-center w-full p-3 border-b border-gray-700"
+            >
+              <div className="flex items-center gap-2">
+                <Ticket className="w-4 h-4 text-yellow-400" />
+                <h3 className="text-sm font-semibold text-yellow-400 uppercase tracking-wide">
+                  Available Coupons
+                </h3>
+              </div>
+              {expanded ? (
+                <ChevronUp className="w-4 h-4 text-gray-400" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+              )}
+            </button>
 
-        {expanded && (
-          <div className="max-h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent p-3">
-            {coupons.length === 0 ? (
-              <p className="text-gray-400 text-sm text-center py-4">
-                No coupons available.
-              </p>
-            ) : (
-              <div className="space-y-3">
-                {coupons.map((c) => (
-                  <div
-                    key={c.id}
-                    className="flex justify-between items-center border border-gray-700 p-3 rounded-none hover:bg-[#222] transition-all"
-                  >
-                    <div>
-                      <p className="font-semibold text-yellow-400 text-sm uppercase tracking-wider">
-                        {c.code}
-                      </p>
-                      <p className="text-xs text-gray-300 font-medium">
-                        {formatDiscount(c)}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Valid till{" "}
-                        {new Date(c.valid_to).toLocaleDateString("en-US", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric"
-                        })}
-                      </p>
-                    </div>
-                    <Button
-                      size="xs"
-                      onClick={() => applyCoupon(c.code)}
-                      className="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-semibold px-2 py-1.5 rounded-none"
+            {expanded && (
+              <div className="max-h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent p-3">
+                <div className="space-y-3">
+                  {coupons.map((c) => (
+                    <div
+                      key={c.id}
+                      className="flex justify-between items-center border border-gray-700 p-3 rounded-none hover:bg-[#222] transition-all"
                     >
-                      APPLY
-                    </Button>
-                  </div>
-                ))}
+                      <div>
+                        <p className="font-semibold text-yellow-400 text-sm uppercase tracking-wider">
+                          {c.code}
+                        </p>
+                        <p className="text-xs text-gray-300 font-medium">
+                          {formatDiscount(c)}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          Valid till{" "}
+                          {new Date(c.valid_to).toLocaleDateString("en-US", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                      <Button
+                        size="xs"
+                        onClick={() => applyCoupon(c.code)}
+                        className="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-semibold px-2 py-1.5 rounded-none"
+                      >
+                        APPLY
+                      </Button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

@@ -34,6 +34,7 @@ interface Product {
   sizes?: ProductVariant[];
   variants?: ProductVariant[];
   stock?: number;
+  seo_keywords?: string[];
   is_active?: boolean;
 }
 
@@ -61,12 +62,14 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
     image: "",
     images: [] as string[],
     tags: [] as string[],
+    seo_keywords: [] as string[],
   });
 
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   const [newImageUrl, setNewImageUrl] = useState("");
   const [newTag, setNewTag] = useState("");
   const [loading, setLoading] = useState(false);
+  const [newSeoKeyword, setNewSeoKeyword] = useState("");
 
   React.useEffect(() => {
     if (product) {
@@ -81,6 +84,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
         image: product.image || "",
         images: product.images || [],
         tags: product.tags || [],
+        seo_keywords: product.seo_keywords || [],
       });
 
       const productVariants = product.variants || product.sizes || [];
@@ -181,6 +185,11 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
         variants: cleanedVariants.length > 0 ? (cleanedVariants as any) : null,
         stock: totalStock,
         updated_at: new Date().toISOString(),
+        seo_keywords:
+          formData.seo_keywords.length > 0
+            ? (formData.seo_keywords as any)
+            : null,
+
         slug: formData.name
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, "-")
@@ -224,7 +233,7 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
               <CardTitle>Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid  gap-4">
                 <div>
                   <Label htmlFor="name">Product Name *</Label>
                   <Input
@@ -316,15 +325,102 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
                   required
                 />
               </div>
+              {/* SEO Keywords */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>SEO Keywords</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter SEO keyword"
+                      value={newSeoKeyword}
+                      onChange={(e) => setNewSeoKeyword(e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        if (newSeoKeyword.trim()) {
+                          handleInputChange("seo_keywords", [
+                            ...formData.seo_keywords,
+                            newSeoKeyword.trim(),
+                          ]);
+                          setNewSeoKeyword("");
+                        }
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" /> Add
+                    </Button>
+                  </div>
 
-              <div>
-                <Label htmlFor="image">Main Image URL</Label>
-                <Input
-                  id="image"
-                  value={formData.image}
-                  onChange={(e) => handleInputChange("image", e.target.value)}
-                />
-              </div>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.seo_keywords.map((keyword, index) => (
+                      <div
+                        key={index}
+                        className="bg-green-100 text-green-800 px-2 py-1 rounded flex items-center"
+                      >
+                        <span>{keyword}</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleInputChange(
+                              "seo_keywords",
+                              formData.seo_keywords.filter(
+                                (_, i) => i !== index
+                              )
+                            )
+                          }
+                          className="ml-1 text-green-600 hover:text-green-800"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Main Image */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Main Image</CardTitle>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <div className="flex gap-2">
+                    <Input
+                      id="image"
+                      placeholder="Enter main image URL"
+                      value={formData.image}
+                      onChange={(e) =>
+                        handleInputChange("image", e.target.value)
+                      }
+                    />
+                    {formData.image && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={() => handleInputChange("image", "")}
+                      >
+                        <X className="h-4 w-4 mr-2" /> Remove
+                      </Button>
+                    )}
+                  </div>
+
+                  {formData.image && (
+                    <div className="flex items-center gap-3 p-2 border rounded">
+                      <img
+                        src={formData.image}
+                        alt="Main"
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                      <span className="flex-1 text-sm truncate">
+                        {formData.image}
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
 

@@ -33,7 +33,10 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
     image: "",
     images: [] as string[],
     tags: [] as string[],
+    seo_keywords: [] as string[], // ⭐ ADDED
   });
+
+  const [newSEOKeyword, setNewSEOKeyword] = useState(""); // ⭐ ADDED
 
   const [variants, setVariants] = useState<ProductVariant[]>([
     { size: "", stock: 0 },
@@ -44,6 +47,23 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
 
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const addSEOKeyword = () => {
+    if (newSEOKeyword.trim()) {
+      handleInputChange("seo_keywords", [
+        ...formData.seo_keywords,
+        newSEOKeyword.trim(),
+      ]);
+      setNewSEOKeyword("");
+    }
+  };
+
+  const removeSEOKeyword = (index: number) => {
+    handleInputChange(
+      "seo_keywords",
+      formData.seo_keywords.filter((_, i) => i !== index)
+    );
   };
 
   const addVariant = () => {
@@ -125,6 +145,13 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
         image: formData.image,
         images: formData.images.length > 0 ? (formData.images as any) : null,
         tags: formData.tags.length > 0 ? (formData.tags as any) : null,
+
+        // ⭐ ADDED SEO KEYWORDS
+        seo_keywords:
+          formData.seo_keywords.length > 0
+            ? (formData.seo_keywords as any)
+            : null,
+
         sizes:
           cleanedVariants.length > 0
             ? (cleanedVariants.map((v) => v.size) as any)
@@ -140,22 +167,17 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
 
       const { error } = await supabase.from("products").insert([productData]);
 
-      if (error) {
-        // console.error('Error adding product:', error);
-        throw error;
-      }
+      if (error) throw error;
 
       toast.success("Product added successfully");
       onProductAdded();
       onClose();
     } catch (error) {
-      // console.error('Error adding product:', error);
       toast.error("Failed to add product");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <Card>
       <CardHeader>
@@ -174,7 +196,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
               <CardTitle>Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid  gap-4">
                 <div>
                   <Label htmlFor="name">Product Name *</Label>
                   <Input
@@ -207,7 +229,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid 3 gap-4">
                 <div>
                   <Label htmlFor="price">Price *</Label>
                   <Input
@@ -267,14 +289,47 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
                 />
               </div>
 
-              <div>
-                <Label htmlFor="image">Main Image URL</Label>
-                <Input
-                  id="image"
-                  value={formData.image}
-                  onChange={(e) => handleInputChange("image", e.target.value)}
-                />
-              </div>
+              {/* Main Image */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Main Image</CardTitle>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <div className="flex gap-2">
+                    <Input
+                      id="image"
+                      placeholder="Enter main image URL"
+                      value={formData.image}
+                      onChange={(e) =>
+                        handleInputChange("image", e.target.value)
+                      }
+                    />
+                    {formData.image && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        onClick={() => handleInputChange("image", "")}
+                      >
+                        <X className="h-4 w-4 mr-2" /> Remove
+                      </Button>
+                    )}
+                  </div>
+
+                  {formData.image && (
+                    <div className="flex items-center gap-3 p-2 border rounded">
+                      <img
+                        src={formData.image}
+                        alt="Main"
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                      <span className="flex-1 text-sm truncate">
+                        {formData.image}
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
 
@@ -349,6 +404,44 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
                       type="button"
                       onClick={() => removeTag(index)}
                       className="ml-1 text-blue-600 hover:text-blue-800"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/*product seo keywords*/}
+          <Card>
+            <CardHeader>
+              <CardTitle>SEO Keywords</CardTitle>
+            </CardHeader>
+
+            <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add SEO keyword (e.g., blue tshirt)"
+                  value={newSEOKeyword}
+                  onChange={(e) => setNewSEOKeyword(e.target.value)}
+                />
+                <Button type="button" onClick={addSEOKeyword}>
+                  <Plus className="h-4 w-4 mr-2" /> Add
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {formData.seo_keywords.map((keyword, index) => (
+                  <div
+                    key={index}
+                    className="bg-green-100 text-green-800 px-2 py-1 rounded flex items-center"
+                  >
+                    <span>{keyword}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeSEOKeyword(index)}
+                      className="ml-1 text-green-600 hover:text-green-800"
                     >
                       <X className="h-3 w-3" />
                     </button>

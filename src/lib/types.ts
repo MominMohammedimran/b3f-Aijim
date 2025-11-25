@@ -131,6 +131,7 @@ export interface Product {
   variants?: ProductVariant[]; // Add variants as alias for sizes
   inStock?: boolean;
   slug?: string;
+  seo_keywords?: string[];
 }
 export interface ProductVariant {
   size: string;

@@ -7,15 +7,15 @@ import "swiper/css";
 
 const NewHero = () => {
   const bannerMobile = [
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-mobile-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1tb2JpbGUtYmFubmVyLTAwMS53ZWJwIiwiaWF0IjoxNzYzNTQ1MjA3LCJleHAiOjE3OTUwODEyMDd9.G2BkqoUb1aPI3VSD2iy7VDRVSk3rjxwbWmotEV0YluI",
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-mobile-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1tb2JpbGUtYmFubmVyLTAwMS53ZWJwIiwiaWF0IjoxNzYzNTQ1MjA3LCJleHAiOjE3OTUwODEyMDd9.G2BkqoUb1aPI3VSD2iy7VDRVSk3rjxwbWmotEV0YluI",
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-mobile-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1tb2JpbGUtYmFubmVyLTAwMS53ZWJwIiwiaWF0IjoxNzYzNTQ1MjA3LCJleHAiOjE3OTUwODEyMDd9.G2BkqoUb1aPI3VSD2iy7VDRVSk3rjxwbWmotEV0YluI",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim_mobile_banner_001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbV9tb2JpbGVfYmFubmVyXzAwMS5qcGciLCJpYXQiOjE3NjQwNjc0MDYsImV4cCI6MTc5NTYwMzQwNn0.dQTkMjEN44IXzE7xheqlRyVeiXvpoivtP8l-9yzPI0k",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim_mobile_banner_001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbV9tb2JpbGVfYmFubmVyXzAwMS5qcGciLCJpYXQiOjE3NjQwNjc0MDYsImV4cCI6MTc5NTYwMzQwNn0.dQTkMjEN44IXzE7xheqlRyVeiXvpoivtP8l-9yzPI0k",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim_mobile_banner_001.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbV9tb2JpbGVfYmFubmVyXzAwMS5qcGciLCJpYXQiOjE3NjQwNjc0MDYsImV4cCI6MTc5NTYwMzQwNn0.dQTkMjEN44IXzE7xheqlRyVeiXvpoivtP8l-9yzPI0k",
   ];
 
   const bannerLargeScreens = [
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2MzU0NTE4NCwiZXhwIjoxNzk1MDgxMTg0fQ.h-mRicJnUv-G5tLc4pRCtVcNZu18rBB_8_mwjxw7tY4",
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2MzU0NTE4NCwiZXhwIjoxNzk1MDgxMTg0fQ.h-mRicJnUv-G5tLc4pRCtVcNZu18rBB_8_mwjxw7tY4",
-    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2MzU0NTE4NCwiZXhwIjoxNzk1MDgxMTg0fQ.h-mRicJnUv-G5tLc4pRCtVcNZu18rBB_8_mwjxw7tY4",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2NDA2NzQ1NywiZXhwIjoxNzk1NjAzNDU3fQ.ItfJXcuG7uuGcbcQF8L5c5UKyTB8KiH1atCYxjiZuCc",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2NDA2NzQ1NywiZXhwIjoxNzk1NjAzNDU3fQ.ItfJXcuG7uuGcbcQF8L5c5UKyTB8KiH1atCYxjiZuCc",
+    "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/banner/Aijim-desktop-banner-001.webp?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2Jhbm5lci9BaWppbS1kZXNrdG9wLWJhbm5lci0wMDEud2VicCIsImlhdCI6MTc2NDA2NzQ1NywiZXhwIjoxNzk1NjAzNDU3fQ.ItfJXcuG7uuGcbcQF8L5c5UKyTB8KiH1atCYxjiZuCc",
   ];
 
   const [banners, setBanners] = useState(bannerMobile);
@@ -37,7 +37,6 @@ const NewHero = () => {
 
   return (
     <div className="relative w-full overflow-hidden">
-
       {/* Banner Carousel */}
       <Swiper
         modules={[Autoplay]}
@@ -80,8 +79,10 @@ const NewHero = () => {
               key={i}
               className="flex items-center uppercase text-black font-semibold text-[11px] sm:text-[12px] md:text-[13px] lg:text-[15px] px-4 whitespace-nowrap"
             >
-              <Truck size={18} className="mr-3" /> FREE SHIPPING &nbsp;&nbsp;&nbsp;
-              <RotateCcw size={18} className="mr-3" /> EASY RETURNS &nbsp;&nbsp;&nbsp;
+              <Truck size={18} className="mr-3" /> FREE SHIPPING
+              &nbsp;&nbsp;&nbsp;
+              <RotateCcw size={18} className="mr-3" /> EASY RETURNS
+              &nbsp;&nbsp;&nbsp;
               <Shield size={18} className="mr-3" /> SECURE PAYMENTS
             </span>
           ))}
