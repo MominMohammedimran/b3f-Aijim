@@ -33,13 +33,15 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
     <div className="mb-6">
       {/* --- Saved Addresses List --- */}
       <div
-        className={`space-y-3 transition-all duration-500 overflow-y-auto border border-gray-800 p-2 rounded-md ${
-          showAll ? "max-h-[400px]" : "max-h-[230px]"
-        } custom-scrollbar`}
+        className={`space-y-3 transition-all duration-500 border border-gray-800 p-2 rounded-md custom-scrollbar
+    ${showAll ? "max-h-[240px]" : "max-h-[180px]"} 
+    overflow-y-auto
+  `}
       >
         <AnimatePresence>
           {visibleAddresses.map((address) => {
-            const isSelected = selectedAddressId === address.id && !useNewAddress;
+            const isSelected =
+              selectedAddressId === address.id && !useNewAddress;
 
             return (
               <motion.div
@@ -77,11 +79,15 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                       )}
                     </div>
 
-                    <p className="text-xs text-gray-300 font-medium">{address.street}</p>
+                    <p className="text-xs text-gray-300 font-medium">
+                      {address.street}
+                    </p>
                     <p className="text-xs text-gray-400 font-medium">
                       {address.city}, {address.state} - {address.zipcode}
                     </p>
-                    <p className="text-xs text-gray-400 font-medium">Phone no - {address.phone}</p>
+                    <p className="text-xs text-gray-400 font-medium">
+                      Phone no - {address.phone}
+                    </p>
                   </div>
 
                   {/* optional edit / delete small actions */}
@@ -115,9 +121,10 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
           })}
         </AnimatePresence>
       </div>
- <p className="text-[11px] text-yellow-400 mt-2 text-center font-medium">
-          Please click on any one address to proceed — after selection you'll see the Order Summary.
-        </p>
+      <p className="text-[11px] text-yellow-400 mt-2 text-center font-medium">
+        Please click on any one address to proceed — after selection you'll see
+        the Order Summary.
+      </p>
       {/* --- Show More / Less Button --- */}
       {addresses.length > 3 && (
         <div className="flex justify-center mt-3">
@@ -133,35 +140,39 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
       )}
 
       {/* --- Instruction Text: Please click to select address --- */}
-       
-       
-      
 
       {/* --- Use New Address Section --- */}
-     <motion.div
-  layout
-  whileHover={{ scale: 1.01 }}
-  onClick={() => {
-    onUseNewAddress();
-    window.scrollBy({ top: 250, behavior: 'smooth' }); // scroll 20px down
-  }}
-  className={`border p-2 mt-3 rounded-none cursor-pointer block transition-all duration-300 ${
-    useNewAddress
-      ? "border-yellow-400 bg-black text-white shadow-md"
-      : "border-gray-700 bg-none hover:bg-gray-900 text-white"
-  }`}
->
-  <p className="text-xs font-semibold">Use a New Address</p>
-  <p className="text-xs text-gray-400 mt-1">Add a new shipping address below</p>
-</motion.div>
-
+      <motion.div
+        layout
+        whileHover={{ scale: 1.01 }}
+        onClick={() => {
+          onUseNewAddress();
+          window.scrollBy({ top: 250, behavior: "smooth" }); // scroll 20px down
+        }}
+        className={`border p-2 mt-3 rounded-none cursor-pointer block transition-all duration-300 ${
+          useNewAddress
+            ? "border-yellow-400 bg-black text-white shadow-md"
+            : "border-gray-700 bg-none hover:bg-gray-900 text-white"
+        }`}
+      >
+        <p className="text-xs font-semibold">Use a New Address</p>
+        <p className="text-xs text-gray-400 mt-1">
+          Add a new shipping address below
+        </p>
+      </motion.div>
 
       {/* --- Profile Info Message --- */}
       <p className="text-[11px] text-gray-400 mt-3 text-center font-medium">
         To <span className="text-yellow-400 font-semibold">edit</span> or{" "}
-        <span className="text-yellow-400 font-semibold">remove</span> an address,
-        visit{" "}
+        <span className="text-yellow-400 font-semibold">remove</span> an
+        address, visit{" "}
         <Link
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }
           to="/profile"
           className="text-yellow-400 underline hover:text-yellow-300"
         >
