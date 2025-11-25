@@ -147,8 +147,6 @@ const OrderHistory = () => {
 
   return (
     <Layout>
-
-
       <div className="min-h-screen bg-black text-white pt-20 px-4">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-2xl font-bold text-yellow-400">Your Orders</h1>
@@ -272,17 +270,15 @@ const OrderHistory = () => {
                           Complete Payment
                         </Button>
                       )}
-          
-                      <Link
-                              to={`/order-preview/${order.order_number}`}
-                              className="flex-1 items-center text-center  p-4"
-                            >
-                              <Button className="bg-yellow-400 hover:bg-yellow-500  w-full text-black text-sm rounded-none h-10">
-                                View Details
-                              </Button>
-                            </Link>
-                        
 
+                    <Link
+                      to={`/order-preview/${order.order_number}`}
+                      className="flex-1 items-center text-center  p-4"
+                    >
+                      <Button className="bg-yellow-400 hover:bg-yellow-500  w-full text-black text-sm rounded-none h-10">
+                        View Details
+                      </Button>
+                    </Link>
 
                     {/* DROPDOWN */}
                     <div className="border-t border-gray-800">
@@ -306,20 +302,17 @@ const OrderHistory = () => {
                         <div className="p-4 pt-0 space-y-3">
                           {/* View Details + Cancel */}
                           <div className="flex gap-3">
-                            
-
                             {["pending", "processing", "confirmed"].includes(
                               order.status
-                            ) && !expired && (
-                              <Button
-                                onClick={() =>
-                                  confirmCancelOrder(order.id)
-                                }
-                                className="bg-red-600 hover:bg-red-700 text-white text-sm rounded-none h-10 w-1/2"
-                              >
-                                Cancel
-                              </Button>
-                            )}
+                            ) &&
+                              !expired && (
+                                <Button
+                                  onClick={() => confirmCancelOrder(order.id)}
+                                  className="bg-red-600 hover:bg-red-700 text-white text-sm rounded-none h-10 w-1/2"
+                                >
+                                  Cancel
+                                </Button>
+                              )}
                           </div>
 
                           {/* Issues */}

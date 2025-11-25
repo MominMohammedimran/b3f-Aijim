@@ -171,7 +171,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const allOutOfStock = productVariants.every((v) => v.stock === 0);
 
   return (
-    <div className="relative bg-[#0b0b0b] text-white rounded-md shadow-lg">
+    <div className="relative bg-[#0b0b0b] text-white p-2 rounded-md shadow-lg">
       {/* --- Header --- */}
       <div className="flex items-center justify-between px-2 pt-3">
         <span className="text-sm font-semibold uppercase tracking-wide">
@@ -418,7 +418,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       {!allOutOfStock ? (
         <div
           onClick={() => scrollToDiv("sizeSection")}
-          className="w-100 flex flex-row fixed lg:relative bottom-8 left-0 right-0 z-10 items-center justify-center"
+          className="w-100 flex flex-row fixed lg:relative lg:mt-8 bottom-8 left-0 right-0 z-10 items-center justify-center"
         >
           <ProductActionButtons
             product={product}

@@ -70,7 +70,7 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
       />
 
       <div className="container-custom mt-14">
-        <div className="hidden lg:flex items-center pt-5">
+        <div className="hidden lg:flex items-center pt-10 mt-5">
           <Link to="/" className="mr-2">
             <ArrowLeft size={24} className="back-arrow" />
           </Link>
@@ -80,11 +80,11 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
         </div>
 
         {loading ? (
-          <div className="bg-gray-900 shadow-sm p-8 text-center text-gray-200">
+          <div className="bg-gray-900 shadow-sm p-4 text-center text-gray-200">
             Loading product details...
           </div>
         ) : error ? (
-          <div className="bg-gray-900 shadow-sm p-8 text-center text-red-400">
+          <div className="bg-gray-900 shadow-sm p-4 text-center text-red-400">
             {error}
           </div>
         ) : product ? (

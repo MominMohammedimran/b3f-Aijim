@@ -1,28 +1,42 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '../integrations/supabase/client';
-import { Session, User } from '@supabase/supabase-js';
-import { toast } from 'sonner';
-import { verifyDefaultToken } from '../utils/verificationUtils';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { supabase } from "../integrations/supabase/client";
+import { Session, User } from "@supabase/supabase-js";
+import { toast } from "sonner";
+import { verifyDefaultToken } from "../utils/verificationUtils";
 
 // Cleanup utility for auth state
 export const cleanupAuthState = () => {
   // Remove all Supabase auth keys from localStorage
   Object.keys(localStorage).forEach((key) => {
-    if (key.startsWith('supabase.auth.') || key.includes('sb-') || key.includes('supabase-auth')) {
+    if (
+      key.startsWith("supabase.auth.") ||
+      key.includes("sb-") ||
+      key.includes("supabase-auth")
+    ) {
       localStorage.removeItem(key);
     }
   });
   // Remove session from sessionStorage if exists
   Object.keys(sessionStorage || {}).forEach((key) => {
-    if (key.startsWith('supabase.auth.') || key.includes('sb-') || key.includes('supabase-auth')) {
+    if (
+      key.startsWith("supabase.auth.") ||
+      key.includes("sb-") ||
+      key.includes("supabase-auth")
+    ) {
       sessionStorage.removeItem(key);
     }
   });
   // Remove admin session if it exists
-  localStorage.removeItem('admin_session');
-  localStorage.removeItem('adminLoggedIn');
+  localStorage.removeItem("admin_session");
+  localStorage.removeItem("adminLoggedIn");
   // Remove shipping address
-  localStorage.removeItem('shippingAddress');
+  localStorage.removeItem("shippingAddress");
 };
 
 export interface AuthContextType {
@@ -46,7 +60,7 @@ const AuthContext = createContext<AuthContextType>({
   signUp: async () => ({}),
   signInWithGoogle: async () => ({}), // Adding default implementation
   userProfile: null,
-  refreshUserProfile: async () => {}
+  refreshUserProfile: async () => {},
 });
 
 export const useAuth = () => {
@@ -69,22 +83,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoading(true);
       // Clean up existing auth state
       cleanupAuthState();
-      
+
       // Try global sign out first
       try {
-        await supabase.auth.signOut({ scope: 'global' });
+        await supabase.auth.signOut({ scope: "global" });
       } catch (err) {
         // Continue even if this fails
       }
-      
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
       if (error) throw error;
-      
-      toast.success('Signed in successfully');
+
+      toast.success("Signed in successfully");
       return { data, error: null };
     } catch (error: any) {
-      console.error('Sign in error:', error);
+      console.error("Sign in error:", error);
       return { data: null, error };
     } finally {
       setLoading(false);
@@ -97,41 +114,41 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoading(true);
       // Clean up existing auth state
       cleanupAuthState();
-      
+
       // Try global sign out first
       try {
-        await supabase.auth.signOut({ scope: 'global' });
+        await supabase.auth.signOut({ scope: "global" });
       } catch (err) {
         // Continue even if this fails
       }
-      
-      const { data, error } = await supabase.auth.signUp({ 
-        email, 
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`
-        }
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
-      
+
       if (error) throw error;
-      
+
       // Create a profile for the new user
       if (data.user) {
         try {
-          await supabase.from('profiles').insert({
+          await supabase.from("profiles").insert({
             id: data.user.id,
             email: email,
             created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           });
         } catch (profileError) {
-          console.error('Error creating user profile:', profileError);
+          console.error("Error creating user profile:", profileError);
         }
       }
-      
+
       return { data, error: null };
     } catch (error: any) {
-      console.error('Sign up error:', error);
+      console.error("Sign up error:", error);
       return { error };
     } finally {
       setLoading(false);
@@ -144,19 +161,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoading(true);
       // Clean up existing auth state
       cleanupAuthState();
-      
+
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
       });
-      
+
       if (error) throw error;
-      
+
       return { data, error: null };
     } catch (error: any) {
-      console.error('Google sign-in error:', error);
+      console.error("Google sign-in error:", error);
       return { data: null, error };
     } finally {
       setLoading(false);
@@ -165,71 +182,69 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Improved signOut function
   const signOut = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    // Clean up local auth state
-    cleanupAuthState();
+      // Clean up local auth state
+      cleanupAuthState();
 
-    // Sign out from Supabase (global sign-out)
-    const { error } = await supabase.auth.signOut({ scope: 'global' });
-    if (error) throw error;
+      // Sign out from Supabase (global sign-out)
+      const { error } = await supabase.auth.signOut({ scope: "global" });
+      if (error) throw error;
 
-    // Clear user-related state
-    setCurrentUser(null);
-    setSession(null);
-    setUserProfile(null);
+      // Clear user-related state
+      setCurrentUser(null);
+      setSession(null);
+      setUserProfile(null);
 
-    toast.success('Signed out successfully');
+      toast.success("Signed out successfully");
 
-    // Determine redirect path
-    const currentPath = window.location.pathname;
-    const isAdmin = currentPath.startsWith('/admin');
+      // Determine redirect path
+      const currentPath = window.location.pathname;
+      const isAdmin = currentPath.startsWith("/admin");
 
-    // Redirect based on user type
-    window.location.href = isAdmin ? '/admin/login' : '/signin';
+      // Redirect based on user type
+      window.location.href = isAdmin ? "/admin/login" : "/signin";
+    } catch (error: any) {
+      console.error("Error signing out:", error);
+      toast.error("Error signing out: " + (error.message || "Unknown error"));
 
-  } catch (error: any) {
-    console.error('Error signing out:', error);
-    toast.error('Error signing out: ' + (error.message || 'Unknown error'));
+      // Force cleanup again just in case
+      setCurrentUser(null);
+      setSession(null);
+      setUserProfile(null);
+      cleanupAuthState();
 
-    // Force cleanup again just in case
-    setCurrentUser(null);
-    setSession(null);
-    setUserProfile(null);
-    cleanupAuthState();
+      // Fallback redirect
+      const currentPath = window.location.pathname;
+      const isAdmin = currentPath.startsWith("/admin");
+      window.location.href = isAdmin ? "/admin/login" : "/signin";
 
-    // Fallback redirect
-    const currentPath = window.location.pathname;
-    const isAdmin = currentPath.startsWith('/admin');
-    window.location.href = isAdmin ? '/admin/login' : '/signin';
-
-    throw error;
-  } finally {
-    setLoading(false);
-  }
-};
-
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Add refreshUserProfile function
   const refreshUserProfile = async () => {
     if (!currentUser) return;
-    
+
     try {
       const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', currentUser.id)
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
         .maybeSingle();
-        
+
       if (error) {
-        console.error('Error fetching user profile:', error);
+        console.error("Error fetching user profile:", error);
         return;
       }
-      
+
       setUserProfile(profile);
     } catch (error) {
-      console.error('Error in refreshUserProfile:', error);
+      console.error("Error in refreshUserProfile:", error);
     }
   };
 
@@ -238,97 +253,101 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const getSession = async () => {
       try {
         setLoading(true);
-        const { data: { session: activeSession } } = await supabase.auth.getSession();
+        const {
+          data: { session: activeSession },
+        } = await supabase.auth.getSession();
         setSession(activeSession);
         setCurrentUser(activeSession?.user ?? null);
-        
+
         if (activeSession?.user) {
           // Defer profile fetching to prevent deadlock
           setTimeout(async () => {
             try {
               const { data: profile, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', activeSession.user.id)
+                .from("profiles")
+                .select("*")
+                .eq("id", activeSession.user.id)
                 .maybeSingle();
-                
+
               if (!error) {
                 setUserProfile(profile);
               } else {
                 // Try to create profile if it doesn't exist
                 try {
-                  await supabase.from('profiles').insert({
+                  await supabase.from("profiles").insert({
                     id: activeSession.user.id,
                     email: activeSession.user.email,
                     created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
+                    updated_at: new Date().toISOString(),
                   });
-                  
+
                   // Fetch the newly created profile
                   const { data: newProfile } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', activeSession.user.id)
+                    .from("profiles")
+                    .select("*")
+                    .eq("id", activeSession.user.id)
                     .maybeSingle();
-                    
+
                   setUserProfile(newProfile);
                 } catch (createError) {
-                  console.error('Error creating profile:', createError);
+                  console.error("Error creating profile:", createError);
                 }
               }
             } catch (error) {
-              console.error('Error fetching profile:', error);
+              console.error("Error fetching profile:", error);
             }
           }, 0);
         }
       } catch (error) {
-        console.error('Error getting session:', error);
+        console.error("Error getting session:", error);
       } finally {
         setLoading(false);
       }
     };
 
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       setSession(currentSession);
       setCurrentUser(currentSession?.user ?? null);
-      
+
       if (currentSession?.user) {
         // Defer data fetching to prevent deadlocks
         setTimeout(async () => {
           try {
             // Check if profile exists
             const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', currentSession.user.id)
+              .from("profiles")
+              .select("*")
+              .eq("id", currentSession.user.id)
               .maybeSingle();
-              
+
             // Create profile if it doesn't exist
             if (!profile) {
               try {
-                await supabase.from('profiles').insert({
+                await supabase.from("profiles").insert({
                   id: currentSession.user.id,
                   email: currentSession.user.email,
                   created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString()
+                  updated_at: new Date().toISOString(),
                 });
-                
+
                 const { data: newProfile } = await supabase
-                  .from('profiles')
-                  .select('*')
-                  .eq('id', currentSession.user.id)
+                  .from("profiles")
+                  .select("*")
+                  .eq("id", currentSession.user.id)
                   .maybeSingle();
-                  
+
                 setUserProfile(newProfile);
               } catch (error) {
-                console.error('Error creating profile:', error);
+                console.error("Error creating profile:", error);
               }
             } else {
               setUserProfile(profile);
             }
           } catch (error) {
-            console.error('Error in auth state change handler:', error);
+            console.error("Error in auth state change handler:", error);
           }
         }, 0);
       } else {
@@ -353,7 +372,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signUp,
     signInWithGoogle, // Adding Google sign-in to context value
     userProfile,
-    refreshUserProfile
+    refreshUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,39 +1,33 @@
-
-import React, { useState } from 'react';
-import { Product } from '@/lib/types';
-import ProductImage from '../ProductImage';
-import ProductImageGallery from '../ProductImageGallery'
-import ProductDetails from '../ProductDetails';
-import ProductReviewSection from '../ProductReviewSection';
-import RelatedProducts from '../RelatedProducts';
+import React, { useState } from "react";
+import { Product } from "@/lib/types";
+import ProductImage from "../ProductImage";
+import ProductImageGallery from "../ProductImageGallery";
+import ProductDetails from "../ProductDetails";
+import ProductReviewSection from "../ProductReviewSection";
+import RelatedProducts from "../RelatedProducts";
 
 interface ProductDetailsContentProps {
   product: Product;
 }
 
-const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }) => {
-  
+const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({
+  product,
+}) => {
   return (
     <div className="space-y-8">
-      <div className="grid    grid-cols-1 mt-10 pt-5 md:grid-cols-2 shadow-md">
-        <ProductImage 
-          image={product.image} 
-          name={product.name} 
+      <div className="grid    grid-cols-1 mt-3 pt-3 md:grid-cols-2 gap-2 shadow-md">
+        <ProductImage
+          image={product.image}
+          name={product.name}
           additionalImages={product.images || []}
         />
-        
 
-        
-        <ProductDetails
-          product={product}
-          allowMultipleSizes={true}
-        />
+        <ProductDetails product={product} allowMultipleSizes={true} />
       </div>
-      
+
       {/* Reviews Section */}
       <ProductReviewSection productId={product.id} />
-      <RelatedProducts product={product}/>
-     
+      <RelatedProducts product={product} />
     </div>
   );
 };
