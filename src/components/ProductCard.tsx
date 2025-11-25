@@ -1,7 +1,6 @@
-
-import { Link } from 'react-router-dom';
-import { Product } from '@/data/products';
-import { cn } from '@/lib/utils';
+import { Link } from "react-router-dom";
+import { Product } from "@/data/products";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -10,7 +9,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, className }: ProductCardProps) => {
   return (
-    <Link 
+    <Link
       to={`/product/${product.id}`}
       className={cn(
         "group bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300",

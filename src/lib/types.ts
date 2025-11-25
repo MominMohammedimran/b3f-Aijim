@@ -130,6 +130,7 @@ export interface Product {
   sizes?: ProductVariant[];
   variants?: ProductVariant[]; // Add variants as alias for sizes
   inStock?: boolean;
+  slug?: string;
 }
 export interface ProductVariant {
   size: string;

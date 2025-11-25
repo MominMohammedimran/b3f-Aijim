@@ -21,7 +21,7 @@ import LiveViewingCounter from "./LiveViewingCounter";
 import AvailableCoupons from "./AvailableCoupons";
 import ProductDescription from "./ProductDescription";
 import { validatePincode } from "@/utils/pincodeService";
-
+import { useDeliverySettings } from "@/hooks/useDeliverySettings";
 interface SizeWithQuantity {
   size: string;
   quantity: number;
@@ -38,6 +38,9 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
+  const { settings: deliverySettings, loading: settingsLoading } =
+    useDeliverySettings();
+  const deliveryFee = deliverySettings?.delivery_fee ?? 100;
   const scrollToDiv = (id: string, offset: number = -8) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -174,6 +177,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         <span className="text-sm font-semibold uppercase tracking-wide">
           AIJIM
         </span>
+
         <Button
           variant="ghost"
           size="icon"
@@ -187,20 +191,40 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       <div id="sizeSection" className="px-2 mt-2">
         <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
         <div className="flex items-center gap-2 mb-2">
+          <span className="text-xl font-bold text-yellow-300">
+            ₹{product.price}
+          </span>
           {product.original_price && product.original_price > product.price && (
             <span className="text-md text-gray-400 line-through">
               ₹{product.original_price}
             </span>
           )}
-          <span className="text-xl font-bold text-yellow-300">
-            ₹{product.price}
-          </span>
 
           {discountPercent > 0 && (
             <span className="text-[10px] bg-red-600 text-white px-1 py-0.5 rounded">
               {discountPercent}% OFF
             </span>
           )}
+          <div
+            className="
+            flex 
+            justify-start sm:justify-center 
+            items-baseline 
+            gap-2
+            mt-0
+            text-left sm:text-center
+          "
+          >
+            <span className="text-yellow-400 text-[14px] font-semibold">
+              {deliveryFee === 0 ? (
+                <span className=" text-xs uppercase font-semibold md:text-md text-gray-200">
+                  Free Shipping
+                </span>
+              ) : (
+                `+ ₹${deliveryFee}`
+              )}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -275,8 +299,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
       {/* --- Sizes --- */}
       <div className="px-2">
-        <span className="text-gray-200 text-lg font-medium">Select Size </span>
-        <div className="grid grid-cols-6 md:grid-cols-6 gap-2 relative border-t border-gray-200">
+        <span className="text-gray-200 text-lg font-medium pt-1">
+          Select Size{" "}
+        </span>
+        <div className="grid mt-1 grid-cols-6 md:grid-cols-6 gap-2 relative border-t border-gray-200">
           {productVariants.map(({ size, stock }) => {
             const selected = selectedSizes.some((s) => s.size === size);
             const isOutOfStock = stock === 0;
@@ -499,10 +525,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
         <ProductDescription desc={product.description} />
 
         {/* --- Feature Highlights (Lucide Icons) --- */}
-        <div className="grid grid-cols-4  gap-2 mt-2 mb-2 text-center">
+        <div className="grid grid-cols-4  gap-1 mt-2 mb-2 text-center">
           {[
-            { icon: IndianRupee, label: "Free Delivery" },
-            { icon: Truck, label: "Delhivery Fast" },
+            { icon: IndianRupee, label: "Free Delhivery" },
+            { icon: Truck, label: "Fast Delhivery" },
             { icon: Shirt, label: "100% Cotton" },
             { icon: Coins, label: "Reward Points" },
           ].map(({ icon: Icon, label }, index) => (

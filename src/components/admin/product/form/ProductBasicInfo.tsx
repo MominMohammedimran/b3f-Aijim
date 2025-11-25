@@ -1,8 +1,13 @@
-
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ProductBasicInfoProps {
   name: string;
@@ -22,8 +27,8 @@ const CATEGORIES = [
   "Home Decor",
   "Books",
   "Sports",
-  'tshirts',
-  "Other"
+  "tshirts",
+  "Other",
 ];
 
 const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
@@ -33,12 +38,12 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
   onNameChange,
   onCodeChange,
   onCategoryChange,
-  errors
+  errors,
 }) => {
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium">Basic Information</h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="name">Product Name *</Label>
@@ -50,7 +55,7 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
           />
           {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="code">Product Code *</Label>
           <Input
@@ -62,7 +67,7 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
           {errors.code && <p className="text-red-500 text-sm">{errors.code}</p>}
         </div>
       </div>
-      
+
       <div className="space-y-2">
         <Label htmlFor="category">Category *</Label>
         <Select value={category} onValueChange={onCategoryChange}>
@@ -70,14 +75,16 @@ const ProductBasicInfo: React.FC<ProductBasicInfoProps> = ({
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
-            {CATEGORIES.map(cat => (
+            {CATEGORIES.map((cat) => (
               <SelectItem key={cat} value={cat}>
                 {cat}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        {errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
+        {errors.category && (
+          <p className="text-red-500 text-sm">{errors.category}</p>
+        )}
       </div>
     </div>
   );

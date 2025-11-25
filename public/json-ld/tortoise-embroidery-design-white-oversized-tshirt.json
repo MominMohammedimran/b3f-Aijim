@@ -7,17 +7,17 @@
     "image": [
       "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/White/aijim-white-01.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL1doaXRlL2FpamltLXdoaXRlLTAxLnBuZyIsImlhdCI6MTc2MzM4NDM5NSwiZXhwIjoxNzk0OTIwMzk1fQ.fd8Fw_Zb97LVPVNAfOKssk28gY_bxZdSIzv4NXtjlxU"
     ],
-    "sku": "Aijim-white-001",
-    "mpn": "Aijim-white-001",
+    "sku": "tortoise-embroidery-design-white-oversized-tshirt",
+    "mpn": "tortoise-embroidery-design-white-oversized-tshirt",
     "brand": {
       "@type": "Brand",
       "name": "Aijim"
     },
     "offers": {
       "@type": "Offer",
-      "url": "https://aijim.shop/product/Aijim-white-001",
+      "url": "https://aijim.shop/product/tortoise-embroidery-design-white-oversized-tshirt",
       "priceCurrency": "INR",
-      "price": 599,
+      "price": 549,
       "priceValidUntil": "2025-12-31",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition",
@@ -71,7 +71,7 @@
           "@type": "Person",
           "name": "Verified Customer"
         },
-        "datePublished": "2025-11-23",
+        "datePublished": "2025-11-25",
         "reviewBody": "Amazing fabric and premium stitching. Highly recommended!",
         "reviewRating": {
           "@type": "Rating",
@@ -102,7 +102,7 @@
         "@type": "ListItem",
         "position": 3,
         "name": "Tortoise Embroidery White Oversized-Tee",
-        "item": "https://aijim.shop/product/Aijim-white-001"
+        "item": "https://aijim.shop/product/tortoise-embroidery-design-white-oversized-tshirt"
       }
     ]
   },

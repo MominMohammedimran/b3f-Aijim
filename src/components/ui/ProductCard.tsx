@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Product } from "@/lib/types";
+import { useDeliverySettings } from "@/hooks/useDeliverySettings";
 
 interface Props {
   product: Product;
@@ -10,6 +11,9 @@ interface Props {
 const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const { settings: deliverySettings, loading: settingsLoading } =
+    useDeliverySettings();
+  const deliveryFee = deliverySettings?.delivery_fee ?? 100;
 
   // Always ensure first image is product.image
   const images = (() => {
@@ -41,7 +45,8 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
     return () => clearInterval(interval);
   }, [isHovered, images.length]);
 
-  const outOfStock = typeof product.stock === "number" ? product.stock <= 0 : false;
+  const outOfStock =
+    typeof product.stock === "number" ? product.stock <= 0 : false;
 
   return (
     <div
@@ -85,7 +90,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
 
       {/* Product Info */}
       <div className="p-1 flex flex-col justify-between flex-grow">
-        <h3
+        <h1
           className="
             text-[11px] sm:text-[14px]
             text-left sm:text-center
@@ -93,7 +98,7 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
          "
         >
           {product.name}
-        </h3>
+        </h1>
 
         {/* Price Section */}
         <div
@@ -120,6 +125,26 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
               </span>
             </>
           )}
+        </div>
+        <div
+          className="
+            flex 
+            justify-start sm:justify-center 
+            items-baseline 
+            gap-2
+            mt-0
+            text-left sm:text-center
+          "
+        >
+          <span className="text-yellow-400 text-[14px] font-semibold">
+            {deliveryFee === 0 ? (
+              <span className=" text-xs uppercase font-semibold md:text-md text-gray-200">
+                Free Shipping
+              </span>
+            ) : (
+              `+ ₹${deliveryFee}`
+            )}
+          </span>
         </div>
       </div>
     </div>

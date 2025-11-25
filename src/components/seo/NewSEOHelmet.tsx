@@ -12,18 +12,20 @@ interface ProductSEO {
   currency?: string;
   rating?: number;
   reviewCount?: number;
+  code?: string; // slug
 }
 
 interface PageSEO {
   title?: string;
   description?: string;
   image?: string;
+  code?: string;
   url?: string;
 }
 
 interface SEOProps {
   pageSEO?: PageSEO;
-  productProp?: ProductSEO; // optional product prop
+  productProp?: ProductSEO;
 }
 
 const defaultSEO: PageSEO = {
@@ -51,16 +53,15 @@ const routeSEO: Record<string, Partial<PageSEO>> = {
     title: "Sign In | AIJIM",
     description: "Access your AIJIM account.",
   },
-
   "/search": {
     title: "Search | AIJIM",
-    description: "Search your desired products. ",
+    description: "Search your desired products.",
   },
   "/products": {
     title: "Shop All Products | AIJIM",
     description: "Browse AIJIM streetwear.",
   },
-  "/product/details": {
+  "/product/": {
     title: "Product Details | AIJIM",
     description: "View product details.",
   },
@@ -73,7 +74,7 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
     productProp || null
   );
 
-  // Fetch product if not passed as prop
+  // Fetch product
   useEffect(() => {
     if (productProp || !params.productId) return;
 
@@ -81,7 +82,7 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
       try {
         const { data, error } = await supabase
           .from("products")
-          .select("id, name, description, image, price, rating")
+          .select("id, name, description, image, price, rating, code")
           .eq("id", params.productId)
           .single();
 
@@ -92,6 +93,7 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
             description: data.description,
             image: data.image,
             price: data.price,
+            code: data.code, // slug
             currency: "INR",
             rating: data.rating,
             reviewCount: 2,
@@ -105,42 +107,62 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
     fetchProduct();
   }, [params.productId, productProp]);
 
-  // Determine SEO metadata
+  // Clean keywords from slug
+  const formatSlugKeywords = (slug?: string) =>
+    slug ? slug.replace(/-/g, ", ") : "";
+
   const matchedSEO = routeSEO[pathname] || {};
+
   const seo = {
     ...defaultSEO,
     ...matchedSEO,
     ...pageSEO,
+
     title: product
-      ? `${product.name} | AIJIM`
+      ? `${product.name} | Buy ${product.code?.replace(
+          /-/g,
+          " "
+        )} Online | AIJIM`
       : matchedSEO.title || pageSEO?.title || defaultSEO.title,
+
     description:
       product?.description ||
       matchedSEO.description ||
       pageSEO?.description ||
       defaultSEO.description,
+
     image: product?.image || pageSEO?.image || defaultSEO.image,
+
     url: product
-      ? `${defaultSEO.url}/product/${product.id}`
+      ? `${defaultSEO.url}/product/${product.code}`
       : defaultSEO.url + pathname,
+
+    keywords: product?.code
+      ? formatSlugKeywords(product.code)
+      : pageSEO?.code || "",
   };
 
   return (
     <Helmet>
       <title>{seo.title}</title>
+
       <meta name="description" content={seo.description} />
+      {seo.keywords && <meta name="keywords" content={seo.keywords} />}
+
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
       <meta property="og:image" content={seo.image} />
       <meta property="og:url" content={seo.url} />
+
       <link rel="canonical" href={seo.url} />
+
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
       <meta name="twitter:image" content={seo.image} />
 
-      {/* JSON-LD structured data */}
-      {product && (
+      {/* JSON-LD Structured Data */}
+      {product ? (
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org/",
@@ -149,13 +171,13 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
             image: [product.image],
             description: product.description,
             sku: product.id,
+            url: seo.url,
             offers: product.price
               ? {
                   "@type": "Offer",
-                  priceCurrency: product.currency || "INR",
+                  priceCurrency: "INR",
                   price: product.price,
                   availability: "https://schema.org/InStock",
-                  url: seo.url,
                 }
               : undefined,
             aggregateRating:
@@ -168,8 +190,7 @@ export default function NewSEOHelmet({ pageSEO, productProp }: SEOProps) {
                 : undefined,
           })}
         </script>
-      )}
-      {!product && (
+      ) : (
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",

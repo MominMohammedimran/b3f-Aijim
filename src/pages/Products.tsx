@@ -7,7 +7,7 @@ import { Loader2, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
 import ProductCard from "@/components/ui/ProductCard";
-
+import { useDeliverySettings } from "@/hooks/useDeliverySettings";
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +16,9 @@ const Products = () => {
     null
   );
   const navigate = useNavigate();
+  const { settings: deliverySettings, loading: settingsLoading } =
+    useDeliverySettings();
+  const deliveryFee = deliverySettings?.delivery_fee ?? 100;
 
   useEffect(() => {
     (async () => {
@@ -181,7 +184,7 @@ const Products = () => {
             {filtered.map((p) => (
               <div
                 key={p.id}
-                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-[260px] md:h-[320px]  flex"
+                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-auto  flex"
               >
                 <ProductCard
                   product={p}

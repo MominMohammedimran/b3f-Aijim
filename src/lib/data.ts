@@ -48,7 +48,8 @@ async function fetchProductsOnce(): Promise<Product[]> {
     category: p.category || '',
     tags: Array.isArray(p.tags) ? p.tags.map(String) : [],
     stock: p.stock ?? 0,
-    variants: parseSizes(p.variants), // ✅ this is now your main source of size + stock
+    variants: parseSizes(p.variants), 
+    slug:p.slug// ✅ this is now your main source of size + stock
   }));
 
   loaded = true;

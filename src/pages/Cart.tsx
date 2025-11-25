@@ -412,8 +412,8 @@ const Cart = () => {
                   </span>
                   <span>
                     {deliveryFee === 0 ? (
-                      <span className="line-through text-sm uppercase font-semibold text-lg text-gray-200">
-                        Free Delivery
+                      <span className=" text-sm uppercase font-semibold text-lg text-gray-200">
+                        Free Shipping
                       </span>
                     ) : (
                       `+ ₹${deliveryFee}`
