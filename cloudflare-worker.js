@@ -1,10 +1,9 @@
-
 // Cloudflare Worker Script
 // Deploy this at: https://workers.cloudflare.com/
 
 // Configuration
-const ALLOWED_ORIGIN = 'https://aijim.shop';
-const BACKEND_API = 'https://zfdsrtwjxwzwbrtfgypm.supabase.co'; // Replace with your actual backend URL
+const ALLOWED_ORIGIN = "https://aijim.shop";
+const BACKEND_API = "https://zfdsrtwjxwzwbrtfgypm.supabase.co"; // Replace with your actual backend URL
 const RATE_LIMIT_PER_MINUTE = 100;
 
 // In-memory rate limiting (note: this is per worker instance)
@@ -14,7 +13,7 @@ const rateLimitMap = new Map();
 function cleanupRateLimit() {
   const now = Date.now();
   const oneMinuteAgo = now - 60000;
-  
+
   for (const [ip, data] of rateLimitMap.entries()) {
     if (data.lastReset < oneMinuteAgo) {
       rateLimitMap.delete(ip);
@@ -25,69 +24,72 @@ function cleanupRateLimit() {
 // Rate limiting function
 function isRateLimited(ip) {
   cleanupRateLimit();
-  
+
   const now = Date.now();
   const data = rateLimitMap.get(ip) || { count: 0, lastReset: now };
-  
+
   // Reset count if more than a minute has passed
   if (now - data.lastReset > 60000) {
     data.count = 0;
     data.lastReset = now;
   }
-  
+
   data.count++;
   rateLimitMap.set(ip, data);
-  
+
   return data.count > RATE_LIMIT_PER_MINUTE;
 }
 
 // CORS headers
 const corsHeaders = {
-  'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS, PATCH',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-Proxy-Secure',
-  'Access-Control-Allow-Credentials': 'true',
-  'Access-Control-Max-Age': '86400', // 24 hours
+  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+  "Access-Control-Allow-Headers":
+    "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-Proxy-Secure",
+  "Access-Control-Allow-Credentials": "true",
+  "Access-Control-Max-Age": "86400", // 24 hours
 };
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    const origin = request.headers.get('Origin');
-    const referer = request.headers.get('Referer');
-    const userAgent = request.headers.get('User-Agent');
-    
+    const origin = request.headers.get("Origin");
+    const referer = request.headers.get("Referer");
+    const userAgent = request.headers.get("User-Agent");
+
     // Get client IP
-    const clientIP = request.headers.get('CF-Connecting-IP') || 
-                    request.headers.get('X-Forwarded-For') || 
-                    request.headers.get('X-Real-IP') || 
-                    'unknown';
+    const clientIP =
+      request.headers.get("CF-Connecting-IP") ||
+      request.headers.get("X-Forwarded-For") ||
+      request.headers.get("X-Real-IP") ||
+      "unknown";
 
     // Block requests from non-allowed origins
     if (origin && origin !== ALLOWED_ORIGIN) {
-        return new Response('Forbidden - Unauthorized Origin', { 
+      return new Response("Forbidden - Unauthorized Origin", {
         status: 403,
         headers: {
-          'Content-Type': 'text/plain',
-        }
+          "Content-Type": "text/plain",
+        },
       });
     }
 
     // Allow requests from the allowed origin or with valid referer
-    const isAllowedOrigin = origin === ALLOWED_ORIGIN || 
-                           (referer && referer.startsWith(ALLOWED_ORIGIN));
+    const isAllowedOrigin =
+      origin === ALLOWED_ORIGIN ||
+      (referer && referer.startsWith(ALLOWED_ORIGIN));
 
     if (!isAllowedOrigin) {
-      return new Response('Forbidden - Invalid Origin', { 
+      return new Response("Forbidden - Invalid Origin", {
         status: 403,
         headers: {
-          'Content-Type': 'text/plain',
-        }
+          "Content-Type": "text/plain",
+        },
       });
     }
 
     // Handle preflight OPTIONS requests
-    if (request.method === 'OPTIONS') {
+    if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 200,
         headers: corsHeaders,
@@ -96,49 +98,51 @@ export default {
 
     // Rate limiting
     if (isRateLimited(clientIP)) {
-      return new Response('Too Many Requests', { 
+      return new Response("Too Many Requests", {
         status: 429,
         headers: {
           ...corsHeaders,
-          'Content-Type': 'text/plain',
-          'Retry-After': '60',
-        }
+          "Content-Type": "text/plain",
+          "Retry-After": "60",
+        },
       });
     }
 
     try {
       // Rewrite URL path - remove /proxy prefix if present
       let targetPath = url.pathname;
-      if (targetPath.startsWith('/proxy')) {
-        targetPath = targetPath.replace('/proxy', '');
+      if (targetPath.startsWith("/proxy")) {
+        targetPath = targetPath.replace("/proxy", "");
       }
-      
+
       // Construct the backend URL
       const backendUrl = `${BACKEND_API}${targetPath}${url.search}`;
-      
-     
+
       // Prepare headers for the backend request
       const backendHeaders = new Headers(request.headers);
-      
+
       // Add custom security header
-      backendHeaders.set('X-Proxy-Secure', 'true');
-      
+      backendHeaders.set("X-Proxy-Secure", "true");
+
       // Add real IP header
-      backendHeaders.set('X-Real-IP', clientIP);
-      
+      backendHeaders.set("X-Real-IP", clientIP);
+
       // Remove host header to avoid conflicts
-      backendHeaders.delete('Host');
-      
+      backendHeaders.delete("Host");
+
       // Forward the request to the backend
       const backendRequest = new Request(backendUrl, {
         method: request.method,
         headers: backendHeaders,
-        body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : null,
+        body:
+          request.method !== "GET" && request.method !== "HEAD"
+            ? request.body
+            : null,
       });
 
       // Make the request to the backend
       const response = await fetch(backendRequest);
-      
+
       // Create a new response with CORS headers
       const newResponse = new Response(response.body, {
         status: response.status,
@@ -146,37 +150,41 @@ export default {
         headers: {
           ...corsHeaders,
           // Forward important headers from the backend
-          'Content-Type': response.headers.get('Content-Type') || 'application/json',
-          'Content-Length': response.headers.get('Content-Length') || '',
-          'Cache-Control': response.headers.get('Cache-Control') || 'no-cache',
- 'Content-Security-Policy': "default-src 'self'; media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co",
+          "Content-Type":
+            response.headers.get("Content-Type") || "application/json",
+          "Content-Length": response.headers.get("Content-Length") || "",
+          "Cache-Control": response.headers.get("Cache-Control") || "no-cache",
+          "Content-Security-Policy":
+            "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com https://cdn.imagekit.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ik.imagekit.io https:; connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://sdk.cashfree.com https://zfdsrtwjxwzwbrtfgypm.supabase.co https://upload.imagekit.io; frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://api.cashfree.com; media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co https://ik.imagekit.io;",
         },
       });
 
       // Log successful request
       return newResponse;
-
     } catch (error) {
-     //console.error('Proxy error:', error);
-      
-      return new Response(JSON.stringify({ 
-        error: 'Proxy Error', 
-        message: 'Failed to connect to backend service',
-        timestamp: new Date().toISOString()
-      }), {
-        status: 502,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json',
-        },
-      });
+      //console.error('Proxy error:', error);
+
+      return new Response(
+        JSON.stringify({
+          error: "Proxy Error",
+          message: "Failed to connect to backend service",
+          timestamp: new Date().toISOString(),
+        }),
+        {
+          status: 502,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json",
+          },
+        }
+      );
     }
   },
 };
 
 /**
  * DEPLOYMENT INSTRUCTIONS:
- * 
+ *
  * 1. Go to https://workers.cloudflare.com/
  * 2. Sign in to your Cloudflare account
  * 3. Click "Create a Service"
@@ -185,16 +193,16 @@ export default {
  * 6. Update the BACKEND_API constant with your real backend URL
  * 7. Click "Save and Deploy"
  * 8. Your worker will be available at: https://your-worker-name.your-subdomain.workers.dev
- * 
+ *
  * CONFIGURATION:
  * - Update ALLOWED_ORIGIN if your frontend URL changes
  * - Update BACKEND_API with your actual backend URL
  * - Adjust RATE_LIMIT_PER_MINUTE as needed
- * 
+ *
  * USAGE IN FRONTEND:
  * Instead of calling your backend directly, call:
  * https://your-worker-name.your-subdomain.workers.dev/api/endpoint
- * 
+ *
  * The worker will:
  * ✅ Verify the request comes from your frontend
  * ✅ Add rate limiting
@@ -202,7 +210,7 @@ export default {
  * ✅ Add security headers
  * ✅ Proxy the request to your backend
  * ✅ Return the response with proper CORS
- * 
+ *
  * OPTIONAL CUSTOM DOMAIN:
  * You can also set up a custom domain like api.yourdomain.com
  * that points to this worker for cleaner URLs.

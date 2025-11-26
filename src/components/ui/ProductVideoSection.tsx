@@ -1,27 +1,27 @@
-
 import React, { useRef, useState, useEffect } from "react";
 import { Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Videos Data
 const videos = [
-  {id: 1,
+  {
+    id: 1,
     title: "Aijim Story",
-    src: "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/aijim-first-video.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2FpamltLWZpcnN0LXZpZGVvLm1wNCIsImlhdCI6MTc2MjY3NTg2NCwiZXhwIjoxNzk0MjExODY0fQ.9bs6lmPAdviCi2rrcjMYowMVA8fSsz3t4KdqN7zG81s",
- },
+    src: "https://ik.imagekit.io/o5ewoek4p/Index-videos/aijim-first-video.mp4?updatedAt=1764167597958",
+  },
   {
     id: 2,
     title: "Website Launch",
-     src: "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Index-videos/aijim-launch-video-19-11-2025.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL0luZGV4LXZpZGVvcy9haWppbS1sYXVuY2gtdmlkZW8tMTktMTEtMjAyNS5tcDQiLCJpYXQiOjE3NjM1NDgyMjAsImV4cCI6MTc5NTA4NDIyMH0.Wr63dKcqSf5uhE1Nxv0MWeJCKQ671CV-L7ve7AiRlxI",
- },
+    src: "https://ik.imagekit.io/o5ewoek4p/Index-videos/aijim-launch-video-19-11-2025.mp4?updatedAt=1764167563293",
+  },
   {
     id: 3,
     title: "Aijim Story",
-    src: "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/aijim-first-video.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL2FpamltLWZpcnN0LXZpZGVvLm1wNCIsImlhdCI6MTc2MjY3NTg2NCwiZXhwIjoxNzk0MjExODY0fQ.9bs6lmPAdviCi2rrcjMYowMVA8fSsz3t4KdqN7zG81s",
+    src: "https://ik.imagekit.io/o5ewoek4p/Index-videos/aijim-first-video.mp4?updatedAt=1764167597958",
   },
   {
     id: 4,
     title: "Website Launch",
-    src: "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/Index-videos/aijim-launch-video-19-11-2025.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL0luZGV4LXZpZGVvcy9haWppbS1sYXVuY2gtdmlkZW8tMTktMTEtMjAyNS5tcDQiLCJpYXQiOjE3NjM1NDgyMjAsImV4cCI6MTc5NTA4NDIyMH0.Wr63dKcqSf5uhE1Nxv0MWeJCKQ671CV-L7ve7AiRlxI",
+    src: "https://ik.imagekit.io/o5ewoek4p/Index-videos/aijim-launch-video-19-11-2025.mp4?updatedAt=1764167563293",
   },
 ];
 
@@ -251,5 +251,3 @@ const ProductVideoSection: React.FC = () => {
 };
 
 export default ProductVideoSection;
-
-

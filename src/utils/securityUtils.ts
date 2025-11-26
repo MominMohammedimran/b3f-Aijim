@@ -36,9 +36,9 @@ export const setContentSecurityPolicy = (): void => {
           "default-src 'self';",
 
           // -------------------------------
-          // Scripts (Razorpay, Cashfree, OneSignal)
+          // Scripts (Razorpay, Cashfree, OneSignal, ImageKit)
           // -------------------------------
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com;",
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com https://cdn.imagekit.io;",
 
           // Styles
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
@@ -46,11 +46,11 @@ export const setContentSecurityPolicy = (): void => {
           // Fonts
           "font-src 'self' https://fonts.gstatic.com;",
 
-          // Images (Supabase, OneSignal)
-          "img-src 'self' data: blob: https: https://*.onesignal.com;",
+          // Images (Supabase, OneSignal, ImageKit)
+          "img-src 'self' data: blob: https: https://*.onesignal.com https://ik.imagekit.io;",
 
-          // API connections (Supabase, OneSignal, Razorpay, Cashfree)
-          "connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://payments.cashfree.com https://cmpggiyuiattqjmddcac.supabase.co https://zfdsrtwjxwzwbrtfgypm.supabase.co https://onesignal.com https://*.onesignal.com;",
+          // API connections (Supabase, OneSignal, Razorpay, Cashfree, ImageKit)
+          "connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://payments.cashfree.com https://cmpggiyuiattqjmddcac.supabase.co https://zfdsrtwjxwzwbrtfgypm.supabase.co https://onesignal.com https://*.onesignal.com https://upload.imagekit.io;",
 
           // Iframes
           "frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://onesignal.com https://*.onesignal.com;",
@@ -65,7 +65,7 @@ export const setContentSecurityPolicy = (): void => {
           "manifest-src 'self' https://cdn.onesignal.com;",
 
           // Supabase media
-          "media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co;",
+          "media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co https://ik.imagekit.io;",
         ].join(" ")
       );
 
