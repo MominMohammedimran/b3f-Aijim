@@ -171,7 +171,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const allOutOfStock = productVariants.every((v) => v.stock === 0);
 
   return (
-    <div className="relative bg-[#0b0b0b] text-white p-2 rounded-md shadow-lg">
+    <div className="relative bg-[#0b0b0b] text-white p-0 rounded-md shadow-lg">
       {/* --- Header --- */}
       <div className="flex items-center justify-between px-2 pt-3">
         <span className="text-sm font-semibold uppercase tracking-wide">

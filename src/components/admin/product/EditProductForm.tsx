@@ -340,11 +340,40 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
                     <Button
                       type="button"
                       onClick={() => {
-                        if (newSeoKeyword.trim()) {
-                          handleInputChange("seo_keywords", [
-                            ...formData.seo_keywords,
-                            newSeoKeyword.trim(),
-                          ]);
+                        if (!newSeoKeyword.trim()) return;
+
+                        // Split by comma, trim extra spaces, remove empty entries
+                        const keywordsArray = newSeoKeyword
+                          .split(",")
+                          .map((k) => k.trim())
+                          .filter((k) => k.length > 0);
+
+                        // Merge with existing keywords without duplicates
+                        const updatedKeywords = Array.from(
+                          new Set([...formData.seo_keywords, ...keywordsArray])
+                        );
+
+                        handleInputChange("seo_keywords", updatedKeywords);
+
+                        setNewSeoKeyword("");
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          // trigger the same logic as button
+                          const keywordsArray = newSeoKeyword
+                            .split(",")
+                            .map((k) => k.trim())
+                            .filter((k) => k);
+
+                          const updatedKeywords = Array.from(
+                            new Set([
+                              ...formData.seo_keywords,
+                              ...keywordsArray,
+                            ])
+                          );
+
+                          handleInputChange("seo_keywords", updatedKeywords);
                           setNewSeoKeyword("");
                         }
                       }}

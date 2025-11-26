@@ -50,13 +50,26 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
   };
 
   const addSEOKeyword = () => {
-    if (newSEOKeyword.trim()) {
-      handleInputChange("seo_keywords", [
-        ...formData.seo_keywords,
-        newSEOKeyword.trim(),
-      ]);
-      setNewSEOKeyword("");
-    }
+    if (!newSEOKeyword.trim()) return;
+
+    // Split input into multiple keywords (comma separated)
+    const keywordList = newSEOKeyword
+      .split(",")
+      .map((k) => k.trim())
+      .filter((k) => k.length > 0);
+
+    // Combine and remove duplicates using Set
+    const updatedKeywords = Array.from(
+      new Set([...formData.seo_keywords, ...keywordList])
+    );
+
+    // Update state
+    handleInputChange("seo_keywords", updatedKeywords);
+
+    // Clear input field
+    setNewSEOKeyword("");
+
+    toast.success(`${keywordList.length} keyword(s) added`);
   };
 
   const removeSEOKeyword = (index: number) => {
@@ -425,6 +438,12 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
                   placeholder="Add SEO keyword (e.g., blue tshirt)"
                   value={newSEOKeyword}
                   onChange={(e) => setNewSEOKeyword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addSEOKeyword();
+                    }
+                  }}
                 />
                 <Button type="button" onClick={addSEOKeyword}>
                   <Plus className="h-4 w-4 mr-2" /> Add

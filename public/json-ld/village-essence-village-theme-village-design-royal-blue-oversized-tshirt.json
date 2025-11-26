@@ -7,15 +7,15 @@
     "image": [
       "https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/paymentproofs/tshirt-images/blue/aijim-blue-01.webp"
     ],
-    "sku": "village-essence-royal-blue-village-theme-village-design-oversized-tshirt",
-    "mpn": "village-essence-royal-blue-village-theme-village-design-oversized-tshirt",
+    "sku": "village-essence-village-theme-village-design-royal-blue-oversized-tshirt",
+    "mpn": "village-essence-village-theme-village-design-royal-blue-oversized-tshirt",
     "brand": {
       "@type": "Brand",
       "name": "Aijim"
     },
     "offers": {
       "@type": "Offer",
-      "url": "https://aijim.shop/product/village-essence-royal-blue-village-theme-village-design-oversized-tshirt",
+      "url": "https://aijim.shop/product/village-essence-village-theme-village-design-royal-blue-oversized-tshirt",
       "priceCurrency": "INR",
       "price": 549,
       "priceValidUntil": "2025-12-31",
@@ -71,7 +71,7 @@
           "@type": "Person",
           "name": "Verified Customer"
         },
-        "datePublished": "2025-11-25",
+        "datePublished": "2025-11-26",
         "reviewBody": "Amazing fabric and premium stitching. Highly recommended!",
         "reviewRating": {
           "@type": "Rating",
@@ -102,7 +102,7 @@
         "@type": "ListItem",
         "position": 3,
         "name": "Village Essence Royal Blue Oversized-Tee",
-        "item": "https://aijim.shop/product/village-essence-royal-blue-village-theme-village-design-oversized-tshirt"
+        "item": "https://aijim.shop/product/village-essence-village-theme-village-design-royal-blue-oversized-tshirt"
       }
     ]
   },
