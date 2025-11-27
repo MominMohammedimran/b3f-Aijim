@@ -76,6 +76,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ product }) => {
                       src={img}
                       alt="preview"
                       className="w-6 h-6 rounded object-cover"
+                      loading="eager"
                     />
                   ))}
                 </div>

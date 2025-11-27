@@ -53,7 +53,12 @@ const AdminProfiles = () => {
   const [loadingOrders, setLoadingOrders] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: profiles = [], isLoading, error, refetch } = useQuery({
+  const {
+    data: profiles = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["profiles"],
     queryFn: fetchProfilesWithOrders,
   });
@@ -145,7 +150,10 @@ const AdminProfiles = () => {
   const usersWithOrders = filteredProfiles.filter((p) => p.orderCount > 0);
   const usersWithoutOrders = filteredProfiles.filter((p) => p.orderCount === 0);
 
-  const totalRevenue = profiles.reduce((acc, p) => acc + (p.totalSpent || 0), 0);
+  const totalRevenue = profiles.reduce(
+    (acc, p) => acc + (p.totalSpent || 0),
+    0
+  );
 
   // Render user each row card
   const renderUserCard = (profile: UserWithOrders) => (
@@ -156,16 +164,14 @@ const AdminProfiles = () => {
       <div className="flex justify-between items-start">
         <div>
           <h3 className="font-semibold text-lg text-white">
-            {profile.display_name ||
-              profile.first_name ||
-              "Unknown"}{" "}
+            {profile.display_name || profile.first_name || "Unknown"}{" "}
             {profile.last_name || ""}
           </h3>
           <p className="text-gray-400 text-sm">{profile.email}</p>
 
           <p className="text-gray-400 text-xs mt-1">
-            Orders:{" "}
-            <span className="font-semibold">{profile.orderCount}</span> | Total:{" "}
+            Orders: <span className="font-semibold">{profile.orderCount}</span>{" "}
+            | Total:{" "}
             <span className="font-semibold text-yellow-400">
               ₹{profile.totalSpent.toFixed(2)}
             </span>
@@ -188,8 +194,7 @@ const AdminProfiles = () => {
             <DialogContent className="max-w-2xl bg-gray-950 text-white max-h-[85vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-yellow-300">
-                  {profile.display_name ||
-                    profile.first_name}’s Orders
+                  {profile.display_name || profile.first_name}’s Orders
                 </DialogTitle>
               </DialogHeader>
 
@@ -248,10 +253,7 @@ const AdminProfiles = () => {
                                 </p>
                                 <p className="text-xs text-gray-400">
                                   {item.sizes
-                                    ?.map(
-                                      (s) =>
-                                        `${s.size} × ${s.quantity}`
-                                    )
+                                    ?.map((s) => `${s.size} × ${s.quantity}`)
                                     .join(", ")}
                                 </p>
                               </div>
@@ -350,9 +352,7 @@ const AdminProfiles = () => {
 
         <p className="text-right text-gray-300 font-semibold mt-6">
           Total Revenue:{" "}
-          <span className="text-green-400">
-            ₹{totalRevenue.toFixed(2)}
-          </span>
+          <span className="text-green-400">₹{totalRevenue.toFixed(2)}</span>
         </p>
       </div>
     </ModernAdminLayout>

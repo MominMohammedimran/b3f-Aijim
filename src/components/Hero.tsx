@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { ArrowRight, Star } from 'lucide-react';
+import React from "react";
+import { ArrowRight, Star } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -13,23 +12,29 @@ const Hero = () => {
               <div className="flex items-center space-x-2">
                 <div className="flex items-center space-x-1">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <Star
+                      key={i}
+                      className="h-4 w-4 fill-yellow-400 text-yellow-400"
+                    />
                   ))}
                 </div>
-                <span className="text-sm text-gray-600">Trusted by 10,000+ customers</span>
+                <span className="text-sm text-gray-600">
+                  Trusted by 10,000+ customers
+                </span>
               </div>
-              
+
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
                 Discover
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  {" "}Premium{" "}
+                  {" "}
+                  Premium{" "}
                 </span>
                 Products
               </h1>
-              
+
               <p className="text-xl text-gray-600 leading-relaxed">
-                Curated collection of high-quality products at unbeatable prices. 
-                Free shipping on orders over $50.
+                Curated collection of high-quality products at unbeatable
+                prices. Free shipping on orders over $50.
               </p>
             </div>
 
@@ -38,7 +43,7 @@ const Hero = () => {
                 Shop Now
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              
+
               <button className="border-2 border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-colors">
                 Learn More
               </button>
@@ -70,11 +75,12 @@ const Hero = () => {
                     src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop"
                     alt="Premium Headphones"
                     className="w-full h-32 object-cover rounded-lg mb-4"
+                    loading="lazy"
                   />
                   <h3 className="font-semibold text-gray-900">Premium Audio</h3>
                   <p className="text-sm text-gray-600">Starting at $299</p>
                 </div>
-                
+
                 <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                   <img
                     src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop"
@@ -85,7 +91,7 @@ const Hero = () => {
                   <p className="text-sm text-gray-600">Starting at $199</p>
                 </div>
               </div>
-              
+
               <div className="space-y-4 pt-8">
                 <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                   <img
@@ -96,7 +102,7 @@ const Hero = () => {
                   <h3 className="font-semibold text-gray-900">Fashion</h3>
                   <p className="text-sm text-gray-600">Starting at $149</p>
                 </div>
-                
+
                 <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                   <img
                     src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=300&h=300&fit=crop"

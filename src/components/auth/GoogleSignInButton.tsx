@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { Loader2 } from 'lucide-react';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 interface GoogleSignInButtonProps {
   onSuccess?: () => void;
@@ -12,7 +12,7 @@ interface GoogleSignInButtonProps {
 
 const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
   onSuccess,
-  className = '',
+  className = "",
   title = "login", // default
 }) => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
     setTimeout(async () => {
       try {
         const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
+          provider: "google",
           options: {
             redirectTo: `${window.location.origin}`,
           },
@@ -32,20 +32,24 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
         if (error) throw error;
 
         toast.success(
-          title === "signup" ? "Creating your account..." : "Redirecting to Google..."
+          title === "signup"
+            ? "Creating your account..."
+            : "Redirecting to Google..."
         );
 
         if (onSuccess) onSuccess();
       } catch (error: any) {
-        toast.error(error.message || 'Google sign-in failed');
+        toast.error(error.message || "Google sign-in failed");
         setLoading(false);
       }
     }, 300);
   };
 
   // UI Text based on title prop
-  const buttonText = title === "signup" ? "Sign up with Google" : "Continue with Google";
-  const loadingText = title === "signup" ? "Creating account..." : "Signing in...";
+  const buttonText =
+    title === "signup" ? "Sign up with Google" : "Continue with Google";
+  const loadingText =
+    title === "signup" ? "Creating account..." : "Signing in...";
 
   return (
     <Button
@@ -63,6 +67,7 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
             src="/aijim-uploads/google/google_logo.webp"
             alt="Google"
             className="w-5 h-5 mr-2"
+            loading="lazy"
           />
 
           {loadingText}

@@ -9,6 +9,22 @@ import { ActiveProductProvider } from "./context/ActiveProductContext";
 import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
+import { useReactQueryStorage } from "./utils/useReactQueryStorage";
+
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "./utils/product";
+
+export function LoadProducts() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+    staleTime: 5 * 60 * 1000, // 5 min cache
+  });
+
+  // console.log("🔥 Fetch Result:", { data, isLoading, error });
+
+  return null;
+}
 
 const queryClient = new QueryClient();
 
@@ -79,13 +95,14 @@ function CartReminders() {
 
 function App() {
   const [loading, setLoading] = useState(true);
+  useReactQueryStorage(queryClient, "local");
   // 🧹 Auto-Unregister All Service Workers (runs once)
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.getRegistrations().then((regs) => {
         regs.forEach((reg) => {
           reg.unregister();
-          console.log("Service Worker auto-unregistered");
+          // console.log("Service Worker auto-unregistered");
         });
       });
     }
@@ -155,6 +172,8 @@ function App() {
     <div className="bg-black min-h-screen">
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
+          {/* Force query to run so caching can store */}
+          <LoadProducts />
           <AuthProvider>
             <CartProvider>
               <ActiveProductProvider>

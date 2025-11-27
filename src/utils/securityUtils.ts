@@ -32,41 +32,7 @@ export const setContentSecurityPolicy = (): void => {
 
       meta.setAttribute(
         "content",
-        [
-          "default-src 'self';",
-
-          // -------------------------------
-          // Scripts (Razorpay, Cashfree, OneSignal, ImageKit)
-          // -------------------------------
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com https://cdn.imagekit.io;",
-
-          // Styles
-          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
-
-          // Fonts
-          "font-src 'self' https://fonts.gstatic.com;",
-
-          // Images (Supabase, OneSignal, ImageKit)
-          "img-src 'self' data: blob: https: https://*.onesignal.com https://ik.imagekit.io;",
-
-          // API connections (Supabase, OneSignal, Razorpay, Cashfree, ImageKit)
-          "connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://payments.cashfree.com https://cmpggiyuiattqjmddcac.supabase.co https://zfdsrtwjxwzwbrtfgypm.supabase.co https://onesignal.com https://*.onesignal.com https://upload.imagekit.io;",
-
-          // Iframes
-          "frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://onesignal.com https://*.onesignal.com;",
-
-          // Service workers (required for OneSignal)
-          "worker-src 'self' https://cdn.onesignal.com;",
-
-          // Child workers for service worker update
-          "child-src 'self' https://cdn.onesignal.com;",
-
-          // Web manifest (OneSignal uses manifest.json)
-          "manifest-src 'self' https://cdn.onesignal.com;",
-
-          // Supabase media
-          "media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co https://ik.imagekit.io;",
-        ].join(" ")
+        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com https://cdn.imagekit.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: https://*.onesignal.com https://ik.imagekit.io; connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://payments.cashfree.com https://cmpggiyuiattqjmddcac.supabase.co https://zfdsrtwjxwzwbrtfgypm.supabase.co https://onesignal.com https://*.onesignal.com https://upload.imagekit.io; frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://onesignal.com https://*.onesignal.com; worker-src 'self' https://cdn.onesignal.com; child-src 'self' https://cdn.onesignal.com; manifest-src 'self' https://cdn.onesignal.com; media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co https://ik.imagekit.io;"
       );
 
       document.head.appendChild(meta);
