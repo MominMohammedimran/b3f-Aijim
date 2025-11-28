@@ -6,22 +6,22 @@ const videos = [
   {
     id: 1,
     title: "Aijim Story",
-    src: "https://ik.imagekit.io/o5ewoek4p/Index-videos/aijim-first-video.mp4?updatedAt=1764167597958",
+    src: "/aijim-uploads/videos/aijim-first-video.mp4",
   },
   {
     id: 2,
     title: "Website Launch",
-    src: "https://ik.imagekit.io/o5ewoek4p/Index-videos/aijim-launch-video-19-11-2025.mp4?updatedAt=1764167563293",
+    src: "/aijim-uploads/videos/aijim-launch-video.mp4",
   },
   {
     id: 3,
     title: "Aijim Story",
-    src: "https://ik.imagekit.io/o5ewoek4p/Index-videos/aijim-first-video.mp4?updatedAt=1764167597958",
+    src: "/aijim-uploads/videos/aijim-first-video.mp4",
   },
   {
     id: 4,
     title: "Website Launch",
-    src: "https://ik.imagekit.io/o5ewoek4p/Index-videos/aijim-launch-video-19-11-2025.mp4?updatedAt=1764167563293",
+    src: "/aijim-uploads/videos/aijim-launch-video.mp4",
   },
 ];
 
