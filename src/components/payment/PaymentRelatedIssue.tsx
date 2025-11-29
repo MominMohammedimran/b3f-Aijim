@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useSearchParams, Link } from 'react-router-dom';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Upload } from 'lucide-react';
-import Layout from '@/components/layout/Layout';
-import { toast } from 'sonner';
+import React, { useEffect, useState, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useSearchParams, Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Upload } from "lucide-react";
+import Layout from "@/components/layout/Layout";
+import { toast } from "sonner";
 
 interface Issue {
   id: string;
@@ -18,7 +18,7 @@ interface Issue {
   transaction_id: string;
   reason: string;
   description: string;
-  status: 'pending' | 'resolved' | 'rejected';
+  status: "pending" | "resolved" | "rejected";
   created_at: string;
   updated_at: string;
   screenshot_url?: string;
@@ -28,16 +28,16 @@ interface Issue {
 
 export default function PaymentRelatedIssue() {
   const [params] = useSearchParams();
-  const orderId = params.get('orderId') || '';
+  const orderId = params.get("orderId") || "";
   const formRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
-    full_name: '',
-    email: '',
-    phone: '',
-    transaction_id: '',
-    selected_reason: '',
-    description: '',
+    full_name: "",
+    email: "",
+    phone: "",
+    transaction_id: "",
+    selected_reason: "",
+    description: "",
   });
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -51,14 +51,16 @@ export default function PaymentRelatedIssue() {
   useEffect(() => {
     const fetchIssues = async () => {
       const { data } = await supabase
-        .from('orders')
-        .select('payment_issue')
-        .eq('order_number', orderId)
+        .from("orders")
+        .select("payment_issue")
+        .eq("order_number", orderId)
         .maybeSingle();
 
       if (data?.payment_issue) {
         setExistingIssues(
-          Array.isArray(data.payment_issue) ? (data.payment_issue as Issue[]) : []
+          Array.isArray(data.payment_issue)
+            ? (data.payment_issue as unknown as Issue[])
+            : []
         );
       }
     };
@@ -66,25 +68,25 @@ export default function PaymentRelatedIssue() {
   }, [orderId]);
 
   const handleUpload = async () => {
-    if (!screenshot) return '';
+    if (!screenshot) return "";
     setUploading(true);
     try {
       const timestamp = Date.now();
       const fileName = `${timestamp}-${screenshot.name}`;
       const { data: uploadedFile, error: uploadError } = await supabase.storage
-        .from('paymentproofs')
+        .from("paymentproofs")
         .upload(fileName, screenshot, { upsert: true });
 
-      if (uploadError) return '';
+      if (uploadError) return "";
 
       const { data: publicUrlData } = supabase.storage
-        .from('paymentproofs')
+        .from("paymentproofs")
         .getPublicUrl(uploadedFile.path);
 
       return publicUrlData.publicUrl;
     } catch (error) {
-      console.error('Error uploading proof:', error);
-      return '';
+      console.error("Error uploading proof:", error);
+      return "";
     } finally {
       setUploading(false);
     }
@@ -102,7 +104,7 @@ export default function PaymentRelatedIssue() {
       transaction_id: formData.transaction_id,
       reason: formData.selected_reason,
       description: formData.description,
-      status: 'pending',
+      status: "pending",
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       screenshot_url,
@@ -111,22 +113,22 @@ export default function PaymentRelatedIssue() {
     const updatedIssues = [...existingIssues, newIssue];
 
     const { error } = await supabase
-      .from('orders')
+      .from("orders")
       .update({ payment_issue: updatedIssues as any })
-      .eq('order_number', orderId);
+      .eq("order_number", orderId);
 
     if (error) {
-      toast.error('Failed to submit issue.');
+      toast.error("Failed to submit issue.");
     } else {
       setExistingIssues(updatedIssues);
-      toast.success('Payment issue submitted successfully!');
+      toast.success("Payment issue submitted successfully!");
       setFormData({
-        full_name: '',
-        email: '',
-        phone: '',
-        transaction_id: '',
-        selected_reason: '',
-        description: '',
+        full_name: "",
+        email: "",
+        phone: "",
+        transaction_id: "",
+        selected_reason: "",
+        description: "",
       });
       setScreenshot(null);
     }
@@ -145,11 +147,14 @@ export default function PaymentRelatedIssue() {
               <ArrowLeft className="w-4 h-4 mr-1" />
               Back
             </Link>
-            </div>
-            <h1 className="text-xl lg:text-2xl font-bold text-center text-yellow-400 underline">Payment Issue</h1>
-          
+          </div>
+          <h1 className="text-xl lg:text-2xl font-bold text-center text-yellow-400 underline">
+            Payment Issue
+          </h1>
+
           <p className="text-gray-400 text-sm font-medium">
-            Report payment-related concerns — missing, delayed, or refund issues.
+            Report payment-related concerns — missing, delayed, or refund
+            issues.
           </p>
 
           {/* Existing Issues */}
@@ -176,20 +181,23 @@ export default function PaymentRelatedIssue() {
                   </CardHeader>
                   <CardContent className="space-y-2 text-sm">
                     <p>
-                      <span className="text-yellow-300">Reason:</span> {issue.reason}
+                      <span className="text-yellow-300">Reason:</span>{" "}
+                      {issue.reason}
                     </p>
                     <p>
-                      <span className="text-yellow-300">Transaction ID:</span>{' '}
-                      {issue.transaction_id || 'N/A'}
+                      <span className="text-yellow-300">Transaction ID:</span>{" "}
+                      {issue.transaction_id || "N/A"}
                     </p>
                     <p>
-                      <span className="text-yellow-300">Description:</span>{' '}
-                      {issue.description || '—'}
+                      <span className="text-yellow-300">Description:</span>{" "}
+                      {issue.description || "—"}
                     </p>
 
                     {issue.screenshot_url && (
                       <div className="mt-3">
-                        <p className="text-yellow-300 text-sm mb-1">Uploaded Proof:</p>
+                        <p className="text-yellow-300 text-sm mb-1">
+                          Uploaded Proof:
+                        </p>
                         <img
                           src={issue.screenshot_url}
                           alt="Proof"
@@ -200,8 +208,12 @@ export default function PaymentRelatedIssue() {
 
                     {issue.admin_response && (
                       <div className="p-3 border border-green-700 bg-gray-800 mt-3">
-                        <span className="text-yellow-300 font-medium">Admin Response:</span>
-                        <p className="text-gray-100 mt-1">{issue.admin_response}</p>
+                        <span className="text-yellow-300 font-medium">
+                          Admin Response:
+                        </span>
+                        <p className="text-gray-100 mt-1">
+                          {issue.admin_response}
+                        </p>
                       </div>
                     )}
                   </CardContent>
@@ -232,7 +244,9 @@ export default function PaymentRelatedIssue() {
                   placeholder="Full Name *"
                   required
                   value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, full_name: e.target.value })
+                  }
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
                 <Input
@@ -240,7 +254,9 @@ export default function PaymentRelatedIssue() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
               </div>
@@ -249,7 +265,9 @@ export default function PaymentRelatedIssue() {
                   placeholder="Phone *"
                   required
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
                 <Input
@@ -277,7 +295,9 @@ export default function PaymentRelatedIssue() {
                 <option value="Payment made but not reflected">
                   Payment not reflected
                 </option>
-                <option value="I want to cancel my order">Cancel my order</option>
+                <option value="I want to cancel my order">
+                  Cancel my order
+                </option>
                 <option value="Other">Other</option>
               </select>
 
@@ -300,9 +320,7 @@ export default function PaymentRelatedIssue() {
                   <Input
                     type="file"
                     accept="image/*"
-                    onChange={(e) =>
-                      setScreenshot(e.target.files?.[0] || null)
-                    }
+                    onChange={(e) => setScreenshot(e.target.files?.[0] || null)}
                     className="bg-gray-800 text-gray-200 border-gray-700"
                   />
                   {screenshot && (
@@ -320,7 +338,7 @@ export default function PaymentRelatedIssue() {
                 disabled={uploading}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-none"
               >
-                {uploading ? 'Uploading...' : 'Submit Payment Issue'}
+                {uploading ? "Uploading..." : "Submit Payment Issue"}
               </Button>
             </form>
           </div>

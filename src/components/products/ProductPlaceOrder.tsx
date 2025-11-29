@@ -50,8 +50,9 @@ const ProductPlaceOrder: React.FC<ProductPlaceOrderProps> = ({
 
       selectedSizes.forEach((size) => {
         const maxStock =
-          Number(product.variants?.find((v) => String(v.size) === size)?.stock) ||
-          0;
+          Number(
+            product.variants?.find((v) => String(v.size) === size)?.stock
+          ) || 0;
 
         const inCartQty =
           cartItem?.sizes.find((s) => s.size === size)?.quantity || 0;
@@ -84,7 +85,9 @@ const ProductPlaceOrder: React.FC<ProductPlaceOrderProps> = ({
 
       if (skippedSizes.length > 0) {
         toast.warning(
-          `Added available sizes. Skipped: ${skippedSizes.join(", ")} (max stock reached)`
+          `Added available sizes. Skipped: ${skippedSizes.join(
+            ", "
+          )} (max stock reached)`
         );
       } else {
         toast.success(`${product.name} added to cart successfully`);
@@ -101,7 +104,15 @@ const ProductPlaceOrder: React.FC<ProductPlaceOrderProps> = ({
 
   return (
     <Button
-      variant={variant}
+      variant={
+        variant as
+          | "default"
+          | "destructive"
+          | "outline"
+          | "secondary"
+          | "ghost"
+          | "link"
+      }
       onClick={handlePlaceOrder}
       disabled={isPlacingOrder}
       className={`${className} flex items-center justify-center gap-2 font-semibold text-md lg:text-lg`}

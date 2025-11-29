@@ -63,6 +63,7 @@
     "embla-carousel-react": "^8.3.0",
     "firebase": "^11.5.0",
     "framer-motion": "^12.15.0",
+    "imagekit-javascript": "^4.0.1",
     "input-otp": "^1.2.4",
     "jspdf": "^3.0.3",
     "jspdf-autotable": "^5.0.2",

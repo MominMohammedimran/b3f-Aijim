@@ -88,7 +88,7 @@ const ProfileSettings = () => {
             </button>
             <button
               className="text-gray-200 font-bold text-lg"
-              onClick={() => toast.dismiss(t.id)}
+              onClick={() => toast.dismiss(String(t))}
             >
               ✕
             </button>

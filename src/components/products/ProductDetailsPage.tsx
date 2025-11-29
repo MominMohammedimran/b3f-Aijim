@@ -63,12 +63,7 @@ const ProductDetailsPage = () => {
           </div>
         )}
 
-        {product && (
-          <RelatedProducts
-            product={product}
-            onProductClick={(product) => navigate(`/product/${product.id}`)}
-          />
-        )}
+        {product && <RelatedProducts product={product} />}
       </div>
     </Layout>
   );

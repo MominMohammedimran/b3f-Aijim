@@ -22,7 +22,7 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({
           additionalImages={product.images || []}
         />
 
-        <ProductDetails product={product} allowMultipleSizes={true} />
+        <ProductDetails product={product} />
       </div>
 
       {/* Reviews Section */}

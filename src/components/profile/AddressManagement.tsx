@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { useAddresses } from '@/hooks/useAddresses';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { PlusCircle, Pencil, Trash, MapPin, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import React, { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useAddresses } from "@/hooks/useAddresses";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { PlusCircle, Pencil, Trash, MapPin, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AddressFormData {
   firstName: string;
@@ -23,40 +23,56 @@ interface AddressFormData {
 
 const AddressManagement = () => {
   const { currentUser } = useAuth();
-  const { addresses, loading, refetch, deleteAddress } = useAddresses(currentUser?.id);
+  const { addresses, loading, refetch, deleteAddress } = useAddresses(
+    currentUser?.id
+  );
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState<any>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState<AddressFormData>({
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    state: '',
-    zipcode: '',
-    phone: '',
-    country: 'India',
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    state: "",
+    zipcode: "",
+    phone: "",
+    country: "India",
     isDefault: false,
   });
 
   const indianStates = [
-    'Andhra Pradesh', 'Assam', 'Bihar', 'Goa', 'Gujarat', 'Haryana', 'Karnataka', 'Kerala',
-    'Maharashtra', 'Madhya Pradesh', 'Odisha', 'Punjab', 'Rajasthan', 'Tamil Nadu', 'Telangana',
-    'Uttar Pradesh', 'West Bengal'
+    "Andhra Pradesh",
+    "Assam",
+    "Bihar",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Karnataka",
+    "Kerala",
+    "Maharashtra",
+    "Madhya Pradesh",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Tamil Nadu",
+    "Telangana",
+    "Uttar Pradesh",
+    "West Bengal",
   ];
 
   const resetForm = () => {
     setFormData({
-      firstName: '',
-      lastName: '',
-      address: '',
-      city: '',
-      state: '',
-      zipcode: '',
-      phone: '',
-      country: 'India',
+      firstName: "",
+      lastName: "",
+      address: "",
+      city: "",
+      state: "",
+      zipcode: "",
+      phone: "",
+      country: "India",
       isDefault: false,
     });
   };
@@ -69,14 +85,14 @@ const AddressManagement = () => {
 
   const handleEdit = (address: any) => {
     setFormData({
-      firstName: address.first_name || '',
-      lastName: address.last_name || '',
-      address: address.address || '',
-      city: address.city || '',
-      state: address.state || '',
-      zipcode: address.zip_code || '',
-      phone: address.phone || '',
-      country: address.country || 'India',
+      firstName: address.first_name || "",
+      lastName: address.last_name || "",
+      address: address.address || "",
+      city: address.city || "",
+      state: address.state || "",
+      zipcode: address.zip_code || "",
+      phone: address.phone || "",
+      country: address.country || "India",
       isDefault: address.is_default || false,
     });
     setEditingAddress(address);
@@ -90,7 +106,7 @@ const AddressManagement = () => {
       if (success) refetch();
     } catch (error) {
       console.error(error);
-      toast.error('Error deleting address');
+      toast.error("Error deleting address");
     } finally {
       setDeletingId(null);
     }
@@ -104,7 +120,7 @@ const AddressManagement = () => {
     try {
       if (editingAddress) {
         const { error } = await supabase
-          .from('addresses')
+          .from("addresses")
           .update({
             first_name: formData.firstName,
             last_name: formData.lastName,
@@ -116,13 +132,13 @@ const AddressManagement = () => {
             country: formData.country,
             is_default: formData.isDefault,
           })
-          .eq('id', editingAddress.id)
-          .eq('user_id', currentUser.id);
+          .eq("id", editingAddress.id)
+          .eq("user_id", currentUser.id);
 
         if (error) throw error;
-        toast.success('Address updated successfully!');
+        toast.success("Address updated successfully!");
       } else {
-        const { error } = await supabase.from('addresses').insert({
+        const { error } = await supabase.from("addresses").insert({
           user_id: currentUser.id,
           first_name: formData.firstName,
           last_name: formData.lastName,
@@ -135,7 +151,7 @@ const AddressManagement = () => {
           is_default: formData.isDefault,
         });
         if (error) throw error;
-        toast.success('Address saved successfully!');
+        toast.success("Address saved successfully!");
       }
 
       refetch();
@@ -143,7 +159,7 @@ const AddressManagement = () => {
       setEditingAddress(null);
       resetForm();
     } catch (error) {
-      toast.error('Failed to save address');
+      toast.error("Failed to save address");
     } finally {
       setSaving(false);
     }
@@ -170,9 +186,12 @@ const AddressManagement = () => {
       )}
 
       {showAddForm ? (
-        <form onSubmit={handleSubmit} className="space-y-4 bg-neutral-900 border border-yellow-500/30 p-4 rounded-none">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 bg-neutral-900 border border-yellow-500/30 p-4 rounded-none"
+        >
           <h3 className="font-semibold text-yellow-400 text-lg uppercase mb-3">
-            {editingAddress ? 'Edit Address' : 'Add New Address'}
+            {editingAddress ? "Edit Address" : "Add New Address"}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -180,7 +199,9 @@ const AddressManagement = () => {
               <Label>First Name</Label>
               <Input
                 value={formData.firstName}
-                onChange={(e) => setFormData((p) => ({ ...p, firstName: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, firstName: e.target.value }))
+                }
                 className="bg-black border border-yellow-500/30 text-white"
                 required
               />
@@ -189,7 +210,9 @@ const AddressManagement = () => {
               <Label>Last Name</Label>
               <Input
                 value={formData.lastName}
-                onChange={(e) => setFormData((p) => ({ ...p, lastName: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, lastName: e.target.value }))
+                }
                 className="bg-black border border-yellow-500/30 text-white"
                 required
               />
@@ -200,7 +223,9 @@ const AddressManagement = () => {
             <Label>Phone</Label>
             <Input
               value={formData.phone}
-              onChange={(e) => setFormData((p) => ({ ...p, phone: e.target.value }))}
+              onChange={(e) =>
+                setFormData((p) => ({ ...p, phone: e.target.value }))
+              }
               className="bg-black border border-yellow-500/30 text-white"
               required
             />
@@ -210,7 +235,9 @@ const AddressManagement = () => {
             <Label>Address</Label>
             <Input
               value={formData.address}
-              onChange={(e) => setFormData((p) => ({ ...p, address: e.target.value }))}
+              onChange={(e) =>
+                setFormData((p) => ({ ...p, address: e.target.value }))
+              }
               className="bg-black border border-yellow-500/30 text-white"
               required
             />
@@ -221,7 +248,9 @@ const AddressManagement = () => {
               <Label>City</Label>
               <Input
                 value={formData.city}
-                onChange={(e) => setFormData((p) => ({ ...p, city: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, city: e.target.value }))
+                }
                 className="bg-black border border-yellow-500/30 text-white"
                 required
               />
@@ -230,7 +259,9 @@ const AddressManagement = () => {
               <Label>State</Label>
               <select
                 value={formData.state}
-                onChange={(e) => setFormData((p) => ({ ...p, state: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, state: e.target.value }))
+                }
                 className="w-full bg-black border border-yellow-500/30 text-white rounded-none py-2"
                 required
               >
@@ -246,7 +277,9 @@ const AddressManagement = () => {
               <Label>ZIP</Label>
               <Input
                 value={formData.zipcode}
-                onChange={(e) => setFormData((p) => ({ ...p, zipcode: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, zipcode: e.target.value }))
+                }
                 className="bg-black border border-yellow-500/30 text-white"
                 required
               />
@@ -278,7 +311,7 @@ const AddressManagement = () => {
                   Saving...
                 </>
               ) : (
-                'Save Address'
+                "Save Address"
               )}
             </Button>
             <Button
@@ -305,7 +338,8 @@ const AddressManagement = () => {
                   </h3>
                   <p className="text-sm text-gray-400">{address.phone}</p>
                   <p className="text-sm text-gray-400 mt-1">
-                    {address.address}, {address.city}, {address.state} - {address.zip_code}
+                    {address.street}, {address.city}, {address.state} -{" "}
+                    {address.zipcode}
                   </p>
                   <p className="text-xs text-gray-500 mt-1 flex items-center">
                     <MapPin className="w-3 h-3 mr-1 " />
@@ -339,7 +373,9 @@ const AddressManagement = () => {
       ) : (
         <div className="text-center py-10 border border-yellow-500/30 bg-neutral-900">
           <MapPin size={48} className="mx-auto text-yellow-400 mb-3" />
-          <h3 className="text-yellow-400 font-semibold text-lg mb-2">No addresses yet</h3>
+          <h3 className="text-yellow-400 font-semibold text-lg mb-2">
+            No addresses yet
+          </h3>
           <p className="text-gray-400 mb-4">Add your first delivery address</p>
           <Button
             onClick={handleAddNew}

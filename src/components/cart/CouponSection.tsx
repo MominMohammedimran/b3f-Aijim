@@ -289,7 +289,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
                         </p>
                       </div>
                       <Button
-                        size="xs"
+                        size="sm"
                         onClick={() => applyCoupon(c.code)}
                         className="bg-yellow-400 hover:bg-yellow-300 text-black text-xs font-semibold px-2 py-1.5 rounded-none"
                       >
