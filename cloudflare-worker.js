@@ -149,13 +149,11 @@ export default {
         statusText: response.statusText,
         headers: {
           ...corsHeaders,
-          // Forward important headers from the backend
           "Content-Type":
             response.headers.get("Content-Type") || "application/json",
-          "Content-Length": response.headers.get("Content-Length") || "",
           "Cache-Control": response.headers.get("Cache-Control") || "no-cache",
           "Content-Security-Policy":
-            "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://api.cashfree.com https://cdn.gpteng.co https://cdn.onesignal.com https://cdn.imagekit.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ik.imagekit.io https:; connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://sdk.cashfree.com https://zfdsrtwjxwzwbrtfgypm.supabase.co https://upload.imagekit.io; frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://api.cashfree.com; media-src 'self' https://zfdsrtwjxwzwbrtfgypm.supabase.co https://ik.imagekit.io;",
+            "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://api.cashfree.com https://cdn.onesignal.com https://cdn.imagekit.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data: https://ik.imagekit.io https:; connect-src 'self' https: wss: https://api.razorpay.com https://api.cashfree.com https://sdk.cashfree.com https://zfdsrtwjxwzwbrtfgypm.supabase.co https://upload.imagekit.io; frame-src 'self' https://checkout.razorpay.com https://sdk.cashfree.com https://api.cashfree.com; media-src 'self' https://ik.imagekit.io https:;",
         },
       });
 
