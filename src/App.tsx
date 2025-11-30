@@ -29,7 +29,7 @@ function ProductSuggestionReminder() {
     if (!products || products.length === 0) return;
 
     const now = Date.now();
-    const DELAY = 65 * 60 * 1000; // 1 hour 5 min
+    const DELAY = 55 * 60 * 1000; // 1 hour 5 min
 
     // Get stored product array or initialize
     const stored: { id: string; lastShown: number }[] = JSON.parse(
@@ -161,10 +161,10 @@ function CartReminders() {
                 alt={item.name}
               />
               <div>
-                <div className="font-semibold text-sm text-black">
+                <div className="font-semibold text-sm text-black line-clamp-1">
                   {item.name}
                 </div>
-                <div className="flex flex-col text-xs font-semibold text-blue-500 gap-1">
+                <div className="flex flex-col text-[10px] font-semibold text-blue-500 gap-1">
                   <span>Still in your cart — complete order now!</span>
                   <a
                     href="/cart"

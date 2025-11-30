@@ -34,7 +34,7 @@ export default function TrustHighlights() {
         ))}
       </div>
 
-      {/* --- Secondary Details: Perfect Alignment with Above Grid --- */}
+      {/* --- Secondary Details: Perfect Alignment with Above Grid --- 
       <div className="grid grid-cols-3 gap-4 text-gray-300 text-sm mt-5 pt-5 text-center">
         {[
           { icon: Lock, text: "Secure Payment" },
@@ -52,6 +52,7 @@ export default function TrustHighlights() {
           </div>
         ))}
       </div>
+      */}
     </div>
   );
 }
