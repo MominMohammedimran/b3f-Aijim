@@ -157,6 +157,27 @@ const Products = () => {
     const filtered = sortProducts(
       products.filter((p) => p.tags?.includes(tag))
     );
+    const [showArrows, setShowArrows] = useState(false);
+
+    useEffect(() => {
+      const updateVisibility = () => {
+        const isMobile = window.innerWidth < 560; // sm breakpoint
+
+        if (isMobile && filtered.length > 2) {
+          setShowArrows(true);
+        } else if (!isMobile && filtered.length > 4) {
+          setShowArrows(true);
+        } else {
+          setShowArrows(false);
+        }
+      };
+
+      updateVisibility();
+      window.addEventListener("resize", updateVisibility);
+
+      return () => window.removeEventListener("resize", updateVisibility);
+    }, [filtered]);
+
     if (!filtered.length) return null;
 
     return (
@@ -168,13 +189,17 @@ const Products = () => {
 
         <div className="relative">
           {/* Left Button */}
-          <button
-            aria-label="Scroll Left"
-            onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-1 rounded-none z-10"
-          >
-            <ChevronLeft size={18} />
-          </button>
+          {showArrows && (
+            <button
+              aria-label="Scroll Left"
+              onClick={() => scroll("left")}
+              className="absolute left-0 top-1/2 -translate-y-1/2 
+                bg-black/50 hover:bg-black text-white p-1 
+                rounded-none z-10 transition"
+            >
+              <ChevronLeft size={18} />
+            </button>
+          )}
 
           {/* Carousel */}
           <div
@@ -184,7 +209,7 @@ const Products = () => {
             {filtered.map((p) => (
               <div
                 key={p.id}
-                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-auto  flex"
+                className="snap-start flex-shrink-0 w-[160px] sm:w-[195px] md:w-[210px] h-auto flex"
               >
                 <ProductCard
                   product={p}
@@ -195,13 +220,17 @@ const Products = () => {
           </div>
 
           {/* Right Button */}
-          <button
-            aria-label="Scroll Right"
-            onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black text-white p-1 rounded-none z-10"
-          >
-            <ChevronRight size={18} />
-          </button>
+          {showArrows && (
+            <button
+              aria-label="Scroll Right"
+              onClick={() => scroll("right")}
+              className="absolute right-0 top-1/2 -translate-y-1/2 
+                bg-black/50 hover:bg-black text-white p-1 
+                rounded-none z-10 transition"
+            >
+              <ChevronRight size={18} />
+            </button>
+          )}
         </div>
       </section>
     );

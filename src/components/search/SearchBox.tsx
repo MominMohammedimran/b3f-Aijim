@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from "react";
+import { Search, X } from "lucide-react";
 
 interface SearchBoxProps {
   searchQuery: string;
@@ -9,38 +8,62 @@ interface SearchBoxProps {
   clearSearch: () => void;
 }
 
-const SearchBox: React.FC<SearchBoxProps> = ({ 
-  searchQuery, 
-  setSearchQuery, 
-  handleSearch, 
-  clearSearch 
+const SearchBox: React.FC<SearchBoxProps> = ({
+  searchQuery,
+  setSearchQuery,
+  handleSearch,
+  clearSearch,
 }) => {
+  const [showChip, setShowChip] = useState(false);
+
+  const onSubmit = (e: React.FormEvent) => {
+    handleSearch(e);
+    if (searchQuery.trim()) setShowChip(true);
+  };
+
+  const removeChip = () => {
+    clearSearch();
+    setShowChip(false);
+  };
+
   return (
-    <form onSubmit={handleSearch} className="relative mb-6 animate-fade-in">
-      <input 
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search for products..."
-        className="input-field pl-10 py-2 w-full text-gray-800 font-semibold text-lg border rounded-lg"
-      />
-      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-800">
-        <svg width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="m19 19-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </span>
-      
-      {searchQuery && (
-        <button 
-          type="button"
-          onClick={clearSearch}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2"
-        >
-          <X size={18} className="text-gray-800" />
-        </button>
+    <div>
+      <form onSubmit={onSubmit} className="relative mb-4 animate-fade-in">
+        <Search
+          size={18}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"
+        />
+
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search for products..."
+          className="w-full pl-10 pr-8 py-2 border rounded-lg text-lg font-semibold text-gray-800"
+        />
+
+        {searchQuery && !showChip && (
+          <button
+            type="button"
+            onClick={clearSearch}
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+          >
+            <X size={18} className="text-gray-600 hover:text-black" />
+          </button>
+        )}
+      </form>
+
+      {showChip && (
+        <div className="mt-2">
+          <span className="inline-flex items-center gap-2 bg-gray-200 text-black px-3 py-1 rounded-none text-md font-semibold">
+            {searchQuery}
+            <button onClick={removeChip}>
+              <X size={14} className="hover:text-red-500" />
+            </button>
+          </span>
+        </div>
       )}
-    </form>
+    </div>
   );
 };
 

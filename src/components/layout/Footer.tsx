@@ -46,9 +46,10 @@ const Footer = () => {
         />
 
         {/* Tagline */}
-        <p className="text-sm text-gray-400 font-medium leading-relaxed max-w-90 mx-auto">
-          Premium oversized streetwear that defines your style. Comfort meets
-          attitude in every piece we create.
+        <p className="text-sm p-1 text-gray-400 font-medium leading-relaxed max-w-90 mx-auto">
+          Aijim is built on the idea that clothing should feel premium without
+          costing thousands. Designed for everyday confidence, crafted with
+          long-lasting materials and minimalist detail.
         </p>
 
         {/* Social Icons */}

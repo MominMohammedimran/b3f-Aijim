@@ -133,6 +133,27 @@ const Index = () => {
     (p) => Array.isArray(p.tags) && p.tags.includes("indexmainimage")
   );
 
+  const [showArrows, setShowArrows] = useState(false);
+
+  useEffect(() => {
+    const updateVisibility = () => {
+      const isMobile = window.innerWidth < 640; // sm breakpoint
+
+      if (isMobile && featuredProducts.length > 2) {
+        setShowArrows(true);
+      } else if (!isMobile && featuredProducts.length > 4) {
+        setShowArrows(true);
+      } else {
+        setShowArrows(false);
+      }
+    };
+
+    updateVisibility();
+    window.addEventListener("resize", updateVisibility);
+
+    return () => window.removeEventListener("resize", updateVisibility);
+  }, [featuredProducts]);
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -229,13 +250,17 @@ const Index = () => {
               <p className="text-gray-400">Loading Products...</p>
             ) : featuredProducts.length > 0 ? (
               <div className="relative w-full">
-                <button
-                  aria-label="Scroll Left"
-                  onClick={() => scroll("left")}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 text-gray-500 bg-black/60 py-0.5 hover:bg-black hover:text-white transition"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
+                {showArrows && (
+                  <button
+                    aria-label="Scroll Left"
+                    onClick={() => scroll("left")}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 
+          bg-black/70 text-white px-1.5 py-1 shadow rounded-none
+          hover:bg-black hover:text-yellow-400 transition"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                )}
 
                 <div
                   ref={scrollRef}
@@ -255,13 +280,17 @@ const Index = () => {
                   ))}
                 </div>
 
-                <button
-                  aria-label="Scroll right"
-                  onClick={() => scroll("right")}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/60 py-0.5 hover:bg-black text-gray-500 hover:text-white transition"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
+                {showArrows && (
+                  <button
+                    aria-label="Scroll Right"
+                    onClick={() => scroll("right")}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10
+          bg-black/70 text-white px-1.5 py-1 shadow rounded-none
+          hover:bg-black  hover:text-yellow-400 transition"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                )}
               </div>
             ) : (
               <p className="text-gray-500 text-sm">

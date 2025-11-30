@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight, Star, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Review {
   id: string;
@@ -19,7 +19,9 @@ interface ProductReviewCarouselProps {
 
 const CARD_MAX_HEIGHT = 160; // Maintain consistent height
 
-const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }) => {
+const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({
+  reviews,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fullscreenOpen, setFullscreenOpen] = useState(false);
   const [fsImages, setFsImages] = useState<string[]>([]);
@@ -32,7 +34,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
     if (reviews.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentIndex((p) => (p + 1) % reviews.length);
-    }, 5000); 
+    }, 5000);
     return () => clearInterval(interval);
   }, [reviews.length]);
 
@@ -48,12 +50,15 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
   };
 
   const fsNext = () => setFsIndex((i) => (i + 1) % fsImages.length);
-  const fsPrev = () => setFsIndex((i) => (i === 0 ? fsImages.length - 1 : i - 1));
+  const fsPrev = () =>
+    setFsIndex((i) => (i === 0 ? fsImages.length - 1 : i - 1));
 
   if (!reviews || reviews.length === 0) {
     return (
-      <div className="text-center py-8 text-white bg-black shadow-lg mx-auto border border-gray-600 w-full rounded-none">
-        <p>No reviews yet. Be the first to leave one!</p>
+      <div className="text-center text-md text-gray-100 gap-1 flex items-center justify-center font-medium">
+        <span className="text-yellow-400 font-semibold ">Trusted</span> by
+        <span className="text-yellow-400 font-bold mx-1">15+</span> Aijim
+        customers till Now !
       </div>
     );
   }
@@ -64,7 +69,9 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
       {[1, 2, 3, 4, 5].map((s) => (
         <Star
           key={s}
-          className={`w-4 h-4 ${s <= rating ? 'text-yellow-500 fill-yellow-500' : 'text-zinc-300'}`}
+          className={`w-4 h-4 ${
+            s <= rating ? "text-yellow-500 fill-yellow-500" : "text-zinc-300"
+          }`}
         />
       ))}
     </div>
@@ -73,11 +80,11 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
   return (
     <div className="w-full   relative">
       <div className="text-center text-xl underline  font-semibold text-yellow-400 mb-4">
-         REVIEWS
+        REVIEWS
       </div>
-      
+
       {/* Review Card Container */}
-      <div 
+      <div
         className="relative w-full overflow-hidden bg-black border border-zinc-200 rounded-none shadow-lg"
         style={{ minHeight: `${CARD_MAX_HEIGHT}px` }}
       >
@@ -90,32 +97,35 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
             // Full width padding, no flex column for the avatar
-            className="p-4 relative" 
+            className="p-4 relative"
           >
             {/* Top Row: Name, Date, and Rating */}
             <div className="flex justify-between items-center mb-1">
-                {/* Left Side: Name and Date */}
-                <div className="flex flex-col">
-                    <p className="font-semibold text-sm text-yellow-400 truncate">
-                        {current.user_name || 'Anonymous'}
-                    </p>
-                    {/* Date included as requested */}
-                    <p className="text-[10px] text-zinc-200">
-                        {new Date(current.created_at).toLocaleDateString()}
-                    </p>
-                </div>
-                
-                {/* Right Side: Rating */}
-                <div className="flex-shrink-0">
-                    <StarRating rating={current.rating} />
-                </div>
+              {/* Left Side: Name and Date */}
+              <div className="flex flex-col">
+                <p className="font-semibold text-sm text-yellow-400 truncate">
+                  {current.user_name || "Anonymous"}
+                </p>
+                {/* Date included as requested */}
+                <p className="text-[10px] text-zinc-200">
+                  {new Date(current.created_at).toLocaleDateString()}
+                </p>
+              </div>
+
+              {/* Right Side: Rating */}
+              <div className="flex-shrink-0">
+                <StarRating rating={current.rating} />
+              </div>
             </div>
 
             {/* Comment */}
-            <div className="text-sm text-zinc-300 leading-snug overflow-hidden mb-2 mt-2" style={{ maxHeight: '60px' }}>
-              <p>" {current.comment || 'No comment provided'} "</p>
+            <div
+              className="text-sm text-zinc-300 leading-snug overflow-hidden mb-2 mt-2"
+              style={{ maxHeight: "60px" }}
+            >
+              <p>" {current.comment || "No comment provided"} "</p>
             </div>
-            
+
             {/* Product Review Images */}
             {current.review_images && current.review_images.length > 0 && (
               <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
@@ -130,14 +140,17 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
                 ))}
               </div>
             )}
-            
+
             {/* Carousel Arrow (Right) */}
             {reviews.length > 1 && (
-                <Button variant="ghost" size="icon" onClick={goNext} 
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={goNext}
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
             )}
           </motion.div>
         </AnimatePresence>
@@ -152,7 +165,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({ reviews }
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-             <div className="relative w-full h-full flex items-center justify-center px-4">
+            <div className="relative w-full h-full flex items-center justify-center px-4">
               <motion.img
                 key={fsImages[fsIndex]}
                 src={fsImages[fsIndex]}

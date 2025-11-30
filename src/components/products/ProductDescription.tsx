@@ -33,8 +33,13 @@ WASH CARE
 
   // ✅ Use product description if available, else fallback
   const text = useMemo(() => {
-    const finalText = desc && desc.trim().length > 20 ? desc : defaultDescription;
-    return finalText.trim().split(/\n+/).map((line) => line.trim()).filter(Boolean);
+    const finalText =
+      desc && desc.trim().length > 20 ? desc : defaultDescription;
+    return finalText
+      .trim()
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean);
   }, [desc]);
 
   // ✅ Group by sections like DETAILS, ARTWORK FEATURES, etc.
@@ -43,8 +48,9 @@ WASH CARE
     let current: { title: string; content: string[] } | null = null;
 
     text.forEach((line) => {
-      const isHeader =
-        line.match(/^(story|details|artwork features|wash care|limited edition|style it with)/i);
+      const isHeader = line.match(
+        /^(story|details|artwork features|wash care|limited edition|style it with)/i
+      );
 
       if (isHeader) {
         if (current) grouped.push(current);
@@ -60,7 +66,10 @@ WASH CARE
   }, [text]);
 
   const [openSections, setOpenSections] = useState(
-    sections.reduce((acc, _, i) => ({ ...acc, [i]: true }), {})
+    sections.reduce((acc, section, index) => {
+      acc[index] = section.title.toLowerCase() === "story"; // Only Story open by default
+      return acc;
+    }, {} as Record<number, boolean>)
   );
 
   const toggleSection = (index: number) =>

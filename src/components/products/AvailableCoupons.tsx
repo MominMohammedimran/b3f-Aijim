@@ -71,7 +71,7 @@ const AvailableCoupons: React.FC = () => {
           Loading coupons...
         </div>
       ) : coupons.length === 0 ? (
-        <div className="text-center py-6 text-gray-400 text-sm">
+        <div className="text-center py-6 text-gray-200 font-medium text-sm">
           No coupons available.
         </div>
       ) : (
@@ -85,7 +85,7 @@ const AvailableCoupons: React.FC = () => {
                 <p className="font-semibold text-yellow-400 text-sm uppercase tracking-wider mb-1">
                   {c.code}
                 </p>
-              <p className="text-[11px] text-gray-300">
+                <p className="text-[11px] text-gray-300">
                   Valid till{" "}
                   {new Date(c.valid_to).toLocaleDateString("en-US", {
                     day: "numeric",
@@ -93,16 +93,12 @@ const AvailableCoupons: React.FC = () => {
                     year: "numeric",
                   })}
                 </p>
-              
               </div>
-                <div>
-                    <p className="text-xs px-1 text-gray-800 bg-white font-medium mb-1">
+              <div>
+                <p className="text-xs px-1 text-gray-800 bg-white font-medium mb-1">
                   {formatDiscount(c)}
                 </p>
-                
-                </div>
-
-              
+              </div>
             </div>
           ))}
         </div>

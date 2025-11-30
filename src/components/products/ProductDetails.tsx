@@ -7,6 +7,9 @@ import {
   Truck,
   Shirt,
   Coins,
+  Lock,
+  MessageCircle,
+  RotateCcw,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Product } from "@/lib/types";
@@ -19,8 +22,10 @@ import ProductPlaceOrder from "./ProductPlaceOrder";
 import ShareModal from "./ShareModal";
 import LiveViewingCounter from "./LiveViewingCounter";
 import AvailableCoupons from "./AvailableCoupons";
+import TrustHighlights from "./TrustHighlights";
+import PincodeCheck from "./PinCodeCheck";
 import ProductDescription from "./ProductDescription";
-import { validatePincode } from "@/utils/pincodeService";
+
 import { useDeliverySettings } from "@/hooks/useDeliverySettings";
 interface SizeWithQuantity {
   size: string;
@@ -34,7 +39,7 @@ export interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const [selectedSizes, setSelectedSizes] = useState<SizeWithQuantity[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(false);
+
   const [showSizeGuide, setShowSizeGuide] = useState(false); // <-- added
   const { cartItems } = useCart();
   const { loading: inventoryLoading } = useProductInventory(product.id);
@@ -108,35 +113,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   );
 
   // --- Pincode ---
-  const [pincode, setPincode] = useState("");
-  const [pincodeResult, setPincodeResult] = useState<{
-    isServiceable: boolean;
-    message: string;
-  } | null>(null);
-  const [pincodeChecked, setPincodeChecked] = useState(false);
-  const [loadingPincode, setLoadingPincode] = useState(false);
 
-  const checkPincode = async () => {
-    if (!pincode) {
-      toast.error("Please enter a valid pincode");
-      return;
-    }
-    setLoadingPincode(true);
-    setPincodeChecked(true);
-    try {
-      const result = await validatePincode(pincode);
-      setPincodeResult({
-        isServiceable: result.isServiceable,
-        message: result.message,
-      });
-    } catch {
-      setPincodeResult({
-        isServiceable: false,
-        message: "Unable to verify PIN code. Please try again later.",
-      });
-    }
-    setLoadingPincode(false);
-  };
   const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"];
 
   const getAijimSize = (size: string) => {
@@ -291,6 +268,34 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
                     </div>
                   </div>
                 )}
+                <table className="w-full  mx-2 text-white font-semibold">
+                  <tbody>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-2 text-yellow-500 font-semibold ">
+                        Fit
+                      </td>
+                      <td className="py-2 text-right font-semibold">
+                        True to size
+                      </td>
+                    </tr>
+
+                    <tr className="border-b border-gray-700 font-semibold">
+                      <td className="py-2 text-yellow-500  ">Fabric</td>
+                      <td className="py-2 text-right">
+                        240 GSM bio-washed , pure cotton
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td className="py-2 text-yellow-500 font-semibold ">
+                        Feel
+                      </td>
+                      <td className="py-2 text-right font-semibold">
+                        Soft, smooth & breathable
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </>
             );
           })()}
@@ -450,104 +455,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       )}
 
       {/* --- Delivery Section --- */}
-      <div className="p-4 bg-gradient-to-br from-black via-gray-900 to-black border border-gray-700 rounded-none m-2 mt-4">
-        <h3 className="text-md font-semibold text-yellow-300 mb-2">
-          Delivery & Returns
-        </h3>
-        <div className="space-y-3">
-          {/* Pincode Input */}
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              maxLength={6}
-              inputMode="numeric"
-              placeholder="Enter PIN Code"
-              value={pincode}
-              onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
-              className="w-80 flex-1 text-xs px-1 py-1.5 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 font-semibold focus:ring-1 focus:ring-yellow-400 outline-none"
-            />
-            <button
-              onClick={checkPincode}
-              disabled={loadingPincode}
-              className="px-2 py-1.5 bg-yellow-500 text-xs text-black font-semibold rounded-none hover:bg-yellow-400 disabled:opacity-50"
-            >
-              {loadingPincode ? "Checking..." : "Check"}
-            </button>
-          </div>
-
-          {pincodeChecked && pincodeResult && (
-            <p
-              className={`text-[10px] font-semibold ${
-                pincodeResult.isServiceable ? "text-green-400" : "text-red-400"
-              }`}
-            >
-              {pincodeResult.message}
-            </p>
-          )}
-
-          {/* --- Delivery Instructions Dropdown --- */}
-          <div className="border-t border-gray-700 pt-2">
-            <button
-              onClick={() => setShowInstructions((prev) => !prev)}
-              className="w-full flex items-center justify-between text-xs font-semibold text-gray-200 hover:text-yellow-400 transition-colors"
-            >
-              Delivery Instructions
-              <ChevronDown
-                className={`w-4 h-4 transform transition-transform duration-300 ${
-                  showInstructions ? "rotate-180 text-yellow-400" : "rotate-0"
-                }`}
-              />
-            </button>
-            {/* Dropdown content */}
-            <div
-              className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                showInstructions ? "max-h-[300px] mt-2" : "max-h-0"
-              }`}
-            >
-              <div className="bg-gray-800 text-gray-300 text-xs font-medium p-3 border border-gray-700 rounded-none space-y-1 leading-relaxed">
-                <p>• Easy 7-day returns on eligible items</p>
-                <p>• No Cash on Delivery available</p>
-                <Link
-                  to="/cancellation-refund"
-                  className="text-yellow-400 hover:text-yellow-300 underline block mt-1"
-                >
-                  View Cancellation & Refund Policy →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PincodeCheck />
 
       {/* --- Description + Features + Coupons --- */}
       <div className="px-2 pb-4">
         {/* Product Description */}
         <ProductDescription desc={product.description} />
-
-        {/* --- Feature Highlights (Lucide Icons) --- */}
-        <div className="grid grid-cols-4  gap-1 mt-2 mb-2 text-center">
-          {[
-            { icon: IndianRupee, label: "Free Delhivery" },
-            { icon: Truck, label: "Fast Delhivery" },
-            { icon: Shirt, label: "100% Cotton" },
-            { icon: Coins, label: "Reward Points" },
-          ].map(({ icon: Icon, label }, index) => (
-            <div
-              key={index}
-              className="group flex flex-col items-center justify-center  transition-all duration-300 p-3 rounded-lg text-white shadow-md "
-            >
-              <div className="flex items-center gap-2 justify-center bg-gray-800 hover:bg-indigo-600 transition-all duration-300 rounded-full w-8 h-8 mb-1">
-                <Icon className="w-4 h-4 text-white transition-transform duration-300 group-hover:scale-110" />
-              </div>
-              <p className="text-[10px] sm:text-[13px] font-medium leading-tight group-hover:text-yellow-400">
-                {label}
-              </p>
-            </div>
-          ))}
-        </div>
+        <AvailableCoupons />
 
         {/* Available Coupons */}
-        <AvailableCoupons />
+
+        <TrustHighlights />
       </div>
 
       {/* --- Share Modal --- */}
