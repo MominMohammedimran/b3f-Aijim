@@ -193,6 +193,7 @@ function CartReminders() {
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [showPreloader, setShowPreloader] = useState(false);
   useReactQueryStorage(queryClient, "local");
   // 🧹 Auto-Unregister All Service Workers (runs once)
   useEffect(() => {
@@ -264,7 +265,21 @@ function App() {
 
   // ✅ OneSignal setup (singleton, safe)
 
-  if (loading) return <Preloader onComplete={() => setLoading(false)} />;
+  useEffect(() => {
+    const hasVisited = localStorage.getItem("hasVisited");
+
+    if (!hasVisited) {
+      // Show preloader only first time
+      setShowPreloader(true);
+
+      // Mark as visited so next time it won't show
+      localStorage.setItem("hasVisited", "true");
+    }
+  }, []);
+
+  if (showPreloader) {
+    return <Preloader onComplete={() => setShowPreloader(false)} />;
+  }
 
   return (
     <div className="bg-black min-h-screen">

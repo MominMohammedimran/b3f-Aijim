@@ -7,15 +7,15 @@ import "swiper/css";
 
 const NewHero = () => {
   const bannerMobile = [
-    "https://ik.imagekit.io/o5ewoek4p/banner/Aijim_mobile_banner_001.jpg?updatedAt=1764167706722",
-    "https://ik.imagekit.io/o5ewoek4p/banner/Aijim_mobile_banner_001.jpg?updatedAt=1764167706722",
-    "https://ik.imagekit.io/o5ewoek4p/banner/Aijim_mobile_banner_001.jpg?updatedAt=1764167706722",
+    "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
+    "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
+    "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
   ];
 
   const bannerLargeScreens = [
-    "https://ik.imagekit.io/o5ewoek4p/banner/Aijim-desktop-banner-001.webp?updatedAt=1764167706181",
-    "https://ik.imagekit.io/o5ewoek4p/banner/Aijim-desktop-banner-001.webp?updatedAt=1764167706181",
-    "https://ik.imagekit.io/o5ewoek4p/banner/Aijim-desktop-banner-001.webp?updatedAt=1764167706181",
+    "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
+    "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
+    "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
   ];
 
   const [banners, setBanners] = useState(bannerMobile);

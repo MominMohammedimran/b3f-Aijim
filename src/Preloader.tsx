@@ -9,7 +9,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(timer);
-          setTimeout(onComplete, 400); // smooth fade-out
+          setTimeout(onComplete, 200); // smooth fade-out
           return 100;
         }
         return prev + 2;
