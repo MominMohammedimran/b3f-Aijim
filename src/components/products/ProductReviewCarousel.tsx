@@ -119,11 +119,10 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({
             </div>
 
             {/* Comment */}
-            <div
-              className="text-sm text-zinc-300 leading-snug overflow-hidden mb-2 mt-2"
-              style={{ maxHeight: "60px" }}
-            >
-              <p>" {current.comment || "No comment provided"} "</p>
+            <div className="text-sm text-zinc-300 leading-snug overflow-hidden mb-2 mt-2 h-auto">
+              <p className="h-auto">
+                " {current.comment || "No comment provided"} "
+              </p>
             </div>
 
             {/* Product Review Images */}

@@ -1,39 +1,38 @@
-
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import Layout from '@/components/layout/Layout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import UserProfileOrders from '@/components/profile/UserProfileOrders';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import Layout from "@/components/layout/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import UserProfileOrders from "@/components/profile/UserProfileOrders";
 
 const UserProfile: React.FC = () => {
   const { currentUser, userProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    phone: '',
-    email: ''
+    first_name: "",
+    last_name: "",
+    phone: "",
+    email: "",
   });
 
   useEffect(() => {
     if (userProfile) {
       setFormData({
-        first_name: userProfile.first_name || '',
-        last_name: userProfile.last_name || '',
-        phone: userProfile.phone || '',
-        email: userProfile.email || currentUser?.email || ''
+        first_name: userProfile.first_name || "",
+        last_name: userProfile.last_name || "",
+        phone: userProfile.phone || "",
+        email: userProfile.email || currentUser?.email || "",
       });
     }
   }, [userProfile, currentUser]);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,22 +42,22 @@ const UserProfile: React.FC = () => {
     setLoading(true);
     try {
       const { error } = await supabase
-        .from('profiles')
+        .from("profiles")
         .update({
           first_name: formData.first_name,
           last_name: formData.last_name,
           phone: formData.phone,
           email: formData.email,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', currentUser.id);
+        .eq("id", currentUser.id);
 
       if (error) throw error;
 
-      toast.success('Profile updated successfully');
+      toast.success("Profile updated successfully");
     } catch (error) {
-      console.error('Error updating profile:', error);
-      toast.error('Failed to update profile');
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -99,7 +98,9 @@ const UserProfile: React.FC = () => {
                         <Input
                           id="first_name"
                           value={formData.first_name}
-                          onChange={(e) => handleInputChange('first_name', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("first_name", e.target.value)
+                          }
                         />
                       </div>
                       <div>
@@ -107,7 +108,9 @@ const UserProfile: React.FC = () => {
                         <Input
                           id="last_name"
                           value={formData.last_name}
-                          onChange={(e) => handleInputChange('last_name', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("last_name", e.target.value)
+                          }
                         />
                       </div>
                     </div>
@@ -118,7 +121,9 @@ const UserProfile: React.FC = () => {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("email", e.target.value)
+                        }
                       />
                     </div>
 
@@ -127,12 +132,14 @@ const UserProfile: React.FC = () => {
                       <Input
                         id="phone"
                         value={formData.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
                       />
                     </div>
 
                     <Button type="submit" disabled={loading}>
-                      {loading ? 'Updating...' : 'Update Profile'}
+                      {loading ? "Updating..." : "Update Profile"}
                     </Button>
                   </form>
                 </CardContent>

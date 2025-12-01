@@ -270,8 +270,6 @@ function App() {
     <div className="bg-black min-h-screen">
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
-          {/* Force query to run so caching can store */}
-
           <ProductSuggestionReminder />
           <AuthProvider>
             <CartProvider>
