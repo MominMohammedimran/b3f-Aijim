@@ -106,6 +106,21 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const discountPercent = hasDiscount
     ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
     : 0;
+{/*const calculateOfferTotal = (selectedSizes: { quantity: number }[]) => {
+  const totalQty = selectedSizes.reduce((sum, item) => sum + item.quantity, 0);
+
+  const pairs = Math.floor(totalQty / 2);
+  const remainder = totalQty % 2;
+
+  return pairs * 1000 + (remainder ? 549 : 0);
+};
+
+
+
+const totalPrice = calculateOfferTotal(selectedSizes);
+
+
+*/}
 
   const totalPrice = selectedSizes.reduce(
     (sum, s) => sum + s.quantity * product.price,
@@ -218,84 +233,73 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
             return (
               <>
                 <div className="flex items-center gap-5 ml-2">
-                  <p>
-                    Regular size:{" "}
-                    <span className="text-yellow-400 font-semibold">
-                      {lastSize}
-                    </span>
-                    &nbsp;~ AIJIM size:{" "}
-                    <span className="text-yellow-400 font-semibold">
-                      {aijimSize}
-                    </span>
-                  </p>
+  <p>
+    Regular size:{" "}
+    <span className="text-yellow-400 font-semibold">{lastSize}</span>
+    &nbsp;~ AIJIM size:{" "}
+    <span className="text-yellow-400 font-semibold">{aijimSize}</span>
+  </p>
 
-                  <p
-                    onClick={() => setShowSizeGuide(true)}
-                    className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold"
-                  >
-                    Size chart →
-                  </p>
-                </div>
-                <div className="flex  gap-2  p-0 mt-2 ml-2 rounded-md">
-                  <span className="text-gray-200 text-xs">
-                    Chest - {chest} cm{" "}
-                  </span>
+  <p
+    onClick={() => setShowSizeGuide(true)}
+    className="text-yellow-400 underline hover:text-yellow-300 text-[11px] font-semibold cursor-pointer"
+  >
+    Size chart →
+  </p>
+</div>
 
-                  <span className="text-gray-200 text-xs">
-                    Shoulder - {shoulder} cm
-                  </span>
+<div className="flex gap-2 p-0 mt-2 ml-2 rounded-md">
+  <span className="text-gray-200 text-xs">Chest {chest}cm</span>
+  <span className="text-gray-200 text-xs">Shoulder {shoulder}cm</span>
+  <span className="text-gray-200 text-xs">Length {length}cm</span>
+</div>
 
-                  <span className="text-gray-200 text-xs">
-                    Length - {length} cm{" "}
-                  </span>
-                </div>
+{/* --- Replaced Table with Simple Specs --- */}
+<div className="flex justify-between items-start gap-2 mt-1 px-0 text-center">
 
-                {/* --- Popup Modal --- */}
-                {showSizeGuide && (
-                  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
-                    <div className="relative w-[90%] max-w-md bg-black p-3 rounded shadow-lg">
-                      <button
-                        onClick={() => setShowSizeGuide(false)}
-                        className="absolute top-1 right-2 text-red-500 text-lg font-bold"
-                      >
-                        ✕
-                      </button>
-                      <img
-                        src="https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/sign/productimages/size%20guide/aijim-size-guide.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV84Y2JiM2U1ZS1jZTNiLTRkMTctYTlhOC0zZGU5YzViYTRlZTkiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9kdWN0aW1hZ2VzL3NpemUgZ3VpZGUvYWlqaW0tc2l6ZS1ndWlkZS5wbmciLCJpYXQiOjE3NjMzOTAzMjgsImV4cCI6MTc5NDkyNjMyOH0.QILeaKATU2vwJmqRL5tTwhZTzrvLBn315YEF66uC09A"
-                        alt="AIJIM Size Guide"
-                        className="w-full h-auto object-contain"
-                      />
-                    </div>
-                  </div>
-                )}
-                <table className="w-full  mx-2 text-white font-semibold">
-                  <tbody>
-                    <tr className="border-b border-gray-700">
-                      <td className="py-2 text-yellow-500 font-semibold ">
-                        Fit
-                      </td>
-                      <td className="py-2 text-right font-semibold">
-                        True to size
-                      </td>
-                    </tr>
+  <div className="flex-1 border-r border-yellow-400 p-1">
+    <p className="text-yellow-400 font-semibold text-[12px]">Fit</p>
+    <p className="text-gray-200 text-[10px] mt-1 font-medium">
+      True to size
+    </p>
+  </div>
 
-                    <tr className="border-b border-gray-700 font-semibold">
-                      <td className="py-2 text-yellow-500  ">Fabric</td>
-                      <td className="py-2 text-right">
-                        240 GSM bio-washed , pure cotton
-                      </td>
-                    </tr>
+  <div className="flex-1 p-1">
+    <p className="text-yellow-400 font-semibold text-[12px]">Fabric</p>
+    <p className="text-gray-200 text-[10px] mt-1 font-medium">
+      240 GSM , pure Cotton
+    </p>
+  </div>
 
-                    <tr>
-                      <td className="py-2 text-yellow-500 font-semibold ">
-                        Feel
-                      </td>
-                      <td className="py-2 text-right font-semibold">
-                        Soft, smooth & breathable
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+  <div className="flex-1 border-l border-yellow-400 p-1">
+    <p className="text-yellow-400 font-semibold text-[12px]">Feel</p>
+    <p className="text-gray-200 text-[10px] mt-1 font-medium">
+      Soft & Breathable
+    </p>
+  </div>
+
+</div>
+
+
+{/* --- Modal Popup --- */}
+{showSizeGuide && (
+  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
+    <div className="relative w-[90%] max-w-md bg-black p-3 rounded shadow-lg">
+      <button
+        onClick={() => setShowSizeGuide(false)}
+        className="absolute top-1 right-2 text-red-500 text-lg font-bold"
+      >
+        ✕
+      </button>
+      <img
+        src="https://ik.imagekit.io/o5ewoek4p/aijim-size-guide.jpg?updatedAt=1764687769057"
+        alt="AIJIM Size Guide"
+        className="w-full h-auto object-contain"
+      />
+    </div>
+  </div>
+)}
+
               </>
             );
           })()}
@@ -303,8 +307,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       )}
 
       {/* --- Sizes --- */}
-      <div className="px-2">
-        <span className="text-gray-200 text-lg font-medium pt-1">
+      <div className="px-2 mt-3">
+        <span className="text-gray-200 text-lg  font-medium pt-1">
           Select Size{" "}
         </span>
         <div className="grid mt-1 grid-cols-6 md:grid-cols-6 gap-2 relative border-t border-gray-200">
@@ -359,7 +363,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
               return (
                 <div
                   key={sel.size}
-                  className="w-auto p-2 border border-gray-500 bg-gradient-to-br from-black via-gray-900 to-black rounded-sm"
+                  className="w-auto p-2 border border-gray-500 bg-muted-background rounded-sm"
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-semibold uppercase text-md mr-2">
