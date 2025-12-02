@@ -64,7 +64,7 @@ const ProfileSettings = () => {
           first_name: formData.first_name,
           last_name: formData.last_name,
           phone: formData.phone,
-          display_name: newDisplayName,
+          display_name: formData.display_name,
           address: formData.address,
           city: formData.city,
           state: formData.state,

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -6,54 +5,73 @@ import { supabase } from '@/integrations/supabase/client';
 import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface AuthFormContainerProps {
-  mode?: 'signin' | 'signup';
-}
-
-const AuthFormContainer: React.FC<AuthFormContainerProps> = ({ mode = 'signin' }) => {
+const AuthFormContainer = ({ mode = 'signin' }) => {
   const [currentMode, setCurrentMode] = useState(mode);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-const switchAuthTab = (target: 'signin' | 'signup') => {
-  window.dispatchEvent(new CustomEvent("switch-tab", { detail: target }));
-};
 
-  const handleSignUp = async () => {
-    // SignUp success handling is done in the SignUpForm component
-    navigate('/signin');
+  const switchAuthTab = (target: 'signin' | 'signup') => {
+    window.dispatchEvent(new CustomEvent("switch-tab", { detail: target }));
   };
 
-  const handleSignIn = async (data: { email: string; password: string }) => {
-  setLoading(true);
+  /** ✨ Signup Completed + OTP Verified Handler */
+const handleSignupSuccess = async (email: string, password: string,fullName:string) => {
   try {
-    const { data: authData, error } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      // Customize error message
-      if (error.message.toLowerCase().includes('invalid login credentials')) {
-        toast.error('Invalid email or password. Please try again.');
-      } else if (error.message.toLowerCase().includes('email not confirmed')) {
-        toast.error('Please verify your email before signing in.');
-      } else {
-        toast.error(error.message || 'Failed to sign in');
-      }
+      toast.error("Account created but login failed.");
+      return;
+    }
+
+    const referral = sessionStorage.getItem("referral_source") || "direct";
+
+    // 👇 FIX: Safe insert/update without conflict
+    await supabase.from("profiles").upsert(
+      { 
+        id: data.user.id, 
+        display_name:fullName,
+        email, 
+        referral_source: referral 
+      },
+      { onConflict: "id" }
+    );
+
+    toast.success("Welcome to Aijim Family ❤️");
+    navigate("/");
+  } catch {
+    toast.error("Unexpected error during login.");
+  }
+};
+
+  /** ✨ Normal Login Handler */
+ const handleSignIn = async ({ email, password }) => {
+  setLoading(true);
+
+  try {
+    const { data: authData, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      toast.error(
+        error.message.toLowerCase().includes("invalid login credentials")
+          ? "Invalid email or password."
+          : error.message
+      );
       throw error;
     }
 
-    if (authData.user) {
-      toast.success('Signed in successfully!');
-      navigate('/');
-    }
-  } catch (error: any) {
-  //  console.error('Sign in error:', error);
-    // Avoid duplicate toasts
-    if (!error.message?.toLowerCase().includes('invalid login credentials')) {
-      toast.error(error.message || 'Failed to sign in');
+    if (authData?.user) {
+      const referral = sessionStorage.getItem("referral_source") || "direct";
+
+      // Ensure profile always exists
+      await supabase.from("profiles").upsert(
+        { id: authData.user.id, email, referral_source: referral },
+        { onConflict: "id" }
+      );
+
+      toast.success("Signed in successfully!");
+      navigate("/");
     }
   } finally {
     setLoading(false);
@@ -62,58 +80,37 @@ const switchAuthTab = (target: 'signin' | 'signup') => {
 
 
   return (
-    <div className="flex justify-center  bg-black rounded-none ">
-   <div className="max-w-md w-full space-y-1 bg-black rounded-none">
-        {/*<div className="text-center">
-          <h2 className="text-xl font-bold text-center text-gray-900">
-            {currentMode === 'signin' ? 'Sign in to your account' : 'Create your account'}
-          </h2>
-        </div>*/}
+    <div className="flex justify-center bg-black">
+      <div className="max-w-md w-full space-y-4 bg-black">
 
         {currentMode === 'signin' ? (
-       
-            <div className=" p-6 pt-6 bg-black rounded-none">
-              <LoginForm onSubmit={handleSignIn} loading={loading} />
-              <div className="mt-4 text-center">
-                <span className="text-sm text-gray-300">
-                  Don't have an account ?{' '}
-                  <Button
-                    variant="link"
-                    className="p-0 h-auto font-semibold"
-                    
-            onClick={() => {
-  switchAuthTab("signup");
-  setCurrentMode("signup");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}}
-
-                  >
-                    Sign up
-                  </Button>
-                </span>
-              </div>
-              </div>
-          
+          <div className="p-2">
+            <LoginForm onSubmit={handleSignIn} loading={loading} />
+            <div className="mt-4 text-center text-gray-300">
+              Don't have an account?{" "}
+              <Button
+                variant="link"
+                className="font-semibold"
+                onClick={() => { switchAuthTab("signup"); setCurrentMode("signup"); }}
+              >
+                Sign up
+              </Button>
+            </div>
+          </div>
         ) : (
-          <div>
-            <SignUpForm onSuccess={handleSignUp} />
-            <div className="mt-4 text-center">
-              <span className="text-sm px-4 py-2 bg-gray-800 text-gray-300">
-                Already have an account ? {' '}
-                <Button
-                  variant="link"
-                  
-                  className="p-0 h-auto font-semibold"
-          onClick={() => {
-  switchAuthTab("signin");
-  setCurrentMode("signin");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}}
+          <div className="p-2">
+            {/* 👇 IMPORTANT: Pass the success callback */}
+            <SignUpForm onSuccess={handleSignupSuccess} />
 
-                >
-                  Sign in
-                </Button>
-              </span>
+            <div className="mt-4 text-center font-medium text-gray-300">
+              Already have an account ? 
+              <Button
+                variant="link"
+                className="font-semibold"
+                onClick={() => { switchAuthTab("signin"); setCurrentMode("signin"); }}
+              >
+                Sign in
+              </Button>
             </div>
           </div>
         )}

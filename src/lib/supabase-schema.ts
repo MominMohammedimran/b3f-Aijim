@@ -242,6 +242,8 @@ export type Database = {
           phone: string | null;
           phone_number: string | null;
           reward_points: number | null;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -257,6 +259,8 @@ export type Database = {
           phone?: string | null;
           phone_number?: string | null;
           reward_points?: number | null;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -268,6 +272,8 @@ export type Database = {
           email?: string;
           first_name?: string | null;
           id?: string;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
           last_name?: string | null;
           phone?: string | null;
           phone_number?: string | null;

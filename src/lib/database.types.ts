@@ -365,6 +365,8 @@ export interface Database {
           phone_number: string | null;
           reward_points: number | null;
           updated_at: string;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
           device_token?: string | null;
         };
         Insert: {
@@ -378,6 +380,8 @@ export interface Database {
           phone_number?: string | null;
           reward_points?: number | null;
           updated_at?: string;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
           device_token?: string | null;
         };
         Update: {
@@ -390,6 +394,8 @@ export interface Database {
           last_name?: string | null;
           phone_number?: string | null;
           reward_points?: number | null;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
           updated_at?: string;
           device_token?: string | null;
         };

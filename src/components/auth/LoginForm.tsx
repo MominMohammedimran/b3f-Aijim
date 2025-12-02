@@ -63,7 +63,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, onOTPSuccess }
             type={showPassword ? "text" : "password"}
             value={formData.password}
             onChange={handleChange}
-            placeholder="passowrd"
+            placeholder="password"
             required
             className="pr-10"
           />

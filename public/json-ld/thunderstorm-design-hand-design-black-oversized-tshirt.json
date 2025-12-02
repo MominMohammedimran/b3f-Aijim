@@ -17,7 +17,7 @@
       "@type": "Offer",
       "url": "https://aijim.shop/product/thunderstorm-design-hand-design-black-oversized-tshirt",
       "priceCurrency": "INR",
-      "price": 549,
+      "price": 548,
       "priceValidUntil": "2025-12-31",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition",
@@ -71,7 +71,7 @@
           "@type": "Person",
           "name": "Verified Customer"
         },
-        "datePublished": "2025-12-01",
+        "datePublished": "2025-12-02",
         "reviewBody": "Amazing fabric and premium stitching. Highly recommended!",
         "reviewRating": {
           "@type": "Rating",

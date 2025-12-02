@@ -96,6 +96,8 @@ export interface UserProfile {
   display_name?: string;
   created_at: string;
   updated_at: string;
+  referral_campaign?: string;
+          referral_source?: string ;
   reward_points?: number;
   device_token?: string;
   auth_user?: {

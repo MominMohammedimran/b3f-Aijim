@@ -704,6 +704,9 @@ export type Database = {
           state: string | null;
           updated_at: string | null;
           device_token?: string | null;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
+
           zip_code: string | null;
         };
         Insert: {
@@ -720,6 +723,8 @@ export type Database = {
           reward_points?: number | null;
           state?: string | null;
           device_token?: string | null;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
           updated_at?: string | null;
           zip_code?: string | null;
         };
@@ -736,6 +741,8 @@ export type Database = {
           phone?: string | null;
           reward_points?: number | null;
           state?: string | null;
+          referral_campaign?: string | null;
+          referral_source?: string | null;
           device_token?: string | null;
           updated_at?: string | null;
           zip_code?: string | null;

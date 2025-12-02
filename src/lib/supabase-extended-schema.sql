@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   display_name TEXT,
   avatar_url TEXT,
   phone TEXT,
+  referral_campaign Text,
+          referral_source Text,
   address JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

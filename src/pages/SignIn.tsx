@@ -64,7 +64,7 @@ const SignIn = () => {
             }
             className="w-full"
           >
-            <TabsList className="grid grid-cols-2 w-full bg-gray-900 bg-black rounded-none border border-gray-200">
+            <TabsList className="grid grid-cols-2 w-full  bg-black rounded-none border border-gray-200">
               <TabsTrigger
                 value="signin"
                 className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white"
@@ -80,7 +80,7 @@ const SignIn = () => {
               </TabsTrigger>
             </TabsList>
 
-            <div className="bg-gray-900 rounded-none shadow-lg p-6 mt-3">
+            <div className="bg-black rounded-none shadow-lg border border-gray-200 p-1 mt-3">
               <TabsContent value="signin">
                 <AuthForm initialMode="signin" redirectTo="/" />
               </TabsContent>

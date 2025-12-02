@@ -174,7 +174,7 @@ const AddressManagement = () => {
     );
 
   return (
-    <div className="text-white p-1 rounded-none">
+    <div className="text-white p-0 rounded-none">
       {!showAddForm && (
         <Button
           onClick={handleAddNew}
@@ -188,7 +188,7 @@ const AddressManagement = () => {
       {showAddForm ? (
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 bg-neutral-900 border border-yellow-500/30 p-4 rounded-none"
+          className="space-y-4 bg-background   p-1 rounded-none"
         >
           <h3 className="font-semibold text-yellow-400 text-lg uppercase mb-3">
             {editingAddress ? "Edit Address" : "Add New Address"}
@@ -199,10 +199,11 @@ const AddressManagement = () => {
               <Label>First Name</Label>
               <Input
                 value={formData.firstName}
+                placeholder="first name"
                 onChange={(e) =>
                   setFormData((p) => ({ ...p, firstName: e.target.value }))
                 }
-                className="bg-black border border-yellow-500/30 text-white"
+                className="bg-background border border-yellow-500/30 text-white"
                 required
               />
             </div>
@@ -210,10 +211,11 @@ const AddressManagement = () => {
               <Label>Last Name</Label>
               <Input
                 value={formData.lastName}
+                placeholder="last name"
                 onChange={(e) =>
                   setFormData((p) => ({ ...p, lastName: e.target.value }))
                 }
-                className="bg-black border border-yellow-500/30 text-white"
+                className="bg-background border border-yellow-500/30 text-white"
                 required
               />
             </div>
@@ -223,10 +225,11 @@ const AddressManagement = () => {
             <Label>Phone</Label>
             <Input
               value={formData.phone}
+              placeholder="+91 -----------"
               onChange={(e) =>
                 setFormData((p) => ({ ...p, phone: e.target.value }))
               }
-              className="bg-black border border-yellow-500/30 text-white"
+              className="bg-background border border-yellow-500/30 text-white"
               required
             />
           </div>
@@ -235,10 +238,11 @@ const AddressManagement = () => {
             <Label>Address</Label>
             <Input
               value={formData.address}
+              placeholder="door no, street..."
               onChange={(e) =>
                 setFormData((p) => ({ ...p, address: e.target.value }))
               }
-              className="bg-black border border-yellow-500/30 text-white"
+              className="bg-background border border-yellow-500/30 text-white"
               required
             />
           </div>
@@ -246,23 +250,27 @@ const AddressManagement = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label>City</Label>
+          
               <Input
+                  placeholder="city."
                 value={formData.city}
                 onChange={(e) =>
                   setFormData((p) => ({ ...p, city: e.target.value }))
                 }
-                className="bg-black border border-yellow-500/30 text-white"
+                className="bg-background border border-yellow-500/30 text-white"
                 required
               />
             </div>
             <div>
               <Label>State</Label>
               <select
+              
                 value={formData.state}
                 onChange={(e) =>
                   setFormData((p) => ({ ...p, state: e.target.value }))
                 }
-                className="w-full bg-black border border-yellow-500/30 text-white rounded-none py-2"
+                
+                className="w-full bg-background border border-yellow-500/30 text-white rounded-none py-2"
                 required
               >
                 <option value="">Select State</option>
@@ -280,13 +288,14 @@ const AddressManagement = () => {
                 onChange={(e) =>
                   setFormData((p) => ({ ...p, zipcode: e.target.value }))
                 }
-                className="bg-black border border-yellow-500/30 text-white"
+                className="bg-background border border-yellow-500/30 text-white"
                 required
+                placeholder="postal code."
               />
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 hidden">
             <Checkbox
               id="isDefault"
               checked={formData.isDefault}
@@ -371,7 +380,7 @@ const AddressManagement = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-10 border border-yellow-500/30 bg-neutral-900">
+        <div className="text-center py-10 border border-yellow-500/30 bg-background">
           <MapPin size={48} className="mx-auto text-yellow-400 mb-3" />
           <h3 className="text-yellow-400 font-semibold text-lg mb-2">
             No addresses yet

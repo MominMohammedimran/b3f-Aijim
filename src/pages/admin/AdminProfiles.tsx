@@ -24,6 +24,7 @@ interface Profile {
   display_name?: string;
   phone?: string;
   reward_points?: number;
+   referral_source?:string;
 }
 
 interface Order {
@@ -69,7 +70,7 @@ const AdminProfiles = () => {
       const { data: profilesData, error } = await supabase
         .from("profiles")
         .select(
-          "id, email, first_name, last_name, created_at, display_name, phone, reward_points"
+          "id, email, first_name, last_name, created_at, display_name, phone, reward_points, referral_source"
         )
         .order("created_at", { ascending: false });
 
@@ -167,7 +168,7 @@ const AdminProfiles = () => {
             {profile.display_name || profile.first_name || "Unknown"}{" "}
             {profile.last_name || ""}
           </h3>
-          <p className="text-gray-400 text-sm">{profile.email}</p>
+          <p className="text-gray-400 text-sm">account created - {profile. referral_source}</p>
 
           <p className="text-gray-400 text-xs mt-1">
             Orders: <span className="font-semibold">{profile.orderCount}</span>{" "}
@@ -176,6 +177,7 @@ const AdminProfiles = () => {
               ₹{profile.totalSpent.toFixed(2)}
             </span>
           </p>
+           <p className="text-gray-400 text-sm">{profile.email}</p>
         </div>
 
         <div className="flex gap-2">

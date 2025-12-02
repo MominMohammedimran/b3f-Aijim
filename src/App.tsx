@@ -10,6 +10,8 @@ import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 import { initializeSecurity } from "./utils/securityUtils";
 import { useReactQueryStorage } from "./utils/useReactQueryStorage";
+import {trackReferral }from "./utils/trackReferral";
+
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "./utils/product";
@@ -194,6 +196,7 @@ function CartReminders() {
 function App() {
   const [loading, setLoading] = useState(true);
   const [showPreloader, setShowPreloader] = useState(false);
+  
   useReactQueryStorage(queryClient, "local");
   // 🧹 Auto-Unregister All Service Workers (runs once)
   useEffect(() => {
@@ -205,6 +208,7 @@ function App() {
         });
       });
     }
+    trackReferral();
   }, []);
 
   // 🔥 VERSION CHECK — auto refresh if new version
