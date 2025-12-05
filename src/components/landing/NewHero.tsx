@@ -8,14 +8,12 @@ import "swiper/css";
 const NewHero = () => {
   const bannerMobile = [
     "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
-    "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
-    "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
+   ,
   ];
 
   const bannerLargeScreens = [
     "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
-    "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
-    "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
+
   ];
 
   const [banners, setBanners] = useState(bannerMobile);

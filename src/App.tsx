@@ -195,8 +195,17 @@ function CartReminders() {
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [showPreloader, setShowPreloader] = useState(false);
-  
+
+ const [showPreloader, setShowPreloader] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPreloader(false);
+    }, 1000); // <-- ideal timing for Google Lighthouse
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useReactQueryStorage(queryClient, "local");
   // 🧹 Auto-Unregister All Service Workers (runs once)
   useEffect(() => {
@@ -267,8 +276,7 @@ function App() {
     };
   }, []);
 
-  // ✅ OneSignal setup (singleton, safe)
-
+  
   useEffect(() => {
     const hasVisited = localStorage.getItem("hasVisited");
 
@@ -281,10 +289,11 @@ function App() {
     }
   }, []);
 
-  if (showPreloader) {
+ if (showPreloader) {
     return <Preloader onComplete={() => setShowPreloader(false)} />;
   }
 
+  
   return (
     <div className="bg-black min-h-screen">
       <HelmetProvider>
