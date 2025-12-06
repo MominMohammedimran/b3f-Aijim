@@ -24,41 +24,7 @@ const ContactUs = () => {
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const data = {
-      access_key: "e695e1f9-0c1a-4e6f-88ab-b7aa04b23dae",
-      name: formData.name,
-      email: formData.email,
-      message: formData.message,
-    };
-
-    try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-      if (result.success) {
-        setFormData({ name: "", email: "", message: "" });
-        setShowPopup(true);
-      } else {
-        toast.error("Failed to send message. Please try again.");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Network error. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   // Auto-close popup after 10 seconds
   useEffect(() => {

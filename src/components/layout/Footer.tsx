@@ -13,6 +13,10 @@ const Footer = () => {
     { name: "Terms & Condition", href: "/terms-conditions" },
     { name: "Cancellation & Returns", href: "/cancellation-refund" },
     { name: "Shipping Info", href: "/shipping-delivery" },
+      { name: "Track Using AWB", href: "/track-package" },
+       { name: "Feedback ", href: "/feedback" },
+ 
+
   ];
   const getWhatsappMessage = () => {
     return encodeURIComponent(`Hello, I need help with my order`);
@@ -117,22 +121,26 @@ const Footer = () => {
 
         {/* Footer Links (centered row) */}
         <div className="flex flex-wrap justify-center items-center gap-x-7 gap-y-3 mt-10 px-2 pb-5">
-          {footerLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.href}
-              onClick={() =>
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                })
-              }
-              className="text-[12px] sm:text-[15px] text-gray-300 hover:text-yellow-400 transition-colors duration-200"
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
+  {footerLinks.map((link) => (
+    <Link
+      key={link.name}
+      to={link.href}
+      onClick={() =>
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        })
+      }
+      className="relative group text-[12px] sm:text-[15px] text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+    >
+      {link.name}
+
+      {/* underline animation */}
+      <span className="absolute left-0 bottom-[-4px] h-[2px] w-0 bg-yellow-400 rounded-full transition-all duration-600 group-hover:w-full"></span>
+    </Link>
+  ))}
+</div>
+
       </div>
     </footer>
   );

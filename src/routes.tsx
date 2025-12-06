@@ -33,7 +33,9 @@ import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Wishlist from "./pages/Wishlist";
 import ThankYou from "./components/ui/ThankYou";
+import TrackPackage from "./pages/TrackPackage";
 import OrderRelatedIssue from "./components/orders/OrderRelatedIssue";
+import Feedback from "./components/layout/Feedback";
 
 // Legal Pages
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
@@ -91,11 +93,14 @@ const AppRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/account" element={<Account />} />
         <Route path="/track-order" element={<TrackOrder />} />
+         <Route path="/track-package" element={<TrackPackage />} />
         <Route path="/track-order/:id" element={<TrackOrder />} />
 
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/feedback" element={<Feedback />} />
+        
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/payment-issue" element={<PaymentRelatedIssue />} />
         <Route path="/order-related-issue" element={<OrderRelatedIssue />} />

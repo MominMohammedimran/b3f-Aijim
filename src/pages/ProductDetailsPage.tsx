@@ -80,7 +80,7 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
         </div>
 
         {loading ? (
-          <div className="bg-gray-900 shadow-sm p-4 text-center text-gray-200">
+          <div className="bg-gray-900 shadow-sm p-4 text-center text-gray-200 font-semibold">
             Loading product details...
           </div>
         ) : error ? (

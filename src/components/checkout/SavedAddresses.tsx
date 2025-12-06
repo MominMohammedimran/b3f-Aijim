@@ -91,14 +91,14 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                   </div>
 
                   {/* optional edit / delete small actions */}
-                  <div className="hidden md:flex md:flex-col md:items-end md:gap-2">
+                  <div className="hidden md:flex md:flex-col md:items-end md:gap-2 hidden">
                     {onEditAddress && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           onEditAddress(address);
                         }}
-                        className="text-xs text-gray-300 underline"
+                        className="text-xs text-gray-300 underline hidden"
                       >
                         Edit
                       </button>
@@ -109,7 +109,7 @@ const SavedAddresses: React.FC<SavedAddressesProps> = ({
                           e.stopPropagation();
                           onDeleteAddress(address.id);
                         }}
-                        className="text-xs text-red-400 underline"
+                        className="text-xs text-red-400 underline hidden"
                       >
                         Delete
                       </button>

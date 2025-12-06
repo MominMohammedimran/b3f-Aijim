@@ -1,7 +1,8 @@
-
 import React from 'react';
+import { useLocation } from "react-router-dom";
 import Navbar from './Navbar';
 import Footer from './Footer';
+import Feedback from './Feedback';
 import ChatbaseAIWidget from '../ui/ChatbaseAIWidget';
 import StructuredData from '../seo/StructuredData';
 import InstallAppButton from '../InstallAppButton';
@@ -12,18 +13,21 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
+  const location = useLocation(); 
+  const isHomePage = location.pathname === "/"; // <–– detect homepage
+
   const organizationData = {
     name: "AIJIM",
-    url: "https://aijm.shop",
-    logo: "https://aijim.shop/logo.png",
-    description: "Premium fashion and apparel including oversized tees, hoodies and trendy clothing with great discounts.",
+    url: "https://aijim.shop",
+    logo: "https://aijim.shop/aijim.svg",
+    description: "Premium fashion and apparel including oversized tees trendy clothing with great discounts.",
     contactPoint: {
       email: "aijim.official@gmail.com",
       contactType: "Customer Service",
       areaServed: "India"
     },
     sameAs: [
-      "https://facebook.com/aijim",
+      "https://facebook.com/aijim.shop",
       "https://instagram.com/aijim.shop",
       "https://twitter.com/aijim"
     ]
@@ -43,13 +47,19 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
     <div className="flex flex-col min-h-screen bg-black text-white">
       <StructuredData type="organization" data={organizationData} />
       <StructuredData type="website" data={websiteData} />
+      
       <Navbar />
-      <main className="flex-grow  bg-black">
+
+      <main className="flex-grow bg-black">
         {children}
       </main>
+
+      {/* Only show Feedback component on Home page */}
+      {isHomePage && <Feedback />}
+
       {!hideFooter && <Footer />}
+
       <ChatbaseAIWidget />
-    
     </div>
   );
 };

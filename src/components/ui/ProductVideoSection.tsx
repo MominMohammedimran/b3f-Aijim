@@ -163,6 +163,7 @@ const ProductVideoSection: React.FC = () => {
 
       {/* Left Button */}
       <button
+      aria-label="Scroll Left"
         onClick={() => navigate("prev")}
         disabled={activeVideoIndex === 0}
         className="absolute left-1 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-black p-1 shadow-lg disabled:opacity-50 transition-opacity"
@@ -172,6 +173,7 @@ const ProductVideoSection: React.FC = () => {
 
       {/* Right Button */}
       <button
+      aria-label="Scroll Right"
         onClick={() => navigate("next")}
         disabled={activeVideoIndex === videos.length - 1}
         className="absolute right-1 top-1/2 -translate-y-1/2 z-10 bg-white/70 hover:bg-black p-1 shadow-lg disabled:opacity-50"
