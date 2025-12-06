@@ -23,7 +23,7 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }
   {/* Label */}
  {/* AIJIM Label */}
 <span
-  className="absolute left-2 top-2 z-50 text-xs sm:text-sm font-semibold uppercase tracking-wide text-white transition-all duration-300"
+  className="absolute left-2 top-2.5 z-50 text-xs sm:text-sm font-semibold uppercase tracking-wide text-white transition-all duration-300"
   style={{
     filter: "drop-shadow(0px 0px 6px rgba(0,0,0,0.8))",
   }}

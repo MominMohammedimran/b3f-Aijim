@@ -70,7 +70,7 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
       />
 
       <div className="container-custom mt-14 ">
-        <div className=" flex items-center pt-10 mt-10">
+        <div className=" flex items-center pt-5 mt-15">
           <Link to="/" className="mr-2">
             <ArrowLeft size={24} className="back-arrow" />
           </Link>

@@ -99,7 +99,7 @@ const AppRoutes = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/feedback"  element={<Feedback  />} />
+        <Route path="/feedback"  element={<Feedback mode='page'  />} />
         
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/payment-issue" element={<PaymentRelatedIssue />} />
