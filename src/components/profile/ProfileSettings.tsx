@@ -132,46 +132,49 @@ const ProfileSettings = () => {
       <Card className="border-none">
         <CardContent className="p-1 border-none rounded-none text-sm">
           <form onSubmit={handleSubmit} className="space-y-0">
-            {/* DISPLAY NAME */}
-            <div className="mb-1">
-              <Label htmlFor="display_name" className="text-sm">
-                Display Name
-              </Label>
-              <Input
-                id="display_name"
-                name="display_name"
-                value={formData.display_name}
-                onChange={handleChange}
-                placeholder="Enter your display name"
-                className="text-sm"
-              />
-            </div>
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    {/* DISPLAY NAME */}
+    <div className="mb-1">
+      <Label htmlFor="display_name" className="text-sm">
+        Display Name
+      </Label>
+      <Input
+        id="display_name"
+        name="display_name"
+        value={formData.display_name}
+        onChange={handleChange}
+        placeholder="Enter your display name"
+        className="text-sm"
+      />
+    </div>
 
-            {/* EMAIL */}
-            <div className="mb-2">
-              <Label htmlFor="email" className="text-sm">
-                Email
-              </Label>
-              <Input
-                id="email"
-                value={currentUser?.email || ""}
-                disabled
-                className="bg-gray-800 text-sm font-medium"
-              />
-              <p className="text-sm font-semimedium text-white mt-2 mb-5">
-                Email cannot be changed
-              </p>
-            </div>
+    {/* EMAIL */}
+    <div className="mb-2">
+      <Label htmlFor="email" className="text-sm">
+        Email
+      </Label>
+      <Input
+        id="email"
+        value={currentUser?.email || ""}
+        disabled
+        className="bg-gray-800 text-sm font-medium"
+      />
+    </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full font-semibold rounded-none"
-            >
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Save Changes
-            </Button>
-          </form>
+    {/* SUBMIT BUTTON */}
+    <div className="sm:col-span-2 flex sm:flex-row">
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full sm:flex-1 font-semibold rounded-none text-center items-center justify-center"
+      >
+        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        Save Changes
+      </Button>
+    </div>
+  </div>
+</form>
+
         </CardContent>
       </Card>
     </div>

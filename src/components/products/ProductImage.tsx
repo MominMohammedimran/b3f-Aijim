@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn,Share2} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductImageProps {
   image: string;
   name: string;
   additionalImages?: string[];
+   
 }
 
 const ProductImage: React.FC<ProductImageProps> = ({
   image,
   name,
   additionalImages = [],
+  
 }) => {
   const media = [image, ...additionalImages].filter(Boolean);
 
@@ -80,10 +82,13 @@ const ProductImage: React.FC<ProductImageProps> = ({
       {/* MAIN IMAGE */}
       <div className="w-full flex flex-col items-center">
         <div
-          className="relative w-full h-[60vh] lg:h-[80vh] overflow-hidden bg-black"
+         className="relative w-full h-[60vh] lg:h-[80vh] overflow-hidden bg-black object-contain hover:scale-[1.02] transition-all duration-300"
+
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
+          {/* SHARE BUTTON */}
+  
           <AnimatePresence initial={false}>
             <motion.div
               key={idx}
@@ -148,66 +153,69 @@ const ProductImage: React.FC<ProductImageProps> = ({
         </div>
 
         {/* THUMBNAILS WITH SWIPE + ARROWS */}
-        {media.length > 1 && (
-          <div className="w-full mt-3 relative">
-            {/* Left Scroll Arrow */}
-            <button
-              className="absolute left-1 top-1/2 -translate-y-1/2 bg-black p-1 rounded-full z-10"
-              onClick={() =>
-                thumbRef.current?.scrollBy({ left: -120, behavior: "smooth" })
-              }
-            >
-              <ChevronLeft className="text-white" size={18} />
-            </button>
+      {media.length > 1 && (
+  <div className="w-full mt-3 relative">
+    {/* Scroll wrapper with black background */}
+    <div className="bg-black rounded-xl relative overflow-hidden">
+      {/* Left Scroll Arrow */}
+      <button
+        className="absolute left-1 top-1/2 -translate-y-1/2 bg-black p-1 rounded-full z-10"
+        onClick={() =>
+          thumbRef.current?.scrollBy({ left: -120, behavior: "smooth" })
+        }
+      >
+        <ChevronLeft className="text-white" size={18} />
+      </button>
 
-            <div
-              ref={thumbRef}
-              className="
-    flex justify-center items-center gap-2 
-    overflow-x-scroll overflow-y-hidden 
-    scrollbar-hide px-8 p-2
-  "
-              onTouchStart={onThumbTouchStart}
-              onTouchEnd={onThumbTouchEnd}
-            >
-              {media.map((m, i) => (
-                <div key={i} className="flex-shrink-0">
-                  {isVideo(m) ? (
-                    <video
-                      src={m}
-                      className={`h-14 w-14 rounded-xl border object-cover ${
-                        idx === i
-                          ? "border-yellow-400 scale-105"
-                          : "border-gray-600"
-                      }`}
-                      muted
-                    />
-                  ) : (
-                    <img
-                      src={m}
-                      onClick={() => setIdx(i)}
-                      className={`h-16 w-16 rounded object-cover cursor-pointer border ${
-                        idx === i
-                          ? "border-yellow-400 scale-105"
-                          : "border-gray-600"
-                      }`}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Right Scroll Arrow */}
-            <button
-              className="absolute right-1 top-1/2 -translate-y-1/2 bg-black p-1 rounded-full z-10"
-              onClick={() =>
-                thumbRef.current?.scrollBy({ left: 120, behavior: "smooth" })
-              }
-            >
-              <ChevronRight className="text-white" size={18} />
-            </button>
+      {/* Scrollable thumbnails */}
+      <div
+        ref={thumbRef}
+        className="flex gap-2 overflow-x-scroll overflow-y-hidden px-8 py-2 scrollbar-hide"
+        onTouchStart={onThumbTouchStart}
+        onTouchEnd={onThumbTouchEnd}
+      >
+        {media.map((m, i) => (
+          <div key={i} className="flex-shrink-0">
+            {isVideo(m) ? (
+              <video
+                src={m}
+                className={`h-14 w-14 rounded-xl border object-cover ${
+                  idx === i
+                    ? "border-yellow-400 scale-110"
+                    : "border-gray-600"
+                }`}
+                muted
+              />
+            ) : (
+              <img
+                src={m}
+                onClick={() => setIdx(i)}
+                className={`h-16 w-16 rounded object-cover cursor-pointer border ${
+                  idx === i
+                    ? "border-yellow-400 scale-105"
+                    : "border-gray-600"
+                }`}
+              />
+            )}
           </div>
-        )}
+        ))}
+      </div>
+
+      {/* Right Scroll Arrow */}
+      <button
+        className="absolute right-1 top-1/2 -translate-y-1/2 bg-black p-1 rounded-full z-10"
+        onClick={() =>
+          thumbRef.current?.scrollBy({ left: 120, behavior: "smooth" })
+        }
+      >
+        <ChevronRight className="text-white" size={18} />
+      </button>
+    </div>
+  </div>
+)}
+
+
+
       </div>
 
       {/* FULLSCREEN VIEW */}
@@ -260,6 +268,8 @@ const ProductImage: React.FC<ProductImageProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      
     </>
   );
 };

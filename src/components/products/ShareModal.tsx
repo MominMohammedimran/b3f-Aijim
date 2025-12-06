@@ -86,7 +86,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, product }) => 
         </div>
 
         {/* Share Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 justify-center items-center mt-8 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 justify-center items-center mt-8 w-full">
           <Button
             onClick={handleWhatsAppShare}
             className="flex items-center justify-center gap-2 py-3 sm:py-2 text-sm sm:text-xs font-semibold rounded-lg 

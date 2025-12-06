@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { triggerCartReminder } from "@/utils/triggerCartReminder";
 import { useCart } from "../context/CartContext";
 import { toast } from "sonner";
+import Feedback from "./legal/Feedback";
 const Index = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -321,6 +322,7 @@ const Index = () => {
             </div>
           )}
         </div>
+       
       </div>
     </Layout>
   );

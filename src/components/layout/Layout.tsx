@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation } from "react-router-dom";
 import Navbar from './Navbar';
 import Footer from './Footer';
-import Feedback from './Feedback';
+import Feedback from '@/pages/legal/Feedback'
 import ChatbaseAIWidget from '../ui/ChatbaseAIWidget';
 import StructuredData from '../seo/StructuredData';
 import InstallAppButton from '../InstallAppButton';
@@ -55,7 +55,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
       </main>
 
       {/* Only show Feedback component on Home page */}
-      {isHomePage && <Feedback />}
+      {isHomePage && <Feedback mode='inline'/>}
 
       {!hideFooter && <Footer />}
 

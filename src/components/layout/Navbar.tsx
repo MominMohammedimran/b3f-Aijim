@@ -74,7 +74,7 @@ const Navbar = () => {
               className="flex items-center uppercase text-white font-semibold text-[10px] sm:text-[13px] px-4 whitespace-nowrap"
             >
               {/*<Tag size={14} className="text-white mr-1" /> Flat ₹500 Off on Orders Above ₹2500*/}
-              "Every T-shirt tells a story — built from hustle. #
+              "Everys Aijim T-shirt tells a story — built from hustle. #
               <span className="font-bold ">AIJIM</span>”
             </span>
           ))}

@@ -153,8 +153,8 @@ const RewardsSection = () => {
       {/* Orders */}
       <div className="p-2">
         <h3 className="text-xl font-semibold text-white mb-3"> Orders & Rewards</h3>
-        <div className="space-y-4">
-          {orders.map((order) => (
+        <div className="space-y-4 grid grid-cols-1 sm:grid-cols-2">
+          {orders.map((order,index) => (
             <Card
               key={order.id}
               className="rounded-none  border border-gray-700 shadow hover:shadow-green-400/10 transition"
@@ -162,7 +162,7 @@ const RewardsSection = () => {
               <CardContent className="p-1">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-white font-medium">{order.order_number}</p>
+                    <p className="text-white font-medium">{index+1}{') '}{order.order_number}</p>
                     <p className="text-sm font-medium text-gray-300">₹{order.total}</p>
                   </div>
                   <div className="text-right space-y-1">

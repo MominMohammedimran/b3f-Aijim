@@ -35,7 +35,7 @@ import Wishlist from "./pages/Wishlist";
 import ThankYou from "./components/ui/ThankYou";
 import TrackPackage from "./pages/TrackPackage";
 import OrderRelatedIssue from "./components/orders/OrderRelatedIssue";
-import Feedback from "./components/layout/Feedback";
+import Feedback from "./pages/legal/Feedback";
 
 // Legal Pages
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
@@ -99,7 +99,7 @@ const AppRoutes = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/feedback" element={<Feedback />} />
+        <Route path="/feedback"  element={<Feedback  />} />
         
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/payment-issue" element={<PaymentRelatedIssue />} />
