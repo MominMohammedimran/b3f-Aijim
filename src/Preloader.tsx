@@ -1,60 +1,54 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-
-const MESSAGES = [
-  
-  "PREPARING YOUR EXPERIENCE",
-  
-  "READY ✔️",
-];
+import { useEffect } from "react";
 
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
-  const [step, setStep] = useState(0);
 
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      index++;
-      if (index < MESSAGES.length) {
-        setStep(index);
-      } else {
-        clearInterval(interval);
-        setTimeout(onComplete, 300);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
+    const timer = setTimeout(onComplete, 2000);
+    return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black text-white">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black text-white">
+      
+      {/* Logo */}
       <motion.img
         src="/aijim-uploads/aijim.svg"
         alt="AIJIM"
-        className="w-44 sm:w-56 md:w-64 mb-6"
-        initial={{ opacity: 0, scale: 0.9 }}
+        className="w-40 sm:w-52 md:w-60 mb-3"
+        initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        loading="eager"
+        transition={{ duration: 0.6, ease: "easeOut" }}
       />
 
-      <motion.div
-        className="h-1.5 w-56 bg-gray-800 rounded-full overflow-hidden"
-        initial={{ width: 0 }}
-        animate={{ width: `${((step + 1) / MESSAGES.length) * 100}%` }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="bg-yellow-400 h-full"></div>
-      </motion.div>
+      {/* Center-Out Progress Bar */}
+      <div className="relative w-60 h-1.5 bg-neutral-700 rounded-full overflow-hidden flex">
+        
+        {/* Left half */}
+        <motion.div
+          className="bg-yellow-400 h-full w-1/2 origin-right"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.4, ease: "easeInOut" }}
+        />
 
+        {/* Right half */}
+        <motion.div
+          className="bg-yellow-400 h-full w-1/2 origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.4, ease: "easeInOut" }}
+        />
+      </div>
+
+      {/* Text */}
       <motion.p
-        key={step}
-        className="text-sm mt-4 tracking-[0.15em] text-white"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
+        className="mt-1 text-lg tracking-[0.05em] font-light"
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
       >
-        {MESSAGES[step]}
+        READY ✔️
       </motion.p>
     </div>
   );
