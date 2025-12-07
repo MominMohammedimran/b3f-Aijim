@@ -55,8 +55,9 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
       </main>
 
       {/* Only show Feedback component on Home page */}
+      {isHomePage && <FeaturedArticles/>}
       {isHomePage && <Feedback mode='inline'/>}
-    {isHomePage && <FeaturedArticles/>}
+    
 
       {!hideFooter && <Footer />}
 
