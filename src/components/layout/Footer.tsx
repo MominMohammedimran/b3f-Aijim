@@ -114,7 +114,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 my-6 w-90 mx-1" />
 
         {/* Copyright */}
-        <p className="text-xs md:text-md lg:text-md text-gray-400 font-medium">
+        <p className="text-xs md:text-md lg:text-md text-gray-200 font-medium">
           © {new Date().getFullYear()}{" "}
           <span className="font-semibold text-white">AIJIM Clothing</span> ® —
           Made with ❤️ in India.

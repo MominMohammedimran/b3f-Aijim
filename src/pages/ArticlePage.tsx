@@ -81,16 +81,16 @@ const ArticlePage = () => {
           </Link>
         {/* Hero Image */}
         {article.image && (
-          <div className="relative w-full h-[40vh] overflow-hidden">
+          <div className="relative w-full h-[40vh] ">
             <motion.img
               src={article.image}
               alt={article.title}
-              className="w-full h-full object-cover opacity-90"
+              className="w-full h-full object-contain opacity-100"
               initial={{ opacity: 0, scale: 1.05 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.2 }}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black" />
+            <div className="absolute inset-0 " />
           </div>
         )}
 
@@ -130,12 +130,12 @@ const ArticlePage = () => {
               leading-relaxed bg-black px-3 md:px-7 py-3 rounded-none border border-neutral-700 shadow-lg
 
               [&>h1]:text-yellow-500 [&>h1]:font-semibold [&>h1]:text-xl
-              [&>h2]:text-blue-400 [&>h2]:font-semibold [&>h2]:text-lg
-              [&>h3]:text-white [&>h3]:font-semibold [&>h3]:text-md
+              [&>h2]:text-red-500 [&>h2]:font-medium [&>h2]:text-lg
+              [&>h3]:text-white [&>h3]:font-medium [&>h3]:text-md
 
-              [&>p]:text-md [&>p]:leading-[1.8] [&>p]:text-neutral-200 [&>p]:my-4
+              [&>p]:text-sm  [&>p]:font-medium [&>p]:leading-relaxed [&>p]:text-neutral-200 [&>p]:my-4
 
-              [&>ul]:list-disc [&>ul]:pl-6 [&>li]:text-neutral-300 [&>li]:marker:text-yellow-400 [&>li]:my-2
+              [&>ul]:list-disc [&>ul]:pl-6 [&>li]:text-neutral-400 [&>li]:marker:text-yellow-400 [&>li]:my-2
 
               [&>a]:text-blue-400 hover:[&>a]:text-yellow-400 transition
               [&>strong]:text-white [&>strong]:font-semibold

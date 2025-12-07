@@ -21,9 +21,9 @@ import Products from "./pages/Products";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import ProductsPage from "./pages/ProductsPage";
 import NotFound from "./pages/NotFound";
-import AboutUs from "./pages/AboutUs";
+import AboutUs from "./pages/legal/AboutUs";
 import PaymentRelatedIssue from "./components/payment/PaymentRelatedIssue";
-import ContactUs from "./pages/ContactUs";
+import ContactUs from "./pages/legal/ContactUs";
 import OrderComplete from "./pages/OrderComplete";
 import OrderHistory from "./pages/OrderHistory";
 import Profile from "./pages/Profile";
@@ -98,9 +98,9 @@ const AppRoutes = () => {
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/account" element={<Account />} />
-        <Route path="/track-order" element={<TrackOrder />} />
+        
          <Route path="/track-package" element={<TrackPackage />} />
-        <Route path="/track-order/:id" element={<TrackOrder />} />
+        
 
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />

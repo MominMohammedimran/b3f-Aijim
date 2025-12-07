@@ -111,10 +111,10 @@ const AdminArticlesList: React.FC = () => {
                       />
                     </div>
                   )}
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 w-full">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="font-semibold truncate">{article.title}</h3>
+                        <h3 className="font-semibold  line-clamp-1">{article.title}</h3>
                         <p className="text-sm text-muted-foreground line-clamp-1">
                           {article.excerpt || 'No excerpt'}
                         </p>

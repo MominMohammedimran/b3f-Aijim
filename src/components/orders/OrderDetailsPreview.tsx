@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ArrowLeft, CreditCard, Package, Gift, Truck } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import TrackOrder from "@/pages/TrackOrder";
+
 
 interface OrderDetailsPreviewProps {
   orders: any[];
@@ -196,7 +198,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
 
         {/* Info Cards */}
         {/* Info Cards */}
-        <div className="space-y-0 mt-4">
+        <div className="space-y-0 mt-4 grid grid-cols-2">
           {/* Payment Status */}
           <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
             <div className="flex items-center justify-center gap-2 ">
@@ -242,7 +244,9 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
           </div>
 
           {/* Rewards / Coupon */}
-          <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
+          
+        </div>
+<div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Gift className="w-5 h-5 text-yellow-400" />
               <h3 className="text-sm font-semibold text-yellow-400 uppercase">
@@ -262,10 +266,8 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
               </span>
             </p>
           </div>
-        </div>
-
         {/* Issue Buttons */}
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="mt-2 grid grid-cols-2 sm:grid-cols-2 gap-1">
           {order.status !== "delivered" && (
             <Link
               to={`/payment-issue?orderId=${order.order_number}`}
@@ -285,7 +287,13 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
             </Button>
           </Link>
         </div>
+        
+
+
+ < TrackOrder orderNumber={orderid} />
+
       </div>
+
     </Layout>
   );
 };

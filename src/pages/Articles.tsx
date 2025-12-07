@@ -38,6 +38,9 @@ const Articles = () => {
         <div className="min-h-screen bg-black pt-28 pb-16">
 
           {/* Header */}
+          <h2 className="text-2xl font-bold  text-center mb-6 text-white  ">From The Journal</h2>
+          
+
        
 
           {/* Article List */}
@@ -54,15 +57,15 @@ const Articles = () => {
         key={article.id}
         to={`/articles/${article.slug}`}
         onClick={() => window.scrollTo(0, 0)}
-        className="group flex gap-5 border border-gray-700 hover:border-yellow-400 rounded-lg p-4 transition-all cursor-pointer hover:bg-[#0f0f0f]"
+        className="group flex gap-5 border border-gray-700 hover:border-yellow-400 rounded-none p-4 transition-all cursor-pointer hover:bg-[#0f0f0f]"
       >
         {/* Thumbnail */}
-        <div className="w-24 h-24 md:w-32 md:h-32 rounded-md overflow-hidden bg-gray-900 flex-shrink-0">
+        <div className="w-24 h-24 md:w-32 md:h-32 rounded-none overflow-hidden bg-gray-900 flex-shrink-0">
           {article.image ? (
             <img
               src={article.image}
               alt={article.title}
-              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105 group-hover:opacity-100 opacity-90"
+              className="w-full h-full object-contain transition-all duration-500 group-hover:scale-105 group-hover:opacity-100 opacity-90"
             />
           ) : (
             <div className="flex items-center justify-center h-full text-gray-500 text-xs">
