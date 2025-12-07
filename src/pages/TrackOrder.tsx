@@ -206,21 +206,15 @@ const TrackOrder: React.FC<TrackOrderProps> = ({ orderNumber }) => {
         <div className="w-full mx-auto px-1 py-8 space-y-8">
             {/* Header */}
             
-
+<h2 className="text-xl font-bold text-center text-white border-b borderr-gray-100 ">
+                        Tracking status
+                    </h2>
             {/* Order Summary (Kept) */}
-            <div className="bg-gray-900 border border-gray-800 rounded-none p-6 shadow-lg flex justify-between flex-col md:flex-row">
+            <div className="bg-gray-900 border border-gray-800 rounded-none p-6 shadow-lg  flex justify-between flex-col md:flex-row">
                 <div className="">
                     <h2 className="text-xl font-bold text-yellow-400">
                         {tracking.order_number}
                     </h2>
-                    <p className="text-sm text-gray-400 mt-1">
-                        Placed on {new Date(tracking.created_at).toLocaleDateString()}
-                        {tracking.total && (
-                            <span className="ml-4 text-white">
-                                | Total: ₹{tracking.total.toFixed(2)}
-                            </span>
-                        )}
-                    </p>
                 </div>
 
                 <div className="flex gap-3 items-center">

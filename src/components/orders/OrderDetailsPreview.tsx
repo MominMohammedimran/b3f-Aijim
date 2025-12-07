@@ -180,20 +180,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
             </div>
           ))}
 
-          {/* Track Order */}
-          {order.payment_status !== "pending" &&
-            order.payment_status !== "failed" && (
-              <div className="mt-3 text-center">
-                <Link
-                  to={`/track-order/${order.order_number}`}
-                  state={{ order }}
-                >
-                  <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold w-full py-3 rounded-none shadow-md hover:shadow-yellow-500/40 transition-all">
-                    <Truck className="w-4 h-4 mr-2" /> Track Order
-                  </Button>
-                </Link>
-              </div>
-            )}
+        
         </div>
 
         {/* Info Cards */}
@@ -247,7 +234,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
           
         </div>
 <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="flex items-center justify-center gap-1 mb-2">
               <Gift className="w-5 h-5 text-yellow-400" />
               <h3 className="text-sm font-semibold text-yellow-400 uppercase">
                 Rewards / Coupon
