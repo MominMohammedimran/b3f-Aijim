@@ -63,7 +63,7 @@ export const usePushNotifications = () => {
 
       const sub = await regToUse.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource,
       });
 
       await saveSubscription(sub);
@@ -83,7 +83,7 @@ export const usePushNotifications = () => {
       const { data: { user } } = await supabase.auth.getUser();
       const subJson = JSON.parse(JSON.stringify(sub.toJSON()));
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('push_subscribers')
         .upsert(
           [

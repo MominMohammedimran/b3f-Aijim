@@ -1,46 +1,27 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, X, ImagePlus } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Upload, X, ImagePlus, Loader2 } from 'lucide-react';
+import { uploadToImageKit } from '@/lib/imagekit';
 import { toast } from 'sonner';
 
-interface ProductImageUploadProps {
+interface ImageKitUploadProps {
   mainImage?: string;
   additionalImages?: string[];
   onMainImageChange: (url: string) => void;
   onAdditionalImagesChange: (urls: string[]) => void;
-  productId?: string;
+  folder: string;
 }
 
-const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
+const ImageKitUpload: React.FC<ImageKitUploadProps> = ({
   mainImage,
   additionalImages = [],
   onMainImageChange,
   onAdditionalImagesChange,
-  productId
+  folder
 }) => {
   const [uploading, setUploading] = useState(false);
-
-  const uploadImage = async (file: File): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
-    const filePath = `${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('product-images')
-      .upload(filePath, file);
-
-    if (uploadError) throw uploadError;
-
-    const { data } = supabase.storage
-      .from('product-images')
-      .getPublicUrl(filePath);
-
-    return data.publicUrl;
-  };
 
   const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,11 +29,11 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
 
     try {
       setUploading(true);
-      const url = await uploadImage(file);
+      const url = await uploadToImageKit(file, folder);
       onMainImageChange(url);
       toast.success('Main image uploaded successfully');
     } catch (error) {
-     // console.error('Error uploading image:', error);
+      console.error('Error uploading image:', error);
       toast.error('Failed to upload image');
     } finally {
       setUploading(false);
@@ -65,12 +46,12 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
 
     try {
       setUploading(true);
-      const uploadPromises = files.map(uploadImage);
+      const uploadPromises = files.map(file => uploadToImageKit(file, folder));
       const urls = await Promise.all(uploadPromises);
       onAdditionalImagesChange([...additionalImages, ...urls]);
       toast.success('Additional images uploaded successfully');
     } catch (error) {
-     // console.error('Error uploading images:', error);
+      console.error('Error uploading images:', error);
       toast.error('Failed to upload images');
     } finally {
       setUploading(false);
@@ -82,27 +63,44 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
     onAdditionalImagesChange(newImages);
   };
 
+  const removeMainImage = () => {
+    onMainImageChange('');
+  };
+
   return (
     <div className="space-y-6">
       <div>
-        <Label className="text-lg font-medium">Product Images</Label>
-        <p className="text-sm text-gray-500 mb-4">Upload high-quality images for your product</p>
+        <Label className="text-lg font-medium">Images</Label>
+        <p className="text-sm text-muted-foreground mb-4">
+          Upload images to ImageKit (folder: {folder})
+        </p>
       </div>
 
       {/* Main Image */}
       <div className="space-y-2">
-        <Label htmlFor="mainImage">Main Product Image</Label>
+        <Label htmlFor="mainImage">Main Image</Label>
         <div className="flex items-start gap-4">
-          <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-gray-300">
+          <div className="relative w-32 h-32 bg-muted rounded-lg overflow-hidden border-2 border-dashed border-border">
             {mainImage ? (
-              <img 
-                src={mainImage} 
-                alt="Main product" 
-                className="w-full h-full object-cover"
-              />
+              <>
+                <img 
+                  src={mainImage} 
+                  alt="Main" 
+                  className="w-full h-full object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                  onClick={removeMainImage}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </>
             ) : (
               <div className="flex items-center justify-center h-full">
-                <ImagePlus className="h-8 w-8 text-gray-400" />
+                <ImagePlus className="h-8 w-8 text-muted-foreground" />
               </div>
             )}
           </div>
@@ -114,8 +112,8 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
               onChange={handleMainImageUpload}
               disabled={uploading}
             />
-            <p className="text-xs text-gray-500">
-              This will be the primary image shown for your product. Recommended size: 800x800px
+            <p className="text-xs text-muted-foreground">
+              Recommended size: 800x800px
             </p>
           </div>
         </div>
@@ -127,10 +125,10 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {additionalImages.map((imageUrl, index) => (
             <div key={index} className="relative">
-              <div className="w-full aspect-square bg-gray-100 rounded-lg overflow-hidden">
+              <div className="w-full aspect-square bg-muted rounded-lg overflow-hidden">
                 <img 
                   src={imageUrl} 
-                  alt={`Product view ${index + 1}`} 
+                  alt={`View ${index + 1}`} 
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -146,11 +144,10 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
             </div>
           ))}
           
-          {/* Upload Button */}
-          <label className="cursor-pointer flex items-center justify-center w-full aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-100 transition-colors">
+          <label className="cursor-pointer flex items-center justify-center w-full aspect-square bg-muted/50 border-2 border-dashed border-border rounded-lg hover:bg-muted transition-colors">
             <div className="text-center">
-              <Upload className="h-6 w-6 text-gray-400 mx-auto mb-1" />
-              <span className="text-xs text-gray-500">Add Images</span>
+              <Upload className="h-6 w-6 text-muted-foreground mx-auto mb-1" />
+              <span className="text-xs text-muted-foreground">Add Images</span>
             </div>
             <Input
               type="file"
@@ -162,16 +159,13 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
             />
           </label>
         </div>
-        <p className="text-xs text-gray-500">
-          Add up to 6 additional images to show different views of your product.
-        </p>
       </div>
 
       {uploading && (
         <div className="text-center py-2">
           <div className="inline-flex items-center">
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-            <span className="text-sm text-gray-600">Uploading images...</span>
+            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            <span className="text-sm text-muted-foreground">Uploading to ImageKit...</span>
           </div>
         </div>
       )}
@@ -179,4 +173,4 @@ const ProductImageUpload: React.FC<ProductImageUploadProps> = ({
   );
 };
 
-export default ProductImageUpload;
+export default ImageKitUpload;

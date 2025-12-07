@@ -49,6 +49,8 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminArticles from "./pages/admin/AdminArticles";
+import AdminArticleEdit from "./pages/admin/AdminArticleEdit";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminOrderView from "./pages/admin/AdminOrderView";
@@ -59,7 +61,9 @@ import AdminNotFound from "./pages/admin/AdminNotFound";
 import AdminWebsiteUsers from "./pages/admin/AdminWebsiteUsers";
 import AdminOrderManager from "./components/admin/AdminOrderManager";
 import AdminAuthGuard from "./components/admin/AdminAuthGuard";
-
+// Articles
+import Articles from "./pages/Articles";
+import ArticlePage from "./pages/ArticlePage";
 const AppRoutes = () => {
   return (
     <BrowserRouter
@@ -78,6 +82,8 @@ const AppRoutes = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/payment-retry/:productId" element={<PaymentRetry />} />
+        <Route path="/articles" element={<Articles />} />
+        <Route path="/articles/:slug" element={<ArticlePage />} />
         <Route path="/product/:productId" element={<ProductDetailsPage />} />
 
         <Route path="/products" element={<Products />} />
@@ -121,6 +127,9 @@ const AppRoutes = () => {
         <Route path="/admin" element={<AdminAuthGuard><AdminDashboard /></AdminAuthGuard>} />
         <Route path="/admin/dashboard" element={<AdminAuthGuard><AdminDashboard /></AdminAuthGuard>} />
         <Route path="/admin/products" element={<AdminAuthGuard><AdminProducts /></AdminAuthGuard>} />
+      <Route path="/admin/articles" element={<AdminAuthGuard><AdminArticles /></AdminAuthGuard>} />
+        <Route path="/admin/articles/new" element={<AdminAuthGuard><AdminArticleEdit /></AdminAuthGuard>} />
+        <Route path="/admin/articles/edit/:slug" element={<AdminAuthGuard><AdminArticleEdit /></AdminAuthGuard>} />
         <Route path="/admin/orders" element={<AdminAuthGuard><AdminOrders /></AdminAuthGuard>} />
         <Route path="/admin/orders/:orderId" element={<AdminAuthGuard><AdminOrderView /></AdminAuthGuard>} />
         <Route path="/admin/customers" element={<AdminAuthGuard><AdminCustomers /></AdminAuthGuard>} />

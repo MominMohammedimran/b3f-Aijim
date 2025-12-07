@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { X, Plus } from "lucide-react";
-
+import ProductImageUploader from "./ProductImageUploader";
 interface ProductVariant {
   size: string;
   stock: number;
@@ -302,90 +302,22 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
                 />
               </div>
 
-              {/* Main Image */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Main Image</CardTitle>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  <div className="flex gap-2">
-                    <Input
-                      id="image"
-                      placeholder="Enter main image URL"
-                      value={formData.image}
-                      onChange={(e) =>
-                        handleInputChange("image", e.target.value)
-                      }
-                    />
-                    {formData.image && (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={() => handleInputChange("image", "")}
-                      >
-                        <X className="h-4 w-4 mr-2" /> Remove
-                      </Button>
-                    )}
-                  </div>
-
-                  {formData.image && (
-                    <div className="flex items-center gap-3 p-2 border rounded">
-                      <img
-                        src={formData.image}
-                        alt="Main"
-                        className="w-20 h-20 object-cover rounded"
-                      />
-                      <span className="flex-1 text-sm truncate">
-                        {formData.image}
-                      </span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
             </CardContent>
           </Card>
 
-          {/* Additional Images */}
+          {/* Product Images - Upload & URL */}
           <Card>
             <CardHeader>
-              <CardTitle>Additional Images</CardTitle>
+              <CardTitle>Product Images</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Enter image URL"
-                  value={newImageUrl}
-                  onChange={(e) => setNewImageUrl(e.target.value)}
-                />
-                <Button type="button" onClick={addImage}>
-                  <Plus className="h-4 w-4 mr-2" /> Add
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                {formData.images.map((url, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 p-2 border rounded"
-                  >
-                    <img
-                      src={url}
-                      alt={`Product ${index + 1}`}
-                      className="w-12 h-12 object-cover rounded"
-                    />
-                    <span className="flex-1 text-sm truncate">{url}</span>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeImage(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
+            <CardContent>
+              <ProductImageUploader
+  mainImage={formData.image}
+  additionalImages={formData.images}
+  onMainImageChange={(url) => handleInputChange("image", url)}
+  onAdditionalImagesChange={(urls) => handleInputChange("images", urls)}
+  productName={formData.name} // ⬅️ NEW
+/>
             </CardContent>
           </Card>
 

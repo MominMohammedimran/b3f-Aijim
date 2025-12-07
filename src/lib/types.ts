@@ -12,7 +12,21 @@ export interface Issue {
   admin_response?: string;
   admin_uploaded_image?: string; // Transaction ID (specific to payment issues)
 }
-
+export interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  image: string | null;
+  author: string | null;
+  category: string | null;
+  tags: string[] | null;
+  is_published: boolean;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
 export interface Order {
   id: string;
   orderNumber: string;

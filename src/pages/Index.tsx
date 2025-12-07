@@ -13,15 +13,13 @@ import { useLocation } from "../context/LocationContext";
 import { useWishlist } from "../context/WishlistContext";
 import useSEO from "@/hooks/useSEO"; // ✅ using this
 import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
-import Marquee from "react-fast-marquee";
+
 import NewHero from "@/components/landing/NewHero";
-import HeroSlider from "../components/ui/HeroSlider";
-import IndexFeaturesproducts from "../components/ui/IdexFeaturesproducts";
+
 import { supabase } from "@/integrations/supabase/client";
-import { triggerCartReminder } from "@/utils/triggerCartReminder";
+
 import { useCart } from "../context/CartContext";
-import { toast } from "sonner";
-import Feedback from "./legal/Feedback";
+import { FeaturedArticles } from "@/components/articles/FeaturedArticles";
 const Index = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();

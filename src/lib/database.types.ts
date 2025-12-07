@@ -201,48 +201,53 @@ export interface Database {
         };
         Relationships: [];
       };
-      order_tracking: {
+     articles: {
         Row: {
-          id: string;
-          order_id: string;
-          status: string;
-          current_location: string | null;
-          estimated_delivery: string | null;
-          tracking_number: string | null;
-          timestamp: string;
-          description: string | null;
-          history?: Json | null;
-        };
+          author: string | null
+          category: string | null
+          content: string
+          created_at: string
+          excerpt: string | null
+          id: string
+          image: string | null
+          is_published: boolean | null
+          published_at: string | null
+          slug: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
         Insert: {
-          id?: string;
-          order_id: string;
-          status: string;
-          current_location?: string | null;
-          estimated_delivery?: string | null;
-          tracking_number?: string | null;
-          timestamp?: string;
-          description?: string | null;
-          history?: Json | null;
-        };
+          author?: string | null
+          category?: string | null
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image?: string | null
+          is_published?: boolean | null
+          published_at?: string | null
+          slug: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
         Update: {
-          id?: string;
-          order_id?: string;
-          status?: string;
-          current_location?: string | null;
-          estimated_delivery?: string | null;
-          tracking_number?: string | null;
-          timestamp?: string;
-          description?: string | null;
-          history?: Json | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "order_tracking_order_id_fkey";
-            columns: ["order_id"];
-            referencedRelation: "orders";
-            referencedColumns: ["id"];
-          }
-        ];
+          author?: string | null
+          category?: string | null
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image?: string | null
+          is_published?: boolean | null
+          published_at?: string | null
+          slug?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       };
       payments: {
         Row: {

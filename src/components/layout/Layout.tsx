@@ -6,7 +6,7 @@ import Feedback from '@/pages/legal/Feedback'
 import ChatbaseAIWidget from '../ui/ChatbaseAIWidget';
 import StructuredData from '../seo/StructuredData';
 import InstallAppButton from '../InstallAppButton';
-
+import { FeaturedArticles } from "@/components/articles/FeaturedArticles";
 interface LayoutProps {
   children: React.ReactNode;
   hideFooter?: boolean;
@@ -56,6 +56,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
 
       {/* Only show Feedback component on Home page */}
       {isHomePage && <Feedback mode='inline'/>}
+    {isHomePage && <FeaturedArticles/>}
 
       {!hideFooter && <Footer />}
 

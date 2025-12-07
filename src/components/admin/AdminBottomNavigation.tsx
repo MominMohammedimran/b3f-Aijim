@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Package, ShoppingCart, Users, Settings,CreditCard } from 'lucide-react';
+import { Home, Package, ShoppingCart, Users, Settings,CreditCard,Newspaper } from 'lucide-react';
 
 const AdminBottomNavigation = () => {
   const location = useLocation();
@@ -11,6 +11,8 @@ const AdminBottomNavigation = () => {
     { icon: ShoppingCart, label: 'Order', path: '/admin/orders' },
     { icon: Package, label: 'Product', path: '/admin/products' },
      { icon: CreditCard , label: 'issues', path: '/admin/order-manager' },
+       { icon: Newspaper, label: 'Articles', path: '/admin/articles' },
+
     { icon: Users, label: 'Users', path: '/admin/profiles' },
     { icon: Settings, label: 'Setting', path: '/admin/settings' },
     
@@ -25,7 +27,7 @@ const AdminBottomNavigation = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-50">
-      <div className="grid grid-cols-6 gap-2  h-16">
+      <div className="grid grid-cols-7 gap-2  h-16">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path, item.exact);

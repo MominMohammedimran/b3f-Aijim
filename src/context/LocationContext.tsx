@@ -54,7 +54,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
         // If user is logged in, try to get their preferred location from database
         if (currentUser && supabase) {
           try {
-            const { data } = await supabase
+            const { data } = await (supabase as any)
               .from('user_location_preferences')
               .select('location_id')
               .eq('user_id', currentUser.id)
@@ -104,8 +104,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
     // If user is logged in, save their preference to the database
     if (currentUser && supabase) {
       try {
-        // Check if preference already exists
-        const { data } = await supabase
+        const { data } = await (supabase as any)
           .from('user_location_preferences')
           .select('id')
           .eq('user_id', currentUser.id)
@@ -113,7 +112,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
         
         if (data) {
           // Update existing preference
-          await supabase
+          await (supabase as any)
             .from('user_location_preferences')
             .update({ 
               location_id: location.id, 
@@ -122,7 +121,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({ children }) 
             .eq('user_id', currentUser.id);
         } else {
           // Insert new preference
-          await supabase
+          await (supabase as any)
             .from('user_location_preferences')
             .insert({
               user_id: currentUser.id,

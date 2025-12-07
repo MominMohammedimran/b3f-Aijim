@@ -194,33 +194,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      categories: {
-        Row: {
-          created_at: string | null;
-          description: string | null;
-          id: string;
-          name: string;
-          slug: string;
-          updated_at: string | null;
-        };
-        Insert: {
-          created_at?: string | null;
-          description?: string | null;
-          id?: string;
-          name: string;
-          slug: string;
-          updated_at?: string | null;
-        };
-        Update: {
-          created_at?: string | null;
-          description?: string | null;
-          id?: string;
-          name?: string;
-          slug?: string;
-          updated_at?: string | null;
-        };
-        Relationships: [];
-      };
+      
       coupons: {
         Row: {
           active: boolean | null;
@@ -293,95 +267,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      order_issues: {
-        Row: {
-          admin_response: string | null;
-          created_at: string | null;
-          description: string | null;
-          id: string;
-          order_id: string;
-          order_number: string;
-          phone_number: string;
-          reason: string;
-          status: string;
-          transaction_id: string | null;
-          updated_at: string | null;
-          user_email: string;
-          user_name: string;
-        };
-        Insert: {
-          admin_response?: string | null;
-          created_at?: string | null;
-          description?: string | null;
-          id?: string;
-          order_id: string;
-          order_number: string;
-          phone_number: string;
-          reason: string;
-          status?: string;
-          transaction_id?: string | null;
-          updated_at?: string | null;
-          user_email: string;
-          user_name: string;
-        };
-        Update: {
-          admin_response?: string | null;
-          created_at?: string | null;
-          description?: string | null;
-          id?: string;
-          order_id?: string;
-          order_number?: string;
-          phone_number?: string;
-          reason?: string;
-          status?: string;
-          transaction_id?: string | null;
-          updated_at?: string | null;
-          user_email?: string;
-          user_name?: string;
-        };
-        Relationships: [];
-      };
-      order_tracking: {
-        Row: {
-          created_at: string | null;
-          current_location: string | null;
-          estimated_delivery: string | null;
-          history: Json | null;
-          id: string;
-          order_id: string;
-          status: string;
-          updated_at: string | null;
-        };
-        Insert: {
-          created_at?: string | null;
-          current_location?: string | null;
-          estimated_delivery?: string | null;
-          history?: Json | null;
-          id?: string;
-          order_id: string;
-          status: string;
-          updated_at?: string | null;
-        };
-        Update: {
-          created_at?: string | null;
-          current_location?: string | null;
-          estimated_delivery?: string | null;
-          history?: Json | null;
-          id?: string;
-          order_id?: string;
-          status?: string;
-          updated_at?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "order_tracking_order_id_fkey";
-            columns: ["order_id"];
-            isOneToOne: false;
-            referencedRelation: "orders";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+     
       orders: {
         Row: {
           coupon_code: Json | null;
@@ -460,57 +346,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      payment_issues: {
-        Row: {
-          admin_response: string | null;
-          admin_uploaded_image: string | null;
-          created_at: string | null;
-          description: string | null;
-          id: string;
-          order_id: string;
-          phone_number: string | null;
-          reason: string;
-          screenshot_url: string | null;
-          status: string;
-          transaction_id: string | null;
-          updated_at: string | null;
-          user_email: string;
-          user_name: string | null;
-        };
-        Insert: {
-          admin_response?: string | null;
-          admin_uploaded_image?: string | null;
-          created_at?: string | null;
-          description?: string | null;
-          id?: string;
-          order_id: string;
-          phone_number?: string | null;
-          reason: string;
-          screenshot_url?: string | null;
-          status?: string;
-          transaction_id?: string | null;
-          updated_at?: string | null;
-          user_email: string;
-          user_name?: string | null;
-        };
-        Update: {
-          admin_response?: string | null;
-          admin_uploaded_image?: string | null;
-          created_at?: string | null;
-          description?: string | null;
-          id?: string;
-          order_id?: string;
-          phone_number?: string | null;
-          reason?: string;
-          screenshot_url?: string | null;
-          status?: string;
-          transaction_id?: string | null;
-          updated_at?: string | null;
-          user_email?: string;
-          user_name?: string | null;
-        };
-        Relationships: [];
-      };
+      
       payments: {
         Row: {
           created_at: string | null;
@@ -538,78 +374,53 @@ export type Database = {
         };
         Relationships: [];
       };
-      product_images: {
+     articles: {
         Row: {
-          created_at: string | null;
-          id: string;
-          image_url: string;
-          is_main: boolean | null;
-          product_id: string | null;
-        };
+          author: string | null
+          category: string | null
+          content: string
+          created_at: string
+          excerpt: string | null
+          id: string
+          image: string | null
+          is_published: boolean | null
+          published_at: string | null
+          slug: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
         Insert: {
-          created_at?: string | null;
-          id?: string;
-          image_url: string;
-          is_main?: boolean | null;
-          product_id?: string | null;
-        };
+          author?: string | null
+          category?: string | null
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image?: string | null
+          is_published?: boolean | null
+          published_at?: string | null
+          slug: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
         Update: {
-          created_at?: string | null;
-          id?: string;
-          image_url?: string;
-          is_main?: boolean | null;
-          product_id?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "product_images_product_id_fkey";
-            columns: ["product_id"];
-            isOneToOne: false;
-            referencedRelation: "products";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      product_variants: {
-        Row: {
-          additional_price: number | null;
-          color: string | null;
-          created_at: string | null;
-          id: string;
-          product_id: string | null;
-          size: string | null;
-          stock: number | null;
-          updated_at: string | null;
-        };
-        Insert: {
-          additional_price?: number | null;
-          color?: string | null;
-          created_at?: string | null;
-          id?: string;
-          product_id?: string | null;
-          size?: string | null;
-          stock?: number | null;
-          updated_at?: string | null;
-        };
-        Update: {
-          additional_price?: number | null;
-          color?: string | null;
-          created_at?: string | null;
-          id?: string;
-          product_id?: string | null;
-          size?: string | null;
-          stock?: number | null;
-          updated_at?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "product_variants_product_id_fkey";
-            columns: ["product_id"];
-            isOneToOne: false;
-            referencedRelation: "products";
-            referencedColumns: ["id"];
-          }
-        ];
+          author?: string | null
+          category?: string | null
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          image?: string | null
+          is_published?: boolean | null
+          published_at?: string | null
+          slug?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       };
       products: {
         Row: {

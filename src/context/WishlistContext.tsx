@@ -49,7 +49,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     try {
       // Query the wishlist items for the current user
-      const { data: wishlistData, error } = await supabase
+      const { data: wishlistData, error } = await (supabase as any)
         .from('wishlists')
         .select('product_id')
         .eq('user_id', currentUser.id);
@@ -117,7 +117,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
           const productId = normalizeProductId(action.product);
           
           // Add to database - only insert product_id and user_id, other fields will be defaulted
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from('wishlists')
             .insert({
               user_id: currentUser.id,
@@ -131,7 +131,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
         } 
         else if (action.type === 'remove' && action.productId) {
           // Remove from database
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from('wishlists')
             .delete()
             .eq('user_id', currentUser.id)
@@ -141,7 +141,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
         else if (action.type === 'clear') {
           // Delete all wishlist items for the user
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from('wishlists')
             .delete()
             .eq('user_id', currentUser.id);

@@ -22,6 +22,7 @@ import {
   Bell,
   Search,
   CreditCard,
+  Newspaper,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import AdminBottomNavigation from './AdminBottomNavigation';
@@ -110,6 +111,8 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
     { icon: Users, label: 'Users', path: '/admin/profiles' },
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
     { icon: CreditCard, label: 'Payments', path: '/admin/order-manager' },
+    { icon: Newspaper, label: 'Articles', path: '/admin/articles' },
+
   ];
 
   const isActive = (path: string, exact = false) =>

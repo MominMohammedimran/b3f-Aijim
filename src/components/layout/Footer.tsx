@@ -8,6 +8,7 @@ const Footer = () => {
 
   const footerLinks = [
     { name: "Our Story", href: "/about-us" },
+   
     { name: "Privacy Policy", href: "/privacy-policy" },
     { name: "Contact Us", href: "/contact-us" },
     { name: "Terms & Condition", href: "/terms-conditions" },
@@ -15,7 +16,7 @@ const Footer = () => {
     { name: "Shipping Info", href: "/shipping-delivery" },
       { name: "Track Using AWB", href: "/track-package" },
        { name: "Feedback ", href: "/feedback" },
- 
+      { name: "Articles", href: "/articles" },
 
   ];
   const getWhatsappMessage = () => {
