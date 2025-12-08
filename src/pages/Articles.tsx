@@ -51,11 +51,11 @@ const Articles = () => {
               <p className="text-center text-gray-500">No articles yet.</p>
             ) : (
    <div className="space-y-6">
-  <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+  <div className="grid gap-6 grid-cols-1  ">
     {articles.map((article) => (
       <Link
         key={article.id}
-        to={`/articles/${article.slug}`}
+        to={`/articles/${article.slug}`}s
         onClick={() => window.scrollTo(0, 0)}
         className="group flex gap-5 border border-gray-700 hover:border-yellow-400 rounded-none p-4 transition-all cursor-pointer hover:bg-[#0f0f0f]"
       >
@@ -89,11 +89,11 @@ const Articles = () => {
           </div>
 
           <div className="mt-3">
-            <p className="text-[9px] md:text-[10px] uppercase tracking-wider text-blue-400">
+            <p className="text-[9px] md:text-[10px] uppercase tracking-wider font-semibold text-blue-400">
               {article.category || "Streetwear"}
             </p>
 
-            <p className="text-xs md:text-sm mt-2 text-yellow-400 underline uppercase tracking-wider font-medium">
+            <p className="text-xs md:text-sm text-right  mt-2 text-yellow-400 underline uppercase tracking-wider font-medium">
               Read More →
             </p>
           </div>

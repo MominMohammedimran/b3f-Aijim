@@ -110,8 +110,8 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
   {createdAt && (
     <div className="flex items-center font-semibold gap-2 mt-1 text-xs text-gray-500">
-      <Calendar className="h-3.5 w-3.5 text-yellow-400" />
-      <span>Joined {formatDate(createdAt)}</span>
+      <Calendar className="h-3.5 w-3.5 text-yellow-400 font-medium" />
+      <span className='font-medium text-gray-400'>Joined {formatDate(createdAt)}</span>
     </div>
   )}
 </div>

@@ -85,32 +85,22 @@ const AppRoutes = () => {
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/:slug" element={<ArticlePage />} />
         <Route path="/product/:productId" element={<ProductDetailsPage />} />
-
         <Route path="/products" element={<Products />} />
-     
-
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/contact-us" element={<ContactUs />} />
-
         <Route path="/order-complete" element={<OrderComplete />} />
         <Route path="/order-complete/:orderId" element={<OrderComplete />} />
-
         <Route path="/orders" element={<OrderHistory />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/account" element={<Account />} />
-        
-         <Route path="/track-package" element={<TrackPackage />} />
-        
-
+        <Route path="/track-package" element={<TrackPackage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/feedback"  element={<Feedback mode='page'  />} />
-        
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/payment-issue" element={<PaymentRelatedIssue />} />
         <Route path="/order-related-issue" element={<OrderRelatedIssue />} />
-
         <Route
           path="/order-preview/:orderid"
           element={<OrderDetailsPreview orders={[]} orderNumber="" />}

@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import UserProfileHeader from "../components/profile/UserProfileHeader";
 import SEOHelmet from "../components/seo/SEOHelmet";
+import Feedback from "./legal/Feedback";
 
 const Profile = () => {
   const { userProfile, currentUser } = useAuth();
@@ -32,13 +33,14 @@ const Profile = () => {
         </div>
 
         {currentUser ? (
-          <div className="space-y-2">
+          <div className="space-y-4">
             <UserProfileHeader
               name={userProfile?.display_name || "User"}
               email={userProfile?.email || "No email"}
               createdAt={userProfile?.created_at || ""}
             />
             <ProfileTabs />
+            <Feedback mode='inline'/>
           </div>
         ) : (
           <div className="bg-gray-900 border border-amber-200 p-6 rounded-lg text-center">

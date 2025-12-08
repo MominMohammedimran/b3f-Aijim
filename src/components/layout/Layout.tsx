@@ -50,7 +50,7 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
       
       <Navbar />
 
-      <main className="flex-grow bg-black">
+      <main className="flex-grow bg-black mt-2 ">
         {children}
       </main>
 

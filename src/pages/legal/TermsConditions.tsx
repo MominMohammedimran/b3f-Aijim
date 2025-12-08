@@ -191,7 +191,7 @@ const TermsConditions = () => {
                     {s.id === "legal" && (
                       <>
                         <p>
-                          Governed by Indian law and subject to Mumbai court
+                          Governed by Indian law and subject to court 
                           jurisdiction.
                         </p>
                         <div className="grid md:grid-cols-2 gap-4 mt-3">

@@ -153,11 +153,11 @@ const RewardsSection = () => {
       {/* Orders */}
       <div className="p-2">
         <h3 className="text-xl font-semibold text-white mb-3"> Orders & Rewards</h3>
-        <div className="space-y-4 grid grid-cols-1 sm:grid-cols-2">
+        <div className="space-y-2 grid grid-cols-1 items-center justify-center sm:grid-cols-2 sm:gap-2 ">
           {orders.map((order,index) => (
             <Card
               key={order.id}
-              className="rounded-none  border border-gray-700 shadow hover:shadow-green-400/10 transition"
+              className="rounded-none h-auto  border border-gray-700 shadow hover:shadow-green-400/10 transition"
             >
               <CardContent className="p-1">
                 <div className="flex justify-between items-center">

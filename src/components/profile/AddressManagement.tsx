@@ -175,15 +175,17 @@ const AddressManagement = () => {
 
   return (
     <div className="text-white p-0 rounded-none">
+      <div className="flex items-center  sm:justify-center">
       {!showAddForm && (
         <Button
           onClick={handleAddNew}
-          className="mb-6 bg-white  hover:bg-white hover:text-yellow-400  text-black rounded-none"
+          className="mb-6 bg-white  lg:text-center hover:bg-white hover:text-yellow-400  text-black rounded-none"
         >
           <PlusCircle size={16} className="mr-2" />
           Add New Address
         </Button>
       )}
+      </div>
 
       {showAddForm ? (
         <form

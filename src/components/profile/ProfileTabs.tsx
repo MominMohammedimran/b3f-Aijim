@@ -26,11 +26,11 @@ const ProfileTabs = () => {
   const [activeTab, setActiveTab] = useState("rewards");
 
   return (
-    <div className="w-full max-w-4xl text-white">
+    <div className="w-full w-full text-white rounded-3xl">
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
-        className="w-full "
+        className="w-full rounded-3xl "
       >
         <TabsList className="grid w-full h-auto m-auto grid-cols-4 mb-10 bg-gray-800 rounded-3xl">
           <TabsTrigger
