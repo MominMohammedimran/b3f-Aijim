@@ -110,7 +110,7 @@ const OrderHistory = () => {
     try {
       const { error } = await supabase
         .from("orders")
-        .update({ status: "cancelled" })
+        .update({ status: "cancelled" ,status_note:"user cancelled"})
         .eq("id", orderId);
 
       if (error) throw error;
@@ -239,13 +239,15 @@ const OrderHistory = () => {
                       
                       <div className="flex gap-3 items-center mt-1">
            
+                {order.status_note && (
                 <p className=" rounded text-white text-xs font-medium">
                      Cancellation Reason - &nbsp;
-                        <span className="text-xs text-yellow-400">
-                                                 {order.status_note||"User cancelled"}
+                        <span className="text-sm text-gray-300">
+                                                 {order.status_note}
                                             </span>
                    
                 </p>
+            )}
            
             </div>
                       

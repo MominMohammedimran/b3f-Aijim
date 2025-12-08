@@ -210,7 +210,7 @@ const TrackOrder: React.FC<TrackOrderProps> = ({ orderNumber }) => {
                         Tracking status
                     </h2>
             {/* Order Summary (Kept) */}
-            <div className="bg-gray-900 border border-gray-800 rounded-none p-6 shadow-lg  flex justify-between flex-col md:flex-row">
+            <div className="bg-gray-900 border border-gray-800 rounded-none p-6 shadow-lg  flex justify-between flex-col ">
                 <div className="">
                     <h2 className="text-xl font-bold text-yellow-400">
                         {tracking.order_number}

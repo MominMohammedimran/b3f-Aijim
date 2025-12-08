@@ -241,7 +241,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
       {getOrderStatusText(order.status)}
     </p>
     <p className="text-xs text-gray-300 whitespace-nowrap w-full">
-      Note - "{order.status_note || "User cancelled"}"
+      Note - "{order.status_note || "N/A"}"
     </p>
   </div>
   <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
