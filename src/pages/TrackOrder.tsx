@@ -228,15 +228,36 @@ const TrackOrder: React.FC<TrackOrderProps> = ({ orderNumber }) => {
                     >
                         {tracking.payment_status.toUpperCase()}
                     </span>
+                    
                 </div>
+                 <div className="flex gap-3 items-center">
+                    <p className="text-sm font-bold text-white">Order Status -</p>
+                    <span
+                        className={`text-sm font-semibold ${
+                            tracking.status === "delivered"
+                                ? "text-yellow-400"
+                                : "text-red-500"
+                        }`}
+                    >
+                        {tracking.status.toUpperCase()}
+                    </span>
+                    
+                </div>
+                <div className="flex gap-3 items-center">
+                 {tracking.cancellation_reason && (
+                <p className=" rounded text-white text-xs font-medium">
+                     Cancellation Reason - &nbsp;
+                        <span className="text-sm text-gray-300">
+                                                 {tracking.cancellation_reason}
+                                            </span>
+                   
+                </p>
+            )}
+            </div>
             </div>
 
             {/* Cancellation Reason (Kept) */}
-            {tracking.cancellation_reason && (
-                <p className="text-center bg-red-900/50 border border-red-700 p-3 rounded text-red-400 text-sm font-medium">
-                    ❌ Cancellation Reason: {tracking.cancellation_reason}
-                </p>
-            )}
+           
 
             {/* Courier Info (Kept) */}
             <div className="bg-gray-900 border border-gray-800 rounded-none p-4 space-y-4">

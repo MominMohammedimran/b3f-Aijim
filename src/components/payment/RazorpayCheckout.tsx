@@ -181,7 +181,7 @@ useEffect(() => {
 //ALWAYS Call Courier API
 const triggerCourier = async (order: any) => {
   try {
-    console.log("🚚 Triggering Delhivery via Supabase Function...");
+   // console.log("🚚 Triggering Delhivery via Supabase Function...");
 
     const courierPayload = {
       orderId: order.id,                     // MUST be the Supabase row id (UUID)

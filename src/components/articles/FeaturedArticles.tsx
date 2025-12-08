@@ -90,7 +90,7 @@ export const FeaturedArticles = () => {
     ))}
   </div>
 </div>
-{articles.length > 1 && (
+{articles.length > 3 && (
   <Link 
     to="/articles"
     className="text-center block mt-6 text-yellow-400 underline text-lg"

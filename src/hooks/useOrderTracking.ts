@@ -63,8 +63,8 @@ export const useOrderTracking = () => {
           updated_at: order.updated_at,
           courier: order.courier,
           date: order.date || order.created_at,
-          cancellationReason: order.cancellation_reason || undefined,
-          cancellation_reason: order.cancellation_reason || undefined,
+          cancellationReason: order.status_note || "User cancelled",
+          cancellation_reason: order.status_note || "User cancelled",
         }));
 
         setOrders(transformedOrders);

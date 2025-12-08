@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { ArrowLeft, CreditCard, Package, Gift, Truck } from "lucide-react";
+import { ArrowLeft, CreditCard, Package, Gift, Truck,Loader2 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import TrackOrder from "@/pages/TrackOrder";
 
@@ -23,10 +23,12 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
   const navigate = useNavigate();
   const { orderid } = useParams<{ orderid: string }>();
   const [order, setOrder] = useState<any>(null);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!orderid) return;
+    
     const fetchOrder = async () => {
+      setLoading(true);
       const { data, error } = await supabase
         .from("orders")
         .select("*")
@@ -34,6 +36,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
         .single();
       if (error) setOrder(null);
       else setOrder(data);
+      setLoading(false);
     };
     fetchOrder();
   }, [orderid]);
@@ -73,10 +76,22 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
   const getPaymentStatusText = (status: string) =>
     status ? status.charAt(0).toUpperCase() + status.slice(1) : "Pending";
 
+   if (loading) {
+    return (
+      <Layout>
+        <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+          <Loader2 className="w-10 h-10 animate-spin text-yellow-400 mb-3" />
+          <p className="text-gray-400 text-sm font-medium">
+            Loading your order history...
+          </p>
+        </div>
+      </Layout>
+    );
+  }
   if (!order) {
     return (
       <Layout>
-        <div className="p-6 text-gray-400 text-center">
+        <div className="p-6 text-gray-200 bg-gray-900 py-10 mt-10 pt-10 text-center">
           No order found for #{orderNumber}
         </div>
       </Layout>
@@ -185,55 +200,51 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
 
         {/* Info Cards */}
         {/* Info Cards */}
-        <div className="space-y-0 mt-4 grid grid-cols-2">
-          {/* Payment Status */}
-          <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
-            <div className="flex items-center justify-center gap-2 ">
-              <CreditCard className="w-5 h-5 text-yellow-400" />
-              <h3 className="text-sm font-semibold text-yellow-400 uppercase">
-                Payment Status
-              </h3>
-            </div>
-            <p className="text-sm text-white font-medium mb-1">
-              {getPaymentStatusText(order.payment_status)}
-            </p>
-            <p className="text-xs text-gray-400 mb-2">
-              Transction Id - {order.payment_method || "N/A"}
-            </p>
+       <div className="space-y-0 mt-4 grid grid-cols-1">
+  {/* Payment Status */}
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex-col items-center justify-center w-full">
+    <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+      <CreditCard className="w-5 h-5 text-yellow-400" />
+      <h3 className="text-sm font-semibold text-yellow-400 uppercase whitespace-nowrap">
+        Payment Status
+      </h3>
+    </div>
 
-            {!["cancelled", "paid", "refunded", "refund-ss"].includes(
-              order.payment_status
-            ) &&
-              !["cancelled"].includes(order.status) && (
-                <Button
-                  onClick={() => handleRetryPayment(order)}
-                  className="bg-green-600 hover:bg-green-700 text-white w-full mt-2 mb-2 text-sm font-semibold rounded-none"
-                >
-                  Complete Payment
-                </Button>
-              )}
-          </div>
+    <p className="text-sm text-white font-medium mb-1 whitespace-nowrap w-full">
+      {getPaymentStatusText(order.payment_status)}
+    </p>
 
-          {/* Order Status */}
-          <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
-            <div className="flex items-center justify-center gap-2 ">
-              <Package className="w-5 h-5 text-yellow-400" />
-              <h3 className="text-sm font-semibold text-yellow-400 uppercase">
-                Order Status
-              </h3>
-            </div>
-            <p className="text-sm text-white font-medium mb-1">
-              {getOrderStatusText(order.status)}
-            </p>
-            <p className="text-xs text-gray-400">
-              {order.status_note || "N/A"}
-            </p>
-          </div>
+    <p className="text-xs text-gray-300 mb-2 whitespace-nowrap w-full">
+      Transaction Id - {order.payment_method || "N/A"}
+    </p>
 
-          {/* Rewards / Coupon */}
-          
-        </div>
-<div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
+    {!["cancelled", "paid", "refunded", "refund-ss"].includes(order.payment_status) &&
+      !["cancelled"].includes(order.status) && (
+        <Button
+          onClick={() => handleRetryPayment(order)}
+          className="bg-green-600 hover:bg-green-700 text-white w-full mt-2 mb-2 text-sm font-semibold rounded-none"
+        >
+          Complete Payment
+        </Button>
+      )}
+  </div>
+
+  {/* Order Status */}
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center w-full">
+    <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+      <Package className="w-5 h-5 text-yellow-400" />
+      <h3 className="text-sm font-semibold text-yellow-400 uppercase whitespace-nowrap">
+        Order Status
+      </h3>
+    </div>
+    <p className="text-sm text-white font-medium mb-1 whitespace-nowrap w-full">
+      {getOrderStatusText(order.status)}
+    </p>
+    <p className="text-xs text-gray-300 whitespace-nowrap w-full">
+      Note - "{order.status_note || "User cancelled"}"
+    </p>
+  </div>
+  <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-2 text-center flex flex-col items-center justify-center">
             <div className="flex items-center justify-center gap-1 mb-2">
               <Gift className="w-5 h-5 text-yellow-400" />
               <h3 className="text-sm font-semibold text-yellow-400 uppercase">
@@ -250,9 +261,15 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
               Coupon:{" "}
               <span className="text-yellow-400 font-semibold">
                 {(order.coupon_code as any)?.code || "None"}
+                
               </span>
             </p>
           </div>
+</div>
+
+
+
+
         {/* Issue Buttons */}
         <div className="mt-2 grid grid-cols-2 sm:grid-cols-2 gap-1">
           {order.status !== "delivered" && (

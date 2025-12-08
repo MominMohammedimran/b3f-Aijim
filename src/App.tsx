@@ -240,7 +240,7 @@ function App() {
           });
         }
       } catch (error) {
-        console.log("Version check failed", error);
+        toast.warning("Version check failed", error);
       }
     };
 

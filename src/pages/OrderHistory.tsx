@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useCart } from "@/context/CartContext";
 import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
+import { orderService } from "@/services/microservices/api";
 
 const OrderHistory = () => {
   const { currentUser } = useAuth();
@@ -101,7 +102,7 @@ const OrderHistory = () => {
         label: "Yes, Cancel",
         onClick: () => cancelOrder(orderId),
       },
-      cancel: { label: "No" },
+  
     });
   };
 
@@ -116,6 +117,10 @@ const OrderHistory = () => {
 
       toast.success("Order cancelled");
       setOrders((prev) => prev.filter((o) => o.id !== orderId));
+      setTimeout(() => {
+    // This function will execute after the specified delay
+    toast.success(`Refreshing the page in ${5000 / 1000} seconds...`);
+    window.location.reload();}, 5000);
     } catch {
       toast.error("Cancel failed");
     }
@@ -156,8 +161,8 @@ const OrderHistory = () => {
 
           {/* EMPTY STATE */}
           {orders.length === 0 ? (
-            <div className="text-center py-16 bg-gray-900/40 border border-gray-800 rounded-xl">
-              <h3 className="text-lg font-semibold text-white">
+            <div className="text-center py-16 mt-10 pt-10 bg-gray-900/40 border border-gray-800 rounded-xl">
+              <h3 className="text-lg font-semibold text-white bg-gray-900">
                 No Orders Yet
               </h3>
               <p className="text-gray-400 text-sm mt-1">
@@ -171,7 +176,7 @@ const OrderHistory = () => {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10">
-              {orders.map((order) => {
+              {orders.map((order,index) => {
                 const { expired, text: timer } = getCountdown(order.created_at);
 
                 if (expired && order.payment_status === "pending") return null;
@@ -179,13 +184,28 @@ const OrderHistory = () => {
                 return (
                   <div
                     key={order.id}
-                    className="bg-gray-900 border border-gray-800 rounded-xl shadow-lg flex flex-col overflow-hidden"
+                    className="bg-gray-900 border border-gray-800 rounded-none shadow-lg flex flex-col overflow-hidden"
                   >
                     {/* HEADER */}
                     <div className="p-4 border-b border-gray-800">
+                        <div className="flex flex-row justify-between items-center ">
                       <h4 className="font-semibold text-md text-white">
-                        #{order.order_number}
+                       {index+1}{' )'}&nbsp;&nbsp; {order.order_number}
                       </h4>
+                       <div className="flex gap-3">
+                            {["pending", "processing", "confirmed"].includes(
+                              order.status
+                            ) &&
+                              !expired && (
+                                <Button
+                                  onClick={() => confirmCancelOrder(order.id)}
+                                  className="bg-red-600 hover:bg-red-700 text-white text-sm rounded-none h-6 px-2 "
+                                >
+                                  Cancel
+                                </Button>
+                              )}
+                          </div>
+                          </div>
 
                       <div className="flex flex-wrap gap-1 mt-2">
                         <span
@@ -213,9 +233,22 @@ const OrderHistory = () => {
                               : "bg-gray-600 text-white"
                           }`}
                         >
-                          Status – {order.status}
+                           Order Status – {order.status}
                         </span>
                       </div>
+                      
+                      <div className="flex gap-3 items-center mt-1">
+           
+                <p className=" rounded text-white text-xs font-medium">
+                     Cancellation Reason - &nbsp;
+                        <span className="text-xs text-yellow-400">
+                                                 {order.status_note||"User cancelled"}
+                                            </span>
+                   
+                </p>
+           
+            </div>
+                      
                     </div>
 
                     {/* ITEMS LIST */}
@@ -251,34 +284,61 @@ const OrderHistory = () => {
                         </div>
                       ))}
                     </div>
+                     
 
-                    {/* COUNTDOWN */}
-                    {!expired && order.payment_status === "pending" && (
-                      <p className="text-xs text-center py-2 bg-black text-yellow-400 font-medium">
-                        Complete payment in{" "}
-                        <span className="text-white">{timer}</span>
-                      </p>
-                    )}
+                     <div className='p-2  shadow-lg rounded-none '>
+    {/* COUNTDOWN BANNER (Stays at the top, clear and high-contrast) */}
+{/* Displays EITHER the Payment Warning/Countdown OR the Cancelled Message */}
+{(order.payment_status === "pending" || order.status === "cancelled") && (
+    <div className="mb-4">
+        <p className="text-xs text-center py-2.5 px-3 bg-black text-yellow-400 font-semibold rounded-none">
+            {/* Conditional content based on order status */}
+            {order.status === 'cancelled' ? (
+                // Content for CANCELLED order
+                <>
+                    ❌ Cancelled order will be removed. If you have any queries, raise an issue.
+                    <span className="text-white text-xs font-medium ml-2">{timer}</span>
+                </>
+            ) : (
+                // Content for PENDING payment (URGENT WARNING)
+                <>
+                    Complete payment or your order will be deleted in{" "}
+                    <span className="text-white text-xs font-medium">{timer}</span>
+                </>
+            )}
+        </p>
+    </div>
+)}
 
-                    {/* PAYMENT BUTTON */}
-                    {order.payment_status === "pending" &&
-                      order.status !== "cancelled" && (
-                        <Button
-                          onClick={() => handleRetryPayment(order)}
-                          className="bg-green-600 hover:bg-green-700 w-full rounded-none py-2 text-sm font-semibold"
-                        >
-                          Complete Payment
-                        </Button>
-                      )}
+    {/* ACTION BUTTONS CONTAINER (Flex layout for horizontal/vertical arrangement) */}
+    <div className="flex flex-col space-y-3">
+        {/* PAYMENT BUTTON (Primary action, high visibility) */}
+        
+        {order.payment_status === "pending" &&
+        order.status !== "cancelled" && (
+            <Button
+                onClick={() => handleRetryPayment(order)}
+                className="bg-green-600 hover:bg-green-700 w-full h-11 text-white text-sm font-medium rounded-none shadow-md transition duration-150 ease-in-out transform hover:scale-[1.01]"
+            >
+                 Complete Payment Now
+            </Button>
+        )}
+          
 
-                    <Link
-                      to={`/order-preview/${order.order_number}`}
-                      className="flex-1 items-center text-center  p-4"
-                    >
-                      <Button className="bg-yellow-400 hover:bg-yellow-500  w-full text-black text-sm rounded-none h-10">
-                        View Details
-                      </Button>
-                    </Link>
+        {/* VIEW DETAILS BUTTON (Secondary action, clear contrast) */}
+        <Link
+            to={`/order-preview/${order.order_number}`}
+            className="w-full"
+        >
+            <Button 
+             onClick={() =>  window.scrollTo(0, 0) }
+            
+            className="bg-gray-100 hover:bg-gray-200 w-full h-11 text-gray-800 text-sm font-semibold rounded-none border border-gray-300 transition duration-150 ease-in-out">
+                View Order Details
+            </Button>
+        </Link>
+    </div>
+</div>
 
                     {/* DROPDOWN */}
                     <div className="border-t border-gray-800">
@@ -301,19 +361,7 @@ const OrderHistory = () => {
                       {openDropdown === order.id && (
                         <div className="p-4 pt-0 space-y-3">
                           {/* View Details + Cancel */}
-                          <div className="flex gap-3">
-                            {["pending", "processing", "confirmed"].includes(
-                              order.status
-                            ) &&
-                              !expired && (
-                                <Button
-                                  onClick={() => confirmCancelOrder(order.id)}
-                                  className="bg-red-600 hover:bg-red-700 text-white text-sm rounded-none h-10 w-1/2"
-                                >
-                                  Cancel
-                                </Button>
-                              )}
-                          </div>
+                       
 
                           {/* Issues */}
                           <div className="flex gap-3">
@@ -322,7 +370,9 @@ const OrderHistory = () => {
                                 to={`/payment-issue?orderId=${order.order_number}`}
                                 className="w-full"
                               >
-                                <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
+                                <Button
+                                 onClick={() =>  window.scrollTo(0, 0) }
+                                 className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
                                   Payment Issue
                                 </Button>
                               </Link>
@@ -332,7 +382,9 @@ const OrderHistory = () => {
                               to={`/order-related-issue?orderId=${order.order_number}`}
                               className="w-full"
                             >
-                              <Button className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
+                              <Button 
+                               onClick={() =>  window.scrollTo(0, 0) }
+                              className="w-full bg-red-700 hover:bg-red-800 text-white h-10 text-sm rounded-none">
                                 Order Issue
                               </Button>
                             </Link>
@@ -342,7 +394,7 @@ const OrderHistory = () => {
                     </div>
 
                     {/* DATE */}
-                    <p className="text-[11px] text-center text-gray-500 py-3">
+                    <p className="text-[11px] text-center font-semibold text-gray-200 py-3">
                       Placed on{" "}
                       {new Date(order.created_at).toLocaleDateString("en-IN", {
                         day: "numeric",
