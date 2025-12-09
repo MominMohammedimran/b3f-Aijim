@@ -1,17 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Bell, Package, CreditCard, ShoppingBag, FileText, CheckCheck } from 'lucide-react';
+import { X, Bell, Package, CreditCard, ShoppingBag, FileText, CheckCheck, AlertTriangle, UserPlus } from 'lucide-react';
+// ⭐ Import motion from framer-motion
+import { motion } from 'framer-motion'; 
 import { useNotifications, Notification } from '@/hooks/useNotifications';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistanceToNow } from 'date-fns';
+
+type NotificationType = 'order_update' | 'payment_issue' | 'product_update' | 'article_update' | 'order_issue' | 'normal_notification' | 'new_user';
 
 interface NotificationPanelProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const getNotificationIcon = (type: string) => {
+// ⭐ Updated getNotificationIcon to handle new types
+const getNotificationIcon = (type: NotificationType) => {
   switch (type) {
     case 'order_update':
       return <Package className="h-5 w-5 text-blue-400" />;
@@ -21,6 +26,11 @@ const getNotificationIcon = (type: string) => {
       return <ShoppingBag className="h-5 w-5 text-green-400" />;
     case 'article_update':
       return <FileText className="h-5 w-5 text-purple-400" />;
+    case 'order_issue':
+      return <AlertTriangle className="h-5 w-5 text-orange-400" />;
+    case 'new_user':
+      return <UserPlus className="h-5 w-5 text-cyan-400" />;
+    case 'normal_notification':
     default:
       return <Bell className="h-5 w-5 text-yellow-400" />;
   }
@@ -48,7 +58,8 @@ const NotificationItem: React.FC<{
       }`}
     >
       <div className="flex items-start gap-3">
-        <div className="mt-1">{getNotificationIcon(notification.type)}</div>
+        {/* Note: I'm casting type here as Notification.type is likely 'string' but our function handles NotificationType */}
+        <div className="mt-1">{getNotificationIcon(notification.type as NotificationType)}</div> 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <h4 className={`text-sm font-medium truncate ${!notification.is_read ? 'text-white' : 'text-gray-300'}`}>
@@ -62,11 +73,21 @@ const NotificationItem: React.FC<{
           <p className="text-xs text-gray-500 mt-2">
             {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
           </p>
-          
+
         </div>
       </div>
     </div>
   );
+};
+
+// Framer Motion Variants for the Panel
+const panelVariants = {
+  // Panel starts off-screen to the right (x: 100%)
+  hidden: { x: '100%' },
+  // Panel slides in to its final position (x: 0)
+  visible: { x: 0 },
+  // Panel slides out when closing (x: 100%)
+  exit: { x: '100%' },
 };
 
 const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose }) => {
@@ -80,18 +101,33 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose }
     }
   };
 
+  // 💡 Framer motion uses the AnimatePresence component (usually wrapped higher up)
+  // to manage exit transitions. For simplicity here, we'll wrap the motion.div
+  // with a conditional render that respects the 'exit' animation if the parent
+  // component uses AnimatePresence.
   if (!isOpen) return null;
+
 
   return (
     <>
-      {/* Backdrop */}
-      <div
+      {/* Backdrop - Simple Fade */}
+      <motion.div
         className="fixed inset-0 bg-black/50 z-50"
         onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
       />
 
-      {/* Panel */}
-      <div className="fixed top-0 right-0 h-full w-full max-w-sm bg-gray-900 border-l border-gray-700 z-50 flex flex-col animate-in slide-in-from-right duration-300">
+      {/* ⭐ Panel: Using motion.div with slide variants */}
+      <motion.div
+        className="fixed top-0 right-0 h-full w-full max-w-sm bg-gray-900 border-l border-gray-700 z-50 flex flex-col"
+        variants={panelVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        transition={{ duration: 0.3, ease: 'easeInOut' }} // Match the old Tailwind duration
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
           <div className="flex items-center gap-2">
@@ -148,7 +184,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose }
             ))
           )}
         </ScrollArea>
-      </div>
+      </motion.div>
     </>
   );
 };
