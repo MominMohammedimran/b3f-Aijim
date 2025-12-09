@@ -60,12 +60,12 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ product }) => {
             <div
               key={item.id}
               className="min-w-[180px] md:min-w-[220px] relative group cursor-pointer"
-              onClick={() => {
+            
+            >
+              <ProductCard   onClick={() => {
                 window.scrollTo({ top: 0, behavior: "smooth" }); // Smooth scroll to top
                 navigate(`/product/${item.code}`);
-              }}
-            >
-              <ProductCard product={item} />
+              }} product={item} />
 
               {/* Hover images preview */}
               {item.images && item.images.length > 1 && (

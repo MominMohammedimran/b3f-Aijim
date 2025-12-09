@@ -11,8 +11,11 @@ import OrderIssueResponseForm from './OrderIssueResponseForm';
 import { useToast } from '@/hooks/use-toast';
 import ModernAdminLayout from '../../components/admin/ModernAdminLayout';
 
+
+
 interface AdminPaymentIssue {
   user_email?: string;
+ user_id?: string;
   user_name?: string;
   phone_number?: string;
   transaction_id?: string;
@@ -32,6 +35,7 @@ interface AdminPaymentIssue {
 interface AdminOrderIssue {
   user_email?: string;
   user_name?: string;
+  user_id?: string;
   phone_number?: string;
   transaction_id?: string;
   reason?: string;
@@ -76,6 +80,7 @@ export default function AdminOrderManager() {
       id: issue.id || order.id,
       order_id: order.order_number,
       order_number: order.order_number,
+      user_id:issue.user_id,
       user_email: issue.user_email || shippingAddress?.email || 'N/A',
       user_name: issue.user_name || shippingAddress?.fullName || 'N/A',
       phone_number: issue.phone_number || shippingAddress?.phone || 'N/A',
@@ -91,7 +96,7 @@ export default function AdminOrderManager() {
     });
   });
 });
-
+console.log(mappedData)
       setPaymentIssues(mappedData);
     } catch (error) {
      // console.error('Error fetching payment issues:', error);
@@ -123,6 +128,7 @@ export default function AdminOrderManager() {
       id: issue.id || order.id,
       order_id: order.order_number,
       order_number: order.order_number,
+        user_id:issue.user_id,
       user_email: issue.user_email || shippingAddress?.email || 'N/A',
       user_name: issue.user_name || shippingAddress?.fullName || 'N/A',
       phone_number: issue.phone_number || shippingAddress?.phone || 'N/A',
@@ -139,7 +145,7 @@ export default function AdminOrderManager() {
 });
 
 
-      
+  
       setOrderIssues(mappedData);
     } catch (error) {
     //  console.error('Error fetching order issues:', error);

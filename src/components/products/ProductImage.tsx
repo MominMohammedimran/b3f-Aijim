@@ -170,7 +170,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
       {/* Scrollable thumbnails */}
       <div
         ref={thumbRef}
-        className="flex gap-2 overflow-x-scroll overflow-y-hidden px-8 py-2 scrollbar-hide"
+        className="flex gap-2 justify-center items-center overflow-x-scroll overflow-y-hidden px-8 py-2 scrollbar-hide"
         onTouchStart={onThumbTouchStart}
         onTouchEnd={onThumbTouchEnd}
       >

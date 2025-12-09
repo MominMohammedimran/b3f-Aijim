@@ -17,6 +17,7 @@ import ModernAdminLayout from '../../components/admin/ModernAdminLayout';
 interface Order {
   id: string;
   order_number: string;
+  user_id: string;
   user_email: string;
   total: number;
   status: string;
@@ -25,8 +26,10 @@ interface Order {
   shipping_address: any;
   payment_method: string;
   payment_status?: string;
-  coupon_code?: { code: string; discount_amount: number };
+  coupon_code?: string;
+  coupon_code_discount?: number;
   reward_points_used?: { points: number; value_used: number };
+  reward_points_used_available?: number;
   reward_points_earned?: number;
   delivery_fee?: number;
   courier?: any;
@@ -74,6 +77,7 @@ const AdminOrders: React.FC = () => {
         const transformedOrders = data.map((order: any) => ({
           id: order.id,
           order_number: order.order_number,
+          user_id: order.user_id,
           user_email: order.user_email || 'N/A',
           total: order.total,
           status: order.status,
@@ -350,7 +354,14 @@ const AdminOrders: React.FC = () => {
 
         {showOrderDetails && selectedOrder && (
           <OrderDetailsDialog
-            order={selectedOrder}
+            order={{
+              ...selectedOrder,
+              user_id: selectedOrder.user_id,
+              coupon_code: selectedOrder.coupon_code || '',
+              coupon_code_discount: selectedOrder.coupon_code_discount || 0,
+              reward_points_used: selectedOrder.reward_points_used?.value_used || 0,
+              reward_points_used_available: selectedOrder.reward_points_used_available || 0,
+            }}
             open={showOrderDetails}
             onOpenChange={setShowOrderDetails}
             onStatusUpdate={handleStatusUpdate}
@@ -488,7 +499,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
                 </div>
               </TableCell>
               <TableCell>
-                <Badge variant={statusColors[order.status] || 'secondary'} className="text-xs">
+                <Badge variant={(statusColors[order.status] as any) || 'secondary'} className="text-xs">
                   {order.status}
                 </Badge>
               </TableCell>

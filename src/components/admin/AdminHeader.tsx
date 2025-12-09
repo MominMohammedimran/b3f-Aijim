@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LogOut, User } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import AdminNotifyButton from './AdminNotifyButton';
 
 const AdminHeader = () => {
   const { currentUser, signOut } = useAuth();
@@ -16,7 +16,6 @@ const AdminHeader = () => {
       toast.success('Signed out successfully');
       navigate('/admin/signin');
     } catch (error) {
-    //  console.error('Error signing out:', error);
       toast.error('Failed to sign out');
     }
   };
@@ -32,6 +31,8 @@ const AdminHeader = () => {
           </div>
           
           <div className="flex items-center space-x-4">
+            <AdminNotifyButton />
+            
             <div className="flex items-center space-x-2 text-sm text-gray-700">
               <User className="h-4 w-4" />
               <span>{currentUser?.email || 'Admin User'}</span>

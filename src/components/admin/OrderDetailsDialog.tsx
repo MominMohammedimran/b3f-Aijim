@@ -11,6 +11,7 @@ import { CartItem } from '@/lib/types';
 interface AdminOrder {
   id: string;
   order_number: string;
+  user_id?: string;
   user_email?: string;
   status: string;
   created_at: string;
@@ -172,6 +173,7 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
           {/* Status management */}
            <OrderStatusActions
           orderId={order.id}
+          userId={order.user_id}
           currentStatus={order.status}
           userEmail={order.user_email}
           orderNumber={order.order_number}

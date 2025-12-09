@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Upload } from 'lucide-react';
+import { createPaymentIssueNotification } from "@/services/adminNotificationService";
 
 interface PaymentIssue {
    user_email?: string;
+   user_id?:string;
   user_name?: string;
   phone_number?: string;
   transaction_id?: string;
@@ -121,6 +123,13 @@ const handleSubmit = async (e: React.FormEvent) => {
       title: "Success",
       description: "Payment issue response updated successfully",
     });
+    if (issue.user_id) {
+            try {
+              await createPaymentIssueNotification(issue.user_id, issue.order_number || issue.order_id, status);
+            } catch (notifErr) {
+              console.error("Failed to send in-app notification:", notifErr);
+            }
+          }
 
     onUpdate();
   } catch (error) {

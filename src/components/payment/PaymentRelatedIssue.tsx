@@ -14,6 +14,7 @@ interface Issue {
   id: string;
   user_email: string;
   user_name: string;
+  
   phone_number: string;
   transaction_id: string;
   reason: string;

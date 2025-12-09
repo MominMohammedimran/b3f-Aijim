@@ -19,6 +19,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/context/CartContext";
 import Marquee from "react-fast-marquee";
+import NotificationBell from "@/components/notifications/NotificationBell";
 
 const Navbar = () => {
   const routerLocation = useRouterLocation();
@@ -74,7 +75,7 @@ const Navbar = () => {
               className="flex items-center uppercase text-white font-semibold text-[10px] sm:text-[13px] px-4 whitespace-nowrap"
             >
               {/*<Tag size={14} className="text-white mr-1" /> Flat ₹500 Off on Orders Above ₹2500*/}
-              "Everys Aijim T-shirt tells a story — built from hustle. #
+              "Every T-shirt tells a story — built from hustle. #
               <span className="font-bold ">AIJIM</span>”
             </span>
           ))}
@@ -101,6 +102,9 @@ const Navbar = () => {
 
         {/* Right Icons */}
         <div className="flex items-center gap-4 mr-4 pb-2">
+          {/* Notifications */}
+         <NotificationBell />
+
           {/* Search Icon */}
           <Link
             onClick={() => {

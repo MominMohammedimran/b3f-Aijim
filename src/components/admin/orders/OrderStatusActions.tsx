@@ -11,9 +11,11 @@ import {
   sendReturnConfirmationEmail,
   sendOrderStatusEmail,
 } from "@/components/admin/OrderStatusEmailService";
+import { createOrderNotification } from "@/services/adminNotificationService";
 
 interface OrderStatusActionsProps {
   orderId: string;
+  userId?: string;
   currentStatus: string;
   onStatusUpdate: (orderId: string, status: string, reason?: string) => void;
   userEmail?: string;
@@ -29,6 +31,7 @@ interface OrderStatusActionsProps {
 
 const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
   orderId,
+  userId,
   currentStatus,
   onStatusUpdate,
   userEmail,
@@ -112,8 +115,16 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
            {/* console.log("📧 Generic status email sent");*/}
           }
         } catch (emailErr) {
-        //  console.error("Email sending failed:", emailErr);
           toast.warning("Status updated but failed to send email");
+        }
+      }
+
+      // 🔔 Send in-app notification
+      if (userId) {
+        try {
+          await createOrderNotification(userId, orderNumber || orderId, selectedStatus, orderId);
+        } catch (notifErr) {
+          console.error("Failed to send in-app notification:", notifErr);
         }
       }
 
@@ -121,7 +132,6 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
       onStatusUpdate(orderId, selectedStatus, cancellationReason);
       toast.success("✅ Order status updated successfully");
     } catch (err) {
-     // console.error("❌ Error updating status:", err);
       toast.error("Failed to update order status");
     } finally {
       setIsUpdating(false);

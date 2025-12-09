@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Upload } from 'lucide-react';
+import { createOrderIssueNotification } from "@/services/adminNotificationService";
 
 interface OrderIssue {
   id: string;
@@ -14,6 +15,7 @@ interface OrderIssue {
   order_number: string;
   user_email: string;
   user_name: string;
+  user_id:string;
   phone_number: string;
   transaction_id?: string;
   reason: string;
@@ -114,7 +116,16 @@ export default function OrderIssueResponseForm({ issue, onUpdate }: OrderIssueRe
       if (error) throw error;
 
       toast({ title: "Success", description: "Order issue response updated successfully" });
+
+      if (issue.user_id) {
+                  try {
+                    await createOrderIssueNotification(issue.user_id, issue.order_number || issue.order_id, status);
+                  } catch (notifErr) {
+                    console.error("Failed to send in-app notification:", notifErr);
+                  }
+                }
       onUpdate();
+      
     } catch (error) {
      // console.error('Error updating order issue:', error);
       toast({ title: "Error", description: "Failed to update order issue response" });

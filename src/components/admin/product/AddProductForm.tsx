@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { X, Plus } from "lucide-react";
 import ProductImageUploader from "./ProductImageUploader";
+import { createProductNotification } from "@/services/adminNotificationService";
+
 interface ProductVariant {
   size: string;
   stock: number;
@@ -146,7 +148,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
     try {
       const cleanedVariants = variants.filter((v) => v.size && v.stock >= 0);
       const totalStock = cleanedVariants.reduce((sum, v) => sum + v.stock, 0);
-
+  
       const productData = {
         name: formData.name,
         code: formData.code,
@@ -183,6 +185,15 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
       if (error) throw error;
 
       toast.success("Product added successfully");
+     
+              try {
+                await createProductNotification(formData.name, 'new', 
+                   formData.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+                 );
+              } catch (notifErr) {
+                console.error("Failed to send in-app notification:", notifErr);
+              }
+           
       onProductAdded();
       onClose();
     } catch (error) {
