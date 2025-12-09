@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm';
 import { Button } from '@/components/ui/button';
+import { newUserNotification } from "@/services/adminNotificationService";
 
 const AuthFormContainer = ({ mode = 'signin' }) => {
   const [currentMode, setCurrentMode] = useState(mode);
@@ -39,6 +40,12 @@ const handleSignupSuccess = async (email: string, password: string,fullName:stri
     );
 
     toast.success("Welcome to Aijim Family ❤️");
+    try {
+                    await newUserNotification(data.user.id, 'Welcome to Aijim Family ', fullName
+                     );
+                  } catch (notifErr) {
+                    console.error("Failed to send in-app notification:", notifErr);
+                  }
     navigate("/");
   } catch {
     toast.error("Unexpected error during login.");

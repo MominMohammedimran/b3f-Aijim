@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,10 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import AdminLayout from '../../components/admin/AdminLayout';
 import ModernAdminLayout from '../../components/admin/ModernAdminLayout';
 import CouponManagement from '../../components/admin/CouponManagement';
-import AdminNotificationSender from '../../components/admin/AdminNotificationSender';
+import { createNormalMessageNotification } from "@/services/adminNotificationService";
 interface Settings {
   site_name: string;
   site_description: string;
@@ -34,6 +32,15 @@ interface AdminSettingsRow {
   updated_at: string;
 }
 
+// --- Notification Service Function Defined Locally (Mock) ---
+
+/**
+ * Mock function for createOrderNotification, as requested.
+ * In a real application, this would be an external API call or service function.
+ */
+
+
+
 const AdminSettings = () => {
   const [settings, setSettings] = useState<Settings>({
     site_name: 'Aijim',
@@ -46,6 +53,11 @@ const AdminSettings = () => {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  
+  // State for the Notification Form (integrated here)
+  const [notificationTitle, setNotificationTitle] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [isSendingNotification, setIsSendingNotification] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -121,6 +133,32 @@ const AdminSettings = () => {
       [field]: value
     }));
   };
+  
+  // --- Notification Submission Handler ---
+  const handleNotificationSubmit = async () => {
+    if (!notificationTitle.trim() || !notificationMessage.trim()) {
+      toast.error('Title and Message cannot be empty.');
+      return;
+    }
+    
+    setIsSendingNotification(true);
+
+    try {
+      // 🚀 Calling the local notification function as requested
+      await createNormalMessageNotification(notificationTitle, notificationMessage);
+      
+      toast.success('Notification sent via service successfully!');
+      setNotificationTitle('');
+      setNotificationMessage('');
+    } catch (notifErr: any) {
+      console.error("Failed to send in-app notification:", notifErr);
+      // Display a user-friendly error
+      toast.error('Failed to send notification: ' + (notifErr?.message || 'Unknown error'));
+    } finally {
+      setIsSendingNotification(false);
+    }
+  };
+  // --- End Notification Submission Handler ---
 
   return (
     <ModernAdminLayout title="Settings">
@@ -142,6 +180,8 @@ const AdminSettings = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* 1. Site Information */}
             <Card>
               <CardHeader>
                 <CardTitle>Site Information</CardTitle>
@@ -166,6 +206,7 @@ const AdminSettings = () => {
               </CardContent>
             </Card>
 
+            {/* 2. Contact Information */}
             <Card>
               <CardHeader>
                 <CardTitle>Contact Information</CardTitle>
@@ -199,6 +240,7 @@ const AdminSettings = () => {
               </CardContent>
             </Card>
 
+            {/* 3. Order Settings */}
             <Card>
               <CardHeader>
                 <CardTitle>Order Settings</CardTitle>
@@ -225,10 +267,44 @@ const AdminSettings = () => {
               </CardContent>
             </Card>
 
-            {/* Push Notification Sender 
-            <AdminNotificationSender />*/}
+            {/* 4. Notification Sender Form (Integrated Card) */}
+            <Card>
+              <CardHeader>
+                <CardTitle>📢 Send Simple Notification</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="notification_title">Title</Label>
+                  <Input
+                    id="notification_title"
+                    value={notificationTitle}
+                    onChange={(e) => setNotificationTitle(e.target.value)}
+                    placeholder="e.g., Important Update"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="notification_message">Message</Label>
+                  <Textarea
+                    id="notification_message"
+                    value={notificationMessage}
+                    onChange={(e) => setNotificationMessage(e.target.value)}
+                    placeholder="Enter the message body for users..."
+                  />
+                </div>
+                <Button
+                  onClick={handleNotificationSubmit} 
+                  disabled={isSendingNotification || !notificationTitle.trim() || !notificationMessage.trim()}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  {isSendingNotification ? 'Sending...' : 'Send Simple Notification'}
+                </Button>
+                <p className="text-sm text-gray-500 mt-2">
+                    *This uses the locally defined `createOrderNotification` function.
+                </p>
+              </CardContent>
+            </Card>
 
-            {/* Coupon Management Section */}
+            {/* 5. Coupon Management Section */}
             <div className="md:col-span-2">
               <CouponManagement />
             </div>

@@ -187,7 +187,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
       toast.success("Product added successfully");
      
               try {
-                await createProductNotification(formData.name, 'new', 
+                await createProductNotification(formData.name, 'new', formData.code,
                    formData.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
                  );
               } catch (notifErr) {

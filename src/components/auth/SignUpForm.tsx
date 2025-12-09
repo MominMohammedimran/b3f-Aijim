@@ -80,6 +80,7 @@ const supabase=useSupabaseClient();
     }
 
     toast.success("Account created!");
+    
     onSuccess?.(email, password,fullName);
 
     setLoading(false);
