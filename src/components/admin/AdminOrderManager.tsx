@@ -96,7 +96,7 @@ export default function AdminOrderManager() {
     });
   });
 });
-console.log(mappedData)
+
       setPaymentIssues(mappedData);
     } catch (error) {
      // console.error('Error fetching payment issues:', error);
@@ -207,176 +207,143 @@ console.log(mappedData)
   }
 
   return (
-    <div className="space-y-6">
-       
-<ModernAdminLayout 
-title="Payments">
-
+  <div className="space-y-6 bg-black text-white min-h-screen pb-10">
+    <ModernAdminLayout title="Payments">
+      
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Issue Management</h1>
-          <p className="text-gray-600 mt-1">Manage payment and order-related issues</p>
+          <h1 className="text-2xl font-semibold text-white">Issue Management</h1>
+          <p className="text-gray-400 text-sm">Manage payment and order-related issues</p>
         </div>
-        <Button onClick={fetchAllIssues} variant="outline" className="flex items-center gap-2">
+
+        <Button 
+          onClick={fetchAllIssues} 
+          variant="outline"
+          className="flex items-center gap-2 border-gray-600 text-white hover:bg-neutral-900"
+        >
           <RefreshCw className="h-4 w-4" />
           Refresh
         </Button>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Payment Issues</p>
-                <p className="text-2xl font-bold">{paymentIssues.length}</p>
-              </div>
-              <CreditCard className="h-8 w-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Order Issues</p>
-                <p className="text-2xl font-bold">{orderIssues.length}</p>
-              </div>
-              <AlertTriangle className="h-8 w-8 text-orange-600" />
-            </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Card className="bg-neutral-900 border border-neutral-700">
+          <CardContent className="p-5">
+            <p className="text-gray-400 text-sm">Total Payment Issues</p>
+            <p className="text-2xl font-bold">{paymentIssues.length}</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pending Issues</p>
-                <p className="text-2xl font-bold">{paymentStatusCounts.pending + orderStatusCounts.pending}</p>
-              </div>
-              <Badge variant="secondary">Pending</Badge>
-            </div>
+        <Card className="bg-neutral-900 border border-neutral-700">
+          <CardContent className="p-5">
+            <p className="text-gray-400 text-sm">Total Order Issues</p>
+            <p className="text-2xl font-bold">{orderIssues.length}</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Resolved Issues</p>
-                <p className="text-2xl font-bold">{paymentStatusCounts.resolved + orderStatusCounts.resolved}</p>
-              </div>
-              <Badge variant="default">Resolved</Badge>
-            </div>
+        <Card className="bg-neutral-900 border border-neutral-700">
+          <CardContent className="p-5">
+            <p className="text-gray-400 text-sm">Pending</p>
+            <p className="text-2xl font-bold text-red-500">
+              {paymentStatusCounts.pending + orderStatusCounts.pending}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-neutral-900 border border-neutral-700">
+          <CardContent className="p-5">
+            <p className="text-gray-400 text-sm">Resolved</p>
+            <p className="text-2xl font-bold text-green-500">
+              {paymentStatusCounts.resolved + orderStatusCounts.resolved}
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Filters */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search by order number, user name, or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
+      <Card className="bg-neutral-900 border border-neutral-700">
+        <CardContent className="p-5 space-y-4">
+          <div className="flex flex-col gap-3 sm:flex-row">
             
-            <div className="sm:w-48">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 bg-gray-800 text-white  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">All Status</option>
-                <option value="pending">Pending</option>
-                <option value="in-progress">In Progress</option>
-                <option value="resolved">Resolved</option>
-                <option value="rejected">Rejected</option>
-              </select>
+            {/* Search Bar */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input
+                placeholder="Search order, name, email"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-neutral-800 text-white border-neutral-600"
+              />
             </div>
+
+            {/* Status Filter */}
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full sm:w-44 bg-neutral-800 border border-neutral-600 rounded-md text-white px-3 py-2"
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="in-progress">In Progress</option>
+              <option value="resolved">Resolved</option>
+              <option value="rejected">Rejected</option>
+            </select>
           </div>
         </CardContent>
       </Card>
 
-      {/* Issues Tabs */}
+      {/* Tabs */}
       <Tabs defaultValue="payment" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="payment" className="flex items-center gap-2">
-            <CreditCard className="h-4 w-4" />
-            Payment Issues ({paymentStatusCounts.all})
+        <TabsList className="grid w-full grid-cols-2 bg-neutral-900 border border-neutral-700">
+          <TabsTrigger 
+            value="payment" 
+            className="text-white data-[state=active]:bg-red-600"
+          >
+            💳 Payment Issues ({paymentStatusCounts.all})
           </TabsTrigger>
-          <TabsTrigger value="order" className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
-            Order Issues ({orderStatusCounts.all})
+          <TabsTrigger 
+            value="order" 
+            className="text-white data-[state=active]:bg-red-600"
+          >
+            ⚠️ Order Issues ({orderStatusCounts.all})
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="payment" className="space-y-4">
+        {/* Payment Issues */}
+        <TabsContent value="payment" className="space-y-4 py-4">
           {filteredPaymentIssues.length === 0 ? (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No Payment Issues Found</h3>
-                <p className="text-gray-600">
-                  {searchTerm || statusFilter !== 'all' 
-                    ? 'No payment issues match your current filters.' 
-                    : 'No payment issues have been submitted yet.'
-                  }
-                </p>
-              </CardContent>
-            </Card>
+            <NoIssuesCard type="payment" />
           ) : (
-            <div className="space-y-4">
-              {filteredPaymentIssues.map((issue) => (
-                <PaymentIssueResponseForm
-                  key={issue.id}
-                  issue={issue as any}
-                  onUpdate={fetchPaymentIssues}
-                />
-              ))}
-            </div>
+            filteredPaymentIssues.map(issue => (
+              <PaymentIssueResponseForm key={issue.id} issue={issue} onUpdate={fetchPaymentIssues} />
+            ))
           )}
         </TabsContent>
 
-        <TabsContent value="order" className="space-y-4">
+        {/* Order Issues */}
+        <TabsContent value="order" className="space-y-4 py-4">
           {filteredOrderIssues.length === 0 ? (
-            <Card>
-              <CardContent className="p-12 text-center">
-                <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No Order Issues Found</h3>
-                <p className="text-gray-600">
-                  {searchTerm || statusFilter !== 'all' 
-                    ? 'No order issues match your current filters.' 
-                    : 'No order issues have been submitted yet.'
-                  }
-                </p>
-              </CardContent>
-            </Card>
+            <NoIssuesCard type="order" />
           ) : (
-            <div className="space-y-4">
-              {filteredOrderIssues.map((issue) => (
-                <OrderIssueResponseForm
-                  key={issue.id}
-                  issue={issue as any}
-                  onUpdate={fetchOrderIssues}
-                />
-              ))}
-            </div>
+            filteredOrderIssues.map(issue => (
+              <OrderIssueResponseForm key={issue.id} issue={issue as any} onUpdate={fetchOrderIssues} />
+            ))
           )}
         </TabsContent>
       </Tabs>
-          </ModernAdminLayout>
-    </div>
+    </ModernAdminLayout>
+  </div>
+);
 
+}
+
+function NoIssuesCard({ type }: { type: string }) {
+  return (
+    <Card className="bg-neutral-900 border border-neutral-700 p-10 text-center">
+      <p className="text-gray-400 text-lg">No {type} issues found.</p>
+      <p className="text-gray-500 text-sm">Try adjusting search or filters.</p>
+    </Card>
   );
 }

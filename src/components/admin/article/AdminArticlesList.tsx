@@ -78,104 +78,101 @@ const AdminArticlesList: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Articles</h1>
-        <Button onClick={() => navigate('/admin/articles/new')}>
-          <Plus className="h-4 w-4 mr-2" />
-          New Article
-        </Button>
-      </div>
+    <div className="container mx-auto py-6 px-4 sm:px-2">
+  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+    <h1 className="text-2xl font-bold">Articles</h1>
+    <Button onClick={() => navigate('/admin/articles/new')} className="w-full sm:w-auto flex items-center justify-center">
+      <Plus className="h-4 w-4 mr-2" />
+      New Article
+    </Button>
+  </div>
 
-      {articles.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground mb-4">No articles yet</p>
-            <Button onClick={() => navigate('/admin/articles/new')}>
-              Create your first article
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {articles.map((article) => (
-            <Card key={article.id}>
-              <CardContent className="p-4">
-                <div className="flex items-start gap-4">
-                  {article.image && (
-                    <div className="w-24 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                      <img 
-                        src={article.image} 
-                        alt={article.title} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="flex-1 w-full">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <h3 className="font-semibold  line-clamp-1">{article.title}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-1">
-                          {article.excerpt || 'No excerpt'}
-                        </p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant={article.is_published ? 'default' : 'secondary'}>
-                            {article.is_published ? 'Published' : 'Draft'}
-                          </Badge>
-                          {article.category && (
-                            <Badge variant="outline">{article.category}</Badge>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => window.open(`/articles/${article.slug}`, '_blank')}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => navigate(`/admin/articles/edit/${article.slug}`)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setDeleteId(article.id)}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </div>
+  {articles.length === 0 ? (
+    <Card>
+      <CardContent className="py-12 text-center">
+        <p className="text-muted-foreground mb-4">No articles yet</p>
+        <Button onClick={() => navigate('/admin/articles/new')}>
+          Create your first article
+        </Button>
+      </CardContent>
+    </Card>
+  ) : (
+    <div className="space-y-4">
+      {articles.map((article) => (
+        <Card key={article.id}>
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              {article.image && (
+                <div className="w-full sm:w-24 h-24 sm:h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                  <img 
+                    src={article.image} 
+                    alt={article.title} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="flex-1 w-full flex flex-col sm:flex-row sm:justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="font-semibold line-clamp-2">{article.title}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {article.excerpt || 'No excerpt'}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <Badge variant={article.is_published ? 'default' : 'secondary'}>
+                      {article.is_published ? 'Published' : 'Draft'}
+                    </Badge>
+                    {article.category && <Badge variant="outline">{article.category}</Badge>}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Article</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this article? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={deleting}>
-              {deleting ? 'Deleting...' : 'Delete'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+                <div className="flex items-center gap-2 mt-2 sm:mt-0 flex-shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => window.open(`/articles/${article.slug}`, '_blank')}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => navigate(`/admin/articles/edit/${article.slug}`)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setDeleteId(article.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
+  )}
+
+  <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Delete Article</AlertDialogTitle>
+        <AlertDialogDescription>
+          Are you sure you want to delete this article? This action cannot be undone.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+        <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
+        <AlertDialogAction onClick={handleDelete} disabled={deleting} className="w-full sm:w-auto">
+          {deleting ? 'Deleting...' : 'Delete'}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+</div>
+
   );
 };
 

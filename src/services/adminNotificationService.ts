@@ -242,7 +242,7 @@ export const createOrderIssueNotification = async (
 
 export const newUserNotification = async (
   userId: string,
-title:string,
+
  message:string,
 ): Promise<boolean> => {
   
@@ -250,7 +250,7 @@ title:string,
   return createNotification({
     userId,
     type: 'new_user',
-    title: title,
+    title: 'Welcome to Aijim Family ❤️',
     message: message,
     link: `/`,
     metadata: { message},

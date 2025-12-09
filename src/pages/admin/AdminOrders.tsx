@@ -420,116 +420,174 @@ const OrderTable: React.FC<OrderTableProps> = ({
   fetchDelhiveryStatus,
   handleRewardPointsUpdate,
   handleStatusUpdate,
-}) => (
-  <div className="rounded-lg border overflow-hidden">
-    <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-gray-50 hover:bg-gray-50">
-            <TableHead>Order</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Customer</TableHead>
-            <TableHead>Payment</TableHead>
-            <TableHead>Payment Update</TableHead>
-            <TableHead>Delhivery</TableHead>
-            <TableHead>Rewards</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Total</TableHead>
-            <TableHead className="text-center">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {orders.map(order => (
-            <TableRow key={order.id} className="">
-              <TableCell className="font-medium">{order.order_number}</TableCell>
-              <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
-              <TableCell className="max-w-[200px] truncate">{order.user_email}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={order.payment_status === 'paid' ? 'default' : 'destructive'}
-                  className="text-xs"
+}) => {
+  const badgeColors = {
+    paid: "bg-green-600 text-white",
+    pending: "bg-red-600 text-white",
+    refunded: "bg-yellow-600 text-black",
+    shipped: "bg-blue-600 text-white",
+    delivered: "bg-emerald-700 text-white",
+  };
+
+  return (
+    <>
+      {/* Desktop Table */}
+      <div className="hidden md:block rounded-xl border border-gray-800 overflow-hidden bg-black">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-neutral-900 text-gray-300">
+                <TableHead>Order</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Payment</TableHead>
+                <TableHead>Payment Update</TableHead>
+                <TableHead>Delhivery</TableHead>
+                <TableHead>Rewards</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Total</TableHead>
+                <TableHead className="text-center">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {orders.map(order => (
+                <TableRow 
+                  key={order.id}
+                  className="hover:bg-neutral-800 transition border-b border-neutral-900"
                 >
-                  {order.payment_status || 'N/A'}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handlePaymentUpdate(order)}
-                  className="text-xs px-2 py-1 h-8"
-                >
-                  Update Payment
-                </Button>
-              </TableCell>
-              <TableCell>
-              <span className="text-xs">{order.trackingNote || 'N/A'}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    if (!order.courier?.awb) {
-                      toast.error('AWB not found for this order');
-                      return;
-                    }
-                    const result = await fetchDelhiveryStatus(order.courier.awb, order.id);
-                    if (!result) return;
-                    handleStatusUpdate(order.id, result.status);
-                    setOrders(prev =>
-                      prev.map(o => (o.id === order.id ? { ...o, trackingNote: result.note } : o))
-                    );
-                  }}
-                  className="text-xs px-2 py-1 h-8"
-                >
-                  Check
-                </Button>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs">{order.reward_points_earned || 0} pts</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRewardPointsUpdate(order)}
-                    className="h-6 w-6 p-0"
-                    title="Update reward points"
-                  >
-                    <Award size={12} />
-                  </Button>
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge variant={(statusColors[order.status] as any) || 'secondary'} className="text-xs">
-                  {order.status}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right font-medium">₹{order.total}</TableCell>
-              <TableCell>
-                <div className="flex justify-center gap-2 flex-wrap">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleViewOrder(order)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Eye size={14} />
-                  </Button>
-                  {order.status !== 'delivered' && (
+                  <TableCell className="font-medium text-white">
+                    {order.order_number}
+                  </TableCell>
+
+                  <TableCell className="text-gray-400">
+                    {new Date(order.created_at).toLocaleDateString()}
+                  </TableCell>
+
+                  <TableCell className="text-gray-300 max-w-[200px] truncate">
+                    {order.user_email}
+                  </TableCell>
+
+                  <TableCell>
+                    <span className={`text-xs px-2 py-1 rounded-md ${badgeColors[order.payment_status] || "bg-gray-600 text-white"}`}>
+                      {order.payment_status || "N/A"}
+                    </span>
+                  </TableCell>
+
+                  <TableCell>
                     <Button
-                      variant="outline"
                       size="sm"
-                      onClick={() => handleStatusUpdate(order.id, 'delivered')}
-                      className="text-xs px-2 py-1 h-8"
+                      onClick={() => handlePaymentUpdate(order)}
+                      className="text-xs px-2 py-1 h-8 bg-neutral-800 text-white border border-gray-600 hover:bg-neutral-700"
                     >
-                      Mark Delivered
+                      Update
                     </Button>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  </div>
-);
+                  </TableCell>
+
+                  <TableCell>
+                    <span className="block text-xs text-gray-400">{order.trackingNote || "N/A"}</span>
+                    <Button
+                      size="sm"
+                      onClick={async () => {
+                        if (!order.courier?.awb) return toast.error("AWB Missing");
+                        const result = await fetchDelhiveryStatus(order.courier.awb, order.id);
+                        if (!result) return;
+                        handleStatusUpdate(order.id, result.status);
+                        setOrders(prev =>
+                          prev.map(o => (o.id === order.id ? { ...o, trackingNote: result.note } : o))
+                        );
+                      }}
+                      className="text-xs px-2 py-1 h-8 mt-1 bg-gray-800 text-white border border-gray-700 hover:bg-gray-700"
+                    >
+                      Check
+                    </Button>
+                  </TableCell>
+
+                  <TableCell className="flex items-center gap-2 text-gray-300">
+                    <span className="text-xs">{order.reward_points_earned || 0} pts</span>
+                    <Award
+                      size={14}
+                      className="cursor-pointer text-yellow-400"
+                      onClick={() => handleRewardPointsUpdate(order)}
+                    />
+                  </TableCell>
+
+                  <TableCell>
+                    <span className={`text-xs px-2 py-1 rounded-md ${badgeColors[order.status] || "bg-gray-700 text-white"}`}>
+                      {order.status}
+                    </span>
+                  </TableCell>
+
+                  <TableCell className="text-right font-bold text-white">
+                    ₹{order.total}
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex justify-center">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleViewOrder(order)}
+                        className="h-8 w-8 p-0 text-gray-400 hover:text-white"
+                      >
+                        <Eye size={14} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Mobile */}
+      <div className="md:hidden space-y-4">
+        {orders.map(order => (
+          <div key={order.id} className="p-4 border border-gray-700 bg-neutral-900 rounded-xl">
+            <div className="flex justify-between">
+              <h4 className="font-semibold text-sm text-white">{order.order_number}</h4>
+              <span className={`text-xxs px-2 py-1 rounded-md ${badgeColors[order.status] || "bg-gray-700 text-white"}`}>
+                {order.status}
+              </span>
+            </div>
+
+            <p className="text-xs text-gray-500">{new Date(order.created_at).toLocaleDateString()}</p>
+
+            <p className="text-sm text-gray-300 truncate">{order.user_email}</p>
+
+            <div className="flex justify-between items-center">
+              <span className={`text-xs px-2 py-1 rounded-md ${badgeColors[order.payment_status] || "bg-gray-700 text-white"}`}>
+                {order.payment_status || "N/A"}
+              </span>
+              <p className="text-lg font-bold text-white">₹{order.total}</p>
+            </div>
+
+            <div className="text-xs text-gray-400">Tracking: {order.trackingNote || "N/A"}</div>
+
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Button onClick={() => handleViewOrder(order)} size="sm" className="bg-gray-800 text-white">
+                <Eye size={12} className="mr-1" /> View
+              </Button>
+
+              <Button onClick={() => handlePaymentUpdate(order)} size="sm" className="bg-blue-600 text-white">
+                Payment
+              </Button>
+
+              <Button
+                size="sm"
+                className="bg-red-600 text-white"
+                onClick={() => {
+                  if (!order.courier?.awb) return toast.error("AWB missing");
+                  fetchDelhiveryStatus(order.courier.awb, order.id);
+                }}
+              >
+                Track
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};

@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import ModernAdminLayout from '../../components/admin/ModernAdminLayout';
 import CouponManagement from '../../components/admin/CouponManagement';
 import { createNormalMessageNotification } from "@/services/adminNotificationService";
+
 interface Settings {
   site_name: string;
   site_description: string;
@@ -19,42 +20,20 @@ interface Settings {
   min_order_amount: number;
 }
 
-interface AdminSettingsRow {
-  id: number;
-  site_name: string;
-  site_description: string;
-  contact_email: string;
-  contact_phone: string;
-  business_address: string;
-  delivery_fee: number;
-  min_order_amount: number;
-  created_at: string;
-  updated_at: string;
-}
-
-// --- Notification Service Function Defined Locally (Mock) ---
-
-/**
- * Mock function for createOrderNotification, as requested.
- * In a real application, this would be an external API call or service function.
- */
-
-
-
 const AdminSettings = () => {
   const [settings, setSettings] = useState<Settings>({
     site_name: 'Aijim',
-    site_description: 'Custom printing services',
-    contact_email: 'contact@b3fprints.com',
-    contact_phone: '+91 9999999999',
+    site_description: 'Premium oversized affordable tshirt',
+    contact_email: 'aijim.official@gmail.com',
+    contact_phone: '+91 7672080881',
     business_address: 'India',
-    delivery_fee: 80,
+    delivery_fee: 0,
     min_order_amount: 100
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
-  // State for the Notification Form (integrated here)
+  // Notification state
   const [notificationTitle, setNotificationTitle] = useState('');
   const [notificationMessage, setNotificationMessage] = useState('');
   const [isSendingNotification, setIsSendingNotification] = useState(false);
@@ -66,13 +45,10 @@ const AdminSettings = () => {
   const loadSettings = async () => {
     setLoading(true);
     try {
-      // Use the database function to get admin settings
       const { data, error } = await supabase.rpc('get_admin_settings');
+      if (error) throw error;
 
-      if (error) {
-        console.error('Error loading settings from database:', error);
-        toast.error('Failed to load settings from database');
-      } else if (data && Array.isArray(data) && data.length > 0) {
+      if (data && Array.isArray(data) && data.length > 0) {
         const settingsData = data[0];
         setSettings({
           site_name: settingsData.site_name || 'B3F Prints',
@@ -85,7 +61,7 @@ const AdminSettings = () => {
         });
         toast.success('Settings loaded from database');
       } else {
-        toast.info('No settings found in database, using defaults');
+        toast.info('No settings found, using defaults');
       }
     } catch (error: any) {
       console.error('Error loading settings:', error);
@@ -98,7 +74,6 @@ const AdminSettings = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Save to database using the update function
       const { error } = await supabase.rpc('update_admin_settings', {
         p_site_name: settings.site_name,
         p_site_description: settings.site_description,
@@ -108,17 +83,10 @@ const AdminSettings = () => {
         p_delivery_fee: settings.delivery_fee,
         p_min_order_amount: settings.min_order_amount
       });
+      if (error) throw error;
 
-      if (error) {
-        console.error('Database save error:', error);
-        toast.error('Failed to save settings to database: ' + (error?.message || 'Unknown error'));
-      } else {
-        toast.success('Settings saved successfully to database');
-        // Force reload to ensure changes are reflected
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      }
+      toast.success('Settings saved successfully!');
+      setTimeout(() => window.location.reload(), 800);
     } catch (error: any) {
       console.error('Error saving settings:', error);
       toast.error('Error saving settings: ' + (error?.message || 'Unknown error'));
@@ -128,64 +96,53 @@ const AdminSettings = () => {
   };
 
   const handleInputChange = (field: keyof Settings, value: string | number) => {
-    setSettings(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setSettings(prev => ({ ...prev, [field]: value }));
   };
-  
-  // --- Notification Submission Handler ---
+
   const handleNotificationSubmit = async () => {
     if (!notificationTitle.trim() || !notificationMessage.trim()) {
       toast.error('Title and Message cannot be empty.');
       return;
     }
-    
-    setIsSendingNotification(true);
 
+    setIsSendingNotification(true);
     try {
-      // 🚀 Calling the local notification function as requested
       await createNormalMessageNotification(notificationTitle, notificationMessage);
-      
-      toast.success('Notification sent via service successfully!');
+      toast.success('Notification sent successfully!');
       setNotificationTitle('');
       setNotificationMessage('');
     } catch (notifErr: any) {
-      console.error("Failed to send in-app notification:", notifErr);
-      // Display a user-friendly error
+      console.error("Failed to send notification:", notifErr);
       toast.error('Failed to send notification: ' + (notifErr?.message || 'Unknown error'));
     } finally {
       setIsSendingNotification(false);
     }
   };
-  // --- End Notification Submission Handler ---
 
   return (
     <ModernAdminLayout title="Settings">
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <h2 className="text-2xl font-bold">Admin Settings</h2>
-          <Button 
-            onClick={handleSave} 
+          <Button
+            onClick={handleSave}
             disabled={saving}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
           >
             {saving ? 'Saving...' : 'Save Settings'}
           </Button>
         </div>
 
         {loading ? (
-          <div className="flex justify-center">
+          <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            {/* 1. Site Information */}
+
+            {/* Site Info */}
             <Card>
-              <CardHeader>
-                <CardTitle>Site Information</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>Site Information</CardTitle></CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <Label htmlFor="site_name">Site Name</Label>
@@ -206,14 +163,12 @@ const AdminSettings = () => {
               </CardContent>
             </Card>
 
-            {/* 2. Contact Information */}
+            {/* Contact Info */}
             <Card>
-              <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>Contact Information</CardTitle></CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="contact_email">Contact Email</Label>
+                  <Label htmlFor="contact_email">Email</Label>
                   <Input
                     id="contact_email"
                     type="email"
@@ -222,7 +177,7 @@ const AdminSettings = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="contact_phone">Contact Phone</Label>
+                  <Label htmlFor="contact_phone">Phone</Label>
                   <Input
                     id="contact_phone"
                     value={settings.contact_phone}
@@ -230,7 +185,7 @@ const AdminSettings = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="business_address">Business Address</Label>
+                  <Label htmlFor="business_address">Address</Label>
                   <Textarea
                     id="business_address"
                     value={settings.business_address}
@@ -240,11 +195,9 @@ const AdminSettings = () => {
               </CardContent>
             </Card>
 
-            {/* 3. Order Settings */}
+            {/* Order Settings */}
             <Card>
-              <CardHeader>
-                <CardTitle>Order Settings</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>Order Settings</CardTitle></CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <Label htmlFor="delivery_fee">Delivery Fee (₹)</Label>
@@ -267,11 +220,9 @@ const AdminSettings = () => {
               </CardContent>
             </Card>
 
-            {/* 4. Notification Sender Form (Integrated Card) */}
+            {/* Notification Card */}
             <Card>
-              <CardHeader>
-                <CardTitle>📢 Send Simple Notification</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>📢 Send Notification</CardTitle></CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <Label htmlFor="notification_title">Title</Label>
@@ -279,7 +230,7 @@ const AdminSettings = () => {
                     id="notification_title"
                     value={notificationTitle}
                     onChange={(e) => setNotificationTitle(e.target.value)}
-                    placeholder="e.g., Important Update"
+                    placeholder="Important Update"
                   />
                 </div>
                 <div>
@@ -288,30 +239,27 @@ const AdminSettings = () => {
                     id="notification_message"
                     value={notificationMessage}
                     onChange={(e) => setNotificationMessage(e.target.value)}
-                    placeholder="Enter the message body for users..."
+                    placeholder="Enter message for users..."
                   />
                 </div>
                 <Button
-                  onClick={handleNotificationSubmit} 
+                  onClick={handleNotificationSubmit}
                   disabled={isSendingNotification || !notificationTitle.trim() || !notificationMessage.trim()}
-                  className="bg-purple-600 hover:bg-purple-700"
+                  className="w-full bg-purple-600 hover:bg-purple-700"
                 >
-                  {isSendingNotification ? 'Sending...' : 'Send Simple Notification'}
+                  {isSendingNotification ? 'Sending...' : 'Send Notification'}
                 </Button>
-                <p className="text-sm text-gray-500 mt-2">
-                    *This uses the locally defined `createOrderNotification` function.
-                </p>
               </CardContent>
             </Card>
 
-            {/* 5. Coupon Management Section */}
+            {/* Coupon Management */}
             <div className="md:col-span-2">
               <CouponManagement />
             </div>
           </div>
         )}
       </div>
-     </ModernAdminLayout>
+    </ModernAdminLayout>
   );
 };
 

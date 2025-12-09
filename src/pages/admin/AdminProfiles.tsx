@@ -24,7 +24,7 @@ interface Profile {
   display_name?: string;
   phone?: string;
   reward_points?: number;
-   referral_source?:string;
+  referral_source?: string;
 }
 
 interface Order {
@@ -54,12 +54,7 @@ const AdminProfiles = () => {
   const [loadingOrders, setLoadingOrders] = useState(false);
   const queryClient = useQueryClient();
 
-  const {
-    data: profiles = [],
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
+  const { data: profiles = [], isLoading, error, refetch } = useQuery({
     queryKey: ["profiles"],
     queryFn: fetchProfilesWithOrders,
   });
@@ -160,40 +155,42 @@ const AdminProfiles = () => {
   const renderUserCard = (profile: UserWithOrders) => (
     <Card
       key={profile.id}
-      className="p-4 bg-gray-900 border-gray-700 rounded-xl shadow-sm"
+      className="p-3 sm:p-4 bg-gray-900 border-gray-700 rounded-xl shadow-sm"
     >
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="font-semibold text-lg text-white">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-lg text-white truncate">
             {profile.display_name || profile.first_name || "Unknown"}{" "}
             {profile.last_name || ""}
           </h3>
-          <p className="text-gray-400 text-sm">account created - {profile. referral_source}</p>
-
-          <p className="text-gray-400 text-xs mt-1">
+          <p className="text-gray-400 text-sm truncate">
+            Account created - {profile.referral_source || "N/A"}
+          </p>
+          <p className="text-gray-400 text-xs mt-1 truncate">
             Orders: <span className="font-semibold">{profile.orderCount}</span>{" "}
             | Total:{" "}
             <span className="font-semibold text-yellow-400">
               ₹{profile.totalSpent.toFixed(2)}
             </span>
           </p>
-           <p className="text-gray-400 text-sm">{profile.email}</p>
+          <p className="text-gray-400 text-sm truncate">{profile.email}</p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:mt-0 w-full sm:w-auto">
           {/* View Orders */}
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 size="sm"
                 variant="secondary"
+                className="w-full sm:w-auto flex justify-center"
                 onClick={() => fetchUserOrders(profile.id)}
               >
-                <Eye size={16} /> View Orders
+                <Eye size={16} className="mr-1" /> View Orders
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-w-2xl bg-gray-950 text-white max-h-[85vh] overflow-y-auto">
+            <DialogContent className="max-w-full sm:max-w-2xl p-4 bg-gray-950 text-white max-h-[85vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-yellow-300">
                   {profile.display_name || profile.first_name}’s Orders
@@ -213,23 +210,23 @@ const AdminProfiles = () => {
                   {userOrders.map((order) => (
                     <div
                       key={order.id}
-                      className="border border-gray-800 rounded-lg p-4 bg-gray-900"
+                      className="border border-gray-800 rounded-lg p-3 sm:p-4 bg-gray-900"
                     >
-                      <div className="flex justify-between mb-3">
+                      <div className="flex flex-col sm:flex-row justify-between mb-3 gap-2">
                         <div>
-                          <p className="text-yellow-400 font-semibold text-sm">
+                          <p className="text-yellow-400 font-semibold text-sm truncate">
                             {order.order_number || order.id}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-gray-400 truncate">
                             {new Date(order.created_at).toLocaleString()}
                           </p>
                         </div>
 
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs bg-gray-700 px-2 py-1 rounded uppercase">
+                        <div className="flex flex-row sm:flex-col gap-1">
+                          <span className="text-xs bg-gray-700 px-2 py-1 rounded uppercase truncate">
                             Pay: {order.payment_status}
                           </span>
-                          <span className="text-xs bg-gray-700 px-2 py-1 rounded uppercase">
+                          <span className="text-xs bg-gray-700 px-2 py-1 rounded uppercase truncate">
                             Status: {order.status}
                           </span>
                         </div>
@@ -241,7 +238,7 @@ const AdminProfiles = () => {
                           {order.items.map((item, index) => (
                             <div
                               key={index}
-                              className="flex items-center gap-3 p-2 bg-gray-800 rounded border border-gray-700"
+                              className="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 bg-gray-800 rounded border border-gray-700"
                             >
                               {item.image && (
                                 <img
@@ -249,18 +246,18 @@ const AdminProfiles = () => {
                                   className="w-12 h-12 rounded object-cover"
                                 />
                               )}
-                              <div className="flex-1">
-                                <p className="text-sm font-semibold text-white">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-white truncate">
                                   {item.name}
                                 </p>
-                                <p className="text-xs text-gray-400">
+                                <p className="text-xs text-gray-400 truncate">
                                   {item.sizes
                                     ?.map((s) => `${s.size} × ${s.quantity}`)
                                     .join(", ")}
                                 </p>
                               </div>
 
-                              <p className="text-green-400 text-sm font-semibold">
+                              <p className="text-green-400 text-sm font-semibold truncate">
                                 ₹{item.price}
                               </p>
                             </div>
@@ -287,6 +284,7 @@ const AdminProfiles = () => {
           <Button
             size="sm"
             variant="destructive"
+            className="w-full sm:w-auto flex justify-center"
             onClick={() =>
               handleDeleteProfile(
                 profile.id,
@@ -294,7 +292,7 @@ const AdminProfiles = () => {
               )
             }
           >
-            <Trash2 size={16} /> Delete
+            <Trash2 size={16} className="mr-1" /> Delete
           </Button>
         </div>
       </div>
@@ -304,12 +302,15 @@ const AdminProfiles = () => {
   return (
     <ModernAdminLayout title="Users">
       <div className="container mx-auto px-4 py-8 mt-10">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <h1 className="text-2xl font-bold">Customer Profiles</h1>
 
-          <Button variant="outline" onClick={() => refetch()}>
-            <Shield size={16} />
-            Refresh
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto flex justify-center"
+            onClick={() => refetch()}
+          >
+            <Shield size={16} className="mr-1" /> Refresh
           </Button>
         </div>
 
@@ -317,7 +318,7 @@ const AdminProfiles = () => {
           placeholder="Search by name or email…"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-md mb-6"
+          className="w-full sm:max-w-md mb-6"
         />
 
         {isLoading ? (

@@ -202,293 +202,215 @@ const AddProductForm: React.FC<AddProductFormProps> = ({
       setLoading(false);
     }
   };
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          Add New Product
-          <Button variant="ghost" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid  gap-4">
-                <div>
-                  <Label htmlFor="name">Product Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="code">Product Code *</Label>
-                  <Input
-                    id="code"
-                    value={formData.code}
-                    onChange={(e) => handleInputChange("code", e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
+ return (
+  <Card className="bg-black text-white border-neutral-800">
+    <CardHeader className="border-b border-neutral-800 p-4">
+      <CardTitle className="flex justify-between items-center text-lg">
+        Add Product
+        <Button
+          variant="ghost"
+          onClick={onClose}
+          className="text-white hover:text-red-500"
+        >
+          <X className="h-5 w-5" />
+        </Button>
+      </CardTitle>
+    </CardHeader>
 
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
-                  rows={3}
-                />
-              </div>
+    <CardContent className="space-y-6 p-4">
 
-              <div className="grid 3 gap-4">
-                <div>
-                  <Label htmlFor="price">Price *</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "price",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="original_price">Original Price</Label>
-                  <Input
-                    id="original_price"
-                    type="number"
-                    step="0.01"
-                    value={formData.original_price}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "original_price",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="discount_percentage">Discount %</Label>
-                  <Input
-                    id="discount_percentage"
-                    type="number"
-                    value={formData.discount_percentage}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "discount_percentage",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
-                  />
-                </div>
-              </div>
+      {/* BASIC INFO */}
+      <div className="space-y-4 rounded-xl border border-neutral-800 p-4">
+        <p className="font-semibold text-base">Basic Information</p>
 
-              <div>
-                <Label htmlFor="category">Category *</Label>
-                <Input
-                  id="category"
-                  value={formData.category}
-                  onChange={(e) =>
-                    handleInputChange("category", e.target.value)
-                  }
-                  required
-                />
-              </div>
+        <div className="space-y-3">
+          <Label className="text-sm">Product Name *</Label>
+          <Input
+            className="bg-neutral-900 border-neutral-700 text-white"
+            value={formData.name}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+          />
+        </div>
 
-            </CardContent>
-          </Card>
+        <div className="space-y-3">
+          <Label className="text-sm">Product Code *</Label>
+          <Input
+            className="bg-neutral-900 border-neutral-700 text-white"
+            value={formData.code}
+            onChange={(e) => handleInputChange("code", e.target.value)}
+          />
+        </div>
 
-          {/* Product Images - Upload & URL */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Images</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ProductImageUploader
-  mainImage={formData.image}
-  additionalImages={formData.images}
-  onMainImageChange={(url) => handleInputChange("image", url)}
-  onAdditionalImagesChange={(urls) => handleInputChange("images", urls)}
-  productName={formData.name} // ⬅️ NEW
-/>
-            </CardContent>
-          </Card>
+        <div className="space-y-3">
+          <Label className="text-sm">Description</Label>
+          <Textarea
+            className="bg-neutral-900 border-neutral-700 text-white"
+            rows={4}
+            value={formData.description}
+            onChange={(e) =>
+              handleInputChange("description", e.target.value)
+            }
+          />
+        </div>
 
-          {/* Product Tags */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Tags</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Enter tag"
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                />
-                <Button type="button" onClick={addTag}>
-                  <Plus className="h-4 w-4 mr-2" /> Add
-                </Button>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {formData.tags.map((tag, index) => (
-                  <div
-                    key={index}
-                    className="bg-blue-100 text-blue-800 px-2 py-1 rounded flex items-center"
-                  >
-                    <span>{tag}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeTag(index)}
-                      className="ml-1 text-blue-600 hover:text-blue-800"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/*product seo keywords*/}
-          <Card>
-            <CardHeader>
-              <CardTitle>SEO Keywords</CardTitle>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add SEO keyword (e.g., blue tshirt)"
-                  value={newSEOKeyword}
-                  onChange={(e) => setNewSEOKeyword(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      addSEOKeyword();
-                    }
-                  }}
-                />
-                <Button type="button" onClick={addSEOKeyword}>
-                  <Plus className="h-4 w-4 mr-2" /> Add
-                </Button>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {formData.seo_keywords.map((keyword, index) => (
-                  <div
-                    key={index}
-                    className="bg-green-100 text-green-800 px-2 py-1 rounded flex items-center"
-                  >
-                    <span>{keyword}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeSEOKeyword(index)}
-                      className="ml-1 text-green-600 hover:text-green-800"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Product Variants & Stock */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Variants & Stock</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button type="button" onClick={addVariant} variant="outline">
-                <Plus className="h-4 w-4 mr-2" /> Add Size Variant
-              </Button>
-
-              <div className="space-y-3">
-                {variants.map((variant, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-3 border rounded"
-                  >
-                    <div className="flex-1">
-                      <Label>Size</Label>
-                      <Input
-                        value={variant.size}
-                        onChange={(e) =>
-                          updateVariant(index, "size", e.target.value)
-                        }
-                        placeholder="e.g., S, M, L, XL"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <Label>Stock</Label>
-                      <Input
-                        type="number"
-                        value={variant.stock}
-                        onChange={(e) =>
-                          updateVariant(
-                            index,
-                            "stock",
-                            parseInt(e.target.value) || 0
-                          )
-                        }
-                        min="0"
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      onClick={() => removeVariant(index)}
-                      disabled={variants.length === 1}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-
-              {variants.length > 0 && (
-                <div className="bg-blue-50 p-3 rounded">
-                  <p className="text-sm text-blue-800">
-                    Total Stock: {variants.reduce((sum, v) => sum + v.stock, 0)}{" "}
-                    units
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <div className="flex justify-end space-x-3">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Adding..." : "Add Product"}
-            </Button>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label className="text-sm">Price *</Label>
+            <Input
+              type="number"
+              className="bg-neutral-900 border-neutral-700 text-white"
+              value={formData.price}
+              onChange={(e) =>
+                handleInputChange("price", parseFloat(e.target.value) || 0)
+              }
+            />
           </div>
-        </form>
-      </CardContent>
-    </Card>
-  );
+
+          <div className="space-y-2">
+            <Label className="text-sm">Original Price</Label>
+            <Input
+              type="number"
+              className="bg-neutral-900 border-neutral-700 text-white"
+              value={formData.original_price}
+              onChange={(e) =>
+                handleInputChange(
+                  "original_price",
+                  parseFloat(e.target.value) || 0
+                )
+              }
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-sm">Category *</Label>
+          <Input
+            className="bg-neutral-900 border-neutral-700 text-white"
+            value={formData.category}
+            onChange={(e) => handleInputChange("category", e.target.value)}
+          />
+        </div>
+      </div>
+
+
+      {/* IMAGES */}
+      <div className="rounded-xl border border-neutral-800 p-4">
+        <p className="font-semibold text-base mb-3">Product Images</p>
+        <ProductImageUploader
+          mainImage={formData.image}
+          additionalImages={formData.images}
+          onMainImageChange={(url) => handleInputChange("image", url)}
+          onAdditionalImagesChange={(urls) => handleInputChange("images", urls)}
+          productName={formData.name}
+        />
+      </div>
+
+
+      {/* TAGS */}
+      <div className="rounded-xl border border-neutral-800 p-4">
+        <p className="font-semibold text-base mb-3">Tags</p>
+
+        <div className="flex gap-2">
+          <Input
+            placeholder="Enter tag"
+            value={newTag}
+            className="bg-neutral-900 border-neutral-700 text-white"
+            onChange={(e) => setNewTag(e.target.value)}
+          />
+          <Button onClick={addTag} className="bg-neutral-700 hover:bg-neutral-600">
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap gap-2 mt-3">
+          {formData.tags.map((tag, index) => (
+            <span
+              key={index}
+              className="bg-neutral-800 text-xs px-3 py-1 rounded-full flex items-center"
+            >
+              {tag}
+              <button onClick={() => removeTag(index)} className="ml-2 text-red-500">
+                <X size={12} />
+              </button>
+            </span>
+          ))}
+        </div>
+      </div>
+
+
+      {/* VARIANTS */}
+      <div className="rounded-xl border border-neutral-800 p-4">
+        <p className="font-semibold text-base mb-3">Sizes & Stock</p>
+
+        <Button
+          type="button"
+          onClick={addVariant}
+          className="bg-neutral-700 hover:bg-neutral-600 w-full"
+        >
+          <Plus className="h-4 w-4 mr-2" /> Add Size Variant
+        </Button>
+
+        <div className="space-y-3 mt-4">
+          {variants.map((variant, index) => (
+            <div
+              key={index}
+              className="bg-neutral-900 flex gap-3 p-3 rounded-lg border border-neutral-700"
+            >
+              <Input
+                placeholder="Size"
+                value={variant.size}
+                className="bg-neutral-800 text-white border-neutral-700"
+                onChange={(e) => updateVariant(index, "size", e.target.value)}
+              />
+
+              <Input
+                placeholder="Stock"
+                type="number"
+                value={variant.stock}
+                className="bg-neutral-800 text-white border-neutral-700"
+                onChange={(e) =>
+                  updateVariant(index, "stock", parseInt(e.target.value) || 0)
+                }
+              />
+
+              <Button
+                size="icon"
+                variant="destructive"
+                disabled={variants.length === 1}
+                onClick={() => removeVariant(index)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-xs text-gray-400 mt-2">
+          Total Stock: <span className="text-white font-medium">
+            {variants.reduce((sum, v) => sum + v.stock, 0)}
+          </span>
+        </p>
+      </div>
+    </CardContent>
+
+    {/* STICKY BOTTOM BUTTONS */}
+    <div className="sticky bottom-0 bg-black border-t border-neutral-900 p-4 flex gap-3">
+      <Button
+        type="button"
+        variant="outline"
+        onClick={onClose}
+        className="w-1/2 border-neutral-600 text-white"
+      >
+        Cancel
+      </Button>
+
+      <Button type="submit" disabled={loading} className="w-1/2 bg-red-600">
+        {loading ? "Adding..." : "Add Product"}
+      </Button>
+    </div>
+  </Card>
+);
+
 };
 
 export default AddProductForm;

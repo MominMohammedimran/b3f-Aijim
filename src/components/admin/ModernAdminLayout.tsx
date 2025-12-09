@@ -223,10 +223,10 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
       </div>
 
       {/* Main Content */}
-      <div className="md:pl-64">
-        <div className="max-w-7xl mx-auto">
+      <div className="">
+        <div className="w-full mx-auto">
           {/* Header */}
-          <div className="hidden md:block bg-white shadow-sm border-b px-6 py-4 rounded-b-2xl mx-4 mt-4">
+          <div className="hidden md:block bg-white shadow-sm border-b px-2 py-4 rounded-b-2xl mx-1 mt-4">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -253,9 +253,9 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
           </div>
 
           {/* Content */}
-          <div className="p-4 md:p-6 bg-gray-800">
+          <div className="p-1  bg-gray-800">
             <Card className="shadow-lg border-0 bg-gray-800 backdrop-blur-sm">
-              <CardContent className="p-6">{children}</CardContent>
+              <CardContent className="p-1">{children}</CardContent>
             </Card>
           </div>
         </div>

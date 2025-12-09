@@ -222,16 +222,18 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+     <DialogContent className="max-w-4xl max-h-[92vh] overflow-y-auto bg-black text-white border border-red-500 shadow-xl">
+
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
+         <Card className="bg-neutral-900 text-white border border-neutral-700 rounded-xl">
+
+            <CardHeader className="border-b border-neutral-700 pb-3">
+  <CardTitle className="text-red-500 text-lg">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid  gap-4">
@@ -414,9 +416,10 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
           </Card>
 
           {/* Product Images - Upload & URL */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Images</CardTitle>
+          <Card className="bg-neutral-900 text-white border border-neutral-700 rounded-xl">
+
+            <CardHeader className="border-b border-neutral-700 pb-3">
+  <CardTitle className="text-red-500 text-lg">Product Images</CardTitle>
             </CardHeader>
             <CardContent>
               <ProductImageUploader
@@ -430,9 +433,10 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
           </Card>
 
           {/* Product Tags */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Tags</CardTitle>
+          <Card className="bg-neutral-900 text-white border border-neutral-700 rounded-xl">
+
+           <CardHeader className="border-b border-neutral-700 pb-3">
+  <CardTitle className="text-red-500 text-lg">Product Tags</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-2">
@@ -467,9 +471,10 @@ const EditProductForm: React.FC<EditProductFormProps> = ({
           </Card>
 
           {/* Product Variants & Stock */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Variants & Stock</CardTitle>
+        <Card className="bg-neutral-900 text-white border border-neutral-700 rounded-xl">
+
+           <CardHeader className="border-b border-neutral-700 pb-3">
+  <CardTitle className="text-red-500 text-lg">Product Variants & Stock</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Button type="button" onClick={addVariant} variant="outline">

@@ -161,175 +161,182 @@ const AdminArticleEditor: React.FC = () => {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto py-8 px-4">
-      <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/admin/articles')}>
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-2xl font-bold">
-          {isEditing ? 'Edit Article' : 'Create Article'}
-        </h1>
-      </div>
+   <div className="container max-w-4xl mx-auto py-6 px-4 sm:px-2">
+  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+    <Button variant="ghost" size="icon" onClick={() => navigate('/admin/articles')}>
+      <ArrowLeft className="h-5 w-5" />
+    </Button>
+    <h1 className="text-2xl font-bold">
+      {isEditing ? 'Edit Article' : 'Create Article'}
+    </h1>
+  </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Article Details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="Enter article title"
-                required
-              />
-            </div>
+  <form onSubmit={handleSubmit} className="space-y-6">
+    {/* Article Details */}
+    <Card>
+      <CardHeader>
+        <CardTitle>Article Details</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col">
+            <Label htmlFor="title">Title *</Label>
+            <Input
+              id="title"
+              value={formData.title}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              placeholder="Enter article title"
+              required
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="slug">Slug *</Label>
-              <Input
-                id="slug"
-                value={formData.slug}
-                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-                placeholder="article-url-slug"
-                required
-              />
-            </div>
+          <div className="flex flex-col">
+            <Label htmlFor="slug">Slug *</Label>
+            <Input
+              id="slug"
+              value={formData.slug}
+              onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+              placeholder="article-url-slug"
+              required
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="excerpt">Excerpt</Label>
-              <Textarea
-                id="excerpt"
-                value={formData.excerpt}
-                onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
-                placeholder="Brief description of the article"
-                rows={2}
-              />
-            </div>
+          <div className="flex flex-col">
+            <Label htmlFor="excerpt">Excerpt</Label>
+            <Textarea
+              id="excerpt"
+              value={formData.excerpt}
+              onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+              placeholder="Brief description of the article"
+              rows={2}
+            />
+          </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="content">Content *</Label>
-              <Textarea
-                id="content"
-                value={formData.content}
-                onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                placeholder="Write your article content here... (Markdown supported)"
-                rows={15}
-                required
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Featured Image</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-start gap-4">
-              {formData.image && (
-                <div className="w-40 h-24 rounded-lg overflow-hidden bg-muted">
-                  <img 
-                    src={formData.image} 
-                    alt="Featured" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <div className="flex-1 space-y-2">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={uploading}
-                />
-                {uploading && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Uploading...
-                  </div>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Metadata</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="author">Author</Label>
-                <Input
-                  id="author"
-                  value={formData.author}
-                  onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
-                  placeholder="Author name"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Input
-                  id="category"
-                  value={formData.category}
-                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                  placeholder="e.g., Fashion, Style"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="tags">Tags (comma-separated)</Label>
-              <Input
-                id="tags"
-                value={formData.tags}
-                onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                placeholder="e.g., streetwear, fashion, trends"
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="published">Publish Article</Label>
-                <p className="text-sm text-muted-foreground">
-                  Make this article visible to the public
-                </p>
-              </div>
-              <Switch
-                id="published"
-                checked={formData.is_published}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_published: checked }))}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={() => navigate('/admin/articles')}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={saving}>
-            {saving ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                {isEditing ? 'Update Article' : 'Create Article'}
-              </>
-            )}
-          </Button>
+          <div className="flex flex-col">
+            <Label htmlFor="content">Content *</Label>
+            <Textarea
+              id="content"
+              value={formData.content}
+              onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+              placeholder="Write your article content here... (Markdown supported)"
+              rows={15}
+              required
+            />
+          </div>
         </div>
-      </form>
+      </CardContent>
+    </Card>
+
+    {/* Featured Image */}
+    <Card>
+      <CardHeader>
+        <CardTitle>Featured Image</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          {formData.image && (
+            <div className="w-full sm:w-40 h-24 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+              <img 
+                src={formData.image} 
+                alt="Featured" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+          <div className="flex-1 flex flex-col gap-2 w-full">
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={uploading}
+            />
+            {uploading && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Uploading...
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+
+    {/* Metadata */}
+    <Card>
+      <CardHeader>
+        <CardTitle>Metadata</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="flex flex-col">
+            <Label htmlFor="author">Author</Label>
+            <Input
+              id="author"
+              value={formData.author}
+              onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
+              placeholder="Author name"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <Label htmlFor="category">Category</Label>
+            <Input
+              id="category"
+              value={formData.category}
+              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+              placeholder="e.g., Fashion, Style"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          <Label htmlFor="tags">Tags (comma-separated)</Label>
+          <Input
+            id="tags"
+            value={formData.tags}
+            onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
+            placeholder="e.g., streetwear, fashion, trends"
+          />
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="space-y-0.5">
+            <Label htmlFor="published">Publish Article</Label>
+            <p className="text-sm text-muted-foreground">
+              Make this article visible to the public
+            </p>
+          </div>
+          <Switch
+            id="published"
+            checked={formData.is_published}
+            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_published: checked }))}
+          />
+        </div>
+      </CardContent>
+    </Card>
+
+    {/* Action Buttons */}
+    <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-4">
+      <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={() => navigate('/admin/articles')}>
+        Cancel
+      </Button>
+      <Button type="submit" className="w-full sm:w-auto" disabled={saving}>
+        {saving ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Saving...
+          </>
+        ) : (
+          <>
+            <Save className="h-4 w-4 mr-2" />
+            {isEditing ? 'Update Article' : 'Create Article'}
+          </>
+        )}
+      </Button>
     </div>
+  </form>
+</div>
+
   );
 };
 

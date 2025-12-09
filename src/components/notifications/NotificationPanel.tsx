@@ -1,38 +1,53 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Bell, Package, CreditCard, ShoppingBag, FileText, CheckCheck, AlertTriangle, UserPlus } from 'lucide-react';
-// ⭐ Import motion from framer-motion
-import { motion } from 'framer-motion'; 
+import {
+  X,
+  Bell,
+  Package,
+  CreditCard,
+  ShoppingBag,
+  FileText,
+  CheckCheck,
+  AlertTriangle,
+  UserPlus,
+} from 'lucide-react';
+import { motion, Variants } from 'framer-motion';
 import { useNotifications, Notification } from '@/hooks/useNotifications';
-import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
 
-type NotificationType = 'order_update' | 'payment_issue' | 'product_update' | 'article_update' | 'order_issue' | 'normal_notification' | 'new_user';
+type NotificationType =
+  | 'order_update'
+  | 'payment_issue'
+  | 'product_update'
+  | 'article_update'
+  | 'order_issue'
+  | 'normal_notification'
+  | 'new_user';
 
 interface NotificationPanelProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-// ⭐ Updated getNotificationIcon to handle new types
 const getNotificationIcon = (type: NotificationType) => {
+  const base = 'h-5 w-5 drop-shadow-md';
   switch (type) {
     case 'order_update':
-      return <Package className="h-5 w-5 text-blue-400" />;
+      return <Package className={`${base} text-blue-400`} />;
     case 'payment_issue':
-      return <CreditCard className="h-5 w-5 text-red-400" />;
+      return <CreditCard className={`${base} text-red-400`} />;
     case 'product_update':
-      return <ShoppingBag className="h-5 w-5 text-green-400" />;
+      return <ShoppingBag className={`${base} text-green-400`} />;
     case 'article_update':
-      return <FileText className="h-5 w-5 text-purple-400" />;
+      return <FileText className={`${base} text-purple-400`} />;
     case 'order_issue':
-      return <AlertTriangle className="h-5 w-5 text-orange-400" />;
+      return <AlertTriangle className={`${base} text-orange-400`} />;
     case 'new_user':
-      return <UserPlus className="h-5 w-5 text-cyan-400" />;
-    case 'normal_notification':
+      return <UserPlus className={`${base} text-cyan-400`} />;
     default:
-      return <Bell className="h-5 w-5 text-yellow-400" />;
+      return <Bell className={`${base} text-yellow-400`} />;
   }
 };
 
@@ -42,144 +57,133 @@ const NotificationItem: React.FC<{
   onNavigate: (link: string | null) => void;
 }> = ({ notification, onRead, onNavigate }) => {
   const handleClick = () => {
-    if (!notification.is_read) {
-      onRead(notification.id);
-    }
-    if (notification.link) {
-      onNavigate(notification.link);
-    }
+    if (!notification.is_read) onRead(notification.id);
+    if (notification.link) onNavigate(notification.link);
+    // Note: panel remains open — user requested to only close via X
   };
 
   return (
-    <div
+    <motion.div
+      whileTap={{ scale: 0.97 }}
       onClick={handleClick}
-      className={`p-4 border-b border-gray-700 cursor-pointer transition-colors hover:bg-gray-800 ${
-        !notification.is_read ? 'bg-gray-800/50' : ''
-      }`}
+      className={`group relative p-4  mb-2 cursor-pointer transition-all duration-300 rounded-xl border border-white/10
+        backdrop-blur-md bg-white/5 
+        ${notification.is_read ? 'opacity-70' : 'backdrop-blur-xl bg-white/10'} 
+        hover:bg-white/15 hover:shadow-lg`}
     >
-      <div className="flex items-start gap-3">
-        {/* Note: I'm casting type here as Notification.type is likely 'string' but our function handles NotificationType */}
-        <div className="mt-1">{getNotificationIcon(notification.type as NotificationType)}</div> 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <h4 className={`text-sm font-medium truncate ${!notification.is_read ? 'text-white' : 'text-gray-300'}`}>
-              {notification.title}
-            </h4>
-            {!notification.is_read && (
-              <span className="h-2 w-2 bg-yellow-400 rounded-full flex-shrink-0" />
-            )}
-          </div>
-          <p className="text-xs text-gray-400 mt-1 line-clamp-2">{notification.message}</p>
-          <p className="text-xs text-gray-500 mt-2">
-            {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
-          </p>
+      {!notification.is_read && (
+        <span className="absolute right-3 top-3 h-2.5 w-2.5 bg-yellow-400 rounded-full animate-ping" />
+      )}
 
+      <div className="flex items-start gap-3">
+        {getNotificationIcon(notification.type as NotificationType)}
+        <div className="flex-1 min-w-0 ">
+          <h4 className="text-sm font-semibold text-white truncate">{notification.title}</h4>
+          <p className="text-xs text-gray-300 mt-1 line-clamp-2">{notification.message}</p>
+          <span className="text-[10px] text-gray-400 mt-2 block">
+            {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
+          </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-// Framer Motion Variants for the Panel
-const panelVariants = {
-  // Panel starts off-screen to the right (x: 100%)
-  hidden: { x: '100%' },
-  // Panel slides in to its final position (x: 0)
-  visible: { x: 0 },
-  // Panel slides out when closing (x: 100%)
-  exit: { x: '100%' },
+const panelVariants: Variants = {
+  hidden: {
+    x: '100%',
+    opacity: 0,
+    filter: 'blur(10px)',
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    filter: 'blur(0)',
+    transition: {
+      duration: 0.35,
+      // use easing curve array (framer-motion expects number[] or easing function)
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
+  exit: {
+    x: '100%',
+    opacity: 0,
+    filter: 'blur(10px)',
+    transition: {
+      duration: 0.28,
+      ease: [0.4, 0, 1, 1],
+    },
+  },
 };
 
 const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { notifications, unreadCount, loading, markAsRead, markAllAsRead } = useNotifications();
 
-  const handleNavigate = (link: string | null) => {
-    if (link) {
-      navigate(link);
-      onClose();
-    }
-  };
-
-  // 💡 Framer motion uses the AnimatePresence component (usually wrapped higher up)
-  // to manage exit transitions. For simplicity here, we'll wrap the motion.div
-  // with a conditional render that respects the 'exit' animation if the parent
-  // component uses AnimatePresence.
   if (!isOpen) return null;
-
 
   return (
     <>
-      {/* Backdrop - Simple Fade */}
+      {/* Backdrop intentionally NOT clickable (pointer-events-none) so clicking outside DOES NOT close */}
       <motion.div
-        className="fixed inset-0 bg-black/50 z-50"
-        onClick={onClose}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       />
 
-      {/* ⭐ Panel: Using motion.div with slide variants */}
+      {/* Panel: pointer-events-auto so panel itself is interactive */}
       <motion.div
-        className="fixed top-0 right-0 h-full w-full max-w-sm bg-gray-900 border-l border-gray-700 z-50 flex flex-col"
+        className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#0f0f0f]/60 backdrop-blur-2xl border-l border-white/10 z-50 flex flex-col shadow-2xl pointer-events-auto"
         variants={panelVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
-        transition={{ duration: 0.3, ease: 'easeInOut' }} // Match the old Tailwind duration
+        role="dialog"
+        aria-label="Notifications"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <div className="flex items-center gap-2">
-            <Bell className="h-5 w-5 text-yellow-400" />
-            <h2 className="text-lg font-semibold text-white">Notifications</h2>
+        <div className="sticky top-0 z-10 p-5 border-b border-white/10 flex justify-between items-center backdrop-blur-xl">
+          <div className="flex items-center gap-3">
+            <Bell className="h-6 w-6 text-yellow-400 drop-shadow-lg" />
+            <h2 className="text-xl font-bold text-white">Notifications</h2>
             {unreadCount > 0 && (
-              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                {unreadCount}
-              </span>
+              <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">{unreadCount}</span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex gap-2">
             {unreadCount > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={markAllAsRead}
-                className="text-gray-400 hover:text-white"
-              >
-                <CheckCheck className="h-4 w-4 mr-1" />
-                Mark all read
+              <Button size="sm" variant="ghost" onClick={markAllAsRead} className="text-yellow-300 hover:text-white">
+                <CheckCheck size={16} />
               </Button>
             )}
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
+            <button onClick={onClose} className="p-2 text-gray-300 hover:text-white" aria-label="Close notifications">
               <X className="h-5 w-5" />
             </button>
           </div>
         </div>
 
-        {/* Notifications List */}
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 p-4 space-y-3">
           {loading ? (
-            <div className="p-8 text-center text-gray-400">
-              <div className="animate-spin h-8 w-8 border-2 border-yellow-400 border-t-transparent rounded-full mx-auto mb-2" />
+            <div className="text-center mt-20 text-gray-300">
+              <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
               Loading...
             </div>
           ) : notifications.length === 0 ? (
-            <div className="p-8 text-center text-gray-400">
-              <Bell className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p>No notifications yet</p>
-              <p className="text-sm mt-1">We'll notify you about order updates and more</p>
+            <div className="text-center mt-24 text-gray-400">
+              <Bell className="mx-auto mb-3 h-12 w-12 opacity-40" />
+              <p className="text-lg">No Notifications</p>
+              <p className="text-xs opacity-60">You're all caught up 🎉</p>
             </div>
           ) : (
-            notifications.map((notification) => (
+            notifications.map((n) => (
               <NotificationItem
-                key={notification.id}
-                notification={notification}
+                key={n.id}
+                notification={n}
                 onRead={markAsRead}
-                onNavigate={handleNavigate}
+                onNavigate={(link) => {
+                  // Navigate but DO NOT auto-close the panel
+                  if (link) navigate(link);
+                }}
               />
             ))
           )}

@@ -187,7 +187,7 @@ const AdminDashboard = () => {
     icon: any;
     color: string;
   }) => (
-    <div className="p-4 bg-gray-900 border border-gray-700 rounded-none">
+    <div className="p-1 bg-gray-900 border border-gray-700 rounded-none">
       <div className="flex justify-between">
         <p className="text-xs text-gray-400 uppercase">{title}</p>
         <Icon className={`h-5 w-5 ${color}`} />
@@ -196,69 +196,94 @@ const AdminDashboard = () => {
     </div>
   );
 
-  return (
-    <ModernAdminLayout title="Dashboard">
-      <div className="bg-black min-h-screen p-6 text-white space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-yellow-400">Admin Dashboard</h1>
-            <p className="text-sm text-gray-400">
-              Real-time analytics, trends & exportable reports
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <button
-              onClick={exportPDF}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 text-sm font-semibold rounded-none"
-            >
-              <Download className="w-4 h-4" /> Export PDF
-            </button>
-            <button
-              onClick={exportCSV}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 text-sm font-semibold rounded-none"
-            >
-              <Download className="w-4 h-4" /> Export CSV
-            </button>
-          </div>
+ return (
+  <ModernAdminLayout title="Dashboard">
+    <div className="bg-black min-h-screen p-1 text-white space-y-6">
+
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-yellow-400">
+            Admin Dashboard
+          </h1>
+          <p className="text-xs md:text-sm text-gray-400">
+            Real-time analytics, trends & exportable reports
+          </p>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          <StatCard title="Orders" value={stats.orders} icon={ShoppingCart} color="text-blue-400" />
-          <StatCard title="Products" value={stats.products} icon={Package} color="text-green-400" />
-          <StatCard title="Customers" value={stats.customers} icon={Users} color="text-pink-400" />
-          <StatCard title="Revenue" value={`₹${stats.totalRevenue}`} icon={IndianRupee} color="text-yellow-400" />
-          <StatCard title="Pending" value={`₹${stats.pendingAmount}`} icon={Clock} color="text-red-400" />
-        </div>
+        <div className="flex gap-2 md:gap-3 w-full md:w-auto">
+          <button
+            onClick={exportPDF}
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-2 text-xs md:text-sm font-semibold rounded-none"
+          >
+            <Download className="w-4 h-4" /> PDF
+          </button>
 
-        {/* Top Products */}
-        <div className="bg-gray-900 border border-gray-700 p-6 rounded-none">
-          <h2 className="text-lg font-semibold mb-3">Top Products</h2>
-          <ul className="text-sm space-y-2 text-gray-300">
-            {topProducts.map((p, i) => (
-              <li key={i} className="flex justify-between">
-                <span>{p.name}</span>
-                <span className="text-yellow-400">{p.count} sold</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Top Customers */}
-        <div className="bg-gray-900 border border-gray-700 p-6 rounded-none">
-          <h2 className="text-lg font-semibold mb-3">Top Customers</h2>
-          <ul className="text-sm space-y-2 text-gray-300">
-            {topCustomers.map((c, i) => (
-              <li key={i} className="flex justify-between">
-                <span>{c.email}</span>
-                <span className="text-yellow-400">₹{c.total}</span>
-              </li>
-            ))}
-          </ul>
+          <button
+            onClick={exportCSV}
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-xs md:text-sm font-semibold rounded-none"
+          >
+            <Download className="w-4 h-4" /> CSV
+          </button>
         </div>
       </div>
-    </ModernAdminLayout>
-  );
+
+      {/* Quick Stats - Scroll horizontal on mobile */}
+      <div className="flex md:grid md:grid-cols-3 lg:grid-cols-5 gap-4 overflow-x-auto snap-x snap-mandatory pb-2">
+        {[
+          { title: "Orders", value: stats.orders, icon: ShoppingCart, color: "text-blue-400" },
+          { title: "Products", value: stats.products, icon: Package, color: "text-green-400" },
+          { title: "Customers", value: stats.customers, icon: Users, color: "text-pink-400" },
+          { title: "Revenue", value: `₹${stats.totalRevenue}`, icon: IndianRupee, color: "text-yellow-400" },
+          { title: "Pending", value: `₹${stats.pendingAmount}`, icon: Clock, color: "text-red-400" },
+        ].map((stat, i) => (
+          <div
+            key={i}
+            className="snap-center min-w-[150px] p-4 bg-gray-900 border border-gray-700 rounded-none flex-none md:flex-auto"
+          >
+            <div className="flex justify-between">
+              <p className="text-[10px] md:text-xs text-gray-400 uppercase">
+                {stat.title}
+              </p>
+              <stat.icon className={`h-4 w-4 md:h-5 md:w-5 ${stat.color}`} />
+            </div>
+            <p className="text-lg md:text-2xl font-bold text-white mt-1 whitespace-nowrap">
+              {stat.value}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Top Products */}
+      <div className="bg-gray-900 border border-gray-700 p-4 md:p-6 rounded-none">
+        <h2 className="text-base md:text-lg font-semibold mb-3">Top Products</h2>
+
+        <ul className="text-sm space-y-2 text-gray-300 max-h-40 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-600">
+          {topProducts.map((p, i) => (
+            <li key={i} className="flex justify-between">
+              <span className="truncate text-xs md:text-md">{p.name}</span>
+              <span className="text-yellow-400 text-xs md:text-md">{p.count} sold</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Top Customers */}
+      <div className="bg-gray-900 border border-gray-700 p-4 md:p-6 rounded-none">
+        <h2 className="text-base md:text-lg font-semibold mb-3">Top Customers</h2>
+        <ul className="text-sm space-y-2 text-gray-300 max-h-40 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-600">
+          {topCustomers.map((c, i) => (
+            <li key={i} className="flex justify-between">
+              <span className="truncate">{c.email}</span>
+              <span className="text-yellow-400">₹{c.total}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </ModernAdminLayout>
+);
+
 };
 
 export default AdminDashboard;
