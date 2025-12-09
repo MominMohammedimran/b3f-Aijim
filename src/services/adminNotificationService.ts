@@ -10,6 +10,7 @@ interface CreateNotificationParams {
   message: string;
   link?: string;
   metadata?: Record<string, Json>;
+
 }
 
 interface BroadcastNotificationParams {
