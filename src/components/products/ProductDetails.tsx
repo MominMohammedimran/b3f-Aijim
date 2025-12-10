@@ -99,7 +99,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const discountPercent = hasDiscount
     ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
     : 0;
-{/*const calculateOfferTotal = (selectedSizes: { quantity: number }[]) => {
+const calculateOfferTotal = (selectedSizes: { quantity: number }[]) => {
   const totalQty = selectedSizes.reduce((sum, item) => sum + item.quantity, 0);
 
   const pairs = Math.floor(totalQty / 2);
@@ -113,13 +113,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 const totalPrice = calculateOfferTotal(selectedSizes);
 
 
-*/}
 
+{/*
   const totalPrice = selectedSizes.reduce(
     (sum, s) => sum + s.quantity * product.price,
     0
   );
-
+*/}
   // --- Pincode ---
 
   const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL"];

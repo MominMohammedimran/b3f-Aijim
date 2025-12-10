@@ -48,9 +48,9 @@ const Layout: React.FC<LayoutProps> = ({ children, hideFooter = false }) => {
       <StructuredData type="organization" data={organizationData} />
       <StructuredData type="website" data={websiteData} />
       
-      <Navbar />
+      <Navbar  />
 
-      <main className="flex-grow bg-black mt-2 ">
+      <main className="flex-grow bg-black mt-2 py-4">
         {children}
       </main>
 

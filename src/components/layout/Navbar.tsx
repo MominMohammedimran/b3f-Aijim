@@ -20,7 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/context/CartContext";
 import Marquee from "react-fast-marquee";
 import NotificationBell from "@/components/notifications/NotificationBell";
-
+import TextSliderTop from './TextSliderTop'
 const Navbar = () => {
   const routerLocation = useRouterLocation();
   const [cartCount, setCartCount] = useState(0);
@@ -66,8 +66,9 @@ const Navbar = () => {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-40">
+      <TextSliderTop/>
       {/* 🔥 Flash Sale Marquee */}
-      <div className="bg-red-600 py-1 flex items-center">
+      <div className="bg-red-600 py-1 flex items-center border-b border-gray-600">
         <Marquee gradient={false} speed={40} pauseOnHover className="w-full">
           {Array.from({ length: 10 }).map((_, i) => (
             <span

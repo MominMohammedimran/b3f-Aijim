@@ -12,10 +12,11 @@ import {
   UserPlus,
 } from 'lucide-react';
 import { motion, Variants } from 'framer-motion';
-import { useNotifications, Notification } from '@/hooks/useNotifications';
+import { useNotifications } from '@/hooks/useNotifications';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
+
 
 type NotificationType =
   | 'order_update'
@@ -52,7 +53,7 @@ const getNotificationIcon = (type: NotificationType) => {
 };
 
 const NotificationItem: React.FC<{
-  notification: Notification;
+  notification: any;
   onRead: (id: string) => void;
   onNavigate: (link: string | null) => void;
 }> = ({ notification, onRead, onNavigate }) => {

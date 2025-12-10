@@ -86,7 +86,7 @@ export const broadcastGlobal = async (
         title: params.title,
         message: params.message,
         link: params.link || null,
-        metadata: params.metadata || {},
+        metadata: params.metadata || {} as Json,
       },
     ]);
 

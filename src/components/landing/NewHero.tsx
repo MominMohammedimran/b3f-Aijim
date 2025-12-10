@@ -7,16 +7,16 @@ import "swiper/css";
 
 const NewHero = () => {
   const bannerMobile = [
-    "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
-    "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
-    "/aijim-uploads/banner/Aijim_mobile_banner_001.jpg",
+    "/aijim-uploads/banner/mobile/All-five-tshirts.jpg",
+    "/aijim-uploads/banner/mobile/White-blue-combo.jpg",
+    "/aijim-uploads/banner/mobile/Beige-olivegreen-combo.jpg",
    ,
   ];
 
   const bannerLargeScreens = [
-    "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
-     "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
-      "/aijim-uploads/banner/Aijim_desktop_banner_001.jpg",
+    "/aijim-uploads/banner/desktop/All-five-tshirts.jpg",
+     "/aijim-uploads/banner/desktop/All-five-tshirts.jpg",
+      "/aijim-uploads/banner/desktop/All-five-tshirts.jpg",
 
   ];
 
@@ -46,7 +46,7 @@ const NewHero = () => {
         loop={banners.length > 1}
         speed={1200}
         allowTouchMove={false}
-        className="w-full h-full"
+        className="w-full md:w-[70vw] lg:w-[70vw] h-full sm:mt-10  object-fill"
       >
         {banners.map((img, index) => (
           <SwiperSlide key={index}>
@@ -61,8 +61,7 @@ const NewHero = () => {
                 md:h-[70vh]   // Laptop / small desktop
                 lg:h-[75vh] 
                 sm:mb-6
-                md:mb-8
-                mb-6 // Large desktop
+                // Large desktop
               "
               loading="eager"
             />
@@ -71,10 +70,10 @@ const NewHero = () => {
       </Swiper>
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40 mt-5"></div>
+      
 
       {/* Trust Messages */}
-      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 pt-1 pb-1 mt-5 md:h-8 md:pt-3 md:pb-3 flex items-center">
+      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 pt-1 pb-1 mt-2 md:h-8 md:pt-3 md:pb-3 flex items-center">
         <Marquee gradient={false} speed={5} pauseOnHover className="w-full">
           {Array.from({ length: 14 }).map((_, i) => (
             <span
