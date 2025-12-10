@@ -31,68 +31,101 @@ export const useNotifications = () => {
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
 
-  const fetchNotifications = async () => {
-    if (!currentUser) {
-      setNotifications([]);
-      setUnreadCount(0);
-      setLoading(false);
-      return;
-    }
-
+  // -------------------------------------------
+  // FETCH GLOBAL NOTIFICATIONS (ALWAYS)
+  // -------------------------------------------
+  const fetchGlobalNotifications = async () => {
     try {
-      // 1) Fetch GLOBAL from globalnotification table
-      const { data: globalData, error: globalErr } = await supabase
+      const { data, error } = await supabase
         .from("global_notifications")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (globalErr) throw globalErr;
+      if (error) throw error;
 
-      const formattedGlobal = (globalData || []).map((g) => ({
-  ...g,
-  user_id: null,
-  is_read: false,
-  metadata: g.metadata ?? null,
-})) as Notification[];
+      return (data || []).map((g) => ({
+        ...g,
+        user_id: null,
+        is_read: false,
+        metadata: g.metadata ?? null,
+      })) as Notification[];
 
+    } catch (err) {
+      console.error("Error loading global notifications:", err);
+      return [];
+    }
+  };
 
-      // 2) Fetch USER notifications
-      const { data: userData, error: userErr } = await supabase
+  // -------------------------------------------
+  // FETCH USER NOTIFICATIONS (ONLY IF LOGGED IN)
+  // -------------------------------------------
+  const fetchUserNotifications = async () => {
+    if (!currentUser) return [];
+
+    try {
+      const { data, error } = await supabase
         .from("notifications")
         .select("*")
         .eq("user_id", currentUser.id)
         .order("created_at", { ascending: false });
 
-      if (userErr) throw userErr;
+      if (error) throw error;
 
-      // 3) Merge global + user
-      const merged = [...formattedGlobal, ...(userData || [])];
-
-      // 4) Remove duplicates
-      const unique = Array.from(new Map(merged.map(n => [n.id, n])).values());
-
-      // 5) Sort by date
-      unique.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-
-      // 6) Count unread
-      const unread = unique.filter(n => !n.is_read).length;
-
-      setNotifications(unique);
-      setUnreadCount(unread);
+      return data || [];
 
     } catch (err) {
-      console.error("Error loading notifications:", err);
-    } finally {
-      setLoading(false);
+      console.error("Error loading user notifications:", err);
+      return [];
     }
   };
 
+  // -------------------------------------------
+  // MERGE BOTH SOURCES
+  // -------------------------------------------
+  const fetchNotifications = async () => {
+    setLoading(true);
+
+    const [globalList, userList] = await Promise.all([
+      fetchGlobalNotifications(),
+      fetchUserNotifications(),
+    ]);
+
+    // Merge
+    const merged = [...globalList, ...userList];
+
+    // Deduplicate
+    const unique = Array.from(new Map(merged.map(n => [n.id, n])).values());
+
+    // Sort
+    unique.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+
+    // Count unread (global + user)
+    const unread = unique.filter(n => !n.is_read).length;
+
+    setNotifications(unique);
+    setUnreadCount(unread);
+    setLoading(false);
+  };
+
+  // -------------------------------------------
+  // MARK AS READ (Only for user notifications)
+  // -------------------------------------------
   const markAsRead = async (id: string) => {
     try {
-      // Only user notifications stored in DB can be updated
+      const notif = notifications.find(n => n.id === id);
+
+      // Global notifications cannot be updated
+      if (!notif || notif.user_id === null) {
+        setNotifications(prev =>
+          prev.map(n => (n.id === id ? { ...n, is_read: true } : n))
+        );
+        setUnreadCount(prev => Math.max(prev - 1, 0));
+        return;
+      }
+
       const { error } = await supabase
         .from("notifications")
         .update({ is_read: true })
@@ -103,25 +136,27 @@ export const useNotifications = () => {
       setNotifications(prev =>
         prev.map(n => (n.id === id ? { ...n, is_read: true } : n))
       );
-
       setUnreadCount(prev => Math.max(prev - 1, 0));
+
     } catch (err) {
       console.error("Error marking as read:", err);
     }
   };
 
+  // -------------------------------------------
+  // MARK ALL USER NOTIFICATIONS AS READ
+  // -------------------------------------------
   const markAllAsRead = async () => {
-    if (!currentUser) return;
-
     try {
-      const { error } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("user_id", currentUser.id)
-        .eq("is_read", false);
+      if (currentUser) {
+        await supabase
+          .from("notifications")
+          .update({ is_read: true })
+          .eq("user_id", currentUser.id)
+          .eq("is_read", false);
+      }
 
-      if (error) throw error;
-
+      // Update frontend state
       setNotifications(prev =>
         prev.map(n => ({ ...n, is_read: true }))
       );
@@ -132,64 +167,64 @@ export const useNotifications = () => {
     }
   };
 
-  // --------------------
-  // REAL-TIME UPDATES
-  // --------------------
+  // -------------------------------------------
+  // REAL TIME LISTENING
+  // -------------------------------------------
   useEffect(() => {
-    if (!currentUser) return;
-
     fetchNotifications();
 
-    // 1) Listen for new USER notifications
-    const userChannel = supabase
-      .channel("user-notifications")
+    // Listen to GLOBAL notifications ALWAYS
+    const globalChannel = supabase
+      .channel("realtime-global")
       .on(
         "postgres_changes",
         {
           event: "INSERT",
+          table: "global_notifications",
           schema: "public",
-          table: "notifications",
-          filter: `user_id=eq.${currentUser.id}`,
         },
         (payload) => {
-          const newN = payload.new as Notification;
-          setNotifications(prev => [newN, ...prev]);
+          const g = payload.new as GlobalNotification;
+
+          const formatted: Notification = {
+            ...g,
+            user_id: null,
+            is_read: false,
+          };
+
+          setNotifications(prev => [formatted, ...prev]);
           setUnreadCount(prev => prev + 1);
         }
       )
       .subscribe();
 
-    // 2) Listen for new GLOBAL notifications
-   const globalChannel = supabase
-  .channel("global-notifications")
-  .on(
-    "postgres_changes",
-    {
-      event: "INSERT",
-      schema: "public",
-      table: "global_notifications",   // FIXED
-    },
-    (payload) => {
-      const g = payload.new as GlobalNotification;
+    // Listen to USER notifications ONLY when logged in
+    let userChannel: any = null;
 
-      const formatted: Notification = {
-        ...g,
-        user_id: null,
-        is_read: false,
-      };
-
-      setNotifications(prev => [formatted, ...prev]);
-      setUnreadCount(prev => prev + 1);
+    if (currentUser) {
+      userChannel = supabase
+        .channel("realtime-user")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            table: "notifications",
+            schema: "public",
+            filter: `user_id=eq.${currentUser.id}`,
+          },
+          (payload) => {
+            const newN = payload.new as Notification;
+            setNotifications(prev => [newN, ...prev]);
+            setUnreadCount(prev => prev + 1);
+          }
+        )
+        .subscribe();
     }
-  )
-  .subscribe();
-
 
     return () => {
-      supabase.removeChannel(userChannel);
       supabase.removeChannel(globalChannel);
+      if (userChannel) supabase.removeChannel(userChannel);
     };
-
   }, [currentUser?.id]);
 
   return {
@@ -201,3 +236,4 @@ export const useNotifications = () => {
     refetch: fetchNotifications,
   };
 };
+
