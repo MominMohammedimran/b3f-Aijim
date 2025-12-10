@@ -360,22 +360,23 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }
   };
 
-  const calculateOfferTotal = (selectedSizes: { quantity: number }[]) => {
-  const totalQty = selectedSizes.reduce((sum, item) => sum + item.quantity, 0);
+  const calculateGlobalOfferTotal = (cartItems: { sizes: { quantity: number }[] }[]) => {
+  // Get global total quantity across all items & sizes
+  const totalQty = cartItems.reduce((sum, item) => {
+    const itemQty = item.sizes.reduce((s, sz) => s + sz.quantity, 0);
+    return sum + itemQty;
+  }, 0);
 
+  // Offer logic: ANY 2 = 1000, leftover = 549
   const pairs = Math.floor(totalQty / 2);
   const remainder = totalQty % 2;
 
-  return pairs * 1000 + (remainder ? 549 : 0);
+  return pairs * 1000 + (remainder ? 548 : 0);
 };
 
-const getTotalPrice = () => {
-  return cartItems.reduce((total, item) => {
-    // apply offer for this item's sizes
-    const itemTotal = calculateOfferTotal(item.sizes);
-    return total + itemTotal;
-  }, 0);
-};
+// Use this in your checkout
+const getTotalPrice = () => calculateGlobalOfferTotal(cartItems);
+
 
   {/*const getTotalPrice = () => {
     

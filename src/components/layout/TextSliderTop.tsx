@@ -13,6 +13,7 @@ export default function TextSliderTop() {
   const [index, setIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
+  // Auto slide every 3 seconds
   useEffect(() => {
     if (!isVisible) return;
 
@@ -23,15 +24,19 @@ export default function TextSliderTop() {
     return () => clearInterval(interval);
   }, [isVisible]);
 
+  // Show based on time rule (ODD-MINUTES)
   useEffect(() => {
     const updateVisibility = () => {
-      const now = new Date();
-      const minutes = now.getMinutes();
-      setIsVisible(minutes % 10 < 8);
+      const minutes = new Date().getMinutes();
+
+      // ⭐ Visible only on odd minutes (1,3,5,7…)
+      setIsVisible(minutes % 3 === 0);
+//change minutes % 2 === 0 for even minutes % 3 ===0  odd
     };
 
     updateVisibility();
-    const interval = setInterval(updateVisibility, 30000);
+    const interval = setInterval(updateVisibility, 15000); // check every 15 sec
+
     return () => clearInterval(interval);
   }, []);
 
@@ -48,42 +53,32 @@ export default function TextSliderTop() {
       {isVisible && (
         <motion.div
           key="slider"
-          initial={{ y: -50, opacity: 0 }}
+          initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -50, opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="bg-black py-2 flex sm:gap-6 items-center justify-center relative overflow-hidden"
+          exit={{ y: -20, opacity: 0 }}
+          transition={{
+            duration: 0.6,
+            ease: [0.25, 0.1, 0.25, 1], // smoother curve
+          }}
+          className="bg-black py-2 flex sm:gap-6 items-center justify-center relative overflow-hidden shadow-md"
         >
-
-          {/* Left Arrow — close on md/lg, far on mobile */}
           <button
             onClick={prevSlide}
-            className="
-              text-white p-1 hover:bg-white/20 rounded-full
-              absolute
-              left-2 sm:left-4 sm:-translate-x-20
-            "
+            className="text-white p-1 hover:bg-white/20 rounded-full absolute left-2 sm:left-4 "
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          {/* Message */}
-          <span className="text-white font-semibold text-sm sm:text-md uppercase px-8 text-center">
+          <span className="text-white font-semibold text-sm sm:text-md uppercase px-8 text-center tracking-wide">
             {messages[index]}
           </span>
 
-          {/* Right Arrow — close on md/lg, far on mobile */}
           <button
             onClick={nextSlide}
-            className="
-              text-white p-1 hover:bg-white/20 rounded-full
-              absolute
-              right-2 sm:left-4 sm:translate-x-20
-            "
+            className="text-white p-1 hover:bg-white/20 rounded-full absolute right-2 sm:left-4 "
           >
             <ChevronRight className="h-5 w-5" />
           </button>
-
         </motion.div>
       )}
     </AnimatePresence>

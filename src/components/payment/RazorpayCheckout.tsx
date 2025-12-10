@@ -85,22 +85,24 @@ useEffect(() => {
     );
     return acc + itemTotal;
   }, 0);*/}
-const calculateOfferTotal = (selectedSizes: { quantity: number }[]) => {
-  const totalQty = selectedSizes.reduce((sum, item) => sum + item.quantity, 0);
+// GLOBAL OFFER: ANY 2 = 1000
+const calculateGlobalOfferTotal = (cartItems: { sizes: { quantity: number }[] }[]) => {
+  // Count total quantity across ALL items
+  const totalQty = cartItems.reduce((total, item) => {
+    const qty = item.sizes.reduce((sum, s) => sum + s.quantity, 0);
+    return total + qty;
+  }, 0);
 
   const pairs = Math.floor(totalQty / 2);
   const remainder = totalQty % 2;
 
-  return pairs * 1000 + (remainder ? 549 : 0);
+  return pairs * 1000 + (remainder ? 548 : 0);
 };
 
 const totalPrice = () => {
-  return cartItems.reduce((total, item) => {
-    // apply offer for this item's sizes
-    const itemTotal = calculateOfferTotal(item.sizes);
-    return total + itemTotal;
-  }, 0);
+  return calculateGlobalOfferTotal(cartItems);
 };
+
 
 
 //{points: 75, discount: 75} {code: 'WELCOME10', discount: 29.9}//
