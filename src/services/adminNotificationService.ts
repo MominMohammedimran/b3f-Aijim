@@ -76,37 +76,27 @@ export const broadcastNotification = async (params: BroadcastNotificationParams)
 };
 
 // 🌟 NEW FUNCTION: broadcastGlobal - Fetches all users using select('*')
-export const broadcastGlobal = async (params: BroadcastNotificationParams): Promise<{ success: boolean; count: number }> => {
-    try {
-        // Get ALL user profiles using select('*') as requested
-        const { data: profiles, error: profilesError } = await supabase
-            .from('profiles')
-            .select('*'); 
+export const broadcastGlobal = async (
+  params: BroadcastNotificationParams
+): Promise<{ success: boolean; count: number }> => {
+  try {
+    const { error } = await supabase.from("global_notifications").insert([
+      {
+        type: params.type,
+        title: params.title,
+        message: params.message,
+        link: params.link || null,
+        metadata: params.metadata || {},
+      },
+    ]);
 
-        if (profilesError) throw profilesError;
+    if (error) throw error;
 
-        if (!profiles || profiles.length === 0) {
-            return { success: true, count: 0 };
-        }
-
-        // Create notifications for all users
-        const notifications = profiles.map(profile => ({
-            user_id: profile.id, // Assuming 'id' is present in the profiles table from select('*')
-            type: params.type,
-            title: params.title,
-            message: params.message,
-            link: params.link || null,
-            metadata: (params.metadata || {}) as Json,
-        }));
-
-        const { error } = await supabase.from('notifications').insert(notifications);
-
-        if (error) throw error;
-        return { success: true, count: notifications.length };
-    } catch (error) {
-        console.error('Error broadcasting global notification:', error);
-        return { success: false, count: 0 };
-    }
+    return { success: true, count: 1 }; // only ONE global notification inserted
+  } catch (error) {
+    console.error("Error broadcasting global notification:", error);
+    return { success: false, count: 0 };
+  }
 };
 
 
@@ -256,6 +246,7 @@ export const newUserNotification = async (
     metadata: { message},
   });
 };
+
 // Helper: Create normal message notification (broadcast) - **UPDATED to use broadcastGlobal**
 export const createNormalMessageNotification = async (
  normalTitle: string,
