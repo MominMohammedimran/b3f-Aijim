@@ -360,7 +360,25 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }
   };
 
-  const getTotalPrice = () => {
+  const calculateOfferTotal = (selectedSizes: { quantity: number }[]) => {
+  const totalQty = selectedSizes.reduce((sum, item) => sum + item.quantity, 0);
+
+  const pairs = Math.floor(totalQty / 2);
+  const remainder = totalQty % 2;
+
+  return pairs * 1000 + (remainder ? 549 : 0);
+};
+
+const getTotalPrice = () => {
+  return cartItems.reduce((total, item) => {
+    // apply offer for this item's sizes
+    const itemTotal = calculateOfferTotal(item.sizes);
+    return total + itemTotal;
+  }, 0);
+};
+
+  {/*const getTotalPrice = () => {
+    
     return cartItems.reduce((total, item) => {
       const itemTotal = item.sizes.reduce(
         (sum, size) => sum + size.quantity * item.price,
@@ -368,8 +386,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       );
       return total + itemTotal;
     }, 0);
-  };
-
+  };*/}
   const getTotalItems = () => {
     return cartItems.reduce((total, item) => {
       return total + item.sizes.reduce((sum, size) => sum + size.quantity, 0);

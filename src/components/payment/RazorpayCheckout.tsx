@@ -77,20 +77,39 @@ useEffect(() => {
      setAppliedPoints(JSON.parse(savedPoints)||{points:0,discount:0});
    }
  }, []);
-  const totalPrice = cartItems.reduce((acc, item) => {
+ 
+ {/* const totalPrice = cartItems.reduce((acc, item) => {
     const itemTotal = item.sizes.reduce(
       (sum, s) => sum + s.quantity * item.price,
       0
     );
     return acc + itemTotal;
+  }, 0);*/}
+const calculateOfferTotal = (selectedSizes: { quantity: number }[]) => {
+  const totalQty = selectedSizes.reduce((sum, item) => sum + item.quantity, 0);
+
+  const pairs = Math.floor(totalQty / 2);
+  const remainder = totalQty % 2;
+
+  return pairs * 1000 + (remainder ? 549 : 0);
+};
+
+const totalPrice = () => {
+  return cartItems.reduce((total, item) => {
+    // apply offer for this item's sizes
+    const itemTotal = calculateOfferTotal(item.sizes);
+    return total + itemTotal;
   }, 0);
+};
 
 
 //{points: 75, discount: 75} {code: 'WELCOME10', discount: 29.9}//
  const couponDiscount = appliedCoupon?.discount || 0;
   const pointsDiscount = appliedPoints?.discount || 0;
   const totalDiscount = couponDiscount + pointsDiscount;
-  const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee);
+
+  
+  const finalTotal = Math.max(0, totalPrice() - totalDiscount + deliveryFee);
   const handleRewardPointsChange = (value: number) => {
     if (value < 100 && value > 0) {
       return;
@@ -505,7 +524,7 @@ window.location.href = `/order-complete/${orderNumber}`;
       <div className="space-y-0 mb-4 text-white">
                       <div className="flex justify-between">
                         <span className="font-semibold uppercase text-sm ">Subtotal</span>
-                        <span className='font-semibold text-md'>{formatPrice(totalPrice)}</span>
+                        <span className='font-semibold text-md'>{formatPrice(totalPrice())}</span>
                       </div>
                       {appliedCoupon && (
                         <div className="flex justify-between text-green-400 font-bold">
