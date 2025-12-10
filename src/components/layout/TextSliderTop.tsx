@@ -3,9 +3,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const messages = [
-   "Chritsmas Sale - Grab",
-  "Buy any 2 — Oversized Tees",
-  "₹1000 ",
+  "Christmas Sale - Grab",
+  "Any 2 — Oversized Tees",
+  "₹1000 & Enjoy",
   "Free shipping",
 ];
 
@@ -13,9 +13,8 @@ export default function TextSliderTop() {
   const [index, setIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
-  // Auto-slide messages every 3 seconds
   useEffect(() => {
-    if (!isVisible) return; // pause auto-slide when hidden
+    if (!isVisible) return;
 
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % messages.length);
@@ -24,17 +23,15 @@ export default function TextSliderTop() {
     return () => clearInterval(interval);
   }, [isVisible]);
 
- 
   useEffect(() => {
     const updateVisibility = () => {
       const now = new Date();
       const minutes = now.getMinutes();
-      // 5 minutes visible, 5 minutes hidden
-      setIsVisible(minutes % 10 < 4);
+      setIsVisible(minutes % 10 < 5);
     };
 
-    updateVisibility(); // initial check
-    const interval = setInterval(updateVisibility, 1000 * 30); // check every 30s
+    updateVisibility();
+    const interval = setInterval(updateVisibility, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -51,32 +48,42 @@ export default function TextSliderTop() {
       {isVisible && (
         <motion.div
           key="slider"
-          initial={{ y: -60, opacity: 0 }}
+          initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -60, opacity: 0 }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
+          exit={{ y: -50, opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
           className="bg-black py-2 flex items-center justify-center relative overflow-hidden"
         >
-          {/* Left Arrow */}
+
+          {/* Left Arrow — close on md/lg, far on mobile */}
           <button
             onClick={prevSlide}
-            className="absolute left-2 sm:left-4 text-white p-1 hover:bg-white/20 rounded-full"
+            className="
+              text-white p-1 hover:bg-white/20 rounded-full
+              absolute
+              left-2 sm:left-1/2 sm:-translate-x-20
+            "
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          {/* Slide Text */}
+          {/* Message */}
           <span className="text-white font-semibold text-sm sm:text-md uppercase px-8 text-center">
             {messages[index]}
           </span>
 
-          {/* Right Arrow */}
+          {/* Right Arrow — close on md/lg, far on mobile */}
           <button
             onClick={nextSlide}
-            className="absolute right-2 sm:right-4 text-white p-1 hover:bg-white/20 rounded-full"
+            className="
+              text-white p-1 hover:bg-white/20 rounded-full
+              absolute
+              right-2 sm:left-1/2 sm:translate-x-20
+            "
           >
             <ChevronRight className="h-5 w-5" />
           </button>
+
         </motion.div>
       )}
     </AnimatePresence>

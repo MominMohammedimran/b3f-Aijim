@@ -90,20 +90,21 @@ export const useNotifications = () => {
       fetchUserNotifications(),
     ]);
 
-    // Merge
     const merged = [...globalList, ...userList];
 
     // Deduplicate
-    const unique = Array.from(new Map(merged.map(n => [n.id, n])).values());
+    const unique = Array.from(new Map(merged.map((n) => [n.id, n])).values());
 
-    // Sort
+    // Sort by date
     unique.sort(
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
 
-    // Count unread (global + user)
-    const unread = unique.filter(n => !n.is_read).length;
+    // FIX UNREAD COUNT LOGIC
+    const unread = currentUser
+      ? unique.filter((n) => !n.is_read).length // logged-in users track both
+      : globalList.length; // logged-out users: unread = all global notifications
 
     setNotifications(unique);
     setUnreadCount(unread);
@@ -115,29 +116,23 @@ export const useNotifications = () => {
   // -------------------------------------------
   const markAsRead = async (id: string) => {
     try {
-      const notif = notifications.find(n => n.id === id);
+      const notif = notifications.find((n) => n.id === id);
 
-      // Global notifications cannot be updated
+      // Cannot update global notifications
       if (!notif || notif.user_id === null) {
-        setNotifications(prev =>
-          prev.map(n => (n.id === id ? { ...n, is_read: true } : n))
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
         );
-        setUnreadCount(prev => Math.max(prev - 1, 0));
+        setUnreadCount((prev) => Math.max(prev - 1, 0));
         return;
       }
 
-      const { error } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("id", id);
+      await supabase.from("notifications").update({ is_read: true }).eq("id", id);
 
-      if (error) throw error;
-
-      setNotifications(prev =>
-        prev.map(n => (n.id === id ? { ...n, is_read: true } : n))
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
       );
-      setUnreadCount(prev => Math.max(prev - 1, 0));
-
+      setUnreadCount((prev) => Math.max(prev - 1, 0));
     } catch (err) {
       console.error("Error marking as read:", err);
     }
@@ -156,12 +151,8 @@ export const useNotifications = () => {
           .eq("is_read", false);
       }
 
-      // Update frontend state
-      setNotifications(prev =>
-        prev.map(n => ({ ...n, is_read: true }))
-      );
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
       setUnreadCount(0);
-
     } catch (err) {
       console.error("Error marking all as read:", err);
     }
@@ -173,7 +164,7 @@ export const useNotifications = () => {
   useEffect(() => {
     fetchNotifications();
 
-    // Listen to GLOBAL notifications ALWAYS
+    // GLOBAL notifications ALWAYS
     const globalChannel = supabase
       .channel("realtime-global")
       .on(
@@ -192,16 +183,16 @@ export const useNotifications = () => {
             is_read: false,
           };
 
-          setNotifications(prev => [formatted, ...prev]);
-          setUnreadCount(prev => prev + 1);
+          setNotifications((prev) => [formatted, ...prev]);
+          setUnreadCount((prev) => prev + 1);
         }
       )
       .subscribe();
 
-    // Listen to USER notifications ONLY when logged in
+    // USER notifications ONLY WHEN LOGGED IN
     let userChannel: any = null;
 
-    if (currentUser) {
+    if (currentUser?.id) {
       userChannel = supabase
         .channel("realtime-user")
         .on(
@@ -214,8 +205,8 @@ export const useNotifications = () => {
           },
           (payload) => {
             const newN = payload.new as Notification;
-            setNotifications(prev => [newN, ...prev]);
-            setUnreadCount(prev => prev + 1);
+            setNotifications((prev) => [newN, ...prev]);
+            setUnreadCount((prev) => prev + 1);
           }
         )
         .subscribe();
@@ -236,4 +227,5 @@ export const useNotifications = () => {
     refetch: fetchNotifications,
   };
 };
+
 
