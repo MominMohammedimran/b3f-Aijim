@@ -27,7 +27,7 @@ export default function TextSliderTop() {
     const updateVisibility = () => {
       const now = new Date();
       const minutes = now.getMinutes();
-      setIsVisible(minutes % 10 < 5);
+      setIsVisible(minutes % 10 < 8);
     };
 
     updateVisibility();
@@ -52,7 +52,7 @@ export default function TextSliderTop() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -50, opacity: 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="bg-black py-2 flex items-center justify-center relative overflow-hidden"
+          className="bg-black py-2 flex sm:gap-6 items-center justify-center relative overflow-hidden"
         >
 
           {/* Left Arrow — close on md/lg, far on mobile */}
@@ -61,7 +61,7 @@ export default function TextSliderTop() {
             className="
               text-white p-1 hover:bg-white/20 rounded-full
               absolute
-              left-2 sm:left-1/2 sm:-translate-x-20
+              left-2 sm:left-4 sm:-translate-x-20
             "
           >
             <ChevronLeft className="h-5 w-5" />
@@ -78,7 +78,7 @@ export default function TextSliderTop() {
             className="
               text-white p-1 hover:bg-white/20 rounded-full
               absolute
-              right-2 sm:left-1/2 sm:translate-x-20
+              right-2 sm:left-4 sm:translate-x-20
             "
           >
             <ChevronRight className="h-5 w-5" />
