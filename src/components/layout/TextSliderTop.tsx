@@ -75,7 +75,7 @@ export default function TextSliderTop() {
 
           <button
             onClick={nextSlide}
-            className="text-white p-1 hover:bg-white/20 rounded-full absolute right-2 sm:left-4 "
+            className="text-white p-1 hover:bg-white/20 rounded-full absolute right-2 sm:right-4 "
           >
             <ChevronRight className="h-5 w-5" />
           </button>
