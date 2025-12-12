@@ -95,18 +95,23 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   </h1>
 
   <p
-    className="text-sm text-gray-300 font-medium lowercase cursor-pointer hover:text-yellow-400 transition
-               max-w-[90vw] truncate sm:max-w-none"
-    onClick={() => {
-      if (email) {
-        navigator.clipboard.writeText(email);
-        toast.success("Email copied!");
-      }
-    }}
-    title={email || "No email provided"}
-  >
-    {email || "No email provided"}
-  </p>
+  className="
+    text-xs text-gray-300 font-medium lowercase cursor-pointer
+    hover:text-yellow-400 transition-colors duration-200
+    max-w-[160px] sm:max-w-[200px] md:max-w-[240px]
+    overflow-hidden text-ellipsis whitespace-nowrap
+  "
+  onClick={() => {
+    if (email) {
+      navigator.clipboard.writeText(email);
+      toast.success("Email copied!");
+    }
+  }}
+  title={email || "No email provided"}  // tooltip shows full email
+>
+  {email || "No email provided"}
+</p>
+
 
   {createdAt && (
     <div className="flex items-center font-semibold gap-2 mt-1 text-xs text-gray-500">

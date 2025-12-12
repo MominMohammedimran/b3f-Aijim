@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight,TreePine } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const messages = [
@@ -69,9 +69,11 @@ export default function TextSliderTop() {
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          <span className="text-white font-semibold text-sm sm:text-md uppercase px-8 text-center tracking-wide">
-            {messages[index]}
-          </span>
+          <span className="text-white font-semibold text-sm sm:text-md uppercase px-8 text-center flex items-center gap-2">
+  {index === 0 && <TreePine className="w-4 h-4 text-white" />}
+  {messages[index]}
+</span>
+
 
           <button
             onClick={nextSlide}
