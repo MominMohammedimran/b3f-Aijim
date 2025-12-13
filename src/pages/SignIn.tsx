@@ -64,17 +64,17 @@ const SignIn = () => {
             }
             className="w-full"
           >
-            <TabsList className="grid grid-cols-2 w-full m-2  bg-black rounded-none border border-gray-200">
+            <TabsList className="grid grid-cols-2 w-full   bg-black rounded-none border border-gray-200">
               <TabsTrigger
                 value="signin"
-                className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white"
+                className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-sm"
               >
                 Sign In
               </TabsTrigger>
 
               <TabsTrigger
                 value="signup"
-                className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white"
+                className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white text-sm"
               >
                 Create Account
               </TabsTrigger>

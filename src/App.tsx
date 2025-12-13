@@ -12,7 +12,9 @@ import { initializeSecurity } from "./utils/securityUtils";
 import { useReactQueryStorage } from "./utils/useReactQueryStorage";
 import {trackReferral }from "./utils/trackReferral";
 
+import PushNotificationSetup from "./components/notifications/PushNotificationSetup";
 
+import PushNotificationPrompt from "./components/notifications/PushNotificationPrompt";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "./utils/product";
 const queryClient = new QueryClient();
@@ -303,6 +305,8 @@ function App() {
             <CartProvider>
               <ActiveProductProvider>
                 <TooltipProvider>
+                    <PushNotificationSetup />
+                     <PushNotificationPrompt />
                   <CartReminders />
                   <AppRoutes />
                   <Toaster position="top-right" expand />

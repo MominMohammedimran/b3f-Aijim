@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React,{useEffect,useRef} from 'react';
+import { useNavigate} from 'react-router-dom';
 import {
   X,
   Bell,
@@ -15,6 +15,7 @@ import { motion, Variants } from 'framer-motion';
 import { useNotifications } from '@/hooks/useNotifications';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from 'date-fns';
 
 
@@ -31,9 +32,31 @@ interface NotificationPanelProps {
   isOpen: boolean;
   onClose: () => void;
 }
+const sendPushNotification = async (
+  title: string,
+  body: string,
+  data?: Record<string, any>,
+  userId?: string
+) => {
+  try {
+    await supabase.functions.invoke('send-push-notification', {
+      body: {
+        title,
+        body,
+        data,
+        userId,
+      },
+    });
+    console.log('✅ Push notification sent');
+  } catch (error) {
+    console.error('Failed to send push notification:', error);
+  }
+};
 
 const getNotificationIcon = (type: NotificationType) => {
   const base = 'h-5 w-5 drop-shadow-md';
+
+
   switch (type) {
     case 'order_update':
       return <Package className={`${base} text-blue-400`} />;
@@ -57,7 +80,29 @@ const NotificationItem: React.FC<{
   onRead: (id: string) => void;
   onNavigate: (link: string | null) => void;
 }> = ({ notification, onRead, onNavigate }) => {
-  const handleClick = () => {
+
+ const hasSentRef = useRef(false); // prevents duplicate sends
+
+  useEffect(() => {
+    if (notification.is_read) return;
+    if (hasSentRef.current) return;
+
+    hasSentRef.current = true;
+
+    sendPushNotification(
+      notification.title,
+      notification.message,
+      {
+        type: notification.type,
+        link: notification.link,
+        ...notification.metadata,
+      },
+      notification.userId
+    ).catch((err) => {
+      console.error("Push send failed:", err);
+    });
+  }, [notification]); const handleClick = () => {
+
     if (!notification.is_read) onRead(notification.id);
     if (notification.link) onNavigate(notification.link);
     // Note: panel remains open — user requested to only close via X
@@ -120,6 +165,7 @@ const panelVariants: Variants = {
 const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { notifications, unreadCount, loading, markAsRead, markAllAsRead } = useNotifications();
+
 
   if (!isOpen) return null;
 

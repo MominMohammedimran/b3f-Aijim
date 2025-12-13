@@ -1,10 +1,9 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800;900&family=Bebas+Neue&family=Ubuntu:wght@300;400;500;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800;900&family=Bebas+Neue&family=Ubuntu:wght@300;400;500;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 @layer base {
   :root {
     --background: 222.2 84% 4.9%;           /* Dark background */
@@ -157,7 +156,7 @@ h1, h2, h3, h4, h5, h6,label
 }
 
 /* Responsive typography */
-@responsive {
+@layer utilities {
   .text-xs-mobile {
     font-size: 0.35rem;
     line-height: 1.2rem;
@@ -339,5 +338,4 @@ main {
 .group:hover .group-hover\:bg-green-400 {
   background-color: rgb(74 222 128);
 }
-
 

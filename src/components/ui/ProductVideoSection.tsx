@@ -273,7 +273,7 @@ const ProductVideoSection: React.FC = () => {
                       e.stopPropagation();
                       openFullscreen(video.id);
                     }}
-                    className="absolute bottom-2 right-3 bg-black/30 p-2 rounded-full"
+                    className="absolute bottom-2 right-3 bg-black/30 p-2 rounded-full hidden"
                   >
                     <Maximize className="w-4 h-4 text-white" />
                   </button>

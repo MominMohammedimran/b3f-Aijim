@@ -21,28 +21,25 @@ export const usePushNotifications = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [permission, setPermission] = useState<NotificationPermission>('default');
 
   useEffect(() => {
     const initPush = async () => {
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
       setIsSupported(true);
+      
+      if ('Notification' in window) {
+        setPermission(Notification.permission);
+      }
 
       try {
-        const reg = await navigator.serviceWorker.register('/service-worker.js');
+        const reg = await navigator.serviceWorker.register('/sw.js');
         await navigator.serviceWorker.ready;
         setRegistration(reg);
 
         const existingSub = await reg.pushManager.getSubscription();
 
-        if (!existingSub) {
-          console.log('🔔 No existing subscription found — requesting permission...');
-          const permission = await Notification.requestPermission();
-          if (permission === 'granted') {
-            await subscribeToNotifications(reg);
-          } else {
-            console.log('⚠️ Notification permission denied');
-          }
-        } else {
+        if (existingSub) {
           console.log('✅ Found existing subscription — syncing to Supabase...');
           await saveSubscription(existingSub);
           setIsSubscribed(true);
@@ -55,11 +52,27 @@ export const usePushNotifications = () => {
     initPush();
   }, []);
 
-  const subscribeToNotifications = async (reg?: ServiceWorkerRegistration) => {
+  const subscribe = async (reg?: ServiceWorkerRegistration) => {
     try {
       setIsLoading(true);
+      
+      // Request permission first
+      const permResult = await Notification.requestPermission();
+      setPermission(permResult);
+      
+      if (permResult !== 'granted') {
+        toast.error('Notification permission denied');
+        return false;
+      }
+      
       const regToUse = reg || registration;
-      if (!regToUse) return toast.error('Service Worker not ready');
+      if (!regToUse) {
+        // Register service worker if not already
+        const newReg = await navigator.serviceWorker.register('/sw.js');
+        await navigator.serviceWorker.ready;
+        setRegistration(newReg);
+        return subscribe(newReg);
+      }
 
       const sub = await regToUse.pushManager.subscribe({
         userVisibleOnly: true,
@@ -69,9 +82,40 @@ export const usePushNotifications = () => {
       await saveSubscription(sub);
       setIsSubscribed(true);
       toast.success('Notifications enabled!');
+      return true;
     } catch (err) {
       console.error('Push subscription failed:', err);
       toast.error('Failed to enable notifications');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const unsubscribe = async () => {
+    try {
+      setIsLoading(true);
+      const regToUse = registration;
+      if (!regToUse) return false;
+
+      const existingSub = await regToUse.pushManager.getSubscription();
+      if (existingSub) {
+        await existingSub.unsubscribe();
+        
+        // Remove from database
+        await (supabase as any)
+          .from('push_subscribers')
+          .delete()
+          .eq('endpoint', existingSub.endpoint);
+      }
+
+      setIsSubscribed(false);
+      toast.success('Notifications disabled');
+      return true;
+    } catch (err) {
+      console.error('Failed to unsubscribe:', err);
+      toast.error('Failed to disable notifications');
+      return false;
     } finally {
       setIsLoading(false);
     }
@@ -110,6 +154,9 @@ export const usePushNotifications = () => {
     isSupported,
     isSubscribed,
     isLoading,
-    subscribeToNotifications,
+    permission,
+    subscribe,
+    unsubscribe,
+    subscribeToNotifications: subscribe, // backwards compat
   };
 };

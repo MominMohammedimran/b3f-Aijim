@@ -725,37 +725,34 @@ export type Database = {
       }
        global_notifications: {
         Row: {
-          created_at: string
+          created_at: string | null
           id: string
-          is_read: boolean
+          is_read: boolean | null
           link: string | null
           message: string
           metadata: Json | null
           title: string
           type: string
-
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           id?: string
-          is_read?: boolean
+          is_read?: boolean | null
           link?: string | null
           message: string
           metadata?: Json | null
           title: string
           type: string
-         
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           id?: string
-          is_read?: boolean
+          is_read?: boolean | null
           link?: string | null
           message?: string
           metadata?: Json | null
           title?: string
           type?: string
-         
         }
         Relationships: []
       }

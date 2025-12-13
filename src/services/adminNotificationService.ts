@@ -12,6 +12,28 @@ interface CreateNotificationParams {
   metadata?: Record<string, Json>;
 
 }
+// Send push notification via edge function
+const sendPushNotification = async (
+  title: string,
+  body: string,
+  data?: Record<string, any>,
+  userId?: string
+) => {
+  try {
+    await supabase.functions.invoke('send-push-notification', {
+      body: {
+        title,
+        body,
+        data,
+        userId,
+      },
+    });
+    console.log('✅ Push notification sent');
+  } catch (error) {
+    console.error('Failed to send push notification:', error);
+  }
+};
+
 
 interface BroadcastNotificationParams {
   type: NotificationType;
@@ -34,6 +56,12 @@ export const createNotification = async (params: CreateNotificationParams): Prom
     }]);
 
     if (error) throw error;
+await sendPushNotification(
+      params.title,
+      params.message,
+      { type: params.type, link: params.link, ...params.metadata },
+      params.userId
+    );
     return true;
   } catch (error) {
     console.error('Error creating notification:', error);
@@ -68,6 +96,12 @@ export const broadcastNotification = async (params: BroadcastNotificationParams)
     const { error } = await supabase.from('notifications').insert(notifications);
 
     if (error) throw error;
+ // Also send push notification to all subscribers
+    await sendPushNotification(
+      params.title,
+      params.message,
+      { type: params.type, link: params.link, ...params.metadata }
+    );
     return { success: true, count: notifications.length };
   } catch (error) {
     console.error('Error broadcasting notification:', error);
@@ -91,6 +125,12 @@ export const broadcastGlobal = async (
     ]);
 
     if (error) throw error;
+     // Also send push notification to all subscribers
+    await sendPushNotification(
+      params.title,
+      params.message,
+      { type: params.type, link: params.link, ...params.metadata }
+    );
 
     return { success: true, count: 1 }; // only ONE global notification inserted
   } catch (error) {
@@ -196,6 +236,12 @@ export const createPaymentIssueNotification = async (
 
 export const createOrderIssueNotification = async (
   userId: string,
+
+
+
+
+
+
   orderNumber: string,
   issueStatus: string
 ): Promise<boolean> => {

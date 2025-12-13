@@ -118,8 +118,8 @@ serve(async (req)=>{
     const notificationData = {
       title: title || "AIJIM",
       body: body || "You have a new notification",
-      icon: icon || "/aijim-uploads/aijim-192.png",
-      badge: badge || "/aijim-uploads/aijim-192.png",
+      icon: icon || "/aijim-uploads/aijim-black.png",
+      badge: badge || "/aijim-uploads/aijim-black.png",
       data: data || {},
       actions: actions || [],
       tag: tag || "default",
