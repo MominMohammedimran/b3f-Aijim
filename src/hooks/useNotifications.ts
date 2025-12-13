@@ -161,6 +161,32 @@ export const useNotifications = () => {
   // -------------------------------------------
   // REAL TIME LISTENING
   // -------------------------------------------
+  // Helper to show native browser/mobile notification
+  const showNativeNotification = (notification: Notification | GlobalNotification) => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        const notif = new Notification(notification.title, {
+          body: notification.message,
+          icon: '/aijim-uploads/aijim-black.png',
+          badge: '/aijim-uploads/aijim-black.png',
+          tag: notification.id,
+          data: { link: notification.link, ...notification.metadata },
+          requireInteraction: false,
+        });
+        
+        notif.onclick = () => {
+          window.focus();
+          if (notification.link) {
+            window.location.href = notification.link;
+          }
+          notif.close();
+        };
+      } catch (err) {
+        console.error('Failed to show native notification:', err);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchNotifications();
 
@@ -185,6 +211,9 @@ export const useNotifications = () => {
 
           setNotifications((prev) => [formatted, ...prev]);
           setUnreadCount((prev) => prev + 1);
+          
+          // Trigger native notification for new global notifications
+          showNativeNotification(g);
         }
       )
       .subscribe();
@@ -207,6 +236,9 @@ export const useNotifications = () => {
             const newN = payload.new as Notification;
             setNotifications((prev) => [newN, ...prev]);
             setUnreadCount((prev) => prev + 1);
+            
+            // Trigger native notification for new user notifications
+            showNativeNotification(newN);
           }
         )
         .subscribe();
@@ -227,5 +259,4 @@ export const useNotifications = () => {
     refetch: fetchNotifications,
   };
 };
-
 
