@@ -133,14 +133,18 @@ const AdminDashboard = () => {
       ],
     });
 
+    let currentY = 60;
+    
     autoTable(doc, {
-      startY: doc.lastAutoTable.finalY + 10,
+      startY: currentY,
       head: [["Top Products", "Units Sold"]],
       body: topProducts.map((p) => [p.name, p.count]),
     });
 
+    currentY = (doc as any).lastAutoTable?.finalY || currentY + 40;
+
     autoTable(doc, {
-      startY: doc.lastAutoTable.finalY + 10,
+      startY: currentY + 10,
       head: [["Top Customers", "Total Spent"]],
       body: topCustomers.map((c) => [c.email, `₹${c.total}`]),
     });

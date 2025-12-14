@@ -16,13 +16,16 @@ declare global {
   }
 }
 
-interface CashfreeCheckoutProps {
+export interface CashfreeCheckoutProps {
   amount?: number;
   cartItems?: any[];
   shippingAddress?: any;
   onSuccess?: () => void;
   onError?: () => void;
+  OrderId?: string;
   RewardPoints?: number;
+  onRemoveSize?: () => void;
+  onRemoveItem?: () => void;
 }
 
 const CashfreeCheckout: React.FC<CashfreeCheckoutProps> = ({

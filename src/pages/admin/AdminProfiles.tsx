@@ -34,13 +34,7 @@ interface Order {
   status: string;
   payment_status: string;
   created_at: string;
-  items?: {
-    name: string;
-    price: number;
-    quantity: number;
-    image?: string;
-    sizes?: { size: string; quantity: number }[];
-  }[];
+  items?: any;
 }
 
 interface UserWithOrders extends Profile {

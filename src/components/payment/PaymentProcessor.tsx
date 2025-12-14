@@ -1,6 +1,6 @@
 import React from "react";
 import RazorpayCheckout from "./RazorpayCheckout";
-import CashfreeCheckout from "./CashfreeCheckout";
+import CashfreeCheckout, { CashfreeCheckoutProps } from "./CashfreeCheckout";
 import { sendOrderConfirmationEmail } from "@/services/unifiedEmailService";
 import { toast } from "sonner";
 

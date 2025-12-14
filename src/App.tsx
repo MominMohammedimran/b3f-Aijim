@@ -13,7 +13,6 @@ import { useReactQueryStorage } from "./utils/useReactQueryStorage";
 import {trackReferral }from "./utils/trackReferral";
 
 import PushNotificationSetup from "./components/notifications/PushNotificationSetup";
-
 import PushNotificationPrompt from "./components/notifications/PushNotificationPrompt";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "./utils/product";
@@ -291,10 +290,9 @@ function App() {
     }
   }, []);
 
- if (showPreloader) {
+  if (showPreloader) {
     return <Preloader onComplete={() => setShowPreloader(false)} />;
   }
-
   
   return (
     <div className="bg-black min-h-screen">

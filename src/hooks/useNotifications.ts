@@ -159,13 +159,12 @@ export const useNotifications = () => {
   };
 
   // -------------------------------------------
-  // REAL TIME LISTENING
-  // -------------------------------------------
-  // Helper to show native browser/mobile notification
-  const showNativeNotification = (notification: Notification | GlobalNotification) => {
-    if ('Notification' in window && Notification.permission === 'granted') {
+  // Helper to show browser push notification
+  const showBrowserNotification = async (notification: Notification | GlobalNotification) => {
+    // Only show if browser notifications are supported and permitted
+    if ('Notification' in window && window.Notification.permission === 'granted') {
       try {
-        const notif = new Notification(notification.title, {
+        const notif = new window.Notification(notification.title, {
           body: notification.message,
           icon: '/aijim-uploads/aijim-black.png',
           badge: '/aijim-uploads/aijim-black.png',
@@ -181,8 +180,10 @@ export const useNotifications = () => {
           }
           notif.close();
         };
+        
+        console.log('✅ Browser notification shown');
       } catch (err) {
-        console.error('Failed to show native notification:', err);
+        console.error('Failed to show browser notification:', err);
       }
     }
   };
@@ -212,8 +213,8 @@ export const useNotifications = () => {
           setNotifications((prev) => [formatted, ...prev]);
           setUnreadCount((prev) => prev + 1);
           
-          // Trigger native notification for new global notifications
-          showNativeNotification(g);
+          // Trigger browser notification for new global notifications
+          showBrowserNotification(g);
         }
       )
       .subscribe();
@@ -237,8 +238,8 @@ export const useNotifications = () => {
             setNotifications((prev) => [newN, ...prev]);
             setUnreadCount((prev) => prev + 1);
             
-            // Trigger native notification for new user notifications
-            showNativeNotification(newN);
+            // Trigger browser notification for new user notifications
+            showBrowserNotification(newN);
           }
         )
         .subscribe();
@@ -259,4 +260,5 @@ export const useNotifications = () => {
     refetch: fetchNotifications,
   };
 };
+
 

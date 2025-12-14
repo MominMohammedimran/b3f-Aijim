@@ -16,7 +16,7 @@ import ShareModal from "./ShareModal";
 import LiveViewingCounter from "./LiveViewingCounter";
 import AvailableCoupons from "./AvailableCoupons";
 import TrustHighlights from "./TrustHighlights";
-import PincodeCheck from "./PinCodeCheck";
+import PincodeCheck from "./PincodeCheck";
 import ProductDescription from "./ProductDescription";
 
 import { useDeliverySettings } from "@/hooks/useDeliverySettings";

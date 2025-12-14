@@ -55,7 +55,7 @@ const Articles = () => {
     {articles.map((article) => (
       <Link
         key={article.id}
-        to={`/articles/${article.slug}`}s
+        to={`/articles/${article.slug}`}
         onClick={() => window.scrollTo(0, 0)}
         className="group flex gap-5 border border-gray-700 hover:border-yellow-400 rounded-none p-4 transition-all cursor-pointer hover:bg-[#0f0f0f]"
       >
