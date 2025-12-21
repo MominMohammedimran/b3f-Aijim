@@ -36,7 +36,7 @@ import ThankYou from "./components/ui/ThankYou";
 import TrackPackage from "./pages/TrackPackage";
 import OrderRelatedIssue from "./components/orders/OrderRelatedIssue";
 import Feedback from "./pages/legal/Feedback";
-
+import Designtool from './pages/Designtool.tsx'
 // Legal Pages
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsConditions from "./pages/legal/TermsConditions";
@@ -88,6 +88,7 @@ const AppRoutes = () => {
         <Route path="/products" element={<Products />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/customization" element={<Designtool />} />
         <Route path="/order-complete" element={<OrderComplete />} />
         <Route path="/order-complete/:orderId" element={<OrderComplete />} />
         <Route path="/orders" element={<OrderHistory />} />
