@@ -61,6 +61,7 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.6.1",
     "embla-carousel-react": "^8.3.0",
+    "fabric": "^6.0.0",
     "firebase": "^11.5.0",
     "framer-motion": "^12.15.0",
     "imagekitio-react": "^4.3.0",

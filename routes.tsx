@@ -29,6 +29,7 @@ import AuthCallback from './pages/AuthCallback';
 import Wishlist from './pages/Wishlist';
 import Account from './pages/Account'
 import Profile from './pages/Profile'
+import Customization from './pages/Designtool';
 // Admin routes
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -84,6 +85,7 @@ const AppRoutes = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/customization" element={<Customization />} />
         <Route path="/thank-you" element={<ThankYou/>} />
         <Route path="/payment-issue" element={<PaymentRelatedIssue />} />
         <Route path="/order-related-issue" element={<OrderRelatedIssue />} />

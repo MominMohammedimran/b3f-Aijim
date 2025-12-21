@@ -196,11 +196,11 @@ const DesignTool = () => {
   const handleViewChange = (view: string) => {
     if (canvas && isDualSided && activeProduct === 'tshirt') {
       if (productView === 'front') {
-        const frontDataUrl = canvas.toDataURL({ format: 'webp', quality: 0.9 });
+        const frontDataUrl = canvas.toDataURL({ format: 'webp', quality: 0.9, multiplier: 1 });
         setFrontDesign(frontDataUrl);
         setDesignComplete(prev => ({...prev, front: hasDesignElements()}));
       } else if (productView === 'back') {
-        const backDataUrl = canvas.toDataURL({ format: 'webp', quality: 0.9 });
+        const backDataUrl = canvas.toDataURL({ format: 'webp', quality: 0.9, multiplier: 1 });
         setBackDesign(backDataUrl);
         setDesignComplete(prev => ({...prev, back: hasDesignElements()}));
       }
@@ -230,7 +230,7 @@ const DesignTool = () => {
    
     if (checked) {
       if (canvas && productView === 'front') {
-        const frontDataUrl = canvas.toDataURL({ format: 'webp', quality: 0.9 });
+        const frontDataUrl = canvas.toDataURL({ format: 'webp', quality: 0.9, multiplier: 1 });
         setFrontDesign(frontDataUrl);
         setDesignComplete(prev => ({...prev, front: hasDesignElements()}));
       }
@@ -344,7 +344,7 @@ const DesignTool = () => {
       return previewDataUrl;
     } catch (error) {
       console.error('Error generating design preview:', error);
-      return canvas.toDataURL({ format: 'png', quality: 1.0 });
+      return canvas.toDataURL({ format: 'png', quality: 1.0, multiplier: 1 });
     }
   };
 

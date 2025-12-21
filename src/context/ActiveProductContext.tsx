@@ -1,10 +1,8 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Product } from '@/lib/types';
 
 interface ActiveProductContextType {
-  activeProduct: Product | null;
-  setActiveProduct: (product: Product | null) => void;
+  activeProduct: string;
+  setActiveProduct: (product: string) => void;
 }
 
 const ActiveProductContext = createContext<ActiveProductContextType | undefined>(undefined);
@@ -22,15 +20,10 @@ interface ActiveProductProviderProps {
 }
 
 export const ActiveProductProvider: React.FC<ActiveProductProviderProps> = ({ children }) => {
-  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
-
-  const value = {
-    activeProduct,
-    setActiveProduct,
-  };
+  const [activeProduct, setActiveProduct] = useState<string>('tshirt');
 
   return (
-    <ActiveProductContext.Provider value={value}>
+    <ActiveProductContext.Provider value={{ activeProduct, setActiveProduct }}>
       {children}
     </ActiveProductContext.Provider>
   );
