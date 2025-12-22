@@ -172,6 +172,17 @@ const Index = () => {
   }, []);
 
   // 🔔 Hourly toast reminder system (Works with Supabase cart)
+  
+  // Group products by category
+  const productsByCategory = products.reduce((acc, product) => {
+    const category = product.category || "uncategorized";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+    return acc;
+  }, {} as Record<string, Product[]>);
+
 
   return (
     <Layout>
@@ -188,7 +199,7 @@ const Index = () => {
 
       <div className="bg-black min-h-screen pt-5 text-white">
         <div className="container-custom mt-22 pt-2">
-          {/*<HeroSlider />/*}
+          {/*<HeroSlider />*/}
 
           {/* 🔥 Hot Selling 
       <div className="mb-4 mt-4 min-h-[60px] w-full   bg-gradient-to-br from-black via-gray-900 to-black
@@ -238,7 +249,8 @@ const Index = () => {
         </div>
       ))}
   </div>
-</div>}/*}
+</div>*/}
+
           {/* Featured products */}
           <div className="relative mb-8">
             <h2 className="text-xl font-bold mb-5 text-left">
@@ -307,17 +319,22 @@ const Index = () => {
           {loading ? (
             <p className="text-gray-400">Loading products...</p>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
-              {products.map((product, i) => (
-                <div
-                  key={product.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${i * 0.08}s` }}
-                >
-                  <ProductCard product={product} onClick={handleProductClick} />
+            Object.entries(productsByCategory).map(([category, products]) => (
+              <div key={category}>
+                <h3 className="text-lg font-bold text-white mt-4 mb-2 capitalize">{category}</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5">
+                  {products.map((product, i) => (
+                    <div
+                      key={product.id}
+                      className="animate-fade-in"
+                      style={{ animationDelay: `${i * 0.08}s` }}
+                    >
+                      <ProductCard product={product} onClick={handleProductClick} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))
           )}
         </div>
        

@@ -49,9 +49,9 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
   const getCanvasDimensions = () => {
     switch (activeProduct) {
       case 'tshirt':
-        return { width: 320, height: 380 };
+        return { width: 400, height: 500 };
       case 'mug':
-        return { width: 280, height: 320 };
+        return { width: 400, height: 350 };
       case 'cap':
         return { width: 280, height: 200 };
       case 'photo_frame':
@@ -67,12 +67,13 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
     switch (activeProduct) {
       case 'tshirt':
         return productView === 'back' 
-          ? 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/product_images/print-images/tshirt-print/tshirt-back.webp'
-          : 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/product_images/print-images/tshirt-print/tshirt-print.webp';
-      case 'mug':
-        return 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/product_images/print-images/mug-print/mug-print.webp';
+        ?'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/tshirt-sub-images/tshirt-back.webp'
+     
+          : 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/tshirt-sub-images/tshirt-front.webp';
+           case 'mug':
+        return 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/mug-sub-images/mug-plain.webp';
       case 'cap':
-        return 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/product_images/print-images/cap-print/cap-print.webp';
+        return 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/cap-sub-images/cap-plain.webp';
       case 'photo_frame':
         return 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=300&h=300';
       default:
@@ -83,7 +84,6 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    // Dispose previous canvas
     if (fabricCanvasRef.current) {
       fabricCanvasRef.current.dispose();
     }
@@ -92,7 +92,7 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
     const fabricCanvas = new FabricCanvas(canvasRef.current, {
       width: dimensions.width,
       height: dimensions.height,
-      backgroundColor: '#1a1a2e',
+      backgroundColor: 'transparent',
       selection: true,
     });
 
@@ -100,16 +100,87 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
     setCanvas(fabricCanvas);
     setCanvasInitialized(true);
 
-    // Clean up on unmount
     return () => {
       fabricCanvas.dispose();
     };
   }, [activeProduct, productView]);
 
+  const getDesignBoundaryStyle = () => {
+    switch (activeProduct) {
+      case 'tshirt':
+        return {
+          top: 210,
+          left: 140,
+          right: 140,
+          bottom: 140,
+        };
+      case 'mug':
+        return {
+          top: 150,
+          left: 120,
+          right: 160,
+          bottom: 110,
+        };
+        case 'cap':
+          return {
+            top: 50,
+            left: 100,
+            right: 100,
+            bottom: 100,
+          };
+      default:
+        return {
+          top: 130,
+          left: 90,
+          right: 90,
+          bottom: 205,
+        };
+    }
+  };
+
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-lg">
-      {/* Undo/Redo Controls */}
-      <div className="flex justify-center gap-2 mb-4">
+    <div className="bg-gray-900 border border-gray-800 rounded-xl m-2 shadow-lg">
+      <div className="text-center mt-4">
+        <span className="text-white/70 text-sm">
+          {activeProduct === 'tshirt' && `${productView === 'front' ? 'Front' : 'Back'} View`}
+          {activeProduct === 'photo_frame' && `Frame Size: ${productView}`}
+          {activeProduct === 'mug' && 'Mug Design Area'}
+          {activeProduct === 'cap' && 'Cap Design Area'}
+        </span>
+      </div>
+
+      <div 
+        ref={containerRef}
+        className="relative flex justify-center items-center "
+        style={{ minHeight: '100px' }}
+      >
+        <div 
+          className="absolute inset-0 flex justify-center items-center pointer-events-none"
+          style={{ zIndex: 0 }}
+        >
+          <img 
+            src={getProductImage()} 
+            alt={activeProduct}
+            className="max-w-full max-h-full object-contain opacity-100"
+          />
+        </div>
+
+        <div 
+          id={`design-boundary-${activeProduct}`}
+          className="absolute border-2 border-dashed border-gray rounded-lg pointer-events-none"
+          style={{
+            ...getDesignBoundaryStyle(),
+            zIndex: 1,
+          }}
+        />
+
+        <div className="relative z-10">
+          <canvas ref={canvasRef} className="rounded-lg bg-transparent" />
+        </div>
+      </div>
+
+      
+      <div className="flex justify-center gap-2 mt-2  mb-2">
         <Button
           variant="outline"
           size="sm"
@@ -130,51 +201,6 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
           <Redo2 size={16} />
           Redo
         </Button>
-      </div>
-
-      {/* Canvas Container */}
-      <div 
-        ref={containerRef}
-        className="relative flex justify-center items-center"
-        style={{ minHeight: '400px' }}
-      >
-        {/* Product Background Image */}
-        <div 
-          className="absolute inset-0 flex justify-center items-center pointer-events-none"
-          style={{ zIndex: 0 }}
-        >
-          <img 
-            src={getProductImage()} 
-            alt={activeProduct}
-            className="max-w-full max-h-full object-contain opacity-30"
-          />
-        </div>
-
-        {/* Design Boundary */}
-        <div 
-          id={`design-boundary-${activeProduct}`}
-          className="absolute border-2 border-dashed border-white/50 rounded-lg pointer-events-none"
-          style={{
-            width: getCanvasDimensions().width - 40,
-            height: getCanvasDimensions().height - 40,
-            zIndex: 1,
-          }}
-        />
-
-        {/* Fabric Canvas */}
-        <div className="relative z-10">
-          <canvas ref={canvasRef} className="rounded-lg" />
-        </div>
-      </div>
-
-      {/* View indicator */}
-      <div className="text-center mt-4">
-        <span className="text-white/70 text-sm">
-          {activeProduct === 'tshirt' && `${productView === 'front' ? 'Front' : 'Back'} View`}
-          {activeProduct === 'photo_frame' && `Frame Size: ${productView}`}
-          {activeProduct === 'mug' && 'Mug Design Area'}
-          {activeProduct === 'cap' && 'Cap Design Area'}
-        </span>
       </div>
     </div>
   );

@@ -49,6 +49,7 @@ const Products = () => {
           variants: sizes,
           code: p.code,
           description: p.description || "",
+          category: p.category || "",
           tags: Array.isArray(p.tags) ? p.tags : [],
           inStock: totalStock > 0,
           stock: totalStock,
@@ -75,6 +76,16 @@ const Products = () => {
     };
     return sorter;
   }, [sort]);
+
+  const productsByCategory = products.reduce((acc, product) => {
+    const category = product.category || "uncategorized";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+    return acc;
+  }, {} as Record<string, Product[]>);
+
 
   const SortDropdown = ({
     section,
@@ -273,7 +284,10 @@ const Products = () => {
                   <SortDropdown section="all" />
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1.5">
+                {Object.entries(productsByCategory).map(([category, products]) => (
+              <div key={category}>
+                <h3 className="text-lg font-bold text-white mt-4 mb-2 capitalize">{category}</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1.5">
                   {sortProducts(products).map((p) => (
                     <ProductCard
                       key={p.id}
@@ -283,6 +297,8 @@ const Products = () => {
                     />
                   ))}
                 </div>
+                </div>
+            ))}
               </section>
             </>
           )}

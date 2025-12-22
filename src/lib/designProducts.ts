@@ -12,7 +12,7 @@ export interface DesignProductsMap {
 
 export const getDesignProducts = (sizeInventory: Record<string, Record<string, number>>): DesignProductsMap => ({
   tshirt: { 
-    id: 'tshirt',
+    id: 'a489c917-3896-4f1e-9b4b-49f249353698',
     name: 'T-Shirt', 
     price: 249, 
     image: 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/product_images/print-images/tshirt-print/tshirt-print.webp',
@@ -25,7 +25,7 @@ export const getDesignProducts = (sizeInventory: Record<string, Record<string, n
     ]
   },
   mug: { 
-    id: 'mug',
+    id: '89d4ef47-7c2f-46cd-9efe-4f2e6661f6bf',
     name: 'Mug', 
     price: 199, 
     image: 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/product_images/print-images/mug-print/mug-print.webp',
@@ -34,7 +34,7 @@ export const getDesignProducts = (sizeInventory: Record<string, Record<string, n
     ]
   },
   cap: { 
-    id: 'cap',
+    id: '293160b2-2661-4f28-ba1d-732a55fb92bb',
     name: 'Cap', 
     price: 179, 
     image: 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/product_images/print-images/cap-print/cap-print.webp',
@@ -42,7 +42,9 @@ export const getDesignProducts = (sizeInventory: Record<string, Record<string, n
       { size: 'Standard', stock: sizeInventory.cap?.standard || 0 }
     ]
   },
-  photo_frame: { 
+ 
+});
+ {/*photo_frame: { 
     id: 'photo_frame',
     name: 'Photo Frame', 
     price: 299, 
@@ -52,9 +54,7 @@ export const getDesignProducts = (sizeInventory: Record<string, Record<string, n
       { size: '12x16inch', stock: 0 },
       { size: '5x7 inch', stock: 0 }
     ]
-  }
-});
-
+  }*/}
 export const CUSTOMIZABLE_PRODUCT_CODES = ['TSHIRT', 'MUG', 'CAP', 'PHOTO_FRAME'];
 
 export const isCustomizableProduct = (code: string): boolean => {

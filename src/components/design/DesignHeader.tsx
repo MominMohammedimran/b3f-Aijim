@@ -4,15 +4,15 @@ import { ArrowLeft } from 'lucide-react';
 
 const DesignHeader: React.FC = () => {
   return (
-    <div className="flex flex-cols items-center gap-10 mb-6 mt-10">
+    <div className="flex flex-cols items-center gap-10  mt-10 py-2">
       <Link
         to="/"
-        className="flex items-center text-white/70 hover:text-white transition-colors"
+        className="flex items-center text-white hover:text-white transition-colors"
       >
         <ArrowLeft className="mr-1" size={20} />
-        <span className="text-sm font-medium">Back</span>
+        <span className="text-md  font-medium">Back</span>
       </Link>
-      <h1 className="flex text-xl md:text-2xl font-bold text-white">
+      <h1 className="flex text-xl md:text-2xl font-bold text-white hidden">
         Design Your Product
       </h1>
     </div>

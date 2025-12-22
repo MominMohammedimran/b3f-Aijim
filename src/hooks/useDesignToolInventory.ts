@@ -9,9 +9,9 @@ interface SizeInventory {
 
 export const useDesignToolInventory = () => {
   const [sizeInventory, setSizeInventory] = useState<SizeInventory>({
-    tshirt: { s: 10, m: 15, l: 12, xl: 8, xxl: 5 },
-    mug: { regular: 20, large: 15 },
-    cap: { onesize: 25 }
+    tshirt: { s: 0, m: 0, l: 0, xl: 0, xxl: 0 },
+    mug: { regular: 0,  },
+    cap: { onesize: 0 }
   });
   const [loading, setLoading] = useState(false);
 

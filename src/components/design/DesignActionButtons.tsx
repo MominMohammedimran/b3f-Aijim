@@ -22,7 +22,7 @@ const DesignActionButtons: React.FC<DesignActionButtonsProps> = ({
         className="flex items-center gap-2 bg-transparent text-red-400 hover:text-red-300 border-red-500/50 hover:border-red-400 hover:bg-red-500/10"
       >
         <Trash2 size={16} />
-        Remove Selected
+        Remove 
       </Button>
       
       <Button
@@ -32,14 +32,14 @@ const DesignActionButtons: React.FC<DesignActionButtonsProps> = ({
         className="flex items-center gap-2 bg-transparent text-purple-400 hover:text-purple-300 border-purple-500/50 hover:border-purple-400 hover:bg-purple-500/10"
       >
         <RotateCcw size={16} />
-        Clear Canvas
+        Clear 
       </Button>
       
       <Button
         variant="outline"
         size="icon"
         onClick={onShare}
-        className="bg-transparent text-green-400 hover:text-green-300 border-green-500/50 hover:border-green-400 hover:bg-green-500/10"
+        className="hidden bg-transparent text-green-400 hover:text-green-300 border-green-500/50 hover:border-green-400 hover:bg-green-500/10"
       >
         <Share className="h-4 w-4" />
       </Button>

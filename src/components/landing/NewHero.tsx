@@ -7,15 +7,18 @@ import "swiper/css";
 
 const NewHero = () => {
   const bannerMobile = [
-    "/aijim-uploads/banner/mobile/All-five-tshirts.jpg",
+    "/aijim-uploads/banner/mobile/merry-christmas-mobile-banner.jpeg",
+    "/aijim-uploads/banner/mobile/happy-new-year-mobile-banner.jpeg",
+   
+    "/aijim-uploads/banner/mobile/buy-any-2-beige-black.jpeg",
     "/aijim-uploads/banner/mobile/White-blue-combo.jpg",
     "/aijim-uploads/banner/mobile/Beige-olivegreen-combo.jpg",
    ,
   ];
 
   const bannerLargeScreens = [
-    "/aijim-uploads/banner/desktop/All-five-tshirts.jpg",
-     "/aijim-uploads/banner/desktop/All-five-tshirts.jpg",
+    "/aijim-uploads/banner/desktop/merry-christmas-desktop-banner.jpeg",
+     "/aijim-uploads/banner/desktop/happy-newyear-desktop-banner.jpeg",
       "/aijim-uploads/banner/desktop/All-five-tshirts.jpg",
 
   ];
@@ -46,7 +49,7 @@ const NewHero = () => {
         loop={banners.length > 1}
         speed={1200}
         allowTouchMove={false}
-        className="w-full md:w-[70vw] lg:w-[70vw] h-full sm:mt-10  object-fill"
+        className="w-full md:w-[70vw] lg:w-[70vw] h-full sm:mt-10  object-contain"
       >
         {banners.map((img, index) => (
           <SwiperSlide key={index}>
@@ -73,7 +76,7 @@ const NewHero = () => {
       
 
       {/* Trust Messages */}
-      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 pt-1 pb-1 mt-2 md:h-8 md:pt-3 md:pb-3 flex items-center">
+      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 pt-1 pb-1 md:h-8 md:pt-3 md:pb-3 flex items-center">
         <Marquee gradient={false} speed={5} pauseOnHover className="w-full">
           {Array.from({ length: 14 }).map((_, i) => (
             <span

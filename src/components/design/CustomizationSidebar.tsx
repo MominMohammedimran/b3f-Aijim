@@ -75,196 +75,139 @@ const CustomizationSidebar: React.FC<CustomizationSidebarProps> = ({
   const variants = currentProduct?.variants || [];
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl shadow-lg p-6 space-y-6">
+    <div className="bg-gray-900 text-white border border-gray-700 rounded-2xl shadow-2xl p-6 space-y-8">
       {/* Design Tools */}
-      <div>
-        <h3 className="text-lg font-semibold text-white mb-4">Add Elements</h3>
-        <div className="grid grid-cols-3 gap-3">
-          <Button
-            variant="outline"
-            onClick={onOpenTextModal}
-            className="flex flex-col items-center gap-2 h-auto py-4 bg-transparent border-gray-700 hover:bg-blue-500/10 hover:border-blue-500 text-gray-300 hover:text-white"
-          >
-            <Type className="h-6 w-6 text-blue-400" />
-            <span className="text-xs">Text</span>
-          </Button>
-          <Button
-            variant="outline"
-            onClick={onOpenImageModal}
-            className="flex flex-col items-center gap-2 h-auto py-4 bg-transparent border-gray-700 hover:bg-green-500/10 hover:border-green-500 text-gray-300 hover:text-white"
-          >
-            <Image className="h-6 w-6 text-green-400" />
-            <span className="text-xs">Image</span>
-          </Button>
-          <Button
-            variant="outline"
-            onClick={onOpenEmojiModal}
-            className="flex flex-col items-center gap-2 h-auto py-4 bg-transparent border-gray-700 hover:bg-yellow-500/10 hover:border-yellow-500 text-gray-300 hover:text-white"
-          >
-            <Smile className="h-6 w-6 text-yellow-400" />
-            <span className="text-xs">Emoji</span>
-          </Button>
+      <div className="space-y-4">
+         <div className="grid grid-cols-3 gap-4">
+          <ToolButton icon={Type} label="Text" color="#3b82f6" onClick={onOpenTextModal} />
+          <ToolButton icon={Image} label="Image" color="#22c55e" onClick={onOpenImageModal} />
+          <ToolButton icon={Smile} label="Emoji" color="#f59e0b" onClick={onOpenEmojiModal} />
         </div>
       </div>
 
-      {/* View Selector for T-Shirt */}
-      {activeProduct === 'tshirt' && (
-        <div>
-          <h3 className="text-lg font-semibold text-white mb-3">View</h3>
-          <div className="flex gap-2">
-            <Button
-              variant={productView === 'front' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onViewChange('front')}
-              className={cn(
-                'flex-1',
-                productView === 'front' 
-                  ? 'bg-blue-600 hover:bg-blue-700' 
-                  : 'bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800'
-              )}
-            >
-              Front
-            </Button>
-            <Button
-              variant={productView === 'back' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => onViewChange('back')}
-              className={cn(
-                'flex-1',
-                productView === 'back' 
-                  ? 'bg-blue-600 hover:bg-blue-700' 
-                  : 'bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800'
-              )}
-            >
-              Back
-            </Button>
-          </div>
-          
-          {/* Dual-Sided Toggle */}
-          <div className="flex items-center justify-between mt-4 p-3 bg-gray-800 rounded-lg">
-            <Label htmlFor="dual-sided" className="text-sm font-medium text-gray-300 cursor-pointer">
-              Dual-Sided Print (+₹100)
-            </Label>
-            <Switch
-              id="dual-sided"
-              checked={isDualSided}
-              onCheckedChange={onDualSidedChange}
-            />
-          </div>
-        </div>
-      )}
+      {/* View & Sizing */}
+      <div className="space-y-6">
+        {activeProduct === 'tshirt' && (
+            <>
+            <h3 className="text-lg font-semibold">View & Sizing</h3>
+            <div className="flex gap-2 p-1 bg-gray-800 rounded-full">
+                <ToggleButton label="Front" active={productView === 'front'} onClick={() => onViewChange('front')} />
+                <ToggleButton label="Back" active={productView === 'back'} onClick={() => onViewChange('back')} />
+            </div>
+            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                <Label htmlFor="dual-sided" className="text-sm font-medium cursor-pointer">Dual-Sided Print (+₹100)</Label>
+                <Switch id="dual-sided" checked={isDualSided} onCheckedChange={onDualSidedChange} />
+            </div>
+            </>
+        )}
 
-      {/* Size Selector for Photo Frame */}
-      {activeProduct === 'photo_frame' && (
-        <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Frame Size</h3>
-          <div className="grid grid-cols-1 gap-2">
-            {['8X12inch', '12x16inch', '5x7 inch'].map((size) => (
-              <Button
-                key={size}
-                variant={productView === size ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => onViewChange(size)}
-                className={cn(
-                  'w-full',
-                  productView === size 
-                    ? 'bg-blue-600 hover:bg-blue-700' 
-                    : 'bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800'
-                )}
-              >
-                {size}
-              </Button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Size Selection */}
-      <div>
-        <h3 className="text-lg font-semibold text-white mb-3">Select Sizes</h3>
-        <div className="grid grid-cols-3 gap-2">
-          {variants.map((variant) => {
-            const isSelected = selectedSizes.includes(variant.size);
-            const isOutOfStock = variant.stock <= 0;
-            
-            return (
-              <Button
-                key={variant.size}
-                variant={isSelected ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => !isOutOfStock && onSizeToggle(variant.size)}
-                disabled={isOutOfStock}
-                className={cn(
-                  'relative',
-                  isSelected 
-                    ? 'bg-blue-600 hover:bg-blue-700' 
-                    : 'bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800',
-                  isOutOfStock && 'opacity-50 cursor-not-allowed'
-                )}
-              >
-                {variant.size}
-                {isOutOfStock && (
-                  <span className="absolute -top-1 -right-1 text-[10px] bg-red-500 text-white px-1 rounded">
-                    Out
-                  </span>
-                )}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Quantity per Size */}
-      {selectedSizes.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Quantity</h3>
-          <div className="space-y-2">
-            {selectedSizes.map((size) => (
-              <div key={size} className="flex items-center justify-between p-2 bg-gray-800 rounded-lg">
-                <span className="font-medium text-white">{size}</span>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onQuantityChangeForSize(size, Math.max(1, (quantities[size] || 1) - 1))}
-                    className="h-8 w-8 p-0 bg-transparent border-gray-600 text-white hover:bg-gray-700"
-                  >
-                    -
-                  </Button>
-                  <span className="w-8 text-center text-white">{quantities[size] || 1}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onQuantityChangeForSize(size, (quantities[size] || 1) + 1)}
-                    className="h-8 w-8 p-0 bg-transparent border-gray-600 text-white hover:bg-gray-700"
-                  >
-                    +
-                  </Button>
+        {activeProduct === 'photo_frame' && (
+            <div>
+                <h3 className="text-lg font-semibold mb-3">Frame Size</h3>
+                <div className="grid grid-cols-1 gap-2">
+                    {['8X12inch', '12x16inch', '5x7 inch'].map((size) => (
+                        <Button
+                            key={size}
+                            variant={productView === size ? 'default' : 'outline'}
+                            onClick={() => onViewChange(size)}
+                            className={cn('w-full', productView === size ? 'bg-blue-600' : 'border-gray-600')}
+                        >
+                            {size}
+                        </Button>
+                    ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+            </div>
+        )}
 
-      {/* Price & Add to Cart */}
-      <div className="border-t border-gray-700 pt-4">
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-gray-400">Total Price:</span>
-          <span className="text-2xl font-bold text-blue-400">₹{getTotalPrice()}</span>
+        <div>
+            <h3 className="text-lg font-semibold mb-3">Select Sizes</h3>
+            <div className="grid grid-cols-4 gap-3">
+                {variants.map((variant: any) => (
+                    <SizeButton 
+                        key={variant.size} 
+                        size={variant.size} 
+                        isSelected={selectedSizes.includes(variant.size)} 
+                        isOutOfStock={variant.stock <= 0} 
+                        onClick={() => onSizeToggle(variant.size)} 
+                    />
+                ))}
+            </div>
         </div>
-        
-        <Button
-          onClick={onAddToCart}
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6"
-          disabled={selectedSizes.length === 0}
+
+        {selectedSizes.length > 0 && (
+            <div>
+                <h3 className="text-lg font-semibold mb-3">Quantity</h3>
+                <div className="space-y-3">
+                    {selectedSizes.map((size) => (
+                        <QuantitySelector 
+                            key={size} 
+                            size={size} 
+                            quantity={quantities[size] || 1} 
+                            onQuantityChangeForSize={onQuantityChangeForSize} 
+                        />
+                    ))}
+                </div>
+            </div>
+        )}
+      </div>
+
+      {/* Actions & Price */}
+      <div className="border-t border-gray-700 pt-6 space-y-4">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-400 text-lg">Total:</span>
+          <span className="text-3xl font-extrabold text-transparent bg-clip-text bg-white">₹{getTotalPrice()}</span>
+        </div>
+        <Button 
+            onClick={onAddToCart} 
+            className="w-full text-lg font-bold py-6 bg-yellow-400 text-white rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300" 
+            disabled={selectedSizes.length === 0}
         >
-          <ShoppingCart className="mr-2 h-5 w-5" />
+          <ShoppingCart className="mr-3" />
           Add to Cart
         </Button>
       </div>
     </div>
   );
 };
+
+// Helper Components
+const ToolButton = ({ icon: Icon, label, color, onClick }: any) => (
+  <button onClick={onClick} className="flex flex-col items-center gap-2 p-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 transform hover:-translate-y-1" style={{'--tool-color': color} as React.CSSProperties}>
+    <Icon className="h-7 w-7" style={{ color }} />
+    <span className="text-xs font-semibold tracking-wider">{label}</span>
+  </button>
+);
+
+const ToggleButton = ({ label, active, onClick }: any) => (
+  <button onClick={onClick} className={cn('flex-1 py-2 text-sm font-semibold rounded-full transition-colors duration-300', active ? 'bg-blue-600 shadow-md' : 'bg-transparent hover:bg-gray-700')}>
+    {label}
+  </button>
+);
+
+const SizeButton = ({ size, isSelected, isOutOfStock, onClick }: any) => (
+    <button 
+        onClick={onClick} 
+        disabled={isOutOfStock} 
+        className={cn(
+            'relative rounded-lg p-2 text-sm font-semibold transition-all duration-300 transform disabled:opacity-30 disabled:cursor-not-allowed',
+            isSelected ? 'bg-blue-600 shadow-lg scale-105' : 'bg-gray-800 hover:bg-gray-700 hover:scale-105',
+            isOutOfStock && 'bg-red-900/50'
+        )}
+    >
+        {size}
+        {isOutOfStock && <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>}
+    </button>
+);
+
+const QuantitySelector = ({ size, quantity, onQuantityChangeForSize }: any) => (
+    <div className="flex items-center justify-between p-2 bg-gray-800 rounded-lg">
+        <span className="font-semibold text-sm">{size}</span>
+        <div className="flex items-center gap-3">
+            <button onClick={() => onQuantityChangeForSize(size, Math.max(1, quantity - 1))} className="h-7 w-7 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-200">-</button>
+            <span className="w-8 text-center font-bold">{quantity}</span>
+            <button onClick={() => onQuantityChangeForSize(size, quantity + 1)} className="h-7 w-7 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-200">+</button>
+        </div>
+    </div>
+);
 
 export default CustomizationSidebar;

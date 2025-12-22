@@ -30,20 +30,20 @@ const ProductSelector: React.FC<ProductSelectorProps> = ({
   return (
     <div className="mb-6">
       <h2 className="text-lg font-semibold text-white mb-3">Select Product</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         {Object.entries(products).map(([key, product]) => (
           <button
             key={key}
             onClick={() => onProductSelect(key)}
             className={cn(
-              'relative p-4 rounded-xl border-2 transition-all duration-200',
+              'relative p-1 rounded-none border-2 transition-all duration-200',
               'hover:shadow-lg hover:scale-105',
               activeProduct === key
                 ? 'border-blue-500 bg-blue-500/20 shadow-md shadow-blue-500/20'
                 : 'border-gray-700 bg-gray-900 hover:border-gray-500'
             )}
           >
-            <div className="aspect-square mb-2 rounded-lg overflow-hidden bg-gray-800">
+            <div className="aspect-square  rounded-lg overflow-hidden bg-gray-800 ">
               <img
                 src={product.image}
                 alt={product.name}
