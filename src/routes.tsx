@@ -99,6 +99,7 @@ const AppRoutes = () => {
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/customization" element={<Customization />} />
+        <Route path="/customization/:productCode" element={<Customization />} />
         <Route path="/feedback"  element={<Feedback mode='page'  />} />
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/payment-issue" element={<PaymentRelatedIssue />} />

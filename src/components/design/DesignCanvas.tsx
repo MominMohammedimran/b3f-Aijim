@@ -107,7 +107,7 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
   }, [activeProduct, productView]);
 
   return (
-    <div className="bg-gray-900 rounded-xl p-6 shadow-lg">
+    <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-lg">
       {/* Undo/Redo Controls */}
       <div className="flex justify-center gap-2 mb-4">
         <Button
@@ -115,7 +115,7 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
           size="sm"
           onClick={undo}
           disabled={undoStack.length === 0}
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800 disabled:opacity-50"
         >
           <Undo2 size={16} />
           Undo
@@ -125,7 +125,7 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
           size="sm"
           onClick={redo}
           disabled={redoStack.length === 0}
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800 disabled:opacity-50"
         >
           <Redo2 size={16} />
           Redo

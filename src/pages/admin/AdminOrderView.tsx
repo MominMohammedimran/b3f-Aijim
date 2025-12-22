@@ -149,7 +149,8 @@ const AdminOrderView = () => {
             {/* Add Download Button Below Shipping Address */}
             <OrderDesignDownload 
               items={order.items} 
-              orderNumber={order.order_number} 
+              orderNumber={order.order_number}
+              shippingAddress={order.shipping_address}
             />
           </div>
         </div>

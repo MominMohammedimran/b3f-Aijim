@@ -29,7 +29,7 @@ const ProductSelector: React.FC<ProductSelectorProps> = ({
 }) => {
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-semibold text-gray-800 mb-3">Select Product</h2>
+      <h2 className="text-lg font-semibold text-white mb-3">Select Product</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {Object.entries(products).map(([key, product]) => (
           <button
@@ -39,11 +39,11 @@ const ProductSelector: React.FC<ProductSelectorProps> = ({
               'relative p-4 rounded-xl border-2 transition-all duration-200',
               'hover:shadow-lg hover:scale-105',
               activeProduct === key
-                ? 'border-blue-500 bg-blue-50 shadow-md'
-                : 'border-gray-200 bg-white hover:border-gray-300'
+                ? 'border-blue-500 bg-blue-500/20 shadow-md shadow-blue-500/20'
+                : 'border-gray-700 bg-gray-900 hover:border-gray-500'
             )}
           >
-            <div className="aspect-square mb-2 rounded-lg overflow-hidden bg-gray-100">
+            <div className="aspect-square mb-2 rounded-lg overflow-hidden bg-gray-800">
               <img
                 src={product.image}
                 alt={product.name}
@@ -51,8 +51,8 @@ const ProductSelector: React.FC<ProductSelectorProps> = ({
               />
             </div>
             <div className="text-center">
-              <h3 className="font-medium text-gray-800 text-sm">{product.name}</h3>
-              <p className="text-blue-600 font-semibold">₹{product.price}</p>
+              <h3 className="font-medium text-white text-sm">{product.name}</h3>
+              <p className="text-blue-400 font-semibold">₹{product.price}</p>
             </div>
             
             {/* Selected indicator */}

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, Eye, Printer } from 'lucide-react';
@@ -20,8 +19,130 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
     item.name.toLowerCase().includes('printed')
   );
 
+  // Helper to render Fabric.js objects to canvas
+  const renderFabricObjects = async (
+    ctx: CanvasRenderingContext2D, 
+    objects: any[], 
+    designArea: { x: number; y: number; width: number; height: number },
+    originalCanvasSize: { width: number; height: number }
+  ): Promise<void> => {
+    const scaleX = designArea.width / originalCanvasSize.width;
+    const scaleY = designArea.height / originalCanvasSize.height;
+    const scale = Math.min(scaleX, scaleY);
+
+    for (const obj of objects) {
+      try {
+        // Skip background objects
+        if (obj.data?.isBackground) continue;
+
+        const left = designArea.x + (obj.left || 0) * scale;
+        const top = designArea.y + (obj.top || 0) * scale;
+
+        if (obj.type === 'text' || obj.type === 'i-text' || obj.type === 'textbox') {
+          // Render text elements (including emojis as text)
+          const fontSize = Math.max(12, (obj.fontSize || 24) * scale);
+          const fontFamily = obj.fontFamily || 'Arial';
+          const fontWeight = obj.fontWeight || 'normal';
+          const fontStyle = obj.fontStyle || 'normal';
+          
+          ctx.save();
+          ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
+          
+          // Handle text color - ensure visibility on white background
+          let fillColor = obj.fill || '#000000';
+          if (fillColor.toLowerCase() === '#ffffff' || fillColor.toLowerCase() === 'white' || fillColor === 'rgb(255,255,255)') {
+            fillColor = '#333333';
+          }
+          ctx.fillStyle = fillColor;
+          
+          // Handle rotation
+          if (obj.angle) {
+            const centerX = left + ((obj.width || 100) * scale * (obj.scaleX || 1)) / 2;
+            const centerY = top + ((obj.height || 20) * scale * (obj.scaleY || 1)) / 2;
+            ctx.translate(centerX, centerY);
+            ctx.rotate((obj.angle * Math.PI) / 180);
+            ctx.translate(-centerX, -centerY);
+          }
+          
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'top';
+          
+          // Render text with proper underline if needed
+          const text = obj.text || '';
+          ctx.fillText(text, left, top);
+          
+          if (obj.underline) {
+            const textWidth = ctx.measureText(text).width;
+            ctx.beginPath();
+            ctx.moveTo(left, top + fontSize + 2);
+            ctx.lineTo(left + textWidth, top + fontSize + 2);
+            ctx.strokeStyle = fillColor;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+          
+          ctx.restore();
+        } else if (obj.type === 'image') {
+          // Render image elements
+          if (obj.src) {
+            await new Promise<void>((resolve) => {
+              const img = new Image();
+              img.crossOrigin = 'anonymous';
+              
+              img.onload = () => {
+                ctx.save();
+                
+                const imgWidth = (obj.width || img.width) * scale * (obj.scaleX || 1);
+                const imgHeight = (obj.height || img.height) * scale * (obj.scaleY || 1);
+                
+                // Handle rotation
+                if (obj.angle) {
+                  const centerX = left + imgWidth / 2;
+                  const centerY = top + imgHeight / 2;
+                  ctx.translate(centerX, centerY);
+                  ctx.rotate((obj.angle * Math.PI) / 180);
+                  ctx.translate(-centerX, -centerY);
+                }
+                
+                ctx.drawImage(img, left, top, imgWidth, imgHeight);
+                ctx.restore();
+                resolve();
+              };
+              
+              img.onerror = () => {
+                console.warn('Failed to load image:', obj.src?.substring(0, 50));
+                resolve();
+              };
+              
+              img.src = obj.src;
+            });
+          }
+        } else if (obj.type === 'circle') {
+          // Render circle/emoji shapes
+          ctx.save();
+          ctx.beginPath();
+          const radius = (obj.radius || 25) * scale;
+          ctx.arc(left + radius, top + radius, radius, 0, 2 * Math.PI);
+          ctx.fillStyle = obj.fill || '#FFFF00';
+          ctx.fill();
+          ctx.restore();
+        } else if (obj.type === 'rect') {
+          // Render rectangle shapes
+          ctx.save();
+          const width = (obj.width || 100) * scale * (obj.scaleX || 1);
+          const height = (obj.height || 100) * scale * (obj.scaleY || 1);
+          ctx.fillStyle = obj.fill || '#000000';
+          ctx.fillRect(left, top, width, height);
+          ctx.restore();
+        }
+      } catch (objError) {
+        console.warn('Error rendering object:', objError);
+      }
+    }
+  };
+
   const createPrintReadyImage = async (item: any, side: 'front' | 'back' = 'front'): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -35,11 +156,11 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
           return;
         }
 
-        // ENSURE WHITE BACKGROUND - Fill entire canvas with white
+        // ENSURE WHITE BACKGROUND
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Add print guidelines with light gray
+        // Add print guidelines
         ctx.strokeStyle = '#E5E7EB';
         ctx.lineWidth = 2;
         ctx.setLineDash([10, 5]);
@@ -49,19 +170,18 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
         // Product template area
         const templateArea = {
           x: canvas.width * 0.2,
-          y: canvas.height * 0.15,
+          y: canvas.height * 0.1,
           width: canvas.width * 0.6,
-          height: canvas.height * 0.6
+          height: canvas.height * 0.65
         };
 
-        // Draw product template based on type with light gray
+        // Draw product template based on type
         ctx.strokeStyle = '#D1D5DB';
         ctx.lineWidth = 3;
         
         const productName = item.name?.toLowerCase() || '';
         
         if (productName.includes('t-shirt') || productName.includes('tshirt')) {
-          // T-shirt outline
           ctx.beginPath();
           ctx.moveTo(templateArea.x + templateArea.width * 0.3, templateArea.y);
           ctx.lineTo(templateArea.x + templateArea.width * 0.7, templateArea.y);
@@ -85,12 +205,12 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
           ctx.strokeRect(templateArea.x, templateArea.y, templateArea.width, templateArea.height);
         }
 
-        // Design area boundary with blue color
+        // Design area boundary
         const designArea = {
-          x: templateArea.x + templateArea.width * 0.15,
-          y: templateArea.y + templateArea.height * 0.2,
-          width: templateArea.width * 0.7,
-          height: templateArea.height * 0.5
+          x: templateArea.x + templateArea.width * 0.1,
+          y: templateArea.y + templateArea.height * 0.15,
+          width: templateArea.width * 0.8,
+          height: templateArea.height * 0.6
         };
 
         ctx.strokeStyle = '#3B82F6';
@@ -99,204 +219,109 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
         ctx.strokeRect(designArea.x, designArea.y, designArea.width, designArea.height);
         ctx.setLineDash([]);
 
-        // Add white background specifically for design area
+        // White background for design area
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(designArea.x, designArea.y, designArea.width, designArea.height);
 
-        const finishCanvas = () => {
-          // Add order information with dark text on white background
-          ctx.fillStyle = '#1F2937';
-          ctx.font = 'bold 36px Arial';
-          ctx.textAlign = 'center';
-          ctx.fillText(`Order: ${orderNumber}`, canvas.width / 2, canvas.height - 300);
-          
-          ctx.font = '28px Arial';
-          ctx.fillText(`Product: ${item.name}`, canvas.width / 2, canvas.height - 250);
-          ctx.fillText(`Side: ${side.charAt(0).toUpperCase() + side.slice(1)}`, canvas.width / 2, canvas.height - 200);
-          
-          if (item.sizes && item.sizes.length > 0) {
-            ctx.fillText(`Sizes: ${item.sizes.map((s: any) => `${s.size}(${s.quantity})`).join(', ')}`, canvas.width / 2, canvas.height - 150);
-          }
-
-          // Add shipping address if available
-          if (shippingAddress) {
-            ctx.font = '20px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText('Shipping Address:', 100, canvas.height - 100);
-            ctx.font = '16px Arial';
-            let yPos = canvas.height - 70;
-            
-            if (shippingAddress.fullName || (shippingAddress.firstName && shippingAddress.lastName)) {
-              ctx.fillText(`Name: ${shippingAddress.fullName || `${shippingAddress.firstName} ${shippingAddress.lastName}`}`, 100, yPos);
-              yPos += 25;
-            }
-            if (shippingAddress.addressLine1 || shippingAddress.street) {
-              ctx.fillText(`Address: ${shippingAddress.addressLine1 || shippingAddress.street}`, 100, yPos);
-              yPos += 25;
-            }
-            if (shippingAddress.city && shippingAddress.state) {
-              ctx.fillText(`City: ${shippingAddress.city}, State: ${shippingAddress.state}`, 100, yPos);
-              yPos += 25;
-            }
-            if (shippingAddress.postalCode || shippingAddress.zipCode) {
-              ctx.fillText(`Pincode: ${shippingAddress.postalCode || shippingAddress.zipCode}`, 100, yPos);
-              yPos += 25;
-            }
-            if (shippingAddress.phone) {
-              ctx.fillText(`Phone: ${shippingAddress.phone}`, 100, yPos);
-            }
-          }
-
-          const dataUrl = canvas.toDataURL('image/png', 1.0);
-          resolve(dataUrl);
-        };
-
-        // Process design data or use preview image
+        // Process design data - Fabric.js format
         if (item.metadata?.designData) {
           try {
             const designData = typeof item.metadata.designData === 'string' 
               ? JSON.parse(item.metadata.designData) 
               : item.metadata.designData;
             
-            if (designData.elements && Array.isArray(designData.elements)) {
-              const elementsToRender = designData.elements.filter((element: any) => 
-                element.visible !== false
-              );
+            // Fabric.js stores objects in the 'objects' array
+            if (designData.objects && Array.isArray(designData.objects)) {
+              const originalCanvasSize = {
+                width: designData.width || 320,
+                height: designData.height || 380
+              };
               
-              let elementsProcessed = 0;
-              const totalElements = elementsToRender.length;
-              
-              if (totalElements === 0) {
-                finishCanvas();
-                return;
-              }
-              
-              elementsToRender.forEach((element: any) => {
-                if (element.type === 'text') {
-                  // Render text with proper scaling and ensure it's visible on white background
-                  const fontSize = Math.max(24, (element.fontSize || 24) * 3);
-                  ctx.font = `${element.fontWeight || 'normal'} ${fontSize}px ${element.fontFamily || 'Arial'}`;
-                  
-                  // Ensure text color is visible on white background
-                  let textColor = element.fill || '#000000';
-                  if (textColor.toLowerCase() === '#ffffff' || textColor.toLowerCase() === 'white') {
-                    textColor = '#000000'; // Change white text to black for visibility
-                  }
-                  ctx.fillStyle = textColor;
-                  
-                  ctx.textAlign = 'left';
-                  ctx.textBaseline = 'top';
-                  
-                  const x = designArea.x + (element.left || 0) * 2.5;
-                  const y = designArea.y + (element.top || 0) * 2.5;
-                  
-                  // Add text shadow for better visibility if needed
-                  if (element.shadow) {
-                    ctx.shadowColor = element.shadow.color || '#000000';
-                    ctx.shadowOffsetX = (element.shadow.offsetX || 2) * 2;
-                    ctx.shadowOffsetY = (element.shadow.offsetY || 2) * 2;
-                    ctx.shadowBlur = (element.shadow.blur || 4) * 2;
-                  }
-                  
-                  ctx.fillText(element.text || '', x, y);
-                  ctx.shadowColor = 'transparent';
-                  
-                  elementsProcessed++;
-                  if (elementsProcessed === totalElements) {
-                    finishCanvas();
-                  }
-                } else if (element.type === 'image') {
-                  if (element.src) {
-                    const img = new Image();
-                    img.crossOrigin = 'anonymous';
-                    
-                    img.onload = () => {
-                      const x = designArea.x + (element.left || 0) * 2.5;
-                      const y = designArea.y + (element.top || 0) * 2.5;
-                      const width = (element.width || 100) * 2.5;
-                      const height = (element.height || 100) * 2.5;
-                      
-                      // Ensure image stays within design area
-                      const maxWidth = Math.min(width, designArea.width - (x - designArea.x));
-                      const maxHeight = Math.min(height, designArea.height - (y - designArea.y));
-                      
-                      // Add white background behind image if it has transparency
-                      ctx.fillStyle = '#FFFFFF';
-                      ctx.fillRect(x, y, maxWidth, maxHeight);
-                      
-                      ctx.drawImage(img, x, y, maxWidth, maxHeight);
-                      
-                      elementsProcessed++;
-                      if (elementsProcessed === totalElements) {
-                        finishCanvas();
-                      }
-                    };
-                    
-                    img.onerror = () => {
-                     // console.warn('Failed to load image:', element.src);
-                      elementsProcessed++;
-                      if (elementsProcessed === totalElements) {
-                        finishCanvas();
-                      }
-                    };
-                    
-                    img.src = element.src;
-                  } else {
-                    elementsProcessed++;
-                    if (elementsProcessed === totalElements) {
-                      finishCanvas();
-                    }
-                  }
-                } else {
-                  elementsProcessed++;
-                  if (elementsProcessed === totalElements) {
-                    finishCanvas();
-                  }
-                }
-              });
-            } else {
-              finishCanvas();
+              await renderFabricObjects(ctx, designData.objects, designArea, originalCanvasSize);
             }
           } catch (error) {
-            //console.error('Error processing design data:', error);
-            finishCanvas();
+            console.warn('Error processing Fabric.js design data:', error);
           }
-        } else {
-          // Use preview image as fallback
-          let imageUrl = side === 'back' ? item.metadata?.backImage : item.metadata?.previewImage;
-          
-          if (imageUrl) {
+        }
+        
+        // Also draw preview image if available (as overlay or fallback)
+        const imageUrl = side === 'back' ? item.metadata?.backImage : item.metadata?.previewImage;
+        
+        if (imageUrl) {
+          await new Promise<void>((resolve) => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             
             img.onload = () => {
-              const scaleX = designArea.width / img.width;
-              const scaleY = designArea.height / img.height;
-              const scale = Math.min(scaleX, scaleY, 1);
+              // If we already rendered objects, use preview as secondary reference
+              // Otherwise, use it as primary design
+              const hasDesignData = item.metadata?.designData?.objects?.length > 0;
               
-              const drawWidth = img.width * scale;
-              const drawHeight = img.height * scale;
-              const drawX = designArea.x + (designArea.width - drawWidth) / 2;
-              const drawY = designArea.y + (designArea.height - drawHeight) / 2;
-              
-              // Ensure white background behind image
-              ctx.fillStyle = '#FFFFFF';
-              ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
-              
-              ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-              finishCanvas();
+              if (!hasDesignData) {
+                const scaleX = designArea.width / img.width;
+                const scaleY = designArea.height / img.height;
+                const scale = Math.min(scaleX, scaleY, 1);
+                
+                const drawWidth = img.width * scale;
+                const drawHeight = img.height * scale;
+                const drawX = designArea.x + (designArea.width - drawWidth) / 2;
+                const drawY = designArea.y + (designArea.height - drawHeight) / 2;
+                
+                ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+              }
+              resolve();
             };
             
-            img.onerror = () => {
-             // console.warn('Failed to load preview image');
-              finishCanvas();
-            };
-            
+            img.onerror = () => resolve();
             img.src = imageUrl;
-          } else {
-            finishCanvas();
+          });
+        }
+
+        // Add order information
+        ctx.fillStyle = '#1F2937';
+        ctx.font = 'bold 36px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Order: ${orderNumber}`, canvas.width / 2, canvas.height - 320);
+        
+        ctx.font = '28px Arial';
+        ctx.fillText(`Product: ${item.name}`, canvas.width / 2, canvas.height - 270);
+        ctx.fillText(`Side: ${side.charAt(0).toUpperCase() + side.slice(1)}`, canvas.width / 2, canvas.height - 220);
+        
+        if (item.sizes && item.sizes.length > 0) {
+          ctx.fillText(`Sizes: ${item.sizes.map((s: any) => `${s.size}(${s.quantity})`).join(', ')}`, canvas.width / 2, canvas.height - 170);
+        }
+
+        // Add shipping address if available
+        if (shippingAddress) {
+          ctx.font = 'bold 24px Arial';
+          ctx.textAlign = 'left';
+          ctx.fillText('Shipping Address:', 100, canvas.height - 120);
+          ctx.font = '20px Arial';
+          let yPos = canvas.height - 90;
+          
+          if (shippingAddress.fullName || (shippingAddress.firstName && shippingAddress.lastName)) {
+            ctx.fillText(`Name: ${shippingAddress.fullName || `${shippingAddress.firstName} ${shippingAddress.lastName}`}`, 100, yPos);
+            yPos += 25;
+          }
+          if (shippingAddress.name) {
+            ctx.fillText(`Name: ${shippingAddress.name}`, 100, yPos);
+            yPos += 25;
+          }
+          if (shippingAddress.addressLine1 || shippingAddress.street || shippingAddress.address) {
+            ctx.fillText(`Address: ${shippingAddress.addressLine1 || shippingAddress.street || shippingAddress.address}`, 100, yPos);
+            yPos += 25;
+          }
+          if (shippingAddress.city && shippingAddress.state) {
+            ctx.fillText(`${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.postalCode || shippingAddress.zipCode || shippingAddress.zip_code || ''}`, 100, yPos);
+            yPos += 25;
+          }
+          if (shippingAddress.phone) {
+            ctx.fillText(`Phone: ${shippingAddress.phone}`, 100, yPos);
           }
         }
+
+        const dataUrl = canvas.toDataURL('image/png', 1.0);
+        resolve(dataUrl);
         
       } catch (error) {
         reject(error);
@@ -304,54 +329,87 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
     });
   };
 
+  // Download just the raw design (without template)
+  const downloadRawDesign = async (item: any, side: 'front' | 'back' = 'front') => {
+    try {
+      const imageUrl = side === 'back' ? item.metadata?.backImage : item.metadata?.previewImage;
+      
+      if (imageUrl) {
+        // If it's a data URL, download directly
+        const link = document.createElement('a');
+        link.download = `${orderNumber}-${item.name.replace(/[^a-zA-Z0-9]/g, '_')}-${side}-RAW.png`;
+        link.href = imageUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        toast.success('Raw design image downloaded!');
+      } else {
+        toast.error('No raw design image available');
+      }
+    } catch (error) {
+      console.error('Error downloading raw design:', error);
+      toast.error('Failed to download raw design');
+    }
+  };
+
   const downloadDesign = async (item: any, side: 'front' | 'back' = 'front') => {
     try {
       toast.info('Generating print-ready file...', {
-        description: 'Creating high-resolution template with design preview'
+        description: 'Creating high-resolution template with design'
       });
 
       const printReadyImage = await createPrintReadyImage(item, side);
       
       const link = document.createElement('a');
-      link.download = `${orderNumber}-${item.name.replace(/[^a-zA-Z0-9]/g, '_')}-${side}-DESIGN_PREVIEW.png`;
+      link.download = `${orderNumber}-${item.name.replace(/[^a-zA-Z0-9]/g, '_')}-${side}-PRINT.png`;
       link.href = printReadyImage;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      toast.success('Design preview downloaded!', {
-        description: 'High-resolution template with shipping details ready'
+      toast.success('Design downloaded!', {
+        description: 'Print-ready template with design elements'
       });
     } catch (error) {
-    //  console.error('Error creating design preview:', error);
+      console.error('Error creating design preview:', error);
       toast.error('Failed to create design preview');
     }
   };
 
   const downloadAllDesigns = async () => {
     try {
-      toast.info('Generating all design previews...', {
+      toast.info('Generating all designs...', {
         description: 'This may take a moment'
       });
 
       for (let i = 0; i < designItems.length; i++) {
         const item = designItems[i];
         
+        // Download print-ready version
         await downloadDesign(item, 'front');
         
+        // Also download raw design
+        if (item.metadata?.previewImage) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          await downloadRawDesign(item, 'front');
+        }
+        
+        // Download back if dual-sided
         if (item.metadata?.backImage) {
           await new Promise(resolve => setTimeout(resolve, 1000));
           await downloadDesign(item, 'back');
+          await new Promise(resolve => setTimeout(resolve, 500));
+          await downloadRawDesign(item, 'back');
         }
         
         if (i < designItems.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 1500));
         }
       }
       
-      toast.success(`Downloaded ${designItems.length} design previews!`);
+      toast.success(`Downloaded all designs!`);
     } catch (error) {
-      //console.error('Error downloading all designs:', error);
+      console.error('Error downloading all designs:', error);
       toast.error('Failed to download all files');
     }
   };
@@ -376,7 +434,7 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
         >
           <Download className="h-4 w-4 mr-2" />
           <Printer className="h-4 w-4 mr-1" />
-          Download All Designs ({designItems.length})
+          Download All ({designItems.length})
         </Button>
       </div>
       
@@ -388,7 +446,7 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
               <div className="flex items-center space-x-1 text-xs text-blue-600">
                 {item.sizes && item.sizes.length > 0 && (
                   <span className="bg-blue-100 px-2 py-1 rounded">
-                    Sizes: {item.sizes.map((s: any) => `${s.size}(${s.quantity})`).join(', ')}
+                    {item.sizes.map((s: any) => `${s.size}(${s.quantity})`).join(', ')}
                   </span>
                 )}
                 {item.metadata?.view && <span className="bg-blue-100 px-2 py-1 rounded">{item.metadata.view}</span>}
@@ -396,40 +454,63 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
             </div>
             
             <div className="flex gap-2 flex-wrap">
-              {(item.metadata?.previewImage || item.metadata?.designData) && (
+              {/* Print-ready download */}
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => downloadDesign(item, 'front')}
+                className="bg-white hover:bg-blue-50 border-blue-200"
+              >
+                <Printer className="h-3 w-3 mr-1" />
+                Print Template
+              </Button>
+              
+              {/* Raw design download */}
+              {item.metadata?.previewImage && (
                 <>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => downloadDesign(item, 'front')}
-                    className="bg-white hover:bg-blue-50 border-blue-200"
+                    onClick={() => downloadRawDesign(item, 'front')}
+                    className="bg-white hover:bg-green-50 border-green-200"
                   >
                     <Download className="h-3 w-3 mr-1" />
-                    Download Design
+                    Raw Design
                   </Button>
-                  {item.metadata?.previewImage && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => viewDesign(item.metadata.previewImage)}
-                      className="bg-white hover:bg-blue-50 border-blue-200"
-                    >
-                      <Eye className="h-3 w-3 mr-1" />
-                      Preview
-                    </Button>
-                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => viewDesign(item.metadata.previewImage)}
+                    className="bg-white hover:bg-purple-50 border-purple-200"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    Preview
+                  </Button>
                 </>
               )}
+              
+              {/* Back design for dual-sided */}
               {item.metadata?.backImage && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => downloadDesign(item, 'back')}
-                  className="bg-white hover:bg-blue-50 border-blue-200"
-                >
-                  <Download className="h-3 w-3 mr-1" />
-                  Download Back
-                </Button>
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => downloadDesign(item, 'back')}
+                    className="bg-white hover:bg-orange-50 border-orange-200"
+                  >
+                    <Printer className="h-3 w-3 mr-1" />
+                    Back Template
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => downloadRawDesign(item, 'back')}
+                    className="bg-white hover:bg-orange-50 border-orange-200"
+                  >
+                    <Download className="h-3 w-3 mr-1" />
+                    Back Raw
+                  </Button>
+                </>
               )}
             </div>
           </div>
@@ -437,7 +518,8 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
       </div>
       
       <div className="mt-3 p-2 bg-yellow-50 rounded text-xs text-yellow-800">
-        💡 Design previews include product templates, design elements, shipping address, and high-resolution output for production.
+        💡 <strong>Print Template:</strong> High-resolution with product outline, design placement, and order details. 
+        <strong> Raw Design:</strong> Just the user's design as they created it.
       </div>
     </div>
   );

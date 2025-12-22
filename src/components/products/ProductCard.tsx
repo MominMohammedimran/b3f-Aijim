@@ -1,16 +1,30 @@
-
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Product } from '../../lib/types';
 import { formatPrice } from '@/lib/utils';
+import { isCustomizableProduct } from '@/lib/designProducts';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const navigate = useNavigate();
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Check if product code indicates customizable product
+    if (product.code && isCustomizableProduct(product.code)) {
+      e.preventDefault();
+      navigate(`/customization/${product.code}`);
+    }
+  };
+
+  const linkPath = product.code && isCustomizableProduct(product.code) 
+    ? `/customization/${product.code}` 
+    : `/products/${product.id}`;
+
   return (
-    <Link to={`/products/${product.id}`} className="group">
+    <Link to={linkPath} className="group" onClick={handleClick}>
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
         <div className="aspect-square overflow-hidden">
           <img

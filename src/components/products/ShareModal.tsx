@@ -14,7 +14,7 @@ import { toast } from "sonner";
 interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
-  product: Product;
+  product: Pick<Product, 'name' | 'price' | 'image'> & Partial<Product>;
 }
 
 const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, product }) => {
