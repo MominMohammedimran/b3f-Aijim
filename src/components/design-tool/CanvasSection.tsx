@@ -16,13 +16,17 @@ interface CanvasSectionProps {
   fabricCanvasRef: React.RefObject<any>;
   setDesignComplete: (complete: any) => void;
   designComplete: any;
-  checkDesignStatus: () => void;
+  checkDesignStatus: () => boolean;
   undo: () => void;
   redo: () => void;
   handleClearCanvas: () => void;
   handleRemoveSelected: () => void;
   setShowShareModal: (show: boolean) => void;
   isDualSided: boolean;
+  undoStack: any[];
+  redoStack: any[];
+  setUndoStack: (stack: any[]) => void;
+  setRedoStack: (stack: any[]) => void;
 }
 
 const CanvasSection: React.FC<CanvasSectionProps> = ({
@@ -43,6 +47,10 @@ const CanvasSection: React.FC<CanvasSectionProps> = ({
   handleRemoveSelected,
   setShowShareModal,
   isDualSided,
+  undoStack,
+  redoStack,
+  setUndoStack,
+  setRedoStack,
 }) => {
   return (
     <div className="md:col-span-2 justify-items-center">
@@ -57,6 +65,14 @@ const CanvasSection: React.FC<CanvasSectionProps> = ({
         fabricCanvasRef={fabricCanvasRef}
         setDesignComplete={setDesignComplete}
         designComplete={designComplete}
+        checkDesignStatus={checkDesignStatus}
+        undo={undo}
+        redo={redo}
+        clearCanvas={handleClearCanvas}
+        undoStack={undoStack}
+        redoStack={redoStack}
+        setUndoStack={setUndoStack}
+        setRedoStack={setRedoStack}
       />
 
       <CanvasActionButtons

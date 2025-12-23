@@ -1,9 +1,9 @@
 
 import React, { useEffect } from 'react';
-import { fabric } from 'fabric';
+import { Canvas as FabricCanvas } from 'fabric';
 
 interface BoundaryRestrictorProps {
-  canvas: fabric.Canvas | null;
+  canvas: FabricCanvas | null;
   boundaryId: string;
 }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import Layout from '@/components/layout/Layout';
@@ -17,11 +17,27 @@ import DesignActionButtons from '@/components/design/DesignActionButtons';
 import DualSidedIndicator from '@/components/design/DualSidedIndicator';
 import DesignLoading from '@/components/design/DesignLoading';
 import { useDesignCanvas } from '@/hooks/useDesignCanvas';
-import { useDesignToolInventory } from '@/hooks/useDesignToolInventory';
-import { useDesignProducts } from '@/hooks/useDesignProducts';
 import { validateObjectsWithinBoundary, moveObjectsIntoBoundary } from '@/components/design/BoundaryValidator';
 import { useActiveProduct } from '@/context/ActiveProductContext';
-import { getDesignProducts } from '@/lib/designProducts';
+import { supabase } from '@/integrations/supabase/client';
+
+interface ProductVariant {
+  size: string;
+  stock: number;
+}
+
+interface DesignProduct {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  code: string;
+  variants: ProductVariant[];
+}
+
+interface ProductsMap {
+  [key: string]: DesignProduct;
+}
 
 const DesignTool = () => {
   const navigate = useNavigate();
@@ -36,13 +52,77 @@ const DesignTool = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [isDualSided, setIsDualSided] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [products, setProducts] = useState<ProductsMap>({});
+  const [productsLoading, setProductsLoading] = useState(true);
+  const [sizeInventory, setSizeInventory] = useState<Record<string, Record<string, number>>>({});
 
   const { currentUser } = useAuth();
   const { addToCart } = useCart();
-  const { sizeInventory, fetchProductInventory, updateInventory } = useDesignToolInventory();
-  const { products: apiProducts, loading: productsLoading } = useDesignProducts();
- 
-  const products = getDesignProducts(sizeInventory);
+
+  // Fetch products directly from Supabase
+  const fetchProducts = useCallback(async () => {
+    try {
+      setProductsLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, name, price, image, code, variants, sizes, stock')
+        .ilike('code', '%CUSTOM%');
+
+      if (error) throw error;
+
+      const productsMap: ProductsMap = {};
+      const inventoryMap: Record<string, Record<string, number>> = {};
+
+      data?.forEach((product) => {
+        // Determine product key from code
+        let productKey = '';
+        const code = product.code?.toUpperCase() || '';
+        if (code.includes('TSHIRT')) productKey = 'tshirt';
+        else if (code.includes('MUG')) productKey = 'mug';
+        else if (code.includes('CAP')) productKey = 'cap';
+        else if (code.includes('PHOTO_FRAME')) productKey = 'photo_frame';
+        else return;
+
+        // Parse variants
+        let variants: ProductVariant[] = [];
+        if (Array.isArray(product.variants)) {
+          variants = (product.variants as any[])
+            .filter(v => v && typeof v === 'object')
+            .map(v => ({
+              size: String(v.size || ''),
+              stock: Number(v.stock) || 0
+            }));
+        }
+
+        productsMap[productKey] = {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image || '/placeholder.svg',
+          code: product.code,
+          variants
+        };
+
+        // Build inventory map
+        inventoryMap[productKey] = {};
+        variants.forEach(v => {
+          inventoryMap[productKey][v.size.toLowerCase()] = v.stock;
+        });
+      });
+
+      setProducts(productsMap);
+      setSizeInventory(inventoryMap);
+    } catch (err) {
+      console.error('Error fetching design products:', err);
+      toast.error('Failed to load products');
+    } finally {
+      setProductsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const {
     canvas,
@@ -87,9 +167,7 @@ const DesignTool = () => {
     }
   }, [params.productCode, setActiveProduct]);
 
-  useEffect(() => {
-    fetchProductInventory();
-  }, []);
+  // Products are fetched via fetchProducts useCallback
 
   const handleProductChange = (productId: string) => {
     if (products[productId]) {
@@ -311,9 +389,7 @@ const DesignTool = () => {
      
       await addToCart(customProduct);
      
-      for (const size of selectedSizes) {
-        await updateInventory(activeProduct, size, -(quantities[size] || 1));
-      }
+      // Inventory update handled by order processing
       
       toast.success("Added to cart", { description: `Design added to cart for ${selectedSizes.length} size${selectedSizes.length > 1 ? 's' : ''}` });
       setTimeout(() => navigate('/cart'), 1000);
