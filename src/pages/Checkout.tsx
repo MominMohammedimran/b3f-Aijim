@@ -75,7 +75,7 @@ const Checkout: React.FC = () => {
   const seo = useSEO('/checkout');
   const { currentUser } = useAuth();
   const { currentLocation } = useLocationContext();
-  const { cartItems, totalPrice } = useCart();
+  const { cartItems, totalPrice,totalPricePrinting } = useCart();
   const { settings: deliverySettings } = useDeliverySettings();
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
 
@@ -103,7 +103,7 @@ const Checkout: React.FC = () => {
   const [editingAddress, setEditingAddress] = useState<any>(null);
 
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number }>({ code: '', discount: 0 });
- const [appliedPoints, setAppliedPoints] = useState<{ points: number; discount: number } | null>(null);
+ const [appliedPoints, setAppliedPoints] = useState<{ points: number; discount: number }>({ points: 0, discount: 0 });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -282,11 +282,12 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const subtotal = totalPrice;
+  const subtotal = totalPrice||0+totalPricePrinting||0;;
   const couponDiscount = appliedCoupon.discount;
 const pointsDiscount = appliedPoints?.discount || 0;
 const totalDiscount = couponDiscount + pointsDiscount;
-const finalTotal = Math.max(0, totalPrice - totalDiscount + deliveryFee); 
+const finalTotal = Math.max(0, (totalPrice||0+totalPricePrinting||0) - totalDiscount + deliveryFee); 
+
 
   return (
     <Layout>

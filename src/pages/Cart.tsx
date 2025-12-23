@@ -30,6 +30,7 @@ const Cart = () => {
     totalPrice,
     removeFromCart,
     removeSizeFromCart,
+     totalPricePrinting,
     clearCart,
     loading,
   } = useCart();
@@ -54,8 +55,9 @@ const Cart = () => {
   const { settings: deliverySettings, loading: settingsLoading } =
     useDeliverySettings();
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
-
-  const finalTotal = totalPrice + deliveryFee;
+const totalItemPrice=totalPrice||0+totalPricePrinting||0;
+  const finalTotal = totalPrice ||0+totalPricePrinting||0+ deliveryFee;
+ 
 
   // Fetch product stocks for all cart items
   const fetchProductStocks = React.useCallback(async () => {
@@ -403,7 +405,7 @@ const Cart = () => {
                     Subtotal
                   </span>
                   <span className="font-semibold text-md">
-                    {formatPrice(totalPrice)}
+                    {formatPrice(totalItemPrice)}
                   </span>
                 </div>
                 <div className="flex justify-between">

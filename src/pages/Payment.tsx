@@ -27,7 +27,7 @@ const Payment = () => {
   const location = useLocation();
   
   const { currentUser, userProfile } = useAuth();
-  const { cartItems, totalPrice, clearCart, removeSizeFromCart, removeFromCart } = useCart();
+  const { cartItems, totalPrice, clearCart, removeSizeFromCart, removeFromCart,totalPricePrinting } = useCart();
   const [loading, setLoading] = useState(false);
   
   const { settings: deliverySettings, loading: settingsLoading, refetch: refetchSettings } = useDeliverySettings();
@@ -40,7 +40,7 @@ const Payment = () => {
   const rewardPointsDiscount = rewardPointsUsed;
   const couponDiscount = appliedCoupon?.discount || 0;
 
-  const finalTotal = Math.max(0, totalPrice + deliveryFee - rewardPointsDiscount - couponDiscount);
+  const finalTotal = Math.max(0, totalPrice+totalPricePrinting + deliveryFee - rewardPointsDiscount - couponDiscount);
 
   useEffect(() => {
     if (!currentUser || !cartItems.length || !shippingAddress) {
@@ -128,7 +128,7 @@ const Payment = () => {
                       </span>
                           </div>
                   )}
-                  {rewardPointsUsed > 0 && (
+               
                     <div className="flex justify-between items-center">
                       <span className="text-gray-200 font-medium tracking-[2px]">Reward Points Used - {' '}
                          <span className="text-yellow-300 text-md font-medium underline">
@@ -136,7 +136,7 @@ const Payment = () => {
                       {rewardPointsUsed}</span></span>
 
                     </div>
-                  )}
+                
                 </div>
               </div>
             )}

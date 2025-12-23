@@ -39,6 +39,7 @@ export interface CartContextType {
   getTotalItems: () => number;
   getCartCount: () => number;
   totalPrice: number;
+  totalPricePrinting:number;
   loading: boolean;
 }
 
@@ -360,24 +361,41 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }
   };
 
-  const calculateGlobalOfferTotal = (cartItems: { sizes: { quantity: number }[] }[]) => {
-  // Get global total quantity across all items & sizes
-  const totalQty = cartItems.reduce((sum, item) => {
-    const itemQty = item.sizes.reduce((s, sz) => s + sz.quantity, 0);
-    return sum + itemQty;
-  }, 0);
+  const calculateGlobalOfferTotal = (
+    cartItems: { name: string; sizes: { quantity: number }[] }[]
+  ) => {
+    // Count qty ONLY for NON-custom items
+    const totalQty = cartItems.reduce((sum, item) => {
+      if (item.name.toLowerCase().includes("custom")) return sum;
+  
+      const itemQty = item.sizes.reduce((s, sz) => s + sz.quantity, 0);
+      return sum + itemQty;
+    }, 0);
+  
+    // Offer logic: ANY 2 = 1000, leftover = 548
+    const pairs = Math.floor(totalQty / 2);
+    const remainder = totalQty % 2;
+  
+    return pairs * 1000 + (remainder ? 548 : 0);
+  };
+  
 
-  // Offer logic: ANY 2 = 1000, leftover = 549
-  const pairs = Math.floor(totalQty / 2);
-  const remainder = totalQty % 2;
+  const getTotalPricePrinting = () => {
+    return cartItems.reduce((total, item) => {
+      if (!item.name.toLowerCase().includes("custom")) return total;
+  
+      const itemTotal = item.sizes.reduce(
+        (sum, size) => sum + size.quantity * item.price,
+        0
+      );
+  
+      return total + itemTotal;
+    }, 0);
+  };
+  
 
-  return pairs * 1000 + (remainder ? 548 : 0);
-};
-
-// Use this in your checkout
+  // Use this in your checkout
 const getTotalPrice = () => calculateGlobalOfferTotal(cartItems);
-
-
   {/*const getTotalPrice = () => {
     
     return cartItems.reduce((total, item) => {
@@ -388,6 +406,7 @@ const getTotalPrice = () => calculateGlobalOfferTotal(cartItems);
       return total + itemTotal;
     }, 0);
   };*/}
+  const totalPricePrinting = getTotalPricePrinting();
   const getTotalItems = () => {
     return cartItems.reduce((total, item) => {
       return total + item.sizes.reduce((sum, size) => sum + size.quantity, 0);
@@ -409,6 +428,7 @@ const getTotalPrice = () => calculateGlobalOfferTotal(cartItems);
     updateSizeQuantity,
     clearCart,
     getTotalPrice,
+    totalPricePrinting,
     getTotalItems,
     getCartCount,
     totalPrice,

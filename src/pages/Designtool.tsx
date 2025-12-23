@@ -307,20 +307,76 @@ const DesignTool = () => {
     return validateObjectsWithinBoundary(canvas, boundaryId);
   };
 
-  const generateDesignPreview = () => {
-    if (!canvas) return null;
-    try {
-      return canvas.toDataURL({
-        format: 'png',
-        quality: 1.0,
-        multiplier: activeProduct === 'photo_frame' ? 2 : 1
-      });
-    } catch (error) {
-      console.error('Error generating design preview:', error);
-      return canvas.toDataURL({ format: 'png', quality: 1.0, multiplier: 1 });
-    }
+  const PRODUCT_MOCKUP_CONFIG: Record<string, { widthPct: number; yOffsetPct: number }> = {
+    // widthPct: 0.85 = 85% of image width (Very Large)
+    // yOffsetPct: 0.35 = 35% down from top (Middle of product)
+    tshirt: { widthPct: 0.95, yOffsetPct: 0.25 }, 
+    mug: { widthPct: 0.9, yOffsetPct: 0.25 },    // Centered vertically and very wide
+    cap: { widthPct: 0.9, yOffsetPct: 0.15 },    // Covers the entire front panel and peaks
+    photo_frame: { widthPct: 0.98, yOffsetPct: 0.01 } // Edge-to-edge
   };
-
+  const generateDesignPreview = async (): Promise<string | null> => {
+    if (!canvas) return null;
+  
+    // Clean up the canvas for capture
+    canvas.discardActiveObject();
+    canvas.renderAll();
+  
+    const productImages: Record<string, string> = {
+      tshirt: 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/tshirt-sub-images/tshirt-front.webp',
+      mug: 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/mug-sub-images/mug-plain.webp',
+      cap: 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/cap-sub-images/cap-plain.webp',
+      photo_frame: products['photo_frame']?.image || '/placeholder.svg'
+    };
+  
+    const productUrl = productImages[activeProduct];
+    const config = PRODUCT_MOCKUP_CONFIG[activeProduct] || { widthPct: 0.9, yOffsetPct: 0.4 };
+  
+    return new Promise((resolve) => {
+      const tempCanvas = document.createElement('canvas');
+      const ctx = tempCanvas.getContext('2d');
+      const productImg = new Image();
+      const designImg = new Image();
+  
+      productImg.crossOrigin = "anonymous";
+      designImg.crossOrigin = "anonymous";
+  
+      productImg.onload = () => {
+        tempCanvas.width = productImg.width;
+        tempCanvas.height = productImg.height;
+  
+        if (ctx) {
+          // Draw the product base
+          ctx.drawImage(productImg, 0, 0);
+  
+          designImg.onload = () => {
+            // Calculation for Extra Large Zoom
+            const targetWidth = tempCanvas.width * config.widthPct;
+            const scaleFactor = targetWidth / designImg.width;
+            const targetHeight = designImg.height * scaleFactor;
+  
+            // X is always centered
+            const xPos = (tempCanvas.width - targetWidth) / 2;
+            
+            // Y moves the design DOWN as the number increases
+            const yPos = tempCanvas.height * config.yOffsetPct;
+  
+            ctx.drawImage(designImg, xPos, yPos, targetWidth, targetHeight);
+            resolve(tempCanvas.toDataURL('image/png', 2.0));
+          };
+  
+          // Export with high multiplier to ensure the "zoom" isn't pixelated
+          designImg.src = canvas.toDataURL({
+            format: 'png',
+            multiplier: 4, 
+            quality: 1
+          });
+        }
+      };
+  
+      productImg.src = productUrl;
+    });
+  };
   const handleAddToCart = async () => {
     if (!currentUser) {
       toast.error("Sign in required", { description: "Please sign in to add items to cart" });
@@ -366,14 +422,15 @@ const DesignTool = () => {
           return;
         }
       }
-
+      const loadingToast = toast.loading("Processing design...");
+      const previewImage = await generateDesignPreview(); 
+      
       const canvasJSON = canvas.toJSON();
-      const previewImage = generateDesignPreview();
       const totalPrice = getTotalPrice();
      
       const customProduct = {
-        product_id: `custom-${activeProduct}-${Date.now()}`,
-        name: `Custom ${products[activeProduct]?.name || 'Product'}${isDualSided ? ' (Dual-Sided)' : ''}${activeProduct === 'photo_frame' ? ` (${productView})` : ''}`,
+        product_id: `${products[activeProduct].id}`,
+        name: `${products[activeProduct]?.name || 'Product'}${isDualSided ? ' (Dual-Sided)' : ''}${activeProduct === 'photo_frame' ? ` (${productView})` : ''}`,
         price: totalPrice,
         image: previewImage || '/placeholder.svg',
         sizes: selectedSizes.map(size => ({ size, quantity: quantities[size] || 1 })),
@@ -386,11 +443,11 @@ const DesignTool = () => {
           frameSize: activeProduct === 'photo_frame' ? productView : null
         }
       };
-     
+   
       await addToCart(customProduct);
      
       // Inventory update handled by order processing
-      
+      toast.dismiss(loadingToast);
       toast.success("Added to cart", { description: `Design added to cart for ${selectedSizes.length} size${selectedSizes.length > 1 ? 's' : ''}` });
       setTimeout(() => navigate('/cart'), 1000);
     } catch (error) {

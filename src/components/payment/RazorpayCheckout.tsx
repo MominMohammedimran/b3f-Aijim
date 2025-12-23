@@ -15,6 +15,11 @@ import { getRazorpayConfig } from '@/services/paymentServices/razorpay/RazorpayC
 import { supabase } from '@/integrations/supabase/client';
 import {sendOrderStatusEmail } from '@/components/admin/OrderStatusEmailService';
 import { formatPrice } from '@/lib/utils';
+type CartItem = {
+  name: string;
+  price: number;
+  sizes: { quantity: number }[];
+};
 interface RazorpayCheckoutProps {
   amount?: number;
   cartItems?: any[];
@@ -86,11 +91,14 @@ useEffect(() => {
     return acc + itemTotal;
   }, 0);*/}
 // GLOBAL OFFER: ANY 2 = 1000
-const calculateGlobalOfferTotal = (cartItems: { sizes: { quantity: number }[] }[]) => {
-  // Count total quantity across ALL items
-  const totalQty = cartItems.reduce((total, item) => {
-    const qty = item.sizes.reduce((sum, s) => sum + s.quantity, 0);
-    return total + qty;
+
+
+const calculateGlobalOfferTotal = (cartItems: CartItem[]) => {
+  const totalQty = cartItems.reduce((sum, item) => {
+    if (item.name.toLowerCase().includes("custom")) return sum;
+
+    const itemQty = item.sizes.reduce((s, sz) => s + sz.quantity, 0);
+    return sum + itemQty;
   }, 0);
 
   const pairs = Math.floor(totalQty / 2);
@@ -99,19 +107,42 @@ const calculateGlobalOfferTotal = (cartItems: { sizes: { quantity: number }[] }[
   return pairs * 1000 + (remainder ? 548 : 0);
 };
 
-const totalPrice = () => {
-  return calculateGlobalOfferTotal(cartItems);
+const getTotalPricePrinting = (cartItems: CartItem[]) => {
+  return cartItems.reduce((total, item) => {
+    if (!item.name.toLowerCase().includes("custom")) return total;
+
+    const itemTotal = item.sizes.reduce(
+      (sum, size) => sum + size.quantity * item.price,
+      0
+    );
+
+    return total + itemTotal;
+  }, 0);
+};
+
+const totalPrice = (cartItems: CartItem[]) => {
+  return (
+    calculateGlobalOfferTotal(cartItems) +
+    getTotalPricePrinting(cartItems)
+  );
 };
 
 
 
-//{points: 75, discount: 75} {code: 'WELCOME10', discount: 29.9}//
- const couponDiscount = appliedCoupon?.discount || 0;
-  const pointsDiscount = appliedPoints?.discount || 0;
-  const totalDiscount = couponDiscount + pointsDiscount;
 
-  
-  const finalTotal = Math.max(0, totalPrice() - totalDiscount + deliveryFee);
+
+
+
+//{points: 75, discount: 75} {code: 'WELCOME10', discount: 29.9}//
+const couponDiscount = appliedCoupon?.discount || 0;
+const pointsDiscount = appliedPoints?.discount || 0;
+const totalDiscount = couponDiscount + pointsDiscount;
+
+const finalTotal = Math.max(
+  0,
+  totalPrice(cartItems) - totalDiscount + deliveryFee
+);
+
   const handleRewardPointsChange = (value: number) => {
     if (value < 100 && value > 0) {
       return;
@@ -526,8 +557,10 @@ window.location.href = `/order-complete/${orderNumber}`;
       <div className="space-y-0 mb-4 text-white">
                       <div className="flex justify-between">
                         <span className="font-semibold uppercase text-sm ">Subtotal</span>
-                        <span className='font-semibold text-md'>{formatPrice(totalPrice())}</span>
-                      </div>
+                        <span className='font-semibold text-md'>
+  {formatPrice(totalPrice(cartItems))}
+</span>
+ </div>
                       {appliedCoupon && (
                         <div className="flex justify-between text-green-400 font-bold">
                           <span className="font-semibold uppercase text-sm">Coupon </span>
