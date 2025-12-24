@@ -13,12 +13,15 @@ const videos = [
   { id: 2, title: "Website Launch", src: "/aijim-uploads/videos/aijim-launch-video.mp4" },
   { id: 3, title: "Aijim Story", src: "/aijim-uploads/videos/aijim-first-video.mp4" },
   { id: 4, title: "Website Launch", src: "/aijim-uploads/videos/aijim-launch-video.mp4" },
+
 ];
 
 const ProductVideoSection: React.FC = () => {
   const videoRefs = useRef<Record<number, HTMLVideoElement | null>>({});
   const carouselRef = useRef<HTMLDivElement | null>(null);
-
+  const isUserScrolling = useRef(false);
+  const snapTimeout = useRef<NodeJS.Timeout | null>(null);
+  
   const [mutedStates, setMutedStates] = useState<Record<number, boolean>>(
     Object.fromEntries(videos.map((v) => [v.id, true]))
   );
@@ -126,8 +129,12 @@ const ProductVideoSection: React.FC = () => {
             mostVisible = id;
           }
         });
+        if (!isUserScrolling.current && mostVisible !== null) {
+          setActiveVideo(mostVisible);
+        }
+        
 
-        if (mostVisible !== null) setActiveVideo(mostVisible);
+     
       },
       { threshold: Array.from({ length: 21 }, (_, i) => i / 20) }
     );
@@ -143,13 +150,17 @@ const ProductVideoSection: React.FC = () => {
   /** Auto-center */
   useEffect(() => {
     if (isFullscreenOpen) return;
-
+    if (isUserScrolling.current) return;
+  
     const t = setTimeout(() => {
-      if (activeVideoIndex !== -1) scrollToVideo(activeVideoIndex);
+      if (activeVideoIndex !== -1) {
+        scrollToVideo(activeVideoIndex);
+      }
     }, 80);
-
+  
     return () => clearTimeout(t);
-  }, [activeVideo]);
+  }, [activeVideo, isFullscreenOpen]);
+  
 
   /** ESC to close fullscreen */
   useEffect(() => {
@@ -165,34 +176,44 @@ const ProductVideoSection: React.FC = () => {
 
   /** Snap to nearest video */
   const snapToNearestVideo = () => {
-    if (!carouselRef.current) return;
-
+    if (!carouselRef.current || isUserScrolling.current) return;
+  
     const container = carouselRef.current;
     const items = Array.from(container.children) as HTMLElement[];
-
+  
     const center = container.scrollLeft + container.offsetWidth / 2;
-
-    let nearest = 0;
-    let smallest = Infinity;
-
-    items.forEach((child, index) => {
-      const childCenter = child.offsetLeft + child.offsetWidth / 2;
-      const dist = Math.abs(childCenter - center);
-
-      if (dist < smallest) {
-        smallest = dist;
-        nearest = index;
+  
+    let nearestIndex = 0;
+    let minDistance = Infinity;
+  
+    items.forEach((item, index) => {
+      const itemCenter = item.offsetLeft + item.offsetWidth / 2;
+      const distance = Math.abs(itemCenter - center);
+  
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestIndex = index;
       }
     });
-
-    scrollToVideo(nearest);
+  
+    scrollToVideo(nearestIndex);
   };
+  
 
-  let scrollTimeout: any = null;
+ 
   const handleScroll = () => {
-    if (scrollTimeout) clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(snapToNearestVideo, 120);
+    isUserScrolling.current = true;
+  
+    if (snapTimeout.current) {
+      clearTimeout(snapTimeout.current);
+    }
+  
+    snapTimeout.current = setTimeout(() => {
+      isUserScrolling.current = false;
+      snapToNearestVideo();
+    }, 180); // wait until swipe ends
   };
+  
 
   const activeVideoObj = videos.find((v) => v.id === activeVideo);
 

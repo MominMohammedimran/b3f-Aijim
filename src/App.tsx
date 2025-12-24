@@ -210,14 +210,14 @@ function App() {
   useReactQueryStorage(queryClient, "local");
   // 🧹 Auto-Unregister All Service Workers (runs once)
   useEffect(() => {
-    {/*if ("serviceWorker" in navigator) {
+    if ("serviceWorker" in navigator) {
       navigator.serviceWorker.getRegistrations().then((regs) => {
         regs.forEach((reg) => {
           reg.unregister();
           // console.log("Service Worker auto-unregistered");
         });
       });
-    }*/}
+    }
     trackReferral();
   }, []);
 
@@ -293,7 +293,8 @@ function App() {
   if (showPreloader) {
     return <Preloader onComplete={() => setShowPreloader(false)} />;
   }
-  
+  {/*<PushNotificationSetup />
+                     <PushNotificationPrompt />*/}
   return (
     <div className="bg-black min-h-screen">
       <HelmetProvider>
@@ -303,8 +304,7 @@ function App() {
             <CartProvider>
               <ActiveProductProvider>
                 <TooltipProvider>
-                    <PushNotificationSetup />
-                     <PushNotificationPrompt />
+                    
                   <CartReminders />
                   <AppRoutes />
                   <Toaster position="top-right" expand />

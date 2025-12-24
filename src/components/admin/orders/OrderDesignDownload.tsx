@@ -423,105 +423,120 @@ const OrderDesignDownload: React.FC<OrderDesignDownloadProps> = ({ items, orderN
   }
 
   return (
-    <div className="mt-4 pt-4 border-t">
-      <div className="flex items-center justify-between mb-3">
-        <h4 className="text-sm font-medium text-gray-900">Custom Design Downloads</h4>
-        <Button
-          onClick={downloadAllDesigns}
-          variant="default"
-          size="sm"
-          className="bg-blue-600 hover:bg-blue-700"
+    <div className="mt-6 pt-6 border-t border-white/10 bg-black text-white">
+    <div className="flex items-center justify-between mb-4">
+      <h4 className="text-sm font-medium text-white">
+        Custom Design Downloads
+      </h4>
+  
+      <Button
+        onClick={downloadAllDesigns}
+        size="sm"
+        className="bg-white text-black hover:bg-gray-200"
+      >
+        <Download className="h-4 w-4 mr-2" />
+        <Printer className="h-4 w-4 mr-1" />
+        Download All ({designItems.length})
+      </Button>
+    </div>
+  
+    <div className="space-y-4">
+      {designItems.map((item, index) => (
+        <div
+          key={index}
+          className="border border-white/10 rounded-xl p-4 bg-gradient-to-br from-neutral-900 to-neutral-800"
         >
-          <Download className="h-4 w-4 mr-2" />
-          <Printer className="h-4 w-4 mr-1" />
-          Download All ({designItems.length})
-        </Button>
-      </div>
-      
-      <div className="space-y-3">
-        {designItems.map((item, index) => (
-          <div key={index} className="border rounded-lg p-3 bg-gradient-to-r from-blue-50 to-indigo-50">
-            <div className="flex items-center justify-between mb-2">
-              <p className="font-medium text-sm text-blue-900">{item.name}</p>
-              <div className="flex items-center space-x-1 text-xs text-blue-600">
-                {item.sizes && item.sizes.length > 0 && (
-                  <span className="bg-blue-100 px-2 py-1 rounded">
-                    {item.sizes.map((s: any) => `${s.size}(${s.quantity})`).join(', ')}
-                  </span>
-                )}
-                {item.metadata?.view && <span className="bg-blue-100 px-2 py-1 rounded">{item.metadata.view}</span>}
-              </div>
-            </div>
-            
-            <div className="flex gap-2 flex-wrap">
-              {/* Print-ready download */}
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => downloadDesign(item, 'front')}
-                className="bg-white hover:bg-blue-50 border-blue-200"
-              >
-                <Printer className="h-3 w-3 mr-1" />
-                Print Template
-              </Button>
-              
-              {/* Raw design download */}
-              {item.metadata?.previewImage && (
-                <>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => downloadRawDesign(item, 'front')}
-                    className="bg-white hover:bg-green-50 border-green-200"
-                  >
-                    <Download className="h-3 w-3 mr-1" />
-                    Raw Design
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => viewDesign(item.metadata.previewImage)}
-                    className="bg-white hover:bg-purple-50 border-purple-200"
-                  >
-                    <Eye className="h-3 w-3 mr-1" />
-                    Preview
-                  </Button>
-                </>
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-medium text-sm text-white">
+              {item.name}
+            </p>
+  
+            <div className="flex items-center gap-2 flex-wrap text-xs">
+              {item.sizes?.length > 0 && (
+                <span className="bg-white/10 text-white px-2 py-1 rounded">
+                  {item.sizes.map((s: any) => `${s.size}(${s.quantity})`).join(', ')}
+                </span>
               )}
-              
-              {/* Back design for dual-sided */}
-              {item.metadata?.backImage && (
-                <>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => downloadDesign(item, 'back')}
-                    className="bg-white hover:bg-orange-50 border-orange-200"
-                  >
-                    <Printer className="h-3 w-3 mr-1" />
-                    Back Template
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => downloadRawDesign(item, 'back')}
-                    className="bg-white hover:bg-orange-50 border-orange-200"
-                  >
-                    <Download className="h-3 w-3 mr-1" />
-                    Back Raw
-                  </Button>
-                </>
+              {item.metadata?.view && (
+                <span className="bg-white/10 text-white px-2 py-1 rounded">
+                  {item.metadata.view}
+                </span>
               )}
             </div>
           </div>
-        ))}
-      </div>
-      
-      <div className="mt-3 p-2 bg-yellow-50 rounded text-xs text-yellow-800">
-        💡 <strong>Print Template:</strong> High-resolution with product outline, design placement, and order details. 
-        <strong> Raw Design:</strong> Just the user's design as they created it.
-      </div>
+  
+          <div className="flex gap-2 flex-wrap">
+            {/* Print-ready
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => downloadDesign(item, 'front')}
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              <Printer className="h-3 w-3 mr-1" />
+              Print Template
+            </Button> */}
+  
+            {/* Raw design */}
+            {item.metadata?.previewImage && (
+              <>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => downloadRawDesign(item, 'front')}
+                  className="border-white/20 text-white hover:bg-white/10"
+                >
+                  <Download className="h-3 w-3 mr-1" />
+                  Raw Design
+                </Button>
+  
+                {/*<Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => viewDesign(item.metadata.previewImage)}
+                  className="border-white/20 text-white hover:bg-white/10"
+                >
+                  <Eye className="h-3 w-3 mr-1" />
+                  Preview
+                </Button>*/}
+              </>
+            )}
+  
+            {/* Back side */}
+            {item.metadata?.backImage && (
+              <>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => downloadDesign(item, 'back')}
+                  className="border-white/20 text-white hover:bg-white/10"
+                >
+                  <Printer className="h-3 w-3 mr-1" />
+                  Back Template
+                </Button>
+  
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => downloadRawDesign(item, 'back')}
+                  className="border-white/20 text-white hover:bg-white/10"
+                >
+                  <Download className="h-3 w-3 mr-1" />
+                  Back Raw
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      ))}
     </div>
+  
+    <div className="mt-4 p-3 rounded-lg bg-white/5 text-xs text-white/80">
+      💡 <strong className="text-white">Print Template:</strong> High-resolution with product outline, design placement & order info.  
+      <strong className="text-white"> Raw Design:</strong> Only the user’s original design.
+    </div>
+  </div>
+  
   );
 };
 

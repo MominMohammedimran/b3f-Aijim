@@ -68,7 +68,7 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="text-red-600 hover:bg-red-50"
+                className="text-red-600 "
                 onClick={onDeleteOrder}
               >
                 <Trash2 size={16} className="mr-1" />
@@ -98,7 +98,7 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
                   <div>
                     <h3 className="font-medium">{item.name}</h3>
                     {item.sizes && item.sizes.length > 0 && (
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-gray-200">
                         {item.sizes.map((sizeItem, idx) => (
                           <div key={idx}>
                             Size: {sizeItem.size}, Qty: {sizeItem.quantity}
@@ -113,11 +113,20 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
                   <p className="font-medium">
                     {formatCurrency(item.price * (item.sizes?.reduce((sum, s) => sum + s.quantity, 0) || 1))}
                   </p>
-                  <p className="text-sm text-gray-600">{formatCurrency(item.price)} each</p>
+                  <p className="text-sm text-gray-200">{formatCurrency(item.price)} each</p>
                 </div>
               </div>
             ))}
           </div>
+          <OrderDesignDownload
+  orderNumber={order.order_number}
+  items={
+    order.items?.filter((item) =>
+      /custom\s*(tshirt|t-shirt|tee|mug|cap)/i.test(item.name)
+    ) || []
+  }
+/>
+
 
           
           
