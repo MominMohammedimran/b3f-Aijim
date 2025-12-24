@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from 'react';
 import { Canvas as FabricCanvas } from 'fabric';
 import { Button } from '@/components/ui/button';
 import { Undo2, Redo2 } from 'lucide-react';
+import html2canvas from 'html2canvas';
 
 interface DesignCanvasProps {
   activeProduct: string;
@@ -22,9 +23,15 @@ interface DesignCanvasProps {
   undo: () => void;
   redo: () => void;
   clearCanvas: () => void;
+  onPreviewCapture?: (previewImage: string) => void;
 }
 
-const DesignCanvas: React.FC<DesignCanvasProps> = ({
+export interface DesignCanvasHandle {
+  capturePreview: () => Promise<string | null>;
+  getPreviewContainer: () => HTMLDivElement | null;
+}
+
+const DesignCanvas = forwardRef<DesignCanvasHandle, DesignCanvasProps>(({
   activeProduct,
   productView,
   canvas,
@@ -42,9 +49,75 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
   checkDesignStatus,
   undo,
   redo,
-  clearCanvas
-}) => {
+  clearCanvas,
+  onPreviewCapture
+}, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+
+  // Capture preview using html2canvas - captures exact visual state
+  const capturePreview = useCallback(async (): Promise<string | null> => {
+    if (!previewContainerRef.current || !canvas) return null;
+    
+    try {
+      // Deselect active object for clean capture
+      canvas.discardActiveObject();
+      canvas.renderAll();
+      
+      // Wait a frame for render to complete
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      
+      const captureCanvas = await html2canvas(previewContainerRef.current, {
+        backgroundColor: null,
+        useCORS: true,
+        allowTaint: true,
+        scale: 3, // Higher quality for exact capture
+        logging: false,
+        imageTimeout: 15000,
+      });
+      
+      const previewImage = captureCanvas.toDataURL('image/png', 1.0);
+      
+      if (onPreviewCapture) {
+        onPreviewCapture(previewImage);
+      }
+      
+      return previewImage;
+    } catch (error) {
+      console.error('Error capturing preview:', error);
+      return null;
+    }
+  }, [canvas, onPreviewCapture]);
+
+  // Expose methods via ref
+  useImperativeHandle(ref, () => ({
+    capturePreview,
+    getPreviewContainer: () => previewContainerRef.current
+  }), [capturePreview]);
+
+  // Expose capture function via ref or callback
+  useEffect(() => {
+    if (canvas) {
+      // Auto-capture preview when canvas changes
+      const handleCanvasChange = () => {
+        // Debounce preview capture
+        const timeout = setTimeout(() => {
+          capturePreview();
+        }, 500);
+        return () => clearTimeout(timeout);
+      };
+      
+      canvas.on('object:modified', handleCanvasChange);
+      canvas.on('object:added', handleCanvasChange);
+      canvas.on('object:removed', handleCanvasChange);
+      
+      return () => {
+        canvas.off('object:modified', handleCanvasChange);
+        canvas.off('object:added', handleCanvasChange);
+        canvas.off('object:removed', handleCanvasChange);
+      };
+    }
+  }, [canvas, capturePreview]);
 
   const getCanvasDimensions = () => {
     switch (activeProduct) {
@@ -150,11 +223,12 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
       </div>
 
       <div 
-        ref={containerRef}
-        className="relative flex justify-center items-center "
+        ref={previewContainerRef}
+        className="relative flex justify-center items-center"
         style={{ minHeight: '100px' }}
       >
         <div 
+          ref={containerRef}
           className="absolute inset-0 flex justify-center items-center pointer-events-none"
           style={{ zIndex: 0 }}
         >
@@ -162,6 +236,7 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
             src={getProductImage()} 
             alt={activeProduct}
             className="max-w-full max-h-full object-contain opacity-100"
+            crossOrigin="anonymous"
           />
         </div>
 
@@ -204,6 +279,8 @@ const DesignCanvas: React.FC<DesignCanvasProps> = ({
       </div>
     </div>
   );
-};
+});
+
+DesignCanvas.displayName = 'DesignCanvas';
 
 export default DesignCanvas;

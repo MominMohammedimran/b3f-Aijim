@@ -64,6 +64,7 @@
     "fabric": "^6.0.0",
     "firebase": "^11.5.0",
     "framer-motion": "^12.15.0",
+    "html2canvas": "^1.4.1",
     "imagekitio-react": "^4.3.0",
     "input-otp": "^1.2.4",
     "jspdf": "^3.0.3",

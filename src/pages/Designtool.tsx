@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import Layout from '@/components/layout/Layout';
@@ -9,7 +9,7 @@ import TextModal from '@/components/design/TextModal';
 import ImageModal from '@/components/design/ImageModal';
 import EmojiModal from '@/components/design/EmojiModal';
 import ProductSelector from '@/components/design/ProductSelector';
-import DesignCanvas from '@/components/design/DesignCanvas';
+import DesignCanvas, { DesignCanvasHandle } from '@/components/design/DesignCanvas';
 import CustomizationSidebar from '@/components/design/CustomizationSidebar';
 import ShareModal from '@/components/products/ShareModal';
 import DesignHeader from '@/components/design/DesignHeader';
@@ -17,7 +17,7 @@ import DesignActionButtons from '@/components/design/DesignActionButtons';
 import DualSidedIndicator from '@/components/design/DualSidedIndicator';
 import DesignLoading from '@/components/design/DesignLoading';
 import { useDesignCanvas } from '@/hooks/useDesignCanvas';
-import { validateObjectsWithinBoundary, moveObjectsIntoBoundary } from '@/components/design/BoundaryValidator';
+import { validateObjectsWithinBoundary, moveObjectsIntoBoundary, highlightBoundary, showBoundaryValidationError } from '@/components/design/BoundaryValidator';
 import { useActiveProduct } from '@/context/ActiveProductContext';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -55,6 +55,8 @@ const DesignTool = () => {
   const [products, setProducts] = useState<ProductsMap>({});
   const [productsLoading, setProductsLoading] = useState(true);
   const [sizeInventory, setSizeInventory] = useState<Record<string, Record<string, number>>>({});
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const designCanvasRef = useRef<DesignCanvasHandle>(null);
 
   const { currentUser } = useAuth();
   const { addToCart } = useCart();
@@ -307,21 +309,74 @@ const DesignTool = () => {
     return validateObjectsWithinBoundary(canvas, boundaryId);
   };
 
-  const PRODUCT_MOCKUP_CONFIG: Record<string, { widthPct: number; yOffsetPct: number }> = {
-    // widthPct: 0.85 = 85% of image width (Very Large)
-    // yOffsetPct: 0.35 = 35% down from top (Middle of product)
-    tshirt: { widthPct: 0.95, yOffsetPct: 0.25 }, 
-    mug: { widthPct: 0.9, yOffsetPct: 0.25 },    // Centered vertically and very wide
-    cap: { widthPct: 0.9, yOffsetPct: 0.15 },    // Covers the entire front panel and peaks
-    photo_frame: { widthPct: 0.98, yOffsetPct: 0.01 } // Edge-to-edge
+  // Get the design boundary position relative to canvas for accurate preview capture
+  const getDesignBoundaryConfig = () => {
+    switch (activeProduct) {
+      case 'tshirt':
+        return { top: 210, left: 140, right: 140, bottom: 140 };
+      case 'mug':
+        return { top: 150, left: 120, right: 160, bottom: 110 };
+      case 'cap':
+        return { top: 50, left: 100, right: 100, bottom: 100 };
+      default:
+        return { top: 130, left: 90, right: 90, bottom: 205 };
+    }
   };
+
+  const PRODUCT_MOCKUP_CONFIG: Record<string, { widthPct: number; yOffsetPct: number; heightPct?: number }> = {
+    tshirt: { widthPct: 0.45, yOffsetPct: 0.28, heightPct: 0.35 }, 
+    mug: { widthPct: 0.55, yOffsetPct: 0.25, heightPct: 0.45 },
+    cap: { widthPct: 0.50, yOffsetPct: 0.15, heightPct: 0.35 },
+    photo_frame: { widthPct: 0.85, yOffsetPct: 0.08, heightPct: 0.85 }
+  };
+
   const generateDesignPreview = async (): Promise<string | null> => {
     if (!canvas) return null;
   
     // Clean up the canvas for capture
     canvas.discardActiveObject();
     canvas.renderAll();
+    
+    // Wait a frame for render to complete
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    // Try to use the DesignCanvas ref to capture exact preview
+    if (designCanvasRef.current) {
+      try {
+        const capturedImage = await designCanvasRef.current.capturePreview();
+        if (capturedImage) {
+          return capturedImage;
+        }
+      } catch (error) {
+        console.error('DesignCanvas capture failed:', error);
+      }
+    }
+
+    // Fallback: Get the design boundary element to capture exact area
+    const boundaryElement = document.getElementById(`design-boundary-${activeProduct}`);
+    const captureContainer = boundaryElement?.closest('.bg-gray-900');
+    
+    if (captureContainer) {
+      try {
+        const html2canvasModule = await import('html2canvas');
+        const html2canvas = html2canvasModule.default;
+        
+        const capturedCanvas = await html2canvas(captureContainer as HTMLElement, {
+          backgroundColor: '#1a1a1a',
+          useCORS: true,
+          allowTaint: true,
+          scale: 3, // High quality capture
+          logging: false,
+          imageTimeout: 15000,
+        });
+        
+        return capturedCanvas.toDataURL('image/png', 1.0);
+      } catch (error) {
+        console.error('html2canvas capture failed, falling back to fabric export:', error);
+      }
+    }
   
+    // Final fallback to fabric canvas export with proper positioning
     const productImages: Record<string, string> = {
       tshirt: 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/tshirt-sub-images/tshirt-front.webp',
       mug: 'https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/design-tool-page/mug-sub-images/mug-plain.webp',
@@ -330,7 +385,7 @@ const DesignTool = () => {
     };
   
     const productUrl = productImages[activeProduct];
-    const config = PRODUCT_MOCKUP_CONFIG[activeProduct] || { widthPct: 0.9, yOffsetPct: 0.4 };
+    const config = PRODUCT_MOCKUP_CONFIG[activeProduct] || { widthPct: 0.5, yOffsetPct: 0.3, heightPct: 0.4 };
   
     return new Promise((resolve) => {
       const tempCanvas = document.createElement('canvas');
@@ -350,25 +405,24 @@ const DesignTool = () => {
           ctx.drawImage(productImg, 0, 0);
   
           designImg.onload = () => {
-            // Calculation for Extra Large Zoom
+            // Calculate target dimensions maintaining aspect ratio
             const targetWidth = tempCanvas.width * config.widthPct;
-            const scaleFactor = targetWidth / designImg.width;
-            const targetHeight = designImg.height * scaleFactor;
+            const targetHeight = config.heightPct ? tempCanvas.height * config.heightPct : targetWidth * (designImg.height / designImg.width);
   
-            // X is always centered
+            // Center horizontally
             const xPos = (tempCanvas.width - targetWidth) / 2;
             
-            // Y moves the design DOWN as the number increases
+            // Position vertically based on config
             const yPos = tempCanvas.height * config.yOffsetPct;
   
             ctx.drawImage(designImg, xPos, yPos, targetWidth, targetHeight);
-            resolve(tempCanvas.toDataURL('image/png', 2.0));
+            resolve(tempCanvas.toDataURL('image/png', 1.0));
           };
   
-          // Export with high multiplier to ensure the "zoom" isn't pixelated
+          // Export with high multiplier for quality
           designImg.src = canvas.toDataURL({
             format: 'png',
-            multiplier: 4, 
+            multiplier: 3, 
             quality: 1
           });
         }
@@ -403,14 +457,10 @@ const DesignTool = () => {
     }
 
     if (!validateDesignWithBoundary()) {
-      toast.error("Design elements outside boundary!", {
-        description: "Please move all elements within the dotted design area.",
-        duration: 4000,
-      });
       const boundaryId = `design-boundary-${activeProduct}`;
-      moveObjectsIntoBoundary(canvas!, boundaryId);
-      toast.info("Design elements moved into boundary");
-      await new Promise(resolve => setTimeout(resolve, 500));
+      showBoundaryValidationError();
+      highlightBoundary(boundaryId, true);
+      return; // Block add to cart - user must move elements inside boundary
     }
 
     try {
@@ -477,6 +527,7 @@ const DesignTool = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-2 justify-items-center">
                 <DesignCanvas
+                  ref={designCanvasRef}
                   activeProduct={activeProduct}
                   productView={productView}
                   canvas={canvas}
@@ -495,6 +546,7 @@ const DesignTool = () => {
                   undo={undo}
                   redo={redo}
                   clearCanvas={handleClearCanvas}
+                  onPreviewCapture={setPreviewImage}
                 />
 
                 <DesignActionButtons

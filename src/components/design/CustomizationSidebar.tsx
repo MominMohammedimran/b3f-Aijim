@@ -128,6 +128,7 @@ const CustomizationSidebar: React.FC<CustomizationSidebarProps> = ({
                         size={variant.size} 
                         isSelected={selectedSizes.includes(variant.size)} 
                         isOutOfStock={variant.stock <= 0} 
+                        stock={variant.stock}
                         onClick={() => onSizeToggle(variant.size)} 
                     />
                 ))}
@@ -138,14 +139,18 @@ const CustomizationSidebar: React.FC<CustomizationSidebarProps> = ({
             <div>
                 <h3 className="text-lg font-semibold mb-3">Quantity</h3>
                 <div className="space-y-3">
-                    {selectedSizes.map((size) => (
-                        <QuantitySelector 
-                            key={size} 
-                            size={size} 
-                            quantity={quantities[size] || 1} 
-                            onQuantityChangeForSize={onQuantityChangeForSize} 
-                        />
-                    ))}
+                    {selectedSizes.map((size) => {
+                        const variant = variants.find((v: any) => v.size === size);
+                        return (
+                            <QuantitySelector 
+                                key={size} 
+                                size={size} 
+                                quantity={quantities[size] || 1} 
+                                maxQuantity={variant?.stock || 99}
+                                onQuantityChangeForSize={onQuantityChangeForSize} 
+                            />
+                        );
+                    })}
                 </div>
             </div>
         )}
@@ -184,7 +189,7 @@ const ToggleButton = ({ label, active, onClick }: any) => (
   </button>
 );
 
-const SizeButton = ({ size, isSelected, isOutOfStock, onClick }: any) => (
+const SizeButton = ({ size, isSelected, isOutOfStock, stock, onClick }: any) => (
     <button 
         onClick={onClick} 
         disabled={isOutOfStock} 
@@ -194,20 +199,48 @@ const SizeButton = ({ size, isSelected, isOutOfStock, onClick }: any) => (
             isOutOfStock && 'bg-red-900/50'
         )}
     >
-        {size}
+        <span>{size}</span>
+        {!isOutOfStock && stock > 0 && (
+            <span className="block text-[10px] text-gray-400 mt-0.5">
+                {stock} left
+            </span>
+        )}
         {isOutOfStock && <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>}
     </button>
 );
 
-const QuantitySelector = ({ size, quantity, onQuantityChangeForSize }: any) => (
-    <div className="flex items-center justify-between p-2 bg-gray-800 rounded-lg">
-        <span className="font-semibold text-sm">{size}</span>
-        <div className="flex items-center gap-3">
-            <button onClick={() => onQuantityChangeForSize(size, Math.max(1, quantity - 1))} className="h-7 w-7 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-200">-</button>
-            <span className="w-8 text-center font-bold">{quantity}</span>
-            <button onClick={() => onQuantityChangeForSize(size, quantity + 1)} className="h-7 w-7 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-200">+</button>
+const QuantitySelector = ({ size, quantity, maxQuantity, onQuantityChangeForSize }: any) => {
+    const availableStock = maxQuantity || 99;
+    const isAtMax = quantity >= availableStock;
+    
+    return (
+        <div className="flex items-center justify-between p-2 bg-gray-800 rounded-lg">
+            <div className="flex flex-col">
+                <span className="font-semibold text-sm">{size}</span>
+                <span className="text-[10px] text-gray-400">{availableStock} available</span>
+            </div>
+            <div className="flex items-center gap-3">
+                <button 
+                    onClick={() => onQuantityChangeForSize(size, Math.max(1, quantity - 1))} 
+                    className="h-7 w-7 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={quantity <= 1}
+                >
+                    -
+                </button>
+                <span className="w-8 text-center font-bold">{quantity}</span>
+                <button 
+                    onClick={() => onQuantityChangeForSize(size, Math.min(availableStock, quantity + 1))} 
+                    className={cn(
+                        "h-7 w-7 rounded-full transition-colors duration-200",
+                        isAtMax ? "bg-gray-700/50 cursor-not-allowed" : "bg-gray-700 hover:bg-gray-600"
+                    )}
+                    disabled={isAtMax}
+                >
+                    +
+                </button>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default CustomizationSidebar;
