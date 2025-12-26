@@ -157,16 +157,24 @@ const Search = () => {
     navigate("/search");
   };
 
+  const CUSTOM_DESIGN_CODES = [
+    "CUSTOM-CAP-001",
+    "CUSTOM-MUG-001",
+    "CUSTOM-TSHIRT-001",
+  ];
+  
   const handleProductClick = (product: Product) => {
-    if (
-      product.code.includes("TSHIRT-PRINT") ||
-      product.code.includes("MUG-PRINT")
-    ) {
-      navigate(`/design-tool`);
+    const code = product.code;
+  
+    const isCustomDesignProduct = CUSTOM_DESIGN_CODES.includes(code) 
+  
+    if (isCustomDesignProduct) {
+      navigate(`/customization/${code}`, { replace: true });
     } else {
-      navigate(`/product/${product.code}`);
+      navigate(`/product/${code}`);
     }
   };
+  
 
   const toggleTempSize = (size: string) =>
     setTempSelectedSizes((prev) =>

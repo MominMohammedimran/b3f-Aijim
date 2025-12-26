@@ -122,17 +122,17 @@ const DesignCanvas = forwardRef<DesignCanvasHandle, DesignCanvasProps>(({
   const getCanvasDimensions = () => {
     switch (activeProduct) {
       case 'tshirt':
-        return { width: 400, height: 500 };
+        return { width: 300, height: 220 };
       case 'mug':
-        return { width: 400, height: 350 };
+        return { width: 300, height: 220 };
       case 'cap':
-        return { width: 280, height: 200 };
+        return { width: 300, height: 220 };
       case 'photo_frame':
         if (productView === '8X12inch') return { width: 300, height: 350 };
         if (productView === '12x16inch') return { width: 300, height: 320 };
         return { width: 300, height: 280 };
       default:
-        return { width: 320, height: 380 };
+        return { width: 300, height: 220 };
     }
   };
 
@@ -182,24 +182,24 @@ const DesignCanvas = forwardRef<DesignCanvasHandle, DesignCanvasProps>(({
     switch (activeProduct) {
       case 'tshirt':
         return {
-          top: 210,
-          left: 140,
-          right: 140,
-          bottom: 140,
+          top: 80,
+          left: 100,
+          right: 100,
+          bottom: 20,
         };
       case 'mug':
         return {
-          top: 150,
-          left: 120,
-          right: 160,
-          bottom: 110,
+          top: 60,
+          left: 60,
+          right: 110,
+          bottom: 20,
         };
         case 'cap':
           return {
-            top: 50,
+            top: 40,
             left: 100,
             right: 100,
-            bottom: 100,
+            bottom: 110,
           };
       default:
         return {
@@ -225,20 +225,21 @@ const DesignCanvas = forwardRef<DesignCanvasHandle, DesignCanvasProps>(({
       <div 
         ref={previewContainerRef}
         className="relative flex justify-center items-center"
-        style={{ minHeight: '100px' }}
+        style={{ minHeight: '150px' }}
       >
-        <div 
-          ref={containerRef}
-          className="absolute inset-0 flex justify-center items-center pointer-events-none"
-          style={{ zIndex: 0 }}
-        >
-          <img 
-            src={getProductImage()} 
-            alt={activeProduct}
-            className="max-w-full max-h-full object-contain opacity-100"
-            crossOrigin="anonymous"
-          />
-        </div>
+       <div
+  ref={containerRef}
+  className="absolute inset-0 flex justify-center items-center pointer-events-none"
+  style={{ zIndex: 0 }}
+>
+  <img
+    src={getProductImage()}
+    alt={activeProduct}
+    className="w-full h-full object-cover"
+    crossOrigin="anonymous"
+  />
+</div>
+
 
         <div 
           id={`design-boundary-${activeProduct}`}

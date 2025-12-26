@@ -52,7 +52,7 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({
             isServiceable: true,
-            message: `Delivery available to ${deliveryCode.postal_code.district}, ${deliveryCode.postal_code.state_or_province}`
+            message: `Delivery available to ${deliveryCode.postal_code.district}, ${deliveryCode.postal_code.city}`
           }),
           {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }

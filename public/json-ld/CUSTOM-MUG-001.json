@@ -2,22 +2,22 @@
   {
     "@context": "https://schema.org",
     "@type": "Product",
-    "name": "Tortoise Embroidery White Oversized-Tee",
-    "description": "STORY \n\nEmbrace Persistence. Wear Your Success.\nThis classic white oversized T-shirt combines modern comfort with symbolic artistry. The front side features exquisite tortoise embroidery, celebrating the timeless moral—slow and steady wins the race—to inspire resilience, patience, and confidence in every wearer.\n\n\n DETAILS\n\n✔️ 100% Pure Cotton - Crafted from ultra-soft, breathable cotton for premium daily comfort.\n✔️ Oversized Youth Fit - Relaxed, trendy silhouette for a stylish and youthful look.\n✔️ Weight: 240 GSM - Premium, heavy cotton ensuring durability and a luxurious texture.\n✔️ Front-Side Tortoise Embroidery - Skillfully embroidered tortoise design on the front, adding tactile detail and a touch of storytelling.\n✔️ Colour - Solid white base, offering a clean and versatile canvas for the textured embroidery.\n ✔️ Made in India - Expertly crafted under strict quality standards, reflecting local artisans’ skill.\n\n\nArtwork features\n\n- The tortoise, embroidered with fine threads, stands as a symbol of perseverance, patience, and steadfast progress.\n- Blends cultural inspiration with contemporary fashion, making it perfect for those who seek both style and meaning in their wardrobe.\n- The embroidery offers depth, visual interest, and lasting quality.\n\n\nWASH CARE\n\n- Turn inside out and wash with cold water to maintain the embroidery and fabric’s original softness.\n- Use gentle detergents and avoid harsh chemicals to protect intricate embroidery.\n- Iron on the reverse side or with a cloth barrier, never directly over the embroidery.\n\n\nThis white oversized T-shirt with front tortoise embroidery is an ideal choice for those who want to showcase quietly powerful style and motivational symbolism in everyday wear.\n\n\n",
+    "name": "custom mug",
+    "description": "Design your own custom mug with personalized text and images",
     "image": [
-      "https://ik.imagekit.io/o5ewoek4p/tshirt-images/white/aijim-white-01.png?updatedAt=1764167661147"
+      "https://cmpggiyuiattqjmddcac.supabase.co/storage/v1/object/public/product-images/product_images/print-images/mug-print/mug-print.webp"
     ],
-    "sku": "tortoise-embroidery-design-white-oversized-tshirt",
-    "mpn": "tortoise-embroidery-design-white-oversized-tshirt",
+    "sku": "CUSTOM-MUG-001",
+    "mpn": "CUSTOM-MUG-001",
     "brand": {
       "@type": "Brand",
       "name": "Aijim"
     },
     "offers": {
       "@type": "Offer",
-      "url": "https://aijim.shop/product/tortoise-embroidery-design-white-oversized-tshirt",
+      "url": "https://aijim.shop/product/CUSTOM-MUG-001",
       "priceCurrency": "INR",
-      "price": 548,
+      "price": 199,
       "priceValidUntil": "2025-12-31",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition",
@@ -101,8 +101,8 @@
       {
         "@type": "ListItem",
         "position": 3,
-        "name": "Tortoise Embroidery White Oversized-Tee",
-        "item": "https://aijim.shop/product/tortoise-embroidery-design-white-oversized-tshirt"
+        "name": "custom mug",
+        "item": "https://aijim.shop/product/CUSTOM-MUG-001"
       }
     ]
   },

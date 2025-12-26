@@ -94,110 +94,121 @@ serve(async (req: Request) => {
       : `Order Update - ${orderId} is now ${status.toUpperCase()}`;
 
     const emailHtml = `
-      <div style="max-width:600px;margin:auto;border:1px solid #333;background:#000;color:#fff;font-family:sans-serif;">
-  <div style="background:#000;padding:20px;text-align:center;border-radius:8px 8px 0 0;">
+     <div style="max-width:600px;margin:auto;border:1px solid #222;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif;">
 
-  <table role="presentation" style="margin:auto;">
-
-    <tr>
-
-      <td style="vertical-align:middle;padding-right:10px;">
-
-        <img src="http://aijim.shop/aijim-uploads/aijim.png" alt="Brand Logo" style="height:40px;width:auto;display:block;" />
-
-      </td>
-
-      <td style="vertical-align:middle;">
-
-        <h2 style="color:#fff;margin:0;font-family:sans-serif;">
-
-          ORDER ${emailType === "confirmation" ? "CONFIRMED" : "UPDATE"}
-
-        </h2>
-
-      </td>
-
-    </tr>
-
-  </table>
-
-</div>
-
-
-        <div style="padding:20px;">
-          <div style="background:#111;color:#fff;padding:15px;border-radius:6px;text-align:center;">
-  <div style="font-size:20px;font-weight:bold;background:#4ade80;color:#000;padding:8px 12px;border-radius:4px;display:inline-block;margin-bottom:10px;">
-    Order #${orderId}
+  <!-- Header -->
+  <div style="padding:20px;text-align:center;border-bottom:1px solid #222;">
+    <h2 style="margin:0;color:#fff;letter-spacing:1px;">
+      ORDER ${emailType === "confirmation" ? "CONFIRMED" : "UPDATE"}
+    </h2>
   </div>
-  <div style="font-size:16px;">
-    Hi ${customerName || "Customer"},<br/><br>
 
-    Your order is now <strong style="color:#4ade80;">${status.toUpperCase()}</strong>.
-  </div>
-</div>
+  <!-- Body -->
+<div style="padding:5px 20px 20px;">
 
-        <table style="width:100%;border-collapse:collapse;background:#000;color:#fff;">
-  ${itemHtml}
-
-  <!-- Coupon Row -->
-  <tr style="background:#111;color:#fff;">
-    <td colspan="2" style="padding:10px;font-weight:bold;">
-      Coupon Applied 
-    </td>
-     <td colspan="2" style="padding:10px;font-weight:bold;">
-      ${couponCode||"not applied"}
-    </td>
-  </tr>
-
-  <!-- Reward Points Row -->
-  <tr style="background:#111;color:#fff;">
-    <td colspan="2" style="padding:10px;font-weight:bold;">
-      Reward Points Used
-    </td>
-    <td style="padding:10px;font-weight:bold;color:#4ade80;">
-       ${rewardPointsUsed || 0}
-    </td>
-  </tr>
-
-  <!-- Delivery Fee Row -->
-  ${
-    deliveryFee === 0
-      ? `<tr style="background:#000;color:#fff;">
-           <td colspan="2" style="padding:10px;font-weight:bold;">
-      Free shipping :
-    </td>
-    <td style="padding:10px;font-weight:bold;color:#4ade80;">
-    0
-    </td>
-         </tr>`
-      : `<tr style="background:#000;color:#fff;">
-           <td colspan="2" style="padding:10px;font-weight:bold;">
-             Delivery Fee 
-           </td>
-           <td colspan="2" style="padding:10px;font-weight:bold;">
-           ${deliveryFee}
-           </td>
-         </tr>`
-  }
-
-  <!-- Total Row -->
-  <tr style="background:#000;color:#fff;">
-    <td colspan="2" style="padding:10px;font-weight:bold;">Total:</td>
-    <td style="padding:10px;font-weight:bold;">₹${totalAmount || 0}</td>
-  </tr>
-</table>
-
-          <p style="margin-top:16px;">Payment Method: ${paymentMethod}</p>
-
-          ${
-            shippingAddress?.zipCode
-              ? `<p style="margin-top:16px;">Estimated Delivery: <strong style="color:red">7–10 Days</strong><br/>Track here: <a href="https://aijim.shop/orders" target="_blank">Track Order</a></p>`
-              : ""
-          }
-
-          <p style="margin-top:32px;font-size:14px;color:#666;">Thank you for shopping with Aijim!</p>
-        </div>
+    <!-- Order Info -->
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="display:inline-block;background:#4ade80;color:#000;
+        padding:8px 14px;border-radius:4px;font-weight:bold;font-size:16px;">
+        Order #${orderId}
       </div>
+
+      <p style="margin-top:14px;font-size:15px;line-height:1.6;">
+        Hi <strong>${customerName || "Customer"}</strong>,<br/>
+        Your order status is
+       <span style="
+  display:inline-block;
+  background:#4ade80;
+  color:#000;
+  font-weight:bold;
+  padding:4px 10px;
+  border-radius:4px;
+  font-size:14px;
+  letter-spacing:0.5px;
+">
+  ${status.toUpperCase()}
+</span>
+
+      </p>
+    </div>
+
+    <!-- Items Table -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+      ${itemHtml}
+
+      <!-- Coupon -->
+      <tr style="background:#111;">
+        <td style="padding:10px;font-weight:bold;">Coupon Code</td>
+        <td style="padding:10px;text-align:right;">
+  ${
+    couponCode
+      ? `<strong style="color:#4ade80;">${couponCode}</strong>`
+      : `<span style="color:#6b7280;">Not used</span>`
+  }
+</td>
+
+      </tr>
+
+      <!-- Rewards -->
+      <tr style="background:#111;">
+        <td style="padding:10px;font-weight:bold;">Reward Points Used</td>
+        <td style="padding:10px;text-align:right;color:#4ade80;">
+          ${rewardPointsUsed || 0}
+        </td>
+      </tr>
+
+      <!-- Delivery -->
+      <tr>
+        <td style="padding:10px;font-weight:bold;">
+          Delivery Fee
+        </td>
+        <td style="padding:10px;text-align:right;
+          color:${deliveryFee === 0 ? "#4ade80" : "#fff"};">
+          ${deliveryFee === 0 ? "Free" : `₹${deliveryFee}`}
+        </td>
+      </tr>
+
+      <!-- Total -->
+      <tr style="border-top:1px solid #333;">
+        <td style="padding:12px;font-weight:bold;font-size:16px;">
+          Total
+        </td>
+        <td style="padding:12px;text-align:right;font-weight:bold;font-size:16px;">
+          ₹${totalAmount || 0}
+        </td>
+      </tr>
+    </table>
+
+    <!-- Payment -->
+    <p style="margin-top:18px;font-size:14px;">
+      Payment Method: <strong>${paymentMethod||"Razorpay"}</strong>
+    </p>
+
+    <!-- Shipping -->
+    ${
+      shippingAddress?.zipCode
+        ? `
+          <p style="margin-top:12px;font-size:14px;">
+            Estimated Delivery:
+            <strong style="color:#f87171;">7–10 Days</strong><br/>
+            <a href="https://aijim.shop/orders"
+               style="color:#4ade80;text-decoration:none;font-weight:bold;"
+               target="_blank">
+              Track Your Order →
+            </a>
+          </p>
+        `
+        : ""
+    }
+
+    <!-- Footer -->
+    <p style="margin-top:30px;font-size:13px;color:#777;text-align:center;">
+      Thank you for shopping with <strong>Aijim</strong> 🖤
+    </p>
+
+  </div>
+</div>
+
     `;
 
     console.log('📧 Preparing to send email via Brevo...');
@@ -208,7 +219,7 @@ serve(async (req: Request) => {
         email: "aijim.official@gmail.com"
       },
       to: [
-  { email: shippingAddress?.email || userProfile?.email },
+  { email: shippingAddress?.email || "Dear User" },
   ...(status === "confirmed"
     ? [{ email: "aijim.official@gmail.com" }]
     : [])
