@@ -372,11 +372,11 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       return sum + itemQty;
     }, 0);
   
-    // Offer logic: ANY 2 = 1000, leftover = 548
+    // Offer logic: ANY 2 = 1000, leftover = 550
     const pairs = Math.floor(totalQty / 2);
     const remainder = totalQty % 2;
   
-    return pairs * 1000 + (remainder ? 548 : 0);
+    return pairs * 1000 + (remainder ? 550 : 0);
   };
   
 

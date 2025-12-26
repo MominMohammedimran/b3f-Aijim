@@ -104,7 +104,7 @@ const calculateGlobalOfferTotal = (cartItems: CartItem[]) => {
   const pairs = Math.floor(totalQty / 2);
   const remainder = totalQty % 2;
 
-  return pairs * 1000 + (remainder ? 548 : 0);
+  return pairs * 1000 + (remainder ? 550: 0);
 };
 
 const getTotalPricePrinting = (cartItems: CartItem[]) => {
@@ -543,8 +543,8 @@ window.location.href = `/order-complete/${orderNumber}`;
                   Size - {s.size} | Qty - {s.quantity}
                 </p>
               </div>
-              <span className="text-lg font-semibold text-white">
-                ₹{item.price * s.quantity}
+              <span className="text-lg font-semibold text-white">node scrip
+              {formatPrice(totalPrice(cartItems))}
               </span>
             </div>
           ))

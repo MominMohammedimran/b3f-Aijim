@@ -19,6 +19,15 @@ interface Settings {
   delivery_fee: number;
   min_order_amount: number;
 }
+interface AdminNotification {
+  id: string;
+  title: string;
+  message: string;
+  created_at: string;
+}
+
+
+
 
 const AdminSettings = () => {
   const [settings, setSettings] = useState<Settings>({
@@ -34,12 +43,15 @@ const AdminSettings = () => {
   const [saving, setSaving] = useState(false);
   
   // Notification state
+  const [notifications, setNotifications] = useState<AdminNotification[]>([]);
+const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [notificationTitle, setNotificationTitle] = useState('');
   const [notificationMessage, setNotificationMessage] = useState('');
   const [isSendingNotification, setIsSendingNotification] = useState(false);
 
   useEffect(() => {
     loadSettings();
+    loadNotifications();
   }, []);
 
   const loadSettings = async () => {
@@ -70,7 +82,25 @@ const AdminSettings = () => {
       setLoading(false);
     }
   };
-
+  const loadNotifications = async () => {
+    setLoadingNotifications(true);
+    try {
+      const { data, error } = await supabase
+        .from("global_notifications")
+        .select("id, title, message, created_at")
+        .order("created_at", { ascending: false })
+        .limit(10);
+  
+      if (error) throw error;
+      setNotifications(data || []);
+    } catch (err) {
+      console.error("Failed to load notifications", err);
+      toast.error("Failed to load notifications");
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+  
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -118,6 +148,23 @@ const AdminSettings = () => {
       setIsSendingNotification(false);
     }
   };
+  const handleDeleteNotification = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("global_notifications")
+        .delete()
+        .eq("id", id);
+  
+      if (error) throw error;
+  
+      toast.success("Notification deleted");
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete notification");
+    }
+  };
+  
 
   return (
     <ModernAdminLayout title="Settings">
@@ -222,35 +269,83 @@ const AdminSettings = () => {
 
             {/* Notification Card */}
             <Card>
-              <CardHeader><CardTitle>📢 Send Notification</CardTitle></CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="notification_title">Title</Label>
-                  <Input
-                    id="notification_title"
-                    value={notificationTitle}
-                    onChange={(e) => setNotificationTitle(e.target.value)}
-                    placeholder="Important Update"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="notification_message">Message</Label>
-                  <Textarea
-                    id="notification_message"
-                    value={notificationMessage}
-                    onChange={(e) => setNotificationMessage(e.target.value)}
-                    placeholder="Enter message for users..."
-                  />
-                </div>
-                <Button
-                  onClick={handleNotificationSubmit}
-                  disabled={isSendingNotification || !notificationTitle.trim() || !notificationMessage.trim()}
-                  className="w-full bg-purple-600 hover:bg-purple-700"
-                >
-                  {isSendingNotification ? 'Sending...' : 'Send Notification'}
-                </Button>
-              </CardContent>
-            </Card>
+  <CardHeader>
+    <CardTitle>📢 Send Notification</CardTitle>
+  </CardHeader>
+
+  <CardContent className="space-y-6">
+    {/* Send Notification */}
+    <div className="space-y-4">
+      <div>
+        <Label>Title</Label>
+        <Input
+          value={notificationTitle}
+          onChange={(e) => setNotificationTitle(e.target.value)}
+          placeholder="Important Update"
+        />
+      </div>
+
+      <div>
+        <Label>Message</Label>
+        <Textarea
+          value={notificationMessage}
+          onChange={(e) => setNotificationMessage(e.target.value)}
+          placeholder="Enter message for users..."
+        />
+      </div>
+
+      <Button
+        onClick={async () => {
+          await handleNotificationSubmit();
+          loadNotifications();
+        }}
+        disabled={isSendingNotification}
+        className="w-full bg-purple-600 hover:bg-purple-700"
+      >
+        {isSendingNotification ? "Sending..." : "Send Notification"}
+      </Button>
+    </div>
+
+    {/* Existing Notifications */}
+    <div className="border-t pt-4 space-y-3">
+      <h3 className="font-semibold text-sm text-muted-foreground">
+        Recent Notifications
+      </h3>
+
+      {loadingNotifications ? (
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      ) : notifications.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No notifications yet</p>
+      ) : (
+        notifications.map((notif) => (
+          <div
+            key={notif.id}
+            className="flex justify-between items-start gap-3 rounded-md border p-3"
+          >
+            <div>
+              <p className="font-medium">{notif.title}</p>
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {notif.message}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {new Date(notif.created_at).toLocaleString()}
+              </p>
+            </div>
+
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => handleDeleteNotification(notif.id)}
+            >
+              Delete
+            </Button>
+          </div>
+        ))
+      )}
+    </div>
+  </CardContent>
+</Card>
+
 
             {/* Coupon Management */}
             <div className="md:col-span-2">

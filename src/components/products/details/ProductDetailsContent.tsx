@@ -20,7 +20,7 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }
     return (
       code === "CUSTOM-CAP-001" ||
       code === "CUSTOM-MUG-001" ||
-      code === "CUSTOM-THIRT-001"
+      code === "CUSTOM-TSHIRT-001"
     );
   };
   

@@ -531,6 +531,7 @@ const DesignTool = () => {
                   activeProduct={activeProduct}
                   productView={productView}
                   canvas={canvas}
+                 
                   setCanvas={setCanvas}
                   undoStack={undoStack}
                   redoStack={redoStack}
