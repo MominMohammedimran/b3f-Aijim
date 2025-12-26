@@ -19,12 +19,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
 
+  console.log(product.code
+    
+  )
+
   const linkPath = product.code && isCustomizableProduct(product.code) 
     ? `/customization/${product.code}` 
     : `/products/${product.id}`;
 
   return (
-    <Link to={linkPath} className="group" onClick={handleClick}>
+    <Link to={linkPath} className="group" >
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
         <div className="aspect-square overflow-hidden">
           <img

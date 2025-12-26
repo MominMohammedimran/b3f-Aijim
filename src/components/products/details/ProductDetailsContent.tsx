@@ -7,7 +7,7 @@ import ProductReviewSection from "../ProductReviewSection";
 import RelatedProducts from "../RelatedProducts";
 import ShareModal from "../ShareModal";
 import { Share2 } from "lucide-react";
-import { isCustomizableProduct } from "@/lib/designProducts";
+
 
 interface ProductDetailsContentProps {
   product: Product;
@@ -16,7 +16,14 @@ interface ProductDetailsContentProps {
 const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const navigate = useNavigate();
-
+  const isCustomizableProduct = (code?: string) => {
+    return (
+      code === "CUSTOM-CAP-001" ||
+      code === "CUSTOM-MUG-001" ||
+      code === "CUSTOM-THIRT-001"
+    );
+  };
+  
   // Redirect to customization if product is customizable
   useEffect(() => {
     if (product.code && isCustomizableProduct(product.code)) {
