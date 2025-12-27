@@ -156,79 +156,7 @@ const finalTotal = Math.max(
 
   
 
-  const sendOrderConfirmationEmailHandler = async (orderData: any, paymentMethod: string) => {
-    try {
-     
-      
-      // Prepare cart items with proper image URLs for email
-      const emailCartItems = cartItems.map(item => ({
-        ...item,
-        image: item.image && !item.image.startsWith('http') 
-          ? `https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/${item.image}` 
-          : item.image || 'https://zfdsrtwjxwzwbrtfgypm.supabase.co/storage/v1/object/public/placeholder.svg'
-      }));
-      
-      const emailData = {
-        orderId: orderData.order_number || 'N/A',
-        customerEmail: shippingAddress?.email || userProfile?.email,
-        customerName: shippingAddress?.fullName || userProfile?.display_name || 'Customer',
-        status: 'confirmed',
-        orderItems: emailCartItems,
-        totalAmount: finalTotal,
-        shippingAddress: shippingAddress,
-        paymentMethod: paymentMethod
-      };
-
-      {/*if (emailData.customerEmail && emailData.customerEmail !== 'N/A') {
-        const emailSent = await sendOrderConfirmationEmail(emailData);
-        if (emailSent) {
-         
-          toast.success('Order confirmed! Confirmation email sent.');
-        } else {
-          console.warn('⚠️ Order confirmation email failed to send');
-          toast.warning('Order confirmed but failed to send confirmation email');
-        }
-      } else {
-        console.warn('⚠️ No email address available for confirmation');
-        toast.warning('Order confirmed but no email address provided');
-      }*/}
-    } catch (emailError) {
-      console.error('Error sending confirmation email:', emailError);
-      toast.error('Order confirmed but failed to send confirmation email');
-    }
-  };
-
-  const sendAdminOrderNotification = async (orderData: any) => {
-    try {
-    
-      const adminNotificationData = {
-        orderId: orderData.id,
-        orderNumber: orderData.order_number,
-        customerName: shippingAddress?.fullName || userProfile?.display_name || 'Customer',
-        customerEmail: shippingAddress?.email || userProfile?.email,
-        customerPhone: shippingAddress?.phone || userProfile?.phone,
-        orderItems: cartItems,
-        totalAmount: finalTotal,
-        shippingAddress: shippingAddress,
-        paymentMethod: 'Razorpay',
-        deliveryFee: deliveryFee,
-        appliedCoupon: appliedCoupon?.code || null,
-        rewardPointsUsed: appliedPoints?.points || 0
-      };
-
-      const { data, error } = await supabase.functions.invoke('send-admin-order-notification', {
-        body: adminNotificationData
-      });
-
-      if (error) {
-        console.error('Failed to send admin notification:', error);
-      } else {
-        console.log('✅ Admin notification sent successfully');
-      }
-    } catch (error) {
-      console.error('Error sending admin notification:', error);
-    }
-  };
+  
 // ALWAYS Call Courier API
 //ALWAYS Call Courier API
 const triggerCourier = async (order: any) => {
@@ -543,7 +471,7 @@ window.location.href = `/order-complete/${orderNumber}`;
                   Size - {s.size} | Qty - {s.quantity}
                 </p>
               </div>
-              <span className="text-lg font-semibold text-white">node scrip
+              <span className="text-lg font-semibold text-white">
               {formatPrice(totalPrice(cartItems))}
               </span>
             </div>
@@ -561,14 +489,9 @@ window.location.href = `/order-complete/${orderNumber}`;
   {formatPrice(totalPrice(cartItems))}
 </span>
  </div>
-                      {appliedCoupon && (
-                        <div className="flex justify-between text-green-400 font-bold">
-                          <span className="font-semibold uppercase text-sm">Coupon </span>
-                          <span className='font-semibold text-md'>-{formatPrice(couponDiscount)}</span>
-                        </div>
-                      )}
+                     
                       {appliedPoints && (
-                        <div className="flex justify-between text-blue-400 font-bold">
+                        <div className="flex justify-between text-green-400 font-bold">
                           <span className="font-semibold uppercase text-sm">Points </span>
                           <span className='font-semibold text-md'>-{formatPrice(pointsDiscount)}</span>
                         </div>

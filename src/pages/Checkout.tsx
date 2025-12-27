@@ -286,7 +286,7 @@ const Checkout: React.FC = () => {
   const couponDiscount = appliedCoupon.discount;
 const pointsDiscount = appliedPoints?.discount || 0;
 const totalDiscount = couponDiscount + pointsDiscount;
-const finalTotal = Math.max(0, (totalPrice||0+totalPricePrinting||0) - totalDiscount + deliveryFee); 
+const finalTotal = Math.max(0, (totalPrice+totalPricePrinting) - totalDiscount + deliveryFee); 
 
 
   return (
@@ -396,7 +396,7 @@ const finalTotal = Math.max(0, (totalPrice||0+totalPricePrinting||0) - totalDisc
                   {appliedCoupon.discount > 0 && (
                     <div className="flex justify-between text-green-400">
                       <span>Coupon ({appliedCoupon.code})</span>
-                      <span>-{formatPrice(couponDiscount)}</span>
+                     
                     </div>
                   )}
 

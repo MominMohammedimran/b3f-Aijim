@@ -55,8 +55,9 @@ const Cart = () => {
   const { settings: deliverySettings, loading: settingsLoading } =
     useDeliverySettings();
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
-const totalItemPrice=totalPrice||0+totalPricePrinting||0;
-  const finalTotal = totalPrice ||0+totalPricePrinting||0+ deliveryFee;
+ 
+const totalItemPrice=totalPrice+totalPricePrinting;
+  const finalTotal = totalPrice +totalPricePrinting+ deliveryFee;
  
 
   // Fetch product stocks for all cart items

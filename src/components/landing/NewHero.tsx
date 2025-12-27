@@ -7,7 +7,7 @@ import "swiper/css";
 
 const NewHero = () => {
   const bannerMobile = [
-    "/aijim-uploads/banner/mobile/merry-christmas-mobile-banner.jpeg",
+   
     "/aijim-uploads/banner/mobile/happy-new-year-mobile-banner.jpeg",
    
     "/aijim-uploads/banner/mobile/buy-any-2-beige-black.jpeg",
@@ -17,7 +17,7 @@ const NewHero = () => {
   ];
 
   const bannerLargeScreens = [
-    "/aijim-uploads/banner/desktop/merry-christmas-desktop-banner.jpeg",
+ 
      "/aijim-uploads/banner/desktop/happy-newyear-desktop-banner.jpeg",
       "/aijim-uploads/banner/desktop/All-five-tshirts.jpg",
 

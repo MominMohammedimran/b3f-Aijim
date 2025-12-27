@@ -41,35 +41,66 @@ const CouponSection: React.FC<CouponSectionProps> = ({
   const [expanded, setExpanded] = useState(true);
   const { currentUser } = useAuth();
 
+  // Handle clearing local messages when a coupon is removed/applied
   useEffect(() => {
-    if (appliedCoupon) {
+    if (!appliedCoupon?.code) {
       setMessage("");
       setMessageType("");
     }
   }, [appliedCoupon]);
 
-  // Fetch available coupons
+  // Fetch available coupons on mount
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("coupons")
         .select("id, code, discount_type, discount_value, valid_to, valid_from")
         .eq("active", true);
-
       setCoupons(data || []);
     })();
   }, []);
 
+  // === AUTOMATIC BUY2 LOGIC ===
+  useEffect(() => {
+    // We only auto-apply if no coupon is active OR if the active one is the auto-promo
+    const isNoCoupon = !appliedCoupon || appliedCoupon.code === "";
+    const isAlreadyBuy2 = appliedCoupon?.code === "BUY_2_PROMO";
+
+    if (isNoCoupon || isAlreadyBuy2) {
+      let totalQty = 0;
+      cartItems.forEach((item) => {
+        // Skip items with "custom" in the name
+        if (item.name?.toLowerCase().includes("custom")) return;
+
+        if (Array.isArray(item.sizes)) {
+          totalQty += item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
+        } else if (item.quantity) {
+          totalQty += item.quantity;
+        }
+      });
+
+      const pairs = Math.floor(totalQty / 2);
+      const autoDiscountAmount = pairs * 0;
+
+      if (pairs > 0) {
+        // Prevent infinite render loops by checking if values actually changed
+        if (appliedCoupon?.discount !== autoDiscountAmount || appliedCoupon?.code !== "BUY_2_PROMO") {
+          onCouponApplied(autoDiscountAmount, "BUY_2_PROMO");
+        }
+      } else if (isAlreadyBuy2) {
+        // Remove if user reduces quantity below a pair
+        onCouponRemoved?.();
+      }
+    }
+  }, [cartItems, appliedCoupon, onCouponApplied, onCouponRemoved]);
+
   const noCouponsAvailable = coupons.length === 0;
 
   const formatDiscount = (c: Coupon) =>
-    c.discount_type === "percent"
-      ? `${c.discount_value}% OFF`
-      : `₹${c.discount_value} OFF`;
+    c.discount_type === "percent" ? `${c.discount_value}% OFF` : `₹${c.discount_value} OFF`;
 
   const applyCoupon = async (codeFromList?: string) => {
     const codeToApply = (codeFromList || couponCode).toUpperCase().trim();
-
     if (!codeToApply) {
       setMessage("Please enter a coupon code");
       setMessageType("error");
@@ -77,7 +108,6 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     }
 
     setLoading(true);
-
     try {
       // === AIJIM50 Custom Logic ===
       if (codeToApply === "AIJIM50") {
@@ -88,35 +118,30 @@ const CouponSection: React.FC<CouponSectionProps> = ({
           .eq("coupon_code->>code", "AIJIM50");
 
         if (orderData && orderData.length > 0) {
-          setMessage("AIJIM50 coupon already used for your first order");
+          setMessage("AIJIM50 already used for your first order");
           setMessageType("error");
-          toast.error("AIJIM50 coupon already used for your first order");
+          toast.error("AIJIM50 already used");
           return;
         }
 
         let totalQuantity = 0;
         cartItems.forEach((item) => {
           if (Array.isArray(item.sizes)) {
-            totalQuantity += item.sizes.reduce(
-              (sum, s) => sum + (s.quantity || 0),
-              0
-            );
+            totalQuantity += item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
           } else if (item.quantity) {
             totalQuantity += item.quantity;
           }
         });
 
-        const discountAmount = totalQuantity * 50;
-
-        onCouponApplied(discountAmount, "AIJIM50");
-        setMessage(`AIJIM50 applied: ₹${discountAmount} off!`);
+        onCouponApplied(totalQuantity * 50, "AIJIM50");
+        setMessage(`AIJIM50 applied!`);
         setMessageType("success");
-        toast.success(`AIJIM50 applied: ₹${discountAmount} off!`);
+        toast.success(`AIJIM50 applied!`);
         setCouponCode("");
         return;
       }
 
-      // === Normal Coupon Validation via RPC ===
+      // === Normal Coupon Validation ===
       const { data, error } = await supabase.rpc("validate_coupon", {
         coupon_code_input: codeToApply,
         cart_total: cartTotal,
@@ -124,33 +149,23 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       });
 
       if (error) throw error;
-
       const result = data?.[0];
 
-      if (!result) {
-        setMessage("Coupon not valid");
-        setMessageType("error");
-        toast.error("Coupon not valid");
-        return;
-      }
-
-      if (result.valid) {
+      if (result?.valid) {
+        onCouponApplied(result.discount_amount, codeToApply);
         setMessage(result.message);
         setMessageType("success");
-        onCouponApplied(result.discount_amount, codeToApply);
-        toast.success(`Coupon "${codeToApply}" applied`);
+        toast.success(`Coupon applied!`);
+        setCouponCode("");
       } else {
-        setMessage(result.message);
+        setMessage(result?.message || "Invalid coupon");
         setMessageType("error");
-        toast.error(result.message);
+        toast.error(result?.message || "Invalid coupon");
       }
-
-      setCouponCode("");
     } catch (err) {
       console.error(err);
-      setMessage("Failed to apply coupon. Please try again.");
+      setMessage("Error applying coupon");
       setMessageType("error");
-      toast.error("Failed to apply coupon. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -165,19 +180,26 @@ const CouponSection: React.FC<CouponSectionProps> = ({
 
   return (
     <div className="w-full h-full p-1 mb-6">
-      {/* ------------------------------------------- */}
-      {/* HIDE INPUT SECTION IF NO COUPONS AVAILABLE */}
-      {/* ------------------------------------------- */}
-      {!noCouponsAvailable && (
-        <div className="flex gap-3 mb-4">
-          {appliedCoupon ? (
+      <div className="flex gap-3 mb-4">
+        {/* If a MANUAL coupon is applied, show it in a read-only box with REMOVE button. 
+            If it's the AUTO BUY2_PROMO or empty, show the input field. */}
+        {appliedCoupon && appliedCoupon.code !== "BUY_2_PROMO" && appliedCoupon.code !== "" ? (
+          <>
             <Input
               type="text"
               value={appliedCoupon.code}
               readOnly
               className="flex-1 text-xs shadow-sm tracking-[1px] rounded-none bg-black border border-gray-300 text-white font-semibold"
             />
-          ) : (
+            <Button
+              onClick={removeCoupon}
+              className="bg-red-700 hover:bg-red-800 border border-gray-300 tracking-[1px] rounded-none text-white font-inter font-bold uppercase px-6"
+            >
+              REMOVE
+            </Button>
+          </>
+        ) : (
+          <>
             <Input
               type="text"
               placeholder="Enter coupon code"
@@ -186,20 +208,6 @@ const CouponSection: React.FC<CouponSectionProps> = ({
               className="flex-1 text-xs tracking-[1px] shadow-sm rounded-none"
               disabled={loading}
             />
-          )}
-
-          {appliedCoupon ? (
-            <Button
-              onClick={removeCoupon}
-              className={`border border-gray-300 tracking-[1px] rounded-none text-white font-inter font-bold uppercase px-6 ${
-                appliedCoupon
-                  ? "bg-red-700 hover:bg-red-800"
-                  : "bg-yellow-500 hover:bg-yellow-600"
-              }`}
-            >
-              REMOVE
-            </Button>
-          ) : (
             <Button
               onClick={() => applyCoupon()}
               disabled={loading}
@@ -207,40 +215,31 @@ const CouponSection: React.FC<CouponSectionProps> = ({
             >
               {loading ? "APPLYING..." : "APPLY"}
             </Button>
-          )}
-        </div>
-      )}
+          </>
+        )}
+      </div>
 
-      {/* Message */}
+      {/* Success/Error Message */}
       {message && (
-        <div
-          className={`text-xs mb-3 ${
-            messageType === "success"
-              ? "text-green-500 font-semibold tracking-[1px]"
-              : "text-red-500 font-semibold tracking-[1px]"
-          }`}
-        >
+        <div className={`text-xs mb-3 font-semibold tracking-[1px] ${messageType === "success" ? "text-green-500" : "text-red-500"}`}>
           {message}
         </div>
       )}
 
-      {/* Active Coupon */}
-      {appliedCoupon && (
-        <div className="space-y-2">
+      {/* Applied Coupon Summary */}
+      {appliedCoupon && appliedCoupon.code !== "" && (
+        <div className="mb-4 p-2 bg-zinc-900/50 border border-zinc-800">
           <div className="text-sm text-white font-bold tracking-[1px]">
-            Active coupon:{" "}
-            <span className="font-semibold text-sm text-yellow-300 underline tracking-[1px]">
-              {appliedCoupon.code}
+            {appliedCoupon.code === "BUY_2_PROMO" ? "Bulk Discount: " : "Active Coupon: "}
+            <span className="text-yellow-300 underline ml-1">
+              {appliedCoupon.code} {appliedCoupon.discount > 0 && `(-₹${appliedCoupon.discount})`}
             </span>
           </div>
         </div>
       )}
 
-      {/* ------------------------------------------- */}
-      {/* COUPON LIST / OR NO COUPONS MESSAGE */}
-      {/* ------------------------------------------- */}
+      {/* Coupons List Section */}
       <div className="mt-3 w-full border border-gray-700 rounded-none overflow-hidden shadow-md">
-        {/* If no coupons – show only message */}
         {noCouponsAvailable ? (
           <div className="p-4 text-center bg-black text-white text-md font-semibold">
             No coupons available.
@@ -249,7 +248,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
           <>
             <button
               onClick={() => setExpanded(!expanded)}
-              className="flex justify-between items-center w-full p-3 border-b border-gray-700"
+              className="flex justify-between items-center w-full p-3 border-b border-gray-700 bg-black"
             >
               <div className="flex items-center gap-2">
                 <Ticket className="w-4 h-4 text-yellow-400" />
@@ -257,15 +256,11 @@ const CouponSection: React.FC<CouponSectionProps> = ({
                   Available Coupons
                 </h3>
               </div>
-              {expanded ? (
-                <ChevronUp className="w-4 h-4 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-gray-400" />
-              )}
+              {expanded ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
             </button>
 
             {expanded && (
-              <div className="max-h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent p-3">
+              <div className="max-h-56 overflow-y-auto p-3 bg-black">
                 <div className="space-y-3">
                   {coupons.map((c) => (
                     <div
@@ -273,20 +268,8 @@ const CouponSection: React.FC<CouponSectionProps> = ({
                       className="flex justify-between items-center border border-gray-700 p-3 rounded-none hover:bg-[#222] transition-all"
                     >
                       <div>
-                        <p className="font-semibold text-yellow-400 text-sm uppercase tracking-wider">
-                          {c.code}
-                        </p>
-                        <p className="text-xs text-gray-300 font-medium">
-                          {formatDiscount(c)}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Valid till{" "}
-                          {new Date(c.valid_to).toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })}
-                        </p>
+                        <p className="font-semibold text-yellow-400 text-sm uppercase tracking-wider">{c.code}</p>
+                        <p className="text-xs text-gray-300 font-medium">{formatDiscount(c)}</p>
                       </div>
                       <Button
                         size="sm"
