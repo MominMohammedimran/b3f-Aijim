@@ -73,10 +73,10 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     return total;
   };
 
-  // === AUTOMATIC BUY_2_PROMO LOGIC ===
+  // === AUTOMATIC BUY-2 LOGIC ===
   useEffect(() => {
     const isNoCoupon = !appliedCoupon || appliedCoupon.code === "";
-    const isAlreadyBuy2 = appliedCoupon?.code === "BUY_2_PROMO";
+    const isAlreadyBuy2 = appliedCoupon?.code === "BUY-2";
 
     if (isNoCoupon || isAlreadyBuy2) {
       const totalQty = getTotalQuantity();
@@ -84,10 +84,11 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       const autoDiscountAmount = pairs * 0; // Adjust bulk value if needed
 
       if (pairs > 0) {
-        if (appliedCoupon?.discount !== autoDiscountAmount || appliedCoupon?.code !== "BUY_2_PROMO") {
-          onCouponApplied(autoDiscountAmount, "BUY_2_PROMO");
+        if (appliedCoupon?.discount !== autoDiscountAmount || appliedCoupon?.code !== "BUY-2") {
+          onCouponApplied(autoDiscountAmount, "BUY-2");
           setcouponshow(true);
-          setMessage(`BUY_2_PROMO applied`);
+          setMessage(`BUY-2 applied`);
+          setMessageType("success");
         }
       } else if (isAlreadyBuy2) {
         onCouponRemoved?.();
@@ -124,7 +125,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       // 2. DYNAMIC LOGIC: Extract number from code (e.g., BIG100 -> 100, SAVE50 -> 50)
       const match = codeToApply.match(/\d+$/); // Finds digits at the end of the string
       
-       const  codeToApply2 = `${codeToApply}, BUY-2-PROMO`;
+       const  codeToApply2 = `${codeToApply}, BUY-2`;
     
       if (match) {
         const perItemDiscount = parseInt(match[0], 10);
@@ -182,10 +183,11 @@ const CouponSection: React.FC<CouponSectionProps> = ({
   return (
     <div className="w-full h-full p-1 mb-6">
       <div className="flex gap-3 mb-4">
-        {appliedCoupon && appliedCoupon.code !== "BUY_2_PROMO" && appliedCoupon.code !== "" ? (
+        {appliedCoupon && appliedCoupon.code !== "BUY-2" && appliedCoupon.code !== "" ? (
           <>
             <Input
               type="text"
+              
               value={appliedCoupon.code}
               readOnly
               className="flex-1 text-xs shadow-sm tracking-[1px] rounded-none bg-black border border-gray-300 text-white font-semibold"
@@ -233,21 +235,21 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       <div className="text-sm text-white font-bold tracking-[1px]">
       
         <span className="text-green-400  ml-1">
-          Bulk Discount: BUY_2_PROMO
+          Bulk Discount: BUY-2
         </span>
       </div>
     </div>
   )}
 
   {/* Show Manual Coupon if one is applied (excluding the auto-promo) */}
-  {appliedCoupon && appliedCoupon.code !== "" && appliedCoupon.code !== "BUY_2_PROMO" && (
+  {appliedCoupon && appliedCoupon.code !== "" && appliedCoupon.code !== "BUY-2" && (
     <div className="p-2 bg-zinc-900/50 border border-zinc-800">
       <div className="text-sm text-white font-bold tracking-[1px]">
      
         
      
       <span className="text-yellow-300  ml-1">
-          {appliedCoupon.code} 
+       Coupon: {appliedCoupon.code} 
         </span>
         </div>
     </div>

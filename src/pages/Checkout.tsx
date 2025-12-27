@@ -395,7 +395,7 @@ const finalTotal = Math.max(0, (totalPrice+totalPricePrinting) - totalDiscount +
 
                   
                     <div className="flex justify-between text-green-400 text-sm font-bold">
-                      <span>COUPON </span>
+                      <span>Coupon </span>
                       <span> ({appliedCoupon.code||'Not Availble'})</span>
                     </div>
               

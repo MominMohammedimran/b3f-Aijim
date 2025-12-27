@@ -490,7 +490,7 @@ window.location.href = `/order-complete/${orderNumber}`;
 </span>
  </div>
                      
- <div className="flex justify-between text-green-500 font-bold text-sm line-clamp-1 ">
+ <div className="flex justify-between text-green-500 font-bold text-sm line-clamp-1 mb-2">
                           <span className="font-semibold uppercase text-sm">Coupon  </span>
                           <span className='font-semibold text-md'>{appliedCoupon.code}</span>
                         </div>
