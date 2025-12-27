@@ -39,9 +39,9 @@ const CouponSection: React.FC<CouponSectionProps> = ({
   const [loading, setLoading] = useState(false);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [expanded, setExpanded] = useState(true);
+  const [couponshow, setcouponshow] = useState(false);
   const { currentUser } = useAuth();
 
-  // Handle clearing local messages when a coupon is removed/applied
   useEffect(() => {
     if (!appliedCoupon?.code) {
       setMessage("");
@@ -49,7 +49,6 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     }
   }, [appliedCoupon]);
 
-  // Fetch available coupons on mount
   useEffect(() => {
     (async () => {
       const { data } = await supabase
@@ -60,47 +59,46 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     })();
   }, []);
 
-  // === AUTOMATIC BUY2 LOGIC ===
+  // Utility to calculate total quantity of eligible items
+  const getTotalQuantity = () => {
+    let total = 0;
+    cartItems.forEach((item) => {
+      if (item.name?.toLowerCase().includes("custom")) return;
+      if (Array.isArray(item.sizes)) {
+        total += item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
+      } else if (item.quantity) {
+        total += item.quantity;
+      }
+    });
+    return total;
+  };
+
+  // === AUTOMATIC BUY_2_PROMO LOGIC ===
   useEffect(() => {
-    // We only auto-apply if no coupon is active OR if the active one is the auto-promo
     const isNoCoupon = !appliedCoupon || appliedCoupon.code === "";
     const isAlreadyBuy2 = appliedCoupon?.code === "BUY_2_PROMO";
 
     if (isNoCoupon || isAlreadyBuy2) {
-      let totalQty = 0;
-      cartItems.forEach((item) => {
-        // Skip items with "custom" in the name
-        if (item.name?.toLowerCase().includes("custom")) return;
-
-        if (Array.isArray(item.sizes)) {
-          totalQty += item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
-        } else if (item.quantity) {
-          totalQty += item.quantity;
-        }
-      });
-
+      const totalQty = getTotalQuantity();
       const pairs = Math.floor(totalQty / 2);
-      const autoDiscountAmount = pairs * 0;
+      const autoDiscountAmount = pairs * 0; // Adjust bulk value if needed
 
       if (pairs > 0) {
-        // Prevent infinite render loops by checking if values actually changed
         if (appliedCoupon?.discount !== autoDiscountAmount || appliedCoupon?.code !== "BUY_2_PROMO") {
           onCouponApplied(autoDiscountAmount, "BUY_2_PROMO");
+          setcouponshow(true);
+          setMessage(`BUY_2_PROMO applied`);
         }
       } else if (isAlreadyBuy2) {
-        // Remove if user reduces quantity below a pair
         onCouponRemoved?.();
       }
     }
   }, [cartItems, appliedCoupon, onCouponApplied, onCouponRemoved]);
 
-  const noCouponsAvailable = coupons.length === 0;
-
-  const formatDiscount = (c: Coupon) =>
-    c.discount_type === "percent" ? `${c.discount_value}% OFF` : `₹${c.discount_value} OFF`;
-
   const applyCoupon = async (codeFromList?: string) => {
-    const codeToApply = (codeFromList || couponCode).toUpperCase().trim();
+    let codeToApply = (codeFromList || couponCode).toUpperCase().trim();
+   
+  
     if (!codeToApply) {
       setMessage("Please enter a coupon code");
       setMessageType("error");
@@ -109,41 +107,41 @@ const CouponSection: React.FC<CouponSectionProps> = ({
 
     setLoading(true);
     try {
-      // === AIJIM50 Custom Logic ===
-      if (codeToApply === "AIJIM50") {
-        const { data: orderData } = await supabase
-          .from("orders")
-          .select("id")
-          .eq("user_id", currentUser?.id)
-          .eq("coupon_code->>code", "AIJIM50");
+      // 1. Check if user has already used this specific coupon
+      const { data: orderData } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("user_id", currentUser?.id)
+        .eq("coupon_code->>code", codeToApply);
 
-        if (orderData && orderData.length > 0) {
-          setMessage("AIJIM50 already used for your first order");
-          setMessageType("error");
-          toast.error("AIJIM50 already used");
-          return;
-        }
+      if (orderData && orderData.length > 0) {
+        setMessage(`${codeToApply} already used for your first order`);
+        setMessageType("error");
+        toast.error(`${codeToApply} already used`);
+        return;
+      }
 
-        let totalQuantity = 0;
-        cartItems.forEach((item) => {
-          if (Array.isArray(item.sizes)) {
-            totalQuantity += item.sizes.reduce((sum, s) => sum + (s.quantity || 0), 0);
-          } else if (item.quantity) {
-            totalQuantity += item.quantity;
-          }
-        });
+      // 2. DYNAMIC LOGIC: Extract number from code (e.g., BIG100 -> 100, SAVE50 -> 50)
+      const match = codeToApply.match(/\d+$/); // Finds digits at the end of the string
+      
+       const  codeToApply2 = `${codeToApply}, BUY-2-PROMO`;
+    
+      if (match) {
+        const perItemDiscount = parseInt(match[0], 10);
+        const totalQuantity = getTotalQuantity();
+        const discountAmount =  perItemDiscount;
 
-        onCouponApplied(totalQuantity * 50, "AIJIM50");
-        setMessage(`AIJIM50 applied!`);
+        onCouponApplied(discountAmount, codeToApply2);
+        setMessage(`${codeToApply2} applied`);
         setMessageType("success");
-        toast.success(`AIJIM50 applied!`);
+        toast.success(`${codeToApply2} applied!`);
         setCouponCode("");
         return;
       }
 
-      // === Normal Coupon Validation ===
+      // 3. Fallback to Normal Coupon Validation (Fixed discounts/Percentage)
       const { data, error } = await supabase.rpc("validate_coupon", {
-        coupon_code_input: codeToApply,
+        coupon_code_input: codeToApply2,
         cart_total: cartTotal,
         user_id_input: currentUser?.id || null,
       });
@@ -152,7 +150,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       const result = data?.[0];
 
       if (result?.valid) {
-        onCouponApplied(result.discount_amount, codeToApply);
+        onCouponApplied(result.discount_amount, codeToApply2);
         setMessage(result.message);
         setMessageType("success");
         toast.success(`Coupon applied!`);
@@ -160,7 +158,6 @@ const CouponSection: React.FC<CouponSectionProps> = ({
       } else {
         setMessage(result?.message || "Invalid coupon");
         setMessageType("error");
-        toast.error(result?.message || "Invalid coupon");
       }
     } catch (err) {
       console.error(err);
@@ -178,11 +175,13 @@ const CouponSection: React.FC<CouponSectionProps> = ({
     toast.success("Coupon removed");
   };
 
+  const noCouponsAvailable = coupons.length === 0;
+  const formatDiscount = (c: Coupon) =>
+    c.discount_type === "percent" ? `${c.discount_value}% OFF` : `₹${c.discount_value} OFF`;
+
   return (
     <div className="w-full h-full p-1 mb-6">
       <div className="flex gap-3 mb-4">
-        {/* If a MANUAL coupon is applied, show it in a read-only box with REMOVE button. 
-            If it's the AUTO BUY2_PROMO or empty, show the input field. */}
         {appliedCoupon && appliedCoupon.code !== "BUY_2_PROMO" && appliedCoupon.code !== "" ? (
           <>
             <Input
@@ -219,26 +218,44 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         )}
       </div>
 
-      {/* Success/Error Message */}
       {message && (
-        <div className={`text-xs mb-3 font-semibold tracking-[1px] ${messageType === "success" ? "text-green-500" : "text-red-500"}`}>
+        <div className={`text-xs mb-3 font-semibold tracking-[1px] ${messageType === "success" ? "text-yellow-500" : "text-red-500"}`}>
           {message}
         </div>
       )}
 
-      {/* Applied Coupon Summary */}
-      {appliedCoupon && appliedCoupon.code !== "" && (
+      
         <div className="mb-4 p-2 bg-zinc-900/50 border border-zinc-800">
-          <div className="text-sm text-white font-bold tracking-[1px]">
-            {appliedCoupon.code === "BUY_2_PROMO" ? "Bulk Discount: " : "Active Coupon: "}
-            <span className="text-yellow-300 underline ml-1">
-              {appliedCoupon.code} {appliedCoupon.discount > 0 && `(-₹${appliedCoupon.discount})`}
-            </span>
-          </div>
-        </div>
-      )}
+          <div className="space-y-2 mb-4">
+  {/* Show Bulk Discount if the logic identifies it should be shown */}
+  {setcouponshow && (
+    <div className="p-2  border border-green-800/50">
+      <div className="text-sm text-white font-bold tracking-[1px]">
+      
+        <span className="text-green-400  ml-1">
+          Bulk Discount: BUY_2_PROMO
+        </span>
+      </div>
+    </div>
+  )}
 
-      {/* Coupons List Section */}
+  {/* Show Manual Coupon if one is applied (excluding the auto-promo) */}
+  {appliedCoupon && appliedCoupon.code !== "" && appliedCoupon.code !== "BUY_2_PROMO" && (
+    <div className="p-2 bg-zinc-900/50 border border-zinc-800">
+      <div className="text-sm text-white font-bold tracking-[1px]">
+     
+        
+     
+      <span className="text-yellow-300  ml-1">
+          {appliedCoupon.code} 
+        </span>
+        </div>
+    </div>
+  )}
+</div>
+        </div>
+     
+
       <div className="mt-3 w-full border border-gray-700 rounded-none overflow-hidden shadow-md">
         {noCouponsAvailable ? (
           <div className="p-4 text-center bg-black text-white text-md font-semibold">

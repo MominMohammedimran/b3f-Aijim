@@ -282,7 +282,7 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const subtotal = totalPrice||0+totalPricePrinting||0;;
+  const subtotal = totalPrice+totalPricePrinting;;
   const couponDiscount = appliedCoupon.discount;
 const pointsDiscount = appliedPoints?.discount || 0;
 const totalDiscount = couponDiscount + pointsDiscount;
@@ -393,12 +393,12 @@ const finalTotal = Math.max(0, (totalPrice+totalPricePrinting) - totalDiscount +
                     <span className="font-bold">{formatPrice(subtotal)}</span>
                   </div>
 
-                  {appliedCoupon.discount > 0 && (
-                    <div className="flex justify-between text-green-400">
-                      <span>Coupon ({appliedCoupon.code})</span>
-                     
+                  
+                    <div className="flex justify-between text-green-400 text-sm font-bold">
+                      <span>COUPON </span>
+                      <span> ({appliedCoupon.code||'Not Availble'})</span>
                     </div>
-                  )}
+              
 
                  {appliedPoints?.discount > 0 && (
   <div className="flex justify-between text-blue-400">

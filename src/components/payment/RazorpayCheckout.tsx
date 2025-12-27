@@ -490,9 +490,13 @@ window.location.href = `/order-complete/${orderNumber}`;
 </span>
  </div>
                      
+ <div className="flex justify-between text-green-500 font-bold text-sm line-clamp-1 ">
+                          <span className="font-semibold uppercase text-sm">Coupon  </span>
+                          <span className='font-semibold text-md'>{appliedCoupon.code}</span>
+                        </div>
                       {appliedPoints && (
-                        <div className="flex justify-between text-green-400 font-bold">
-                          <span className="font-semibold uppercase text-sm">Points </span>
+                        <div className="flex justify-between text-red-500 font-bold">
+                          <span className="font-semibold uppercase text-sm">Reward Points </span>
                           <span className='font-semibold text-md'>-{formatPrice(pointsDiscount)}</span>
                         </div>
                       )}
