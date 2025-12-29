@@ -471,9 +471,7 @@ window.location.href = `/order-complete/${orderNumber}`;
                   Size - {s.size} | Qty - {s.quantity}
                 </p>
               </div>
-              <span className="text-lg font-semibold text-white">
-              {formatPrice(totalPrice(cartItems))}
-              </span>
+              
             </div>
           ))
         )}
@@ -492,7 +490,7 @@ window.location.href = `/order-complete/${orderNumber}`;
                      
  <div className="flex justify-between text-green-500 font-bold text-sm line-clamp-1 mb-2">
                           <span className="font-semibold uppercase text-sm">Coupon  </span>
-                          <span className='font-semibold text-md'>{appliedCoupon.code}</span>
+                          <span className='font-semibold text-md'>{appliedCoupon.code||"Not Available"}</span>
                         </div>
                       {appliedPoints && (
                         <div className="flex justify-between text-red-500 font-bold">

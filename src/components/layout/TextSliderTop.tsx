@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight,TreePine } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const messages = [
-  "Christmas Sale - Grab",
+  "New Year Sale - Grab",
   "Any 2 — Oversized Tees",
   "₹1000 & Enjoy",
   "Free shipping",
@@ -23,22 +23,6 @@ export default function TextSliderTop() {
 
     return () => clearInterval(interval);
   }, [isVisible]);
-
-  // Show based on time rule (ODD-MINUTES)
-  useEffect(() => {
-    const updateVisibility = () => {
-      const minutes = new Date().getMinutes();
-
-      // ⭐ Visible only on odd minutes (1,3,5,7…)
-      setIsVisible(minutes % 3 === 0);
-//change minutes % 2 === 0 for even minutes % 3 ===0  odd
-    };
-
-    updateVisibility();
-    const interval = setInterval(updateVisibility, 15000); // check every 15 sec
-
-    return () => clearInterval(interval);
-  }, []);
 
   const prevSlide = () => {
     setIndex((prev) => (prev - 1 + messages.length) % messages.length);

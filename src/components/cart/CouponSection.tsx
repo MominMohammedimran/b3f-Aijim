@@ -230,7 +230,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
         <div className="mb-4 p-2 bg-zinc-900/50 border border-zinc-800">
           <div className="space-y-2 mb-4">
   {/* Show Bulk Discount if the logic identifies it should be shown */}
-  {setcouponshow && (
+  {couponshow && (
     <div className="p-2  border border-green-800/50">
       <div className="text-sm text-white font-bold tracking-[1px]">
       
