@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { User, LogOut, Calendar, Download } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { cleanupAuthState } from '@/context/AuthContext';
-import { usePWAInstall } from '@/hooks/usePWAInstall';
+
 
 interface UserProfileHeaderProps {
   name?: string;
@@ -25,7 +25,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
   signingOut = false,
 }) => {
   const { currentUser, signOut, userProfile } = useAuth();
-  const { canInstall, installApp, isInstalled } = usePWAInstall();
+  
   const navigate = useNavigate();
   const { clearCart } = useCart();
   const [localSigningOut, setLocalSigningOut] = useState(false);
@@ -125,15 +125,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
 
         {/* --- Right: Actions --- */}
         <div className="flex items-center gap-2 sm:gap-3 mt-2 sm:mt-0">
-          {canInstall && !isInstalled && (
-            <Button
-              onClick={installApp}
-              className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-black text-sm font-semibold rounded-md px-4 py-2 transition"
-            >
-              <Download className="h-4 w-4" />
-              Install App
-            </Button>
-          )}
+          
 
           <Button
             variant="destructive"
