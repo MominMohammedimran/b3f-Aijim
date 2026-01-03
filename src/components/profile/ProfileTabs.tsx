@@ -48,7 +48,7 @@ const ProfileTabs = () => {
   data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
 >
   <Shield size={14} />
-  <span className="text-[10px] sm:text-[12px]">Security</span>
+  <span className="text-[10px] sm:text-[12px]">Password</span>
 </TabsTrigger>
 
 <TabsTrigger
@@ -57,7 +57,7 @@ const ProfileTabs = () => {
   data-[state=active]:bg-white data-[state=active]:text-gray-800 data-[state=active]:shadow-md"
 >
   <User size={14} />
-  <span className="text-[10px] sm:text-[12px]">Profile</span>
+  <span className="text-[10px] sm:text-[12px]">Name</span>
 </TabsTrigger>
 
 <TabsTrigger

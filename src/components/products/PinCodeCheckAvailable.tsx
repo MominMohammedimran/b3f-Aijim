@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { validatePincode } from "@/utils/pincodeService";
 
-const PincodeCheck = () => {
+const PinCodeCheckAvailable = () => {
   const [pincode, setPincode] = useState("");
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
@@ -113,4 +113,4 @@ const PincodeCheck = () => {
   );
 };
 
-export default PincodeCheck;
+export default PinCodeCheckAvailable;

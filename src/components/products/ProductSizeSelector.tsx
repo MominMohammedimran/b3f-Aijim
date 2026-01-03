@@ -1,101 +1,54 @@
-
 import React from 'react';
-import { Button } from '@/components/ui/button';
 
-interface ProductSizeSelectorProps {
-  productId: string;
-  sizes: string[];
-  selectedSize?: string;
-  onSizeSelect?: (size: string) => void;
-  sizeQuantities?: Record<string, number>;
-  selectedSizes?: string[];
-  onSizeToggle?: (size: string) => void;
-  allowMultiple?: boolean;
-  showStock?: boolean;
+interface ProductVariant {
+  size: string;
+  stock: number;
 }
 
-const ProductSizeSelector: React.FC<ProductSizeSelectorProps> = ({
-  productId,
-  sizes,
-  selectedSize,
-  onSizeSelect,
-  sizeQuantities = {},
-  selectedSizes = [],
-  onSizeToggle,
-  allowMultiple = false,
-  showStock = false
-}) => {
-  const handleSizeClick = (size: string) => {
-    if (allowMultiple && onSizeToggle) {
-      onSizeToggle(size);
-    } else if (onSizeSelect) {
-      onSizeSelect(size);
-    }
-  };
+interface SizeWithQuantity {
+  size: string;
+  quantity: number;
+}
 
-  const isSizeSelected = (size: string) => {
-    if (allowMultiple) {
-      return selectedSizes.includes(size);
-    }
-    return selectedSize === size;
-  };
+interface ProductSizeSelectorProps {
+  variants: ProductVariant[];
+  selectedSizes: SizeWithQuantity[];
+  onToggleSize: (size: string) => void;
+}
 
-  const getSizeStock = (size: string) => {
-    return sizeQuantities[size.toLowerCase()] || 0;
-  };
-
-  const isSizeAvailable = (size: string) => {
-    return getSizeStock(size) > 0;
-  };
-
-  if (!sizes || sizes.length === 0) {
-    return (
-      <div className="text-gray-500 text-center py-4">
-        No sizes available for this product
-      </div>
-    );
-  }
-
+const ProductSizeSelector: React.FC<ProductSizeSelectorProps> = ({ variants, selectedSizes, onToggleSize }) => {
   return (
-    <div className="space-y-3">
-      <h3 className="text-lg font-semibold text-gray-800">
-        {allowMultiple ? 'Select Sizes' : 'Select Size'}
-      </h3>
-      <div className="grid grid-cols-4 gap-2">
-        {sizes.map((size) => {
-          const isSelected = isSizeSelected(size);
-          const isAvailable = isSizeAvailable(size);
-          const stock = getSizeStock(size);
+    <div className="px-2 mt-3">
+      <span className="text-gray-200 text-lg font-medium pt-1">Select Size</span>
+      <div className="grid mt-1 grid-cols-6 md:grid-cols-6 gap-2 relative border-t border-gray-200">
+        {variants.map(({ size, stock }) => {
+          const selected = selectedSizes.some((s) => s.size === size);
+          const isOutOfStock = stock === 0;
 
           return (
-            <div key={size} className="relative">
-              <Button
-                variant={isSelected ? "default" : "outline"}
-                className={`w-full h-12 ${
-                  !isAvailable ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-                onClick={() => handleSizeClick(size)}
-                disabled={!isAvailable}
-              >
-                {size.toUpperCase()}
-              </Button>
-              {showStock && (
-                <div className="text-xs text-center mt-1 text-gray-600">
-                  Stock: {stock}
-                </div>
+            <div key={size} className="relative mt-2">
+              <button
+                onClick={() => onToggleSize(size)}
+                disabled={isOutOfStock}
+                className={`relative w-full py-1.5 text-xs font-bold border rounded-sm transition-all overflow-hidden ${
+                  selected
+                    ? "bg-white text-black underline border-2 border-gray-300"
+                    : isOutOfStock
+                    ? "bg-gray-900 text-gray-200 border-gray-700 cursor-not-allowed opacity-90"
+                    : "text-white border-gray-200 hover:bg-gray-100 hover:text-black"
+                }`}>
+                {size}
+              </button>
+
+              {isOutOfStock && (
+                <span className="absolute inset-0 flex items-center justify-center opacity-70 text-red-500 font-extrabold text-xs pointer-events-none">
+                  ✕
+                </span>
               )}
             </div>
           );
         })}
       </div>
-      
-      {allowMultiple && selectedSizes.length > 0 && (
-        <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <strong>Selected sizes:</strong> {selectedSizes.join(', ')}
-          </p>
-        </div>
-      )}
     </div>
   );
 };

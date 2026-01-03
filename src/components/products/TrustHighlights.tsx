@@ -16,9 +16,11 @@ export default function TrustHighlights() {
       <div className="grid grid-cols-4 gap-2 mt-2 mb-3 text-center">
         {[
           { icon: IndianRupee, label: "Free Delivery" },
-          { icon: Truck, label: "Fast Delivery" },
+        
           { icon: Shirt, label: "100% Cotton" },
+         
           { icon: Coins, label: "Reward Points" },
+          { icon: Truck, label: "Fast Delivery" },
         ].map(({ icon: Icon, label }, index) => (
           <div
             key={index}

@@ -49,18 +49,17 @@ const NewHero = () => {
         loop={banners.length > 1}
         speed={1200}
         allowTouchMove={false}
-        className="w-full md:w-[70vw] lg:w-[70vw] h-full sm:mt-10  object-contain"
+        className="w-full md:w-[70vw] lg:w-[70vw] h-full sm:mt-10  object-cover"
       >
         {banners.map((img, index) => (
           <SwiperSlide key={index}>
             <img
               src={img}
-              alt={`AIJIM lifestyle banner ${index + 1}`}
               className="
                 w-full
-                object-fill
+                object-cover
                 h-full     // Mobile height
-                sm:h-[50vh]   // Tablet height
+                sm:h-full   // Tablet height
                 md:h-[70vh]   // Laptop / small desktop
                 lg:h-[75vh] 
                 sm:mb-6

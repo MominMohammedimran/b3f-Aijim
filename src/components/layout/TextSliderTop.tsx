@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight,TreePine } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const messages = [
-  "New Year Sale - Grab",
+  "New Year  💯 Sale - Grab",
   "Any 2 — Oversized Tees",
   "₹1000 & Enjoy",
   "Free shipping",
@@ -54,7 +54,7 @@ export default function TextSliderTop() {
           </button>
 
           <span className="text-white font-semibold text-sm sm:text-md uppercase px-8 text-center flex items-center gap-2">
-  {index === 0 && <TreePine className="w-4 h-4 text-white" />}
+  
   {messages[index]}
 </span>
 
