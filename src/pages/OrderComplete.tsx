@@ -1,137 +1,64 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle, Package, Loader2 } from "lucide-react"; // Added Loader2 for better spinner
-import { toast } from "sonner";
-import { CheckoutStepper } from "@/components/checkout/CheckoutStepper";
-import { useCart } from "@/context/CartContext";
+import { CheckCircle, ShoppingBag, Package } from "lucide-react";
 
 const OrderComplete = () => {
-  const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
-  const { clearCart } = useCart();
-  // Using 'any' for the order state as in the original code, but a proper interface is recommended
-  const [order, setOrder] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
-  // --- LOGIC REMAINS UNCHANGED ---
+  // More dynamic and appealing button styles
+  const primaryButtonClass = "w-full bg-green-500 text-white hover:bg-green-600 font-bold tracking-wider text-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/30";
+  const secondaryButtonClass = "w-full bg-transparent border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black font-bold tracking-wider text-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-yellow-500/30";
 
-  useEffect(() => {
-    if (!orderId) {
-      toast.error("Invalid order.");
-      navigate("/");
-      return;
-    }
-    fetchOrder();
-  }, [orderId, navigate]); // Added navigate to dependency array for correctness
-
-  const fetchOrder = async () => {
-    try {
-      // Assuming 'order_number' is also fetched from the Supabase 'orders' table
-      const { data, error } = await supabase.from("orders").select("*").eq("order_number", orderId).single();
-      if (error || !data) throw error;
-      setOrder(data);
-      clearCart();
-    } catch (err) {
-      console.error("Error fetching order:", err);
-      toast.error("Unable to load order details.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // --- UI/UX UPDATES START HERE ---
-
-  // Custom Dark Button Styles
-  const primaryButtonClass = "w-full bg-yellow-500 text-black hover:bg-yellow-400 font-semibold transition-colors";
-  const secondaryButtonClass = "w-full border-green-500 text-green-500 hover:bg-green-900/50 transition-colors";
-
-  if (loading) {
-    return (
-      <Layout>
-        <div className="flex justify-center items-center h-64 bg-black text-white">
-          {/* Using Loader2 for a better looking spinner */}
-          <Loader2 className="h-10 w-10 text-yellow-500 animate-spin" />
-        </div>
-      </Layout>
-    );
-  }
-
-  if (!order) {
-    return (
-      <Layout>
-        <div className="text-center py-10 bg-black text-white min-h-screen">
-          <h2 className="text-xl font-bold text-red-500">Order not found</h2>
-          <Button onClick={() => navigate("/")} className={`mt-4 ${primaryButtonClass}`}>Go Home</Button>
-        </div>
-      </Layout>
-    );
-  }
-
-  // Main Success View
   return (
     <Layout>
-      <div className="min-h-screen bg-black text-white py-15 pt-5 mt-5 ">
-        <div className="container mx-auto px-4 max-w-md">
-          {/* Checkout Stepper needs to be styled for dark theme if possible, but keeping it as is for now */}
-          <CheckoutStepper currentStep={4} />
+      <div className="min-h-screen  text-white p-4 py-15 mt-20 flex items-center justify-center">
+        <div className="container mx-auto px-4 max-w-lg text-center">
+          <Card className="bg-gray-900/80 backdrop-blur-sm border-2 border-red-500/50 shadow-2xl shadow-green-500/20 rounded-2xl overflow-hidden">
+            <CardContent className="p-8 md:p-12 space-y-6">
 
-          {/* Dark Card Style */}
-          <Card className="bg-gray-900 border-green-500 border-2 shadow-2xl">
-            <CardContent className="pt-6 text-center space-y-6">
+              <div className="relative w-24 h-24 mx-auto">
+                {/* Pulsing green background glow */}
+                <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-50"></div>
+                {/* Central Check Icon */}
+                <div className="relative flex items-center justify-center w-full h-full bg-gray-800 rounded-full border-4 border-green-500">
+                    <CheckCircle className="h-12 w-12 text-green-500" />
+                </div>
+              </div>
+
+              <h1 className="text-xl font-extrabold text-white tracking-tight">
+                Thank You for Your Order!
+              </h1>
+
+              <p className="text-gray-300 text-md">
+                Your order has been successfully placed. A confirmation email is on its way to you.
+              </p>
+
               
-              {/* Success Icon */}
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
-              <h2 className="text-2xl font-bold text-green-500 tracking-wider">PAYMENT SUCCESSFUL</h2>
-              <p className="text-gray-300">Your order has been placed. Thank you for your purchase.</p>
 
-              {/* Order Details - Highlighted with Yellow Text */}
-              <div className="bg-gray-800 p-4 rounded-lg text-left space-y-3 border border-gray-700">
-                <div className="flex justify-between font-medium">
-                  <span className="text-gray-400">Order Number:</span>
-                  <span className="text-yellow-500">{order.order_number}</span>
-                </div>
-                <div className="flex justify-between font-medium">
-                  <span className="text-gray-400">Total Amount:</span>
-                  <span className="text-yellow-500">₹{order.total}</span>
-                </div>
-                <div className="flex justify-between font-medium">
-                  <span className="text-gray-400">Status:</span>
-                  <span className="capitalize text-blue-400">{order.status}</span>
-                </div>
-              </div>
-
-              {/* Next Steps - Highlighted with a contrasting Blue theme */}
-              <div className="bg-blue-900/50 p-4 rounded-lg border border-blue-700">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <Package className="h-5 w-5 text-blue-400" />
-                  <span className="font-semibold text-blue-300 tracking-wide">WHAT'S NEXT?</span>
-                </div>
-                <ul className="text-sm text-blue-200 space-y-1 text-left">
-                  <li>• **Email Confirmation:** You’ll receive an email confirmation shortly.</li>
-                  <li>• **Processing:** Your order will be processed within 24 hours.</li>
-                  <li>• **Tracking:** Track your order status in the "My Orders" section.</li>
-                </ul>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-3 pt-2">
-                <Button 
-                  onClick={() => navigate("/orders")} 
+              <div className="space-y-4 pt-4">
+                <Button
+                  onClick={() => navigate("/orders")}
                   className={primaryButtonClass}
                 >
+                  <Package className="mr-2 h-5 w-5" />
                   View My Orders
                 </Button>
-                <Button 
-                  onClick={() => navigate("/")} 
-                  variant="outline" 
+                <Button
+                  onClick={() => navigate("/")}
+                  variant="outline"
                   className={secondaryButtonClass}
                 >
+                  <ShoppingBag className="mr-2 h-5 w-5" />
                   Continue Shopping
                 </Button>
+              </div>
+              <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                 <p className="text-gray-400 text-sm">
+                    Thank you for placing your order. You can check the status of your order by clicking on the 'View My Orders' button, or you can continue shopping for more amazing products.
+                 </p>
               </div>
             </CardContent>
           </Card>

@@ -166,8 +166,8 @@ export const useNotifications = () => {
       try {
         const notif = new window.Notification(notification.title, {
           body: notification.message,
-          icon: '/aijim-uploads/aijim-black.png',
-          badge: '/aijim-uploads/aijim-black.png',
+          icon: '/aijim-uploads/aijim-black.svg',
+          badge: '/aijim-uploads/aijim-black.svg',
           tag: notification.id,
           data: { link: notification.link, ...notification.metadata },
           requireInteraction: false,

@@ -57,7 +57,7 @@ const ProductReviewCarousel: React.FC<ProductReviewCarouselProps> = ({
     return (
       <div className="text-center text-md text-gray-100 gap-1 flex items-center justify-center font-medium">
         <span className="text-yellow-400 font-semibold ">Trusted</span> by
-        <span className="text-yellow-400 font-bold mx-1">15+</span> Aijim
+        <span className="text-yellow-400 font-bold mx-1">16+</span> Aijim
         customers till Now !
       </div>
     );

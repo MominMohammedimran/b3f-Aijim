@@ -32,7 +32,7 @@ import TrackOrder from "./pages/TrackOrder";
 import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Wishlist from "./pages/Wishlist";
-import ThankYou from "./components/ui/ThankYou";
+import ThankYou from "./pages/ThankYou";
 import TrackPackage from "./pages/TrackPackage";
 import OrderRelatedIssue from "./components/orders/OrderRelatedIssue";
 import Feedback from "./pages/legal/Feedback";

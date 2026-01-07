@@ -46,8 +46,7 @@ const NewHero = () => {
       <Swiper
         modules={[Autoplay]}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
-        loop={banners.length > 1}
-        speed={1200}
+        loop={banners.length > 1}      speed={1200}
         allowTouchMove={false}
         className="w-full md:w-[70vw] lg:w-[70vw] h-full sm:mt-10  object-cover"
       >

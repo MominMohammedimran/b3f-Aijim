@@ -96,7 +96,7 @@ const PinCodeCheckAvailable = () => {
             }`}
           >
             <div className="bg-gray-800 text-gray-300 text-xs font-medium p-3 border border-gray-700 rounded-none space-y-1 leading-relaxed">
-              <p>• Easy 7-day exchange available on eligible items.</p>
+              <p>• Easy 7-day return available on eligible items.</p>
               <p>• No Cash on Delivery available.</p>
 
               <Link

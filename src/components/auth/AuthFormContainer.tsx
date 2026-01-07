@@ -88,11 +88,11 @@ const handleSignupSuccess = async (email: string, password: string,fullName:stri
         {currentMode === 'signin' ? (
           <div className="p-2">
             <LoginForm onSubmit={handleSignIn} loading={loading} />
-            <div className="mt-4 text-center text-gray-300">
-              Don't have an account?{" "}
+            <div className="flex mt-4 text-center items-center justify-center text-gray-300">
+              <p className='text-sm font-medium uppercase '>Don't have an account ? {" "}</p>
               <Button
                 variant="link"
-                className="font-semibold"
+                className="font-medium  uppercase underline hover:text-yellow-300"
                 onClick={() => { switchAuthTab("signup"); setCurrentMode("signup"); }}
               >
                 Sign up
@@ -104,11 +104,11 @@ const handleSignupSuccess = async (email: string, password: string,fullName:stri
             {/* 👇 IMPORTANT: Pass the success callback */}
             <SignUpForm onSuccess={handleSignupSuccess} />
 
-            <div className="mt-4 text-center font-medium text-gray-300">
-              Already have an account ? 
+            <div className="flex items-center justify-center text-center mt-4 text-center font-medium text-gray-300">
+            <p className='text-sm font-medium uppercase '>Already have an account ? {" "}</p>
               <Button
                 variant="link"
-                className="font-semibold"
+                className="font-medium uppercase underline hover:text-yellow-300 "
                 onClick={() => { switchAuthTab("signin"); setCurrentMode("signin"); }}
               >
                 Sign in
