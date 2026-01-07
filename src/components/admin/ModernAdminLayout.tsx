@@ -23,6 +23,7 @@ import {
   Search,
   CreditCard,
   Newspaper,
+  ImageIcon,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import AdminBottomNavigation from './AdminBottomNavigation';
@@ -112,6 +113,8 @@ const ModernAdminLayout: React.FC<ModernAdminLayoutProps> = ({
     { icon: Settings, label: 'Settings', path: '/admin/settings' },
     { icon: CreditCard, label: 'Payments', path: '/admin/order-manager' },
     { icon: Newspaper, label: 'Articles', path: '/admin/articles' },
+    { icon: ImageIcon, label: 'Banner', path: '/admin/banners' },
+    
 
   ];
 

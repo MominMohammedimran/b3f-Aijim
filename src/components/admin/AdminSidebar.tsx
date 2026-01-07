@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -11,7 +10,8 @@ import {
   UserCheck,
   CreditCard,
   Menu,
-  X
+  X,
+  ImageIcon
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -21,6 +21,7 @@ const AdminSidebar = () => {
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: Home },
     { name: 'Products', href: '/admin/products', icon: Package },
+    { name: 'Banners', href: '/admin/banners', icon: ImageIcon },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Customers', href: '/admin/profiles', icon: Users },
     { name: 'Website Users', href: '/admin/website-users', icon: UserCheck },

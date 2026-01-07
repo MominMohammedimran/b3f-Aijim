@@ -25,7 +25,7 @@ function CartReminders() {
           () => (
             <div className="p-3 rounded-lg shadow bg-white border flex gap-2 items-center">
               <span className="text-sm font-medium text-black">
-                Your cart is empty 🛒 — Continue shopping!
+                Your cart is empty — Continue shopping!
               </span>
             </div>
           ),

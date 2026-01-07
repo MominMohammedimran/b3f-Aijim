@@ -50,6 +50,7 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminBanners from "./pages/admin/AdminBanners";
 import AdminArticles from "./pages/admin/AdminArticles";
 import AdminArticleEdit from "./pages/admin/AdminArticleEdit";
 import AdminCustomers from "./pages/admin/AdminCustomers";
@@ -120,7 +121,8 @@ const AppRoutes = () => {
         <Route path="/admin" element={<AdminAuthGuard><AdminDashboard /></AdminAuthGuard>} />
         <Route path="/admin/dashboard" element={<AdminAuthGuard><AdminDashboard /></AdminAuthGuard>} />
         <Route path="/admin/products" element={<AdminAuthGuard><AdminProducts /></AdminAuthGuard>} />
-      <Route path="/admin/articles" element={<AdminAuthGuard><AdminArticles /></AdminAuthGuard>} />
+        <Route path="/admin/banners" element={<AdminAuthGuard><AdminBanners /></AdminAuthGuard>} />
+        <Route path="/admin/articles" element={<AdminAuthGuard><AdminArticles /></AdminAuthGuard>} />
         <Route path="/admin/articles/new" element={<AdminAuthGuard><AdminArticleEdit /></AdminAuthGuard>} />
         <Route path="/admin/articles/edit/:slug" element={<AdminAuthGuard><AdminArticleEdit /></AdminAuthGuard>} />
         <Route path="/admin/orders" element={<AdminAuthGuard><AdminOrders /></AdminAuthGuard>} />

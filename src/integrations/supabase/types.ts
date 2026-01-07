@@ -242,6 +242,30 @@ export type Database = {
         }
         Relationships: []
       }
+      banners: {
+        Row: {
+          id: string
+          created_at: string
+          title: string | null
+          images: Json
+          is_active: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          title?: string | null
+          images: Json
+          is_active?: boolean
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          title?: string | null
+          images?: Json
+          is_active?: boolean
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           active: boolean | null
