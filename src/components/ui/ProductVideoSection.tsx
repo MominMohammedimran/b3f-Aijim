@@ -4,8 +4,6 @@ import {
   VolumeX,
   ChevronLeft,
   ChevronRight,
-  Maximize,
-  X,
 } from "lucide-react";
 
 const videos = [
@@ -29,8 +27,6 @@ const ProductVideoSection: React.FC = () => {
   const [activeVideo, setActiveVideo] = useState<number>(videos[0].id);
   const activeVideoIndex = videos.findIndex((v) => v.id === activeVideo);
 
-  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
-
   /** Mute toggle */
   const toggleMute = (id: number) => {
     const el = videoRefs.current[id];
@@ -41,45 +37,6 @@ const ProductVideoSection: React.FC = () => {
 
     setMutedStates((prev) => ({ ...prev, [id]: newMuted }));
   };
-
-  /** ⭐ FIXED: Open Fullscreen */
-  const openFullscreen = (id: number) => {
-    const target = videoRefs.current[id];
-
-    // Pause all carousel videos
-    Object.values(videoRefs.current).forEach((v) => v?.pause());
-
-    // Play only fullscreen video (unmuted)
-    if (target) {
-      target.muted = false;
-      setMutedStates((prev) => ({ ...prev, [id]: false }));
-      target.play().catch(() => {});
-    }
-
-    setIsFullscreenOpen(true);
-  };
-
-  /** ⭐ FIXED: Close Fullscreen */
-  const closeFullscreen = useCallback(() => {
-    const current = videoRefs.current[activeVideo];
-
-    // Pause fullscreen video
-    if (current) current.pause();
-
-    // Re-mute it after closing
-    if (current) current.muted = true;
-    setMutedStates((prev) => ({ ...prev, [activeVideo]: true }));
-
-    // Restart all carousel videos muted
-    Object.entries(videoRefs.current).forEach(([_, v]) => {
-      if (v) {
-        v.muted = true;
-        v.play().catch(() => {});
-      }
-    });
-
-    setIsFullscreenOpen(false);
-  }, [activeVideo]);
 
   /** Scroll to video center */
   const scrollToVideo = (index: number) => {
@@ -149,7 +106,6 @@ const ProductVideoSection: React.FC = () => {
 
   /** Auto-center */
   useEffect(() => {
-    if (isFullscreenOpen) return;
     if (isUserScrolling.current) return;
   
     const t = setTimeout(() => {
@@ -159,20 +115,8 @@ const ProductVideoSection: React.FC = () => {
     }, 80);
   
     return () => clearTimeout(t);
-  }, [activeVideo, isFullscreenOpen]);
+  }, [activeVideo]);
   
-
-  /** ESC to close fullscreen */
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isFullscreenOpen) closeFullscreen();
-    };
-
-    if (isFullscreenOpen)
-      document.addEventListener("keydown", handler);
-
-    return () => document.removeEventListener("keydown", handler);
-  }, [isFullscreenOpen, closeFullscreen]);
 
   /** Snap to nearest video */
   const snapToNearestVideo = () => {
@@ -228,7 +172,7 @@ const ProductVideoSection: React.FC = () => {
         {/* Prev Button */}
         <button
           onClick={() => navigate("prev")}
-          disabled={activeVideoIndex === 0 || isFullscreenOpen}
+          disabled={activeVideoIndex === 0}
           className="absolute left-1 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-gray-600 p-2 z-10 rounded-full shadow-lg disabled:opacity-50"
         >
           <ChevronLeft className="w-6 h-6 text-gray-800 hover:text-white" />
@@ -237,7 +181,7 @@ const ProductVideoSection: React.FC = () => {
         {/* Next Button */}
         <button
           onClick={() => navigate("next")}
-          disabled={activeVideoIndex === videos.length - 1 || isFullscreenOpen}
+          disabled={activeVideoIndex === videos.length - 1}
           className="absolute right-1 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-gray-600 p-2 z-10 rounded-full  shadow-lg disabled:opacity-50"
         >
           <ChevronRight className="w-6 h-6 text-gray-800 hover:text-white" />
@@ -260,16 +204,24 @@ const ProductVideoSection: React.FC = () => {
               `}
             >
               <video
-                ref={(el) => (videoRefs.current[video.id] = el)}
-                src={video.src}
-                data-id={video.id}
-                autoPlay
-                playsInline
-                loop
-                muted
-                preload="metadata"
-                className="w-full h-full object-cover"
-              />
+  ref={(el) => (videoRefs.current[video.id] = el)}
+  src={video.src}
+  data-id={video.id}
+  autoPlay
+  loop
+  muted
+  playsInline
+  preload="none"
+  crossOrigin="anonymous"
+  disablePictureInPicture
+  className="w-full h-full object-cover"
+  onError={(e) => {
+    console.warn("Video failed to load", video.src);
+    const target = e.currentTarget;
+    target.load(); // simple retry once
+  }}
+/>
+
 
               {activeVideo === video.id && (
                 <>
@@ -286,17 +238,6 @@ const ProductVideoSection: React.FC = () => {
                     ) : (
                       <Volume2 className="w-4 h-4 text-yellow-300" />
                     )}
-                  </button>
-
-                  {/* Fullscreen */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openFullscreen(video.id);
-                    }}
-                    className="absolute bottom-2 right-3 bg-black/30 p-2 rounded-full hidden"
-                  >
-                    <Maximize className="w-4 h-4 text-white" />
                   </button>
                 </>
               )}
@@ -317,33 +258,6 @@ const ProductVideoSection: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {/* ⭐ Fullscreen Modal */}
-      {isFullscreenOpen && activeVideoObj && (
-        <div
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
-          onClick={closeFullscreen}
-        >
-          <button
-            onClick={closeFullscreen}
-            className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 p-2 rounded-full z-50"
-          >
-            <X className="w-6 h-6 text-white" />
-          </button>
-
-          <video
-            key={`fullscreen-${activeVideoObj.id}`}
-            src={activeVideoObj.src}
-            controls
-            autoPlay
-            loop
-            playsInline
-            className="w-full h-full object-contain"
-            muted={mutedStates[activeVideoObj.id]}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
     </>
   );
 };

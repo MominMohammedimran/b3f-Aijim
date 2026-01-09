@@ -10,7 +10,7 @@ import {
   Package,
   Home,
   PackageSearch,
-  Tag,
+  LogOut,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "../../context/LocationContext";
@@ -21,32 +21,22 @@ import { useCart } from "@/context/CartContext";
 import Marquee from "react-fast-marquee";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import TextSliderTop from './TextSliderTop'
+
 const Navbar = () => {
   const routerLocation = useRouterLocation();
-  const [cartCount, setCartCount] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const { currentUser, signOut } = useAuth();
-  const { clearCart } = useCart();
+  const { cartItems, clearCart } = useCart();
   const { setCurrentLocation } = useLocation();
+
+  const cartCount = cartItems.length;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
-
-    const loadCartCount = async () => {
-      if (currentUser) {
-        const { data } = await supabase
-          .from("carts")
-          .select("*")
-          .eq("user_id", currentUser.id);
-        if (data) setCartCount(data.length);
-      }
-    };
-
-    loadCartCount();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [currentUser]);
+  }, []);
 
   const isActive = (path: string) => routerLocation.pathname === path;
 
@@ -75,7 +65,6 @@ const Navbar = () => {
               key={i}
               className="flex items-center uppercase text-white font-semibold text-[10px] sm:text-[13px] px-4 whitespace-nowrap"
             >
-              {/*<Tag size={14} className="text-white mr-1" /> Flat ₹500 Off on Orders Above ₹2500*/}
               "Every T-shirt tells a story — built from hustle. #
               <span className="font-bold ">AIJIM</span>”
             </span>
@@ -137,6 +126,17 @@ const Navbar = () => {
               </span>
             )}
           </Link>
+
+          {/* Logout Icon */}
+          {currentUser && (
+            <button
+              onClick={handleSignOut}
+              aria-label="Sign Out"
+              className="text-white hover:text-yellow-400 hidden"
+            >
+              <LogOut size={20} />
+            </button>
+          )}
         </div>
       </div>
 

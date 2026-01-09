@@ -123,7 +123,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         .select('*')
         .eq('user_id', currentUser.id)
         .eq('product_id', item.product_id)
-        .single();
+        .maybeSingle();
 
       if (existingError && existingError.code !== 'PGRST116') {
         throw existingError;

@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "./context/AuthContext";
 import CartProvider from "./context/CartContext";
 import { ActiveProductProvider } from "./context/ActiveProductContext";
+import { SettingsProvider } from "./context/SettingsContext"; // Import SettingsProvider
 import Preloader from "./Preloader";
 import AppRoutes from "./routes";
 
@@ -30,15 +31,17 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <ProductSuggestionReminder />
           <AuthProvider>
-            <CartProvider>
-              <ActiveProductProvider>
-                <TooltipProvider>
-                  <CartReminders />
-                  <AppRoutes />
-                  <Toaster position="top-right" expand />
-                </TooltipProvider>
-              </ActiveProductProvider>
-            </CartProvider>
+            <SettingsProvider> {/* Add SettingsProvider here */}
+              <CartProvider>
+                <ActiveProductProvider>
+                  <TooltipProvider>
+                    <CartReminders />
+                    <AppRoutes />
+                    <Toaster position="top-right" expand />
+                  </TooltipProvider>
+                </ActiveProductProvider>
+              </CartProvider>
+            </SettingsProvider>
           </AuthProvider>
         </QueryClientProvider>
       </HelmetProvider>
