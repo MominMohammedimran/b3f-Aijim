@@ -25,6 +25,9 @@ import TextSliderTop from './TextSliderTop'
 const Navbar = () => {
   const routerLocation = useRouterLocation();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cartAnimate, setCartAnimate] = useState(false);
+
+
   const navigate = useNavigate();
   const { currentUser, signOut } = useAuth();
   const { cartItems, clearCart } = useCart();
@@ -37,7 +40,14 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      setCartAnimate(true);
+      const timer = setTimeout(() => setCartAnimate(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [cartItems.length]);
+  
   const isActive = (path: string) => routerLocation.pathname === path;
 
   const handleSignOut = async () => {
@@ -93,7 +103,14 @@ const Navbar = () => {
         {/* Right Icons */}
         <div className="flex items-center gap-4 mr-4 pb-2">
           {/* Notifications */}
-         <NotificationBell />
+          <div
+  onClick={() => window.scrollTo(0, 0)}
+  className="text-white hover:text-yellow-400   "
+>
+  <NotificationBell />
+</div>
+
+         
 
           {/* Search Icon */}
           <Link
@@ -107,25 +124,26 @@ const Navbar = () => {
             <Search size={20} />
           </Link>
 
-          {/* Cart Icon */}
           <Link
-            onClick={() => {
-              window.scrollTo(0, 0);
-            }}
-            to="/cart"
-            aria-label="Cart"
-            className="relative"
-          >
-            <ShoppingCart
-              size={20}
-              className="text-white hover:text-yellow-400"
-            />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold">
-                {cartCount}
-              </span>
-            )}
-          </Link>
+  onClick={() => window.scrollTo(0, 0)}
+  to="/cart"
+  aria-label="Cart"
+  className={`relative transition-transform duration-300 
+    hover:scale-110 
+    ${cartAnimate ? "animate-bounce" : ""}`}
+>
+  <ShoppingCart
+    size={20}
+    className="text-white hover:text-yellow-400"
+  />
+
+  {cartCount > 0 && (
+    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center font-bold animate-pulse">
+      {cartCount}
+    </span>
+  )}
+</Link>
+
 
           {/* Logout Icon */}
           {currentUser && (

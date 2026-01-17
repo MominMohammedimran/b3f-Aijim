@@ -69,8 +69,8 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
         productProp={product}
       />
 
-      <div className="container-custom mt-14 ">
-        <div className=" flex items-center pt-5 mt-15">
+      <div className="container-custom mt-14 lg:mt-20">
+        <div className=" flex items-center pt-5 mt-15 lg:mt-18 ">
           <Link to="/" className="mr-2">
             <ArrowLeft size={24} className="back-arrow" />
           </Link>

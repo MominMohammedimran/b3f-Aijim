@@ -31,7 +31,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         const { data, error } = await supabase
           .from('admin_settings')
           .select('*')
-          .single(); // Assuming you have only one row of settings
+          .maybeSingle(); // Assuming you have only one row of settings
 
         if (error) throw error;
 

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -17,7 +18,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
 
-
 type NotificationType =
   | 'order_update'
   | 'payment_issue'
@@ -34,7 +34,6 @@ interface NotificationPanelProps {
 
 const getNotificationIcon = (type: NotificationType) => {
   const base = 'h-5 w-5 drop-shadow-md';
-
 
   switch (type) {
     case 'order_update':
@@ -68,7 +67,7 @@ const NotificationItem: React.FC<{
     <motion.div
       whileTap={{ scale: 0.97 }}
       onClick={handleClick}
-      className={`group relative p-4  mb-2 cursor-pointer transition-all duration-300 rounded-xl border border-white/10
+      className={`group relative p-4 mb-2 cursor-pointer transition-all duration-300 rounded-xl border border-white/10
         backdrop-blur-md bg-white/5 
         ${notification.is_read ? 'opacity-70' : 'backdrop-blur-xl bg-white/10'} 
         hover:bg-white/15 hover:shadow-lg`}
@@ -76,10 +75,9 @@ const NotificationItem: React.FC<{
       {!notification.is_read && (
         <span className="absolute right-3 top-3 h-2.5 w-2.5 bg-yellow-400 rounded-full animate-ping" />
       )}
-
       <div className="flex items-start gap-3">
         {getNotificationIcon(notification.type as NotificationType)}
-        <div className="flex-1 min-w-0 ">
+        <div className="flex-1 min-w-0">
           <h4 className="text-sm font-semibold text-white truncate">{notification.title}</h4>
           <p className="text-xs text-gray-300 mt-1 line-clamp-2">{notification.message}</p>
           <span className="text-[10px] text-gray-400 mt-2 block">
@@ -92,29 +90,18 @@ const NotificationItem: React.FC<{
 };
 
 const panelVariants: Variants = {
-  hidden: {
-    x: '100%',
-    opacity: 0,
-    filter: 'blur(10px)',
-  },
+  hidden: { x: '100%', opacity: 0, filter: 'blur(10px)' },
   visible: {
     x: 0,
     opacity: 1,
     filter: 'blur(0)',
-    transition: {
-      duration: 0.35,
-      // use easing curve array (framer-motion expects number[] or easing function)
-      ease: [0.25, 0.1, 0.25, 1],
-    },
+    transition: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
   },
   exit: {
     x: '100%',
     opacity: 0,
     filter: 'blur(10px)',
-    transition: {
-      duration: 0.28,
-      ease: [0.4, 0, 1, 1],
-    },
+    transition: { duration: 0.28, ease: [0.4, 0, 1, 1] },
   },
 };
 
@@ -122,22 +109,22 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose }
   const navigate = useNavigate();
   const { notifications, unreadCount, loading, markAsRead, markAllAsRead } = useNotifications();
 
-
   if (!isOpen) return null;
 
   return (
     <>
-      {/* Backdrop intentionally NOT clickable (pointer-events-none) so clicking outside DOES NOT close */}
+      {/* Backdrop: now clickable to close the panel */}
       <motion.div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 pointer-events-none"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        onClick={onClose}
       />
 
-      {/* Panel: pointer-events-auto so panel itself is interactive */}
+      {/* Panel: Higher z-index to ensure it is on top */}
       <motion.div
-        className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#0f0f0f]/60 backdrop-blur-2xl border-l border-white/10 z-50 flex flex-col shadow-2xl pointer-events-auto"
+        className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#0f0f0f]/60 backdrop-blur-2xl border-l border-white/10 z-[9999] flex flex-col shadow-2xl"
         variants={panelVariants}
         initial="hidden"
         animate="visible"
@@ -184,7 +171,6 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({ isOpen, onClose }
                 notification={n}
                 onRead={markAsRead}
                 onNavigate={(link) => {
-                  // Navigate but DO NOT auto-close the panel
                   if (link) navigate(link);
                 }}
               />

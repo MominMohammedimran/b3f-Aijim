@@ -89,6 +89,7 @@
     "react-slick": "^0.30.3",
     "react-swipeable": "^7.0.2",
     "recharts": "^2.12.7",
+    "rollup-plugin-visualizer": "^6.0.5",
     "sharp": "^0.34.4",
     "slick-carousel": "^1.8.1",
     "sonner": "^2.0.5",
