@@ -73,9 +73,11 @@ const ProductCard: React.FC<Props> = ({ product, onClick, className = "" }) => {
 
         {/* Discount Badge */}
          {/* Discount Badge */}
-         <div className="absolute top-0 left-0 z-20 bg-black text-white text-[10px] font-semibold px-1 py-0.5 rounded-none shadow">
-              <span>New Year 💯 Sale </span> 
-          </div>
+         <div className="absolute top-0 left-0 z-20 bg-gradient-to-r from-[#FF9933] via-white to-[#138808] text-black text-[9px] font-bold px-2 py-0.5 rounded-none shadow-sm flex items-center gap-1">
+  <span>Republic Day Sale </span>
+</div>
+           {/* 💯 */}
+          
          {hasDiscount && discountPercent > 0 && (
           <div className="absolute top-0 right-0 z-20 bg-red-600 text-white text-[10px] font-semibold px-1 py-0.5 rounded-none shadow">
              {discountPercent}% OFF  

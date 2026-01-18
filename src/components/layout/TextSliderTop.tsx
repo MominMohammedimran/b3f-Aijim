@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight,TreePine } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const messages = [
-  "New Year  💯 Sale - Grab",
+  "Republic Day Sale - Grab",
   "Any 2 — Oversized Tees",
   "₹1000 & Enjoy",
   "Free shipping",

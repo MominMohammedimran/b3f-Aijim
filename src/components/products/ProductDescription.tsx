@@ -1,10 +1,73 @@
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { 
+  ChevronDown, 
+  ChevronUp, 
+  Droplets, 
+  Wind, 
+  ZapOff, 
+  FlameKindling,
+  X,
+  
+} from "lucide-react"; // Added icons
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo } from "react";
 
 interface ProductDescriptionProps {
   desc?: string;
 }
+
+// --- NEW: Icon Mapping Component ---
+const IronIcon = ({ className }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M7 6h10a4 5 0 0 1 4 4v7H3v-2c0-5 4-10 4-9Z" />
+    <path d="M3 17h18" />
+    <path d="m13 6 3-3" />
+  </svg>
+);
+
+const WashCareIcon = ({ text }: { text: string }) => {
+  const lowercaseText = text.toLowerCase();
+  
+  // 2. Use a generic type that accepts both Lucide and Custom components
+  // This bypasses the strict Lucide requirement for '$$typeof'
+  let IconComponent: React.ElementType = X;
+  let label = "No Bleach";
+
+  if (lowercaseText.includes("wash")) {
+    IconComponent = Droplets;
+    label = "Cold Wash";
+  } else if (lowercaseText.includes("iron")) {
+    IconComponent = IronIcon; 
+    label = "Low Iron Heat";
+  } else if (lowercaseText.includes("dry")) {
+    IconComponent = Wind;
+    label = "Cold Dry";
+  } 
+
+  return (
+    <div className="flex flex-col items-center justify-center gap-2">
+      <motion.div 
+        whileHover={{ scale: 1.15, backgroundColor: "rgba(0, 0, 0, 0.1)" }}
+        whileTap={{ scale: 0.9 }}
+        className="flex items-center justify-center w-12 h-12 p-2 border border-gray-600 rounded-full bg-gray-900 transition-all duration-300"
+      >
+        {/* 3. Render it as a component */}
+        <IconComponent className="w-5 h-5 text-yellow-500" />
+      </motion.div>
+      
+      <span className="text-[10px] uppercase tracking-wider text-gray-300 font-semibold">
+        {label}
+      </span>
+    </div>
+  );
+};
 
 const ProductDescription = ({ desc }: ProductDescriptionProps) => {
   const defaultDescription = `
@@ -31,10 +94,8 @@ WASH CARE
 - Dry in shade for long-lasting color and print.
 `;
 
-  // ✅ Use product description if available, else fallback
   const text = useMemo(() => {
-    const finalText =
-      desc && desc.trim().length > 20 ? desc : defaultDescription;
+    const finalText = desc && desc.trim().length > 20 ? desc : defaultDescription;
     return finalText
       .trim()
       .split(/\n+/)
@@ -42,7 +103,6 @@ WASH CARE
       .filter(Boolean);
   }, [desc]);
 
-  // ✅ Group by sections like DETAILS, ARTWORK FEATURES, etc.
   const sections = useMemo(() => {
     const grouped: { title: string; content: string[] }[] = [];
     let current: { title: string; content: string[] } | null = null;
@@ -67,7 +127,7 @@ WASH CARE
 
   const [openSections, setOpenSections] = useState(
     sections.reduce((acc, section, index) => {
-      acc[index] = section.title.toLowerCase() === "story"; // Only Story open by default
+      acc[index] = section.title.toLowerCase() === "story";
       return acc;
     }, {} as Record<number, boolean>)
   );
@@ -82,53 +142,68 @@ WASH CARE
       </h3>
 
       <div className="space-y-3">
-        {sections.map((section, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: i * 0.1 }}
-            className="border-b border-gray-800 pb-2 last:border-none"
-          >
-            <button
-              onClick={() => toggleSection(i)}
-              className="flex justify-between items-center w-full text-left group"
+        {sections.map((section, i) => {
+          const isWashCare = section.title.toLowerCase() === "wash care";
+          
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: i * 0.1 }}
+              className="border-b border-gray-800 pb-2 last:border-none"
             >
-              <span className="text-yellow-300 text-sm border-b border-yellow-400 font-semibold uppercase tracking-wide group-hover:text-yellow-400 transition">
-                {section.title}
-              </span>
-              {openSections[i] ? (
-                <ChevronUp className="w-4 h-4 text-yellow-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-gray-400" />
-              )}
-            </button>
+              <button
+                onClick={() => toggleSection(i)}
+                className="flex justify-between items-center w-full text-left group"
+              >
+                <span className="text-yellow-300 text-sm border-b border-yellow-400 font-semibold uppercase tracking-wide group-hover:text-yellow-400 transition">
+                  {section.title}
+                </span>
+                {openSections[i] ? (
+                  <ChevronUp className="w-4 h-4 text-yellow-400" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                )}
+              </button>
 
-            <AnimatePresence>
-              {openSections[i] && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-2 pl-1 text-gray-300 text-sm leading-relaxed space-y-1"
-                >
-                  {section.content.map((line, j) => (
-                    <motion.p
-                      key={j}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: j * 0.03 }}
-                      className="text-xs flex items-start gap-2"
-                    >
-                      {line}
-                    </motion.p>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        ))}
+              <AnimatePresence>
+                {openSections[i] && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mt-2 pl-1 text-gray-300 text-sm leading-relaxed"
+                  >
+                    {/* --- NEW: Icon Row for Wash Care --- */}
+                    {isWashCare && (
+                      <div className="flex flex-wrap items-center justify-around gap-4 mb-4 mt-4">
+                        {section.content.map((line, idx) => (
+                          <WashCareIcon key={idx} text={line} />
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="space-y-1">
+                      {section.content.map((line, j) => (
+                        <motion.p
+                          key={j}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: j * 0.03 }}
+                          className="text-xs flex items-start gap-2"
+                        >
+                          {line}
+                        </motion.p>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );

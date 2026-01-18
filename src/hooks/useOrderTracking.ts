@@ -32,6 +32,7 @@ export const useOrderTracking = () => {
         // Transform the data to match our Order interface
         const transformedOrders: Order[] = data.map((order: any) => ({
           id: order.id,
+          name:order.name,
           orderNumber: order.order_number,
           order_number: order.order_number,
           userId: order.user_id,
