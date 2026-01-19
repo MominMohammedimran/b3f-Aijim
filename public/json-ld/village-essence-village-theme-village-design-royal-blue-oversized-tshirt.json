@@ -17,8 +17,8 @@
       "@type": "Offer",
       "url": "https://aijim.shop/product/village-essence-village-theme-village-design-royal-blue-oversized-tshirt",
       "priceCurrency": "INR",
-      "price": 550,
-      "priceValidUntil": "2025-12-31",
+      "price": 545,
+      "priceValidUntil": "2026-12-31",
       "availability": "https://schema.org/InStock",
       "itemCondition": "https://schema.org/NewCondition",
       "hasMerchantReturnPolicy": {
@@ -71,7 +71,7 @@
           "@type": "Person",
           "name": "Verified Customer"
         },
-        "datePublished": "2025-12-29",
+        "datePublished": "2026-01-19",
         "reviewBody": "Amazing fabric and premium stitching. Highly recommended!",
         "reviewRating": {
           "@type": "Rating",
