@@ -102,15 +102,18 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
     <Layout>
       <div className="max-w-2xl mx-auto mt-10 pt-10 px-4 pb-24 font-sans">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <Link
-            to="/orders"
-            className="flex items-center text-yellow-400 hover:text-yellow-500"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Orders
+      <nav className="flex items-center gap-2 pt-6 mb-5 text-white text-sm sm:text-base">
+          <Link to="/orders" className="opacity-70 hover:opacity-100 transition">
+            Orders
           </Link>
-        </div>
+      
+         <span className="opacity-60">/</span>
+      
+          <span className="font-semibold line-clamp-1">
+          #{order.order_number}
+          </span>
+        </nav>
+       
 
         {/* Order Overview */}
         <div className="bg-[#0d0d0d] border border-gray-800 rounded-none p-5 mb-5 shadow-lg">

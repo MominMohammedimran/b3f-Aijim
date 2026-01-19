@@ -8,11 +8,11 @@ import {
 
 const videos = [
   { id: 1, title: "Aijim Story", src: "/aijim-uploads/videos/aijim-first-video.mp4" },
-  { id: 2, title: "Aijim Beige", src: "/aijim-uploads/videos/Beige-Shoot-Mode.mp4" },
-  { id: 3, title: "Aijim Beige", src: "/aijim-uploads/videos/Black-Shoot-Video.mp4" },
-  { id: 4, title: "Website Launch", src: "/aijim-uploads/videos/aijim-launch-video.mp4" },
-
-
+  { id: 2, title: "Website Launch", src: "/aijim-uploads/videos/aijim-launch-video.mp4" },
+  { id: 3, title: "Aijim Beige", src: "/aijim-uploads/videos/Beige-Shoot-Mode.mp4" },
+  { id: 4, title: "Aijim Black", src: "/aijim-uploads/videos/Black-Shoot-Video.mp4" },
+  { id: 5, title: "Aijim Olive-Green", src: "/aijim-uploads/videos/Olive-Green-Shoot-video.mp4" },
+ 
 ];
 
 const ProductVideoSection: React.FC = () => {

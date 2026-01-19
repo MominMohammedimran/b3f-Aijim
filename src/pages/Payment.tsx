@@ -80,12 +80,25 @@ const Payment = () => {
 <CheckoutStepper currentStep={3}/>
         <div className="flex items-center justify-between mt-3 mb-6">
           
-          <div className="flex items-center justify-center ">
-            <Link to="/checkout" className="mr-4">
-              <ArrowLeft size={20} className="text-white" />
-            </Link>
-            <h1 className="text-xl font-bold leading-snug">Payment</h1>
-          </div>
+          <nav className="flex items-center gap-2 mt-2  text-white text-md sm:text-base">
+                 
+                                                        <Link to="/cart" className="opacity-70 hover:opacity-100 transition">
+                                                          Cart
+                                                        </Link>
+                                                    
+                                                       <span className="opacity-60">/</span>
+                                                       <Link to="/checkout" className="opacity-70 hover:opacity-100 transition">
+                                                          Checkout
+                                                        </Link>
+                                                    
+                                                       <span className="opacity-60">/</span>
+                                                     
+                                                    
+                                                        <span className="font-semibold line-clamp-1">
+                                                       
+                                                        Payment
+                                                        </span>
+                                                      </nav>
           
           <AlertDialog>
             <AlertDialogTrigger asChild>

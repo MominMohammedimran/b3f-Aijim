@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Truck, RotateCcw, Shield } from "lucide-react";
 import Marquee from "react-fast-marquee";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
-import { useBanners } from "@/context/BannerContext"; // Import the custom hook
+import "swiper/css/effect-fade";
+import { useBanners } from "@/context/BannerContext";
+import { useNavigate } from "react-router-dom";
 
 const NewHero = () => {
-  const { banners, loading } = useBanners(); // Use the context
+  const { banners, loading } = useBanners();
   const [currentBanners, setCurrentBanners] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (loading) return;
@@ -16,9 +19,13 @@ const NewHero = () => {
     const updateBanner = () => {
       const width = window.innerWidth;
       if (width <= 640) {
-        setCurrentBanners(banners.mobile.length > 0 ? banners.mobile : banners.desktop);
+        setCurrentBanners(
+          banners.mobile.length > 0 ? banners.mobile : banners.desktop
+        );
       } else {
-        setCurrentBanners(banners.desktop.length > 0 ? banners.desktop : banners.mobile);
+        setCurrentBanners(
+          banners.desktop.length > 0 ? banners.desktop : banners.mobile
+        );
       }
     };
 
@@ -30,53 +37,113 @@ const NewHero = () => {
   return (
     <div className="relative w-full overflow-hidden">
       <Swiper
-        modules={[Autoplay]}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        modules={[Autoplay, EffectFade]}
+        autoplay={{ delay: 3800, disableOnInteraction: false }}
         loop={!loading && currentBanners.length > 1}
-        speed={1200}
+        speed={1600}
+        effect="fade"
+        fadeEffect={{ crossFade: true }}
         allowTouchMove={false}
-        className="w-full md:w-[90vw] lg:w-[85vw] h-full sm:mt-15 object-cover mt-8"
+        className="w-full h-full mt-3"
       >
         {loading ? (
           <SwiperSlide>
-            <div className="w-full h-full sm:h-full md:h-[70vh] lg:h-[75vh] bg-gray-300 animate-pulse"></div>
+            <div className="w-full md:h-[70vh] lg:h-[75vh] bg-gray-300 animate-pulse" />
           </SwiperSlide>
         ) : currentBanners.length > 0 ? (
           currentBanners.map((img, index) => (
-            <SwiperSlide key={index}>
+            <SwiperSlide key={index} className="relative">
               <img
                 src={img}
-                alt={`Banner image ${index + 1}`}
-                className="w-full object-cover h-full sm:h-[70vh] md:h-[70vh] lg:h-[75vh] sm:mb-6"
+                alt={`Banner ${index + 1}`}
                 loading="eager"
+                className="w-full object-cover transition-transform duration-[4200ms] scale-110"
               />
+
+              {/* Overlay */}
+            
+
+              {/* Content */}
+              <div className="absolute inset-0 flex items-center justify-center text-center px-6 hidden">
+                <div className="max-w-2xl animate-fadeUp">
+                  <h1 className="text-white font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-lg">
+                    Premium Oversized Tees
+                  </h1>
+
+                  <p className="text-white/90 mt-4 text-sm sm:text-base md:text-lg">
+                    Street style comfort. Limited edition drops.
+                  </p>
+
+                  <button
+                    onClick={() => navigate("/shop")}
+                    className="mt-6 px-7 py-3 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform duration-300"
+                  >
+                    Shop Now
+                  </button>
+                </div>
+              </div>
             </SwiperSlide>
           ))
         ) : (
-           <SwiperSlide>
-             <div className="w-full h-full sm:h-full md:h-[70vh] lg:h-[75vh] bg-gray-200 flex items-center justify-center p-4 text-center">
-                <p className="text-3xl font-bold text-gray-100">Buy any 2 T-shirt for ₹1000 only!</p>
-             </div>
-           </SwiperSlide>
+          <SwiperSlide>
+            <div className="w-full md:h-[70vh] lg:h-[75vh] bg-gray-800 flex items-center justify-center">
+              <p className="text-3xl font-bold text-white">
+                Buy any 2 T-shirt for ₹1000 only!
+              </p>
+            </div>
+          </SwiperSlide>
         )}
       </Swiper>
 
-      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 pt-1 pb-1 md:h-8 md:pt-3 md:pb-3 flex items-center">
-        <Marquee gradient={false} speed={5} pauseOnHover className="w-full">
-          {Array.from({ length: 14 }).map((_, i) => (
+      {/* Marquee */}
+      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 flex items-center">
+        <Marquee gradient={false} speed={35} pauseOnHover className="w-full">
+          {Array.from({ length: 10 }).map((_, i) => (
             <span
               key={i}
-              className="flex items-center uppercase text-black font-semibold text-[11px] sm:text-[12px] md:text-[13px] lg:text-[15px] px-4 whitespace-nowrap"
+              className="flex items-center uppercase text-black font-semibold text-[11px] sm:text-[13px] px-4 whitespace-nowrap"
             >
-              <Truck size={18} className="mr-3" /> FREE SHIPPING
+              <Truck size={16} className="mr-1" /> FREE SHIPPING
               &nbsp;&nbsp;&nbsp;
-              <RotateCcw size={18} className="mr-3" /> EASY RETURNS
+              <RotateCcw size={16} className="mr-1" /> EASY RETURNS
               &nbsp;&nbsp;&nbsp;
-              <Shield size={18} className="mr-3" /> SECURE PAYMENTS
+              <Shield size={16} className="mr-1" /> SECURE PAYMENTS
             </span>
           ))}
         </Marquee>
       </div>
+      <div className="absolute bottom-6 left-0 right-0 h-6 z-10 bg-red-600 py-1 flex items-center border-b border-gray-600">
+        <Marquee gradient={false} speed={80} pauseOnHover className="w-full">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <span
+              key={i}
+              className="flex items-center uppercase text-white font-semibold text-[12px] sm:text-[14px] px-4 whitespace-nowrap"
+            >
+              "Every T-shirt tells a story — built from hustle. #
+              <span className="font-bold ">AIJIM</span>”
+            </span>
+          ))}
+        </Marquee>
+      </div>
+
+      {/* Animation */}
+      <style>
+        {`
+          .animate-fadeUp {
+            animation: fadeUp 1s ease forwards;
+          }
+          @keyframes fadeUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };

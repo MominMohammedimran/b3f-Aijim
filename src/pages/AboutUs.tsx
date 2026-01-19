@@ -13,12 +13,19 @@ const AboutUs = () => {
 
 
       <div className="container-custom pt-2 pb-24 mt-10">
-        <div className="flex items-center mb-4 pt-10">
-                  <Link to="/" className="mr-2">
-                    <ArrowLeft size={24} className="back-arrow font-bold" />
-                  </Link>
-                  <h1 className="text-2xl font-bold text-gray-100">Back</h1>
-                </div>
+      <nav className="flex items-center gap-2 pt-6 mb-5 text-white text-sm sm:text-base">
+                          <Link to="/orders" className="opacity-70 hover:opacity-100 transition">
+                            Orders
+                          </Link>
+                      
+                         <span className="opacity-60">/</span>
+                       
+                      
+                          <span className="font-semibold line-clamp-1">
+                         
+                          About Us
+                          </span>
+                        </nav>
         
         <div className="max-w-4xl mx-auto">
            <div className="bg-gray-900 text-white  shadow-sm p-5">

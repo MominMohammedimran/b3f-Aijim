@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Layout from "@/components/layout/Layout"; // adjust based on folder
-
+import { Link } from "react-router-dom";
 interface FeedbackProps {
   mode?: "inline" | "page"; // default inline
 }
@@ -133,6 +133,28 @@ export default function Feedback({ mode = "inline" }: FeedbackProps) {
   return (
     <Layout>
       <div className="max-w-lg mx-auto px-6 py-16 mt-5 text-center">
+        {/* Header */}
+<div className="container-custom  pb-8">
+  {/* Breadcrumb */}
+  <nav className="flex items-center gap-2 text-sm text-gray-400 mb-3">
+    <Link
+      to="/"
+      className="hover:text-yellow-400 transition-colors"
+    >
+      Home
+    </Link>
+
+    <span>/</span>
+
+    <span className="text-white font-semibold">
+      Feedback
+    </span>
+  </nav>
+
+ 
+  
+</div>
+
         <h1 className="text-2xl font-bold text-yellow-400 mb-6">
           Share Your Feedback
         </h1>

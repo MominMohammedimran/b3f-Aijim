@@ -56,10 +56,10 @@ const WashCareIcon = ({ text }: { text: string }) => {
       <motion.div 
         whileHover={{ scale: 1.15, backgroundColor: "rgba(0, 0, 0, 0.1)" }}
         whileTap={{ scale: 0.9 }}
-        className="flex items-center justify-center w-12 h-12 p-2 border border-gray-600 rounded-full bg-gray-900 transition-all duration-300"
+        className="flex items-center justify-center w-10 h-10 p-2 border border-gray-600 rounded-full bg-gray-900 transition-all duration-300"
       >
         {/* 3. Render it as a component */}
-        <IconComponent className="w-5 h-5 text-yellow-500" />
+        <IconComponent className="w-4 h-4 text-yellow-500" />
       </motion.div>
       
       <span className="text-[10px] uppercase tracking-wider text-gray-300 font-semibold">
@@ -177,13 +177,7 @@ WASH CARE
                     className="mt-2 pl-1 text-gray-300 text-sm leading-relaxed"
                   >
                     {/* --- NEW: Icon Row for Wash Care --- */}
-                    {isWashCare && (
-                      <div className="flex flex-wrap items-center justify-around gap-4 mb-4 mt-4">
-                        {section.content.map((line, idx) => (
-                          <WashCareIcon key={idx} text={line} />
-                        ))}
-                      </div>
-                    )}
+                    
 
                     <div className="space-y-1">
                       {section.content.map((line, j) => (
@@ -198,6 +192,13 @@ WASH CARE
                         </motion.p>
                       ))}
                     </div>
+                    {isWashCare && (
+                      <div className="flex flex-wrap items-center justify-around gap-4 mb-4 mt-4">
+                        {section.content.map((line, idx) => (
+                          <WashCareIcon key={idx} text={line} />
+                        ))}
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

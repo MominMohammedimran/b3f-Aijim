@@ -36,6 +36,26 @@ const Articles = () => {
         </Helmet>
 
         <div className="min-h-screen bg-black pt-28 pb-16">
+               {/* Header */}
+          <div className="container-custom  pb-8">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 text-sm text-gray-400 mb-3">
+              <Link
+                to="/"
+                className="hover:text-yellow-400 transition-colors"
+              >
+                Home
+              </Link>
+          
+              <span>/</span>
+          
+              <span className="text-white font-semibold">
+                Articles
+              </span>
+            </nav>
+          
+          
+          </div>
 
           {/* Header */}
           <h2 className="text-2xl font-bold  text-center mb-6 text-white  ">From The Journal</h2>

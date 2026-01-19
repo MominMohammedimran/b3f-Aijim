@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Layout from "../components/layout/Layout";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, Truck } from "lucide-react";
 
@@ -41,7 +42,26 @@ const TrackPackage = () => {
   return (
    <Layout>
   <div className="max-w-xl mx-auto px-6 py-10 text-center mt-14">
-
+ {/* Header */}
+          <div className="container-custom  pb-8">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 text-sm text-gray-400 mb-3">
+              <Link
+                to="/"
+                className="hover:text-yellow-400 transition-colors"
+              >
+                Home
+              </Link>
+          
+              <span>/</span>
+          
+              <span className="text-white font-semibold">
+                Track-Package
+              </span>
+            </nav>
+          
+          
+          </div>
     {/* Title */}
     <h1 className="text-xl sm:text-2xl font-bold tracking-wide text-yellow-400 flex items-center gap-2 justify-center mb-2">
       Track Your Package

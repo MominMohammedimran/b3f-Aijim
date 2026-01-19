@@ -45,6 +45,7 @@ const RazorpayCheckout: React.FC<RazorpayCheckoutProps> = ({
   const { userProfile, currentUser } = useAuth();
   const { settings: deliverySettings, loading: settingsLoading } = useDeliverySettings();
   const [rewardPointsToUse, setRewardPointsToUse] = useState(RewardPoints);
+  const comboOffer=deliverySettings?.combo_offer??550;
   const [isProcessing, setIsProcessing] = useState(false);
   
   const cartItems = propCartItems || contextCartItems;
@@ -104,7 +105,7 @@ const calculateGlobalOfferTotal = (cartItems: CartItem[]) => {
   const pairs = Math.floor(totalQty / 2);
   const remainder = totalQty % 2;
 
-  return pairs * 1000 + (remainder ? 550: 0);
+  return pairs * 1000 + (remainder ? comboOffer: 0);
 };
 
 const getTotalPricePrinting = (cartItems: CartItem[]) => {
@@ -126,12 +127,6 @@ const totalPrice = (cartItems: CartItem[]) => {
     getTotalPricePrinting(cartItems)
   );
 };
-
-
-
-
-
-
 
 //{points: 75, discount: 75} {code: 'WELCOME10', discount: 29.9}//
 const couponDiscount = appliedCoupon?.discount || 0;

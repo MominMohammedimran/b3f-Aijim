@@ -34,6 +34,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
   const { loading: inventoryLoading } = useProductInventory(product.id);
   const { settings: deliverySettings } = useDeliverySettings();
   const deliveryFee = deliverySettings?.delivery_fee ?? 100;
+  const comboOffer=deliverySettings?.combo_offer??550;
 
   const scrollToDiv = (id: string, offset: number = -8) => {
     const el = document.getElementById(id);
@@ -74,7 +75,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     const totalQty = selectedSizes.reduce((sum, item) => sum + item.quantity, 0);
     const pairs = Math.floor(totalQty / 2);
     const remainder = totalQty % 2;
-    return pairs * 1000 + (remainder ? 550 : 0);
+    return pairs * 1000 + (remainder ? comboOffer : 0);
   };
 
   const totalPrice = calculateOfferTotal(selectedSizes);

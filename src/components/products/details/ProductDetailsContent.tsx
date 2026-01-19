@@ -39,7 +39,7 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }
        <div className="relative w-full">
   {/* AIJIM Label */}
 <span
-  className="absolute left-2 top-2.5 z-50 text-xs sm:text-sm font-semibold uppercase tracking-wide text-white transition-all duration-300"
+  className="absolute left-2 top-2.5 z-10 text-xs sm:text-sm font-semibold uppercase tracking-wide text-white transition-all duration-300"
   style={{
     filter: "drop-shadow(0px 0px 6px rgba(0,0,0,0.8))",
   }}
@@ -68,7 +68,7 @@ const ProductDetailsContent: React.FC<ProductDetailsContentProps> = ({ product }
   {/* Share Button */}
 <button
   onClick={() => setShowShareModal(true)}
-  className="absolute top-0 right-1 z-50 p-2 transition-all duration-300"
+  className="absolute top-0 right-1 z-10 p-2 transition-all duration-300"
   onMouseEnter={(e) => {
     const icon = e.currentTarget.querySelector("svg");
     if (icon) {

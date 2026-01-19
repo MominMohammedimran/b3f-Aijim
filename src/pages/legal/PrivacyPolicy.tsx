@@ -63,24 +63,35 @@ const PrivacyPolicy = () => {
 
         {/* Header */}
         <div className="container-custom pt-20 pb-8">
-          <div className="flex items-center gap-4 mb-2">
-            <Link
-              to="/"
-              className="text-gray-400 hover:text-yellow-400 transition-colors"
-            >
-              <ArrowLeft size={24} />
-            </Link>
-            <div>
-              <h1 className="text-2xl font-semibold uppercase tracking-wider">
-                Privacy Policy
-              </h1>
-              <p className="text-xs text-gray-400 font-semibold">
-                Last Updated: Sept 27, 2025
-              </p>
-            </div>
-          </div>
-          <div className="h-[2px] bg-yellow-400 w-full rounded-full mt-2"></div>
-        </div>
+  {/* Breadcrumb */}
+  <nav className="flex items-center gap-2 text-sm text-gray-400 mb-3">
+    <Link
+      to="/"
+      className="hover:text-yellow-400 transition-colors"
+    >
+      Home
+    </Link>
+
+    <span>/</span>
+
+    <span className="text-white font-semibold">
+      Privacy Policy
+    </span>
+  </nav>
+
+  {/* Title */}
+  <div className="mb-2">
+    <h1 className="text-2xl font-semibold uppercase tracking-wider">
+      Privacy Policy
+    </h1>
+    <p className="text-xs text-gray-400 font-semibold">
+      Last Updated: Jan 17, 2026
+    </p>
+  </div>
+
+  {/* Divider */}
+  <div className="h-[2px] bg-yellow-400 w-full rounded-full mt-2"></div>
+</div>
 
         {/* Main Section */}
         <div className="container-custom flex flex-col lg:flex-row gap-10">

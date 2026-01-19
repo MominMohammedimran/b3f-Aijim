@@ -1,5 +1,6 @@
 import React from "react";
 import Layout from "@/components/layout/Layout";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Target, Heart, Leaf, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
@@ -37,6 +38,19 @@ const AboutUs = () => {
        <NewSEOHelmet 
         pageSEO={{ title: "About Us | AIJIM", description: "Learn about AIJIM brand & story." }}
       />
+      <nav className="flex items-center gap-2 pt-10 mt-10  mb-5 text-white text-sm sm:text-base">
+                                <Link to="/orders" className="opacity-70 hover:opacity-100 transition">
+                                  Home
+                                </Link>
+                            
+                               <span className="opacity-60">/</span>
+                             
+                            
+                                <span className="font-semibold line-clamp-1">
+                               
+                                About Us
+                                </span>
+                              </nav>
       <div className="min-h-screen bg-black text-white overflow-hidden">
         {/* --- HERO SECTION --- */}
         <section className="relative h-[50vh] flex flex-col p-2 justify-center items-center text-center px-4 bg-[url('/aijim-uploads/aijim.svg')] bg-fit bg-center">

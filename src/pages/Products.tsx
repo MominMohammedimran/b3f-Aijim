@@ -97,20 +97,20 @@ const Products = () => {
         variant="outline"
         size="sm"
         onClick={() => setOpenMenu(openMenu === section ? null : section)}
-        className="flex items-center gap-1 py-0.5 bg-white font-bold text-black text-xs rounded-none"
+        className="flex items-center gap-1 py-0.5 bg-white font-bold z-10 text-black text-xs rounded-none"
       >
         Sort <ChevronDown size={15} />
       </Button>
 
       {openMenu === section && (
         <ul
-          className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg z-10 text-sm"
+          className="absolute right-0 mt-2 w-44 bg-white text-black rounded shadow-lg z-20 text-sm"
           onMouseLeave={() => setOpenMenu(null)}
         >
           {["default", "low", "newest"].map((opt) => (
             <li key={opt}>
               <button
-                className={`block w-full text-left px-4 py-2 hover:bg-gray-100 ${
+                className={`block w-full text-left px-4 py-2 z-10 hover:bg-gray-100 ${
                   sort === opt ? "font-bold" : ""
                 }`}
                 onClick={() => {

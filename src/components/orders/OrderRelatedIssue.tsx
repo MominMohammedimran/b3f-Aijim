@@ -126,15 +126,24 @@ export default function OrderRelatedIssue() {
       <div className="min-h-screen bg-gray-950 py-10 pt-10 mt-10">
         <div className="max-w-4xl mx-auto px-4 space-y-4">
           {/* Header */}
-          <div className="flex items-center gap-4">
-            <Link
-              to={`/order-preview/${orderId}`}
-              className="flex items-center text-yellow-400 hover:text-yellow-300 font-semibold"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" />
-              Back
-            </Link>
-            </div>
+           <nav className="flex items-center gap-2 pt-6 mb-5 text-white text-sm sm:text-base">
+                    <Link to="/orders" className="opacity-70 hover:opacity-100 transition">
+                      Orders
+                    </Link>
+                
+                   <span className="opacity-60">/</span>
+                   <Link to={`/order-preview/${orderId}`} className="opacity-70 hover:opacity-100 transition">
+                   Back to order
+                       </Link>
+                   
+                       <span className="opacity-60">/</span>
+                
+                    <span className="font-semibold line-clamp-1">
+                   
+                    {orderId}
+                    </span>
+                  </nav>
+          
             <h1 className="text-xl lg:text-2xl text-center font-bold text-yellow-400 underline">Order Issue</h1>
           
           <p className="text-gray-400 text-sm font-medium">

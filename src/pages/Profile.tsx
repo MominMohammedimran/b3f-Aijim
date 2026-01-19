@@ -22,15 +22,19 @@ const Profile = () => {
     <Layout>
       <SEOHelmet {...seoData} />
       <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="flex items-center mb-6 mt-4 pt-6">
-          <Link
-            to="/"
-            className="mr-4 p-2 hover:text-gray-200 transition-colors"
-          >
-            <ArrowLeft size={24} className="text-white" />
-          </Link>
-          <h1 className="text-3xl font-bold text-white">My Profile</h1>
-        </div>
+       <nav className="flex items-center gap-2 mt-10 mb-5 text-white text-sm sm:text-base">
+                                       <Link to="/" className="opacity-70 hover:opacity-100 transition">
+                                         Home
+                                       </Link>
+                                   
+                                      <span className="opacity-60">/</span>
+                                    
+                                   
+                                       <span className="font-semibold line-clamp-1">
+                                      
+                                       Profile
+                                       </span>
+                                     </nav>
 
         {currentUser ? (
           <div className="space-y-4">

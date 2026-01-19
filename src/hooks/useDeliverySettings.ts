@@ -6,13 +6,15 @@ interface DeliverySettings {
   delivery_fee: number;
   min_order_amount: number;
   free_delivery_threshold: number;
+  combo_offer:number;
 }
 
 export const useDeliverySettings = () => {
   const [settings, setSettings] = useState<DeliverySettings>({
     delivery_fee: 0,
     min_order_amount: 100,
-    free_delivery_threshold: 1000
+    free_delivery_threshold: 1000,
+    combo_offer:545,
   });
   const [loading, setLoading] = useState(true);
 

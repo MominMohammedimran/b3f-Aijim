@@ -224,13 +224,20 @@ const Search = () => {
           description: "Search your desired products. ",
         }}
       />
-      <div className="container-custom mt-16 pb-28">
-        <div className="flex items-center mb-4 pt-8 animate-fade-in">
-          <Link to="/" className="mr-2">
-            <ArrowLeft size={24} className="back-arrow" />
-          </Link>
-          <h1 className="text-xl font-semibold">Search</h1>
-        </div>
+      <div className="container-custom mt-12 pb-28">
+        <nav className="flex items-center gap-2 pt-10 mt-10  mb-5 text-white text-sm sm:text-base">
+                                        <Link to="/" className="opacity-70 hover:opacity-100 transition">
+                                          Home
+                                        </Link>
+                                    
+                                       <span className="opacity-60">/</span>
+                                     
+                                    
+                                        <span className="font-semibold line-clamp-1">
+                                       
+                                        Search
+                                        </span>
+                                      </nav>
 
         <SearchBox
           searchQuery={searchQuery}

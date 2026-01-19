@@ -8,6 +8,7 @@ import React, {
 import { useAuth } from './AuthContext';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useDeliverySettings } from '@/hooks/useDeliverySettings';
 
 export interface SizeQuantity {
   size: string;
@@ -44,7 +45,7 @@ export interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
-
+  
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
@@ -54,6 +55,8 @@ export const useCart = () => {
 };
 
 const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { settings: deliverySettings } = useDeliverySettings();
+  const comboOffer=deliverySettings?.combo_offer??550;
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuth();
@@ -376,7 +379,7 @@ const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     const pairs = Math.floor(totalQty / 2);
     const remainder = totalQty % 2;
   
-    return pairs * 1000 + (remainder ? 550 : 0);
+    return pairs * 1000 + (remainder ? comboOffer: 0);
   };
   
 

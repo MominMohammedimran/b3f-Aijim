@@ -44,7 +44,7 @@ export default function TextSliderTop() {
             duration: 0.6,
             ease: [0.25, 0.1, 0.25, 1], // smoother curve
           }}
-          className="bg-black py-2 flex sm:gap-6 items-center justify-center relative overflow-hidden shadow-md"
+          className="bg-gradient-to-r from-[#FF9933] via-white  to-[#138808] py-2 flex sm:gap-6 items-center justify-center relative overflow-hidden shadow-md"
         >
           <button
             onClick={prevSlide}
@@ -53,8 +53,8 @@ export default function TextSliderTop() {
             <ChevronLeft className="h-5 w-5" />
           </button>
 
-          <span className="text-white font-semibold text-sm sm:text-md uppercase px-8 text-center flex items-center gap-2">
-  
+        <span className="flex items-center justify-center gap-2 px-8 text-center text-sm font-semibold uppercase text-black drop-shadow-[0_0_3px_rgba(255,255,255,1)] sm:text-md">
+ 
   {messages[index]}
 </span>
 

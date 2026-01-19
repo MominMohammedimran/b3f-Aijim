@@ -70,14 +70,26 @@ const ProductDetailsPage: React.FC<ProductDetailsPageProps> = ({
       />
 
       <div className="container-custom mt-14 lg:mt-20">
-        <div className=" flex items-center pt-5 mt-15 lg:mt-18 ">
-          <Link to="/" className="mr-2">
-            <ArrowLeft size={24} className="back-arrow" />
-          </Link>
-          <h1 className="text-xl font-bold text-white line-clamp-1">
-            {product?.name || "Product Details"}
-          </h1>
-        </div>
+      
+  <nav className="flex items-center gap-2 pt-6 text-white text-sm sm:text-base">
+    <Link to="/" className="opacity-70 hover:opacity-100 transition">
+      Home
+    </Link>
+
+    <span className="opacity-60">/</span>
+
+    <Link to="/products" className="opacity-70 hover:opacity-100 transition">
+      Products
+    </Link>
+
+    <span className="opacity-60">/</span>
+
+    <span className="font-semibold line-clamp-1">
+      {product?.name || "Product"}
+    </span>
+  </nav>
+
+
 
         {loading ? (
           <div className="bg-gray-900 shadow-sm p-4 text-center text-gray-200 font-semibold">
