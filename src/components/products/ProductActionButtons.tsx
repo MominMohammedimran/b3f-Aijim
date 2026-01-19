@@ -95,7 +95,7 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
  
     <button onClick={handleQuantityDecrease}
     disabled={currentQuantity <= 1}
-    className=" bg-gray-100 hover:bg-gray-200 px-2 py-0 text-black font-extrabold rounded transition duration-200 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+    className=" bg-gray-100 hover:bg-yellow-300 px-2 py-0 text-black font-extrabold rounded transition duration-200 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
   >
     −</button>
  
@@ -111,7 +111,7 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
     className={`px-2 py-0 font-extrabold rounded transition duration-200 flex-shrink-0 ${
       maxStock && currentQuantity >= maxStock 
         ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-50' 
-        : 'bg-gray-100 hover:bg-gray-200 text-black'
+        : 'bg-gray-100 hover:bg-yellow-500 text-black'
     }`}
   >+</button>
 

@@ -110,7 +110,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
          <span className="opacity-60">/</span>
       
           <span className="font-semibold line-clamp-1">
-          #{order.order_number}
+          {order.order_number}
           </span>
         </nav>
        

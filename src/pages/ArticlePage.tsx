@@ -69,16 +69,36 @@ const ArticlePage = () => {
       </Helmet>
 
       <div className="bg-black min-h-screen text-white pt-10 mt-10 py-10">
- <Link to="/articles">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mb-4 text-md text-gray-300 hover:text-yellow-400 transition pt-10 pb-2"
-            >
-              <ArrowLeft className=" h-6 w-8" />
-              Back
-            </Button>
-          </Link>
+   {/* Header */}
+   <div className="container-custom  pb-8">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 text-sm text-gray-400 mb-3">
+              <Link
+                to="/"
+                className="hover:text-yellow-400 transition-colors"
+              >
+                Home
+              </Link>
+          
+              <span>/</span>
+              <Link
+                to="/articles"
+                className="hover:text-yellow-400 transition-colors"
+              >
+                Articles
+              </Link>
+          
+              <span>/</span>
+          
+              <span className="text-white font-semibold line-clamp-1">
+              {article.title} 
+              </span>
+              
+            </nav>
+          
+          
+          </div>
+
         {/* Hero Image */}
         {article.image && (
           <div className="relative w-full h-[40vh] ">

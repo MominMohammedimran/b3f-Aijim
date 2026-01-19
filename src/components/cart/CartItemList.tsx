@@ -57,7 +57,7 @@ const CartItemList: React.FC<CartItemListProps> = ({ cartItems }) => {
           className="text-red-500 flex items-center hover:text-red-600"
         >
           <Trash2 size={18} className="mr-1" />
-          <span className="text-sm font-medium">Clear Cart</span>
+          <span className="text-sm font-medium hover:bg-red-500">Clear Cart</span>
         </button>
       </div>
 

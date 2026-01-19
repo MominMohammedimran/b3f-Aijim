@@ -91,13 +91,22 @@ const Navbar = () => {
         }`}
       >
         {/* Brand Logo - aligned left */}
-        <div className="flex items-center pl-2 mb-2">
-          <img
-            src="/aijim-uploads/aijim.svg"
-            alt="AIJIM Logo"
-            className="w-28 sm:w-36 md:w-40 object-contain"
-            loading="lazy"
-          />
+        <div 
+        className="flex items-center pl-2 mb-2">
+          <Link
+            onClick={() => {
+              window.scrollTo(0, 0);
+            }}
+            to="/"
+            aria-label="Home"
+            className="text-white hover:text-yellow-400"
+          ><img
+          src="/aijim-uploads/aijim.svg"
+          alt="AIJIM Logo"
+          className="w-28 sm:w-36 md:w-40 object-contain"
+          loading="lazy"
+        /></Link>
+          
         </div>
 
         {/* Right Icons */}

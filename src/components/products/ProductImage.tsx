@@ -208,7 +208,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
           thumbRef.current?.scrollBy({ left: 120, behavior: "smooth" })
         }
       >
-        <ChevronRight className="text-white" size={18} />
+        <ChevronRight className="text-white " size={18} />
       </button>
     </div>
   </div>
@@ -254,13 +254,13 @@ const ProductImage: React.FC<ProductImageProps> = ({
             <>
               <button
                 onClick={prev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-white"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-gray-600/20 rounded-full p-2 hover:bg-gray-600/60 hover:text-yellow-400"
               >
                 <ChevronLeft size={32} />
               </button>
               <button
                 onClick={next}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-gray-600/20 rounded-full p-2 hover:bg-gray-600/60 hover:text-yellow-400"
               >
                 <ChevronRight size={32} />
               </button>

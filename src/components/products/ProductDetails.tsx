@@ -151,7 +151,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
       {!allOutOfStock ? (
         <div
           onClick={() => scrollToDiv('sizeSection')}
-          className="w-100 flex flex-row fixed lg:relative lg:mt-8 bottom-8 left-0 right-0 z-10 items-center justify-center"
+          className="w-100 flex flex-row fixed lg:relative lg:mt-8 bottom-8 left-0 right-0 z-30 items-center justify-center"
         >
           <ProductActionButtons
             product={product}

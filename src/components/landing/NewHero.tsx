@@ -7,11 +7,21 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 import { useBanners } from "@/context/BannerContext";
 import { useNavigate } from "react-router-dom";
+const bannerPaths: Record<number, string> = {
+  0: "/",
+  1: "/product/thunderstorm-design-hand-design-black-oversized-tshirt",
+  2: "/product/fire-bird-spirit-phoenix-firebird-theme-firebird-design-beige-oversized-tshirt",
+  3: "/product/village-essence-village-theme-village-design-royal-blue-oversized-tshirt",
+};
+
+
 
 const NewHero = () => {
   const { banners, loading } = useBanners();
   const [currentBanners, setCurrentBanners] = useState<string[]>([]);
   const navigate = useNavigate();
+  const [activeIndex, setActiveIndex] = useState(0);
+
 
   useEffect(() => {
     if (loading) return;
@@ -43,6 +53,8 @@ const NewHero = () => {
         speed={1600}
         effect="fade"
         fadeEffect={{ crossFade: true }}
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+
         allowTouchMove={false}
         className="w-full h-full mt-3"
       >
@@ -54,32 +66,41 @@ const NewHero = () => {
           currentBanners.map((img, index) => (
             <SwiperSlide key={index} className="relative">
               <img
-                src={img}
-                alt={`Banner ${index + 1}`}
-                loading="eager"
-                className="w-full object-cover transition-transform duration-[4200ms] scale-110"
-              />
+  src={img}
+  alt={`Banner ${index + 1}`}
+  loading="eager"
+  onClick={() => {
+    if (activeIndex === 1) return;
+
+    const path = bannerPaths[activeIndex] || "/shop";
+    navigate(path);
+  }}
+  className={`w-full object-cover transition-transform duration-[4200ms] scale-110 
+    ${activeIndex === 0 ? "cursor-default pointer-events-none" : "cursor-pointer"}
+  `}
+/>
+
 
               {/* Overlay */}
             
 
               {/* Content */}
-              <div className="absolute inset-0 flex items-center justify-center text-center px-6 hidden">
+              <div className="absolute inset-0 flex items-center justify-center text-center px-6 mt-20 pt-18 hidden">
                 <div className="max-w-2xl animate-fadeUp">
-                  <h1 className="text-white font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-lg">
-                    Premium Oversized Tees
-                  </h1>
+                  
+                {activeIndex !== 0 && (
+  <button
+    onClick={() => {
+      const path = bannerPaths[activeIndex] || "/shop";
+      navigate(path);
+    }}
+    className="mt-0 px-7 py-3 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform duration-300"
+  >
+    Shop Now
+  </button>
+)}
 
-                  <p className="text-white/90 mt-4 text-sm sm:text-base md:text-lg">
-                    Street style comfort. Limited edition drops.
-                  </p>
 
-                  <button
-                    onClick={() => navigate("/shop")}
-                    className="mt-6 px-7 py-3 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform duration-300"
-                  >
-                    Shop Now
-                  </button>
                 </div>
               </div>
             </SwiperSlide>

@@ -65,7 +65,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
       
       <Button 
         onClick={handleCheckout} 
-        className="w-full mt-6"
+        className="w-full mt-6 "
         disabled={!cartItems || cartItems.length === 0}
       >
         Proceed to Checkout

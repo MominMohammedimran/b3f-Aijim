@@ -79,7 +79,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ hasOutOfStockItems }) => {
             <div className="sticky">
               <Button
                 onClick={handleCheckout}
-                className="w-full mb-3 m-auto text-lg uppercase text-center rounded-none hover:text-red-600 hover:bg-gray-100 font-bold"
+                className="w-full mb-3 m-auto text-lg uppercase text-center rounded-none text-black hover:bg-red-500 hover:text-gray-100  font-bold"
               >
                 Proceed to Checkout
               </Button>

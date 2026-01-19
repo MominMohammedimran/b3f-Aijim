@@ -99,8 +99,8 @@ const ProductSelector: React.FC<ProductSelectorProps> = ({
 
               {/* Out of stock overlay */}
               {isOutOfStock && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-                  <span className="text-xs font-bold text-red-400 uppercase">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+                  <span className="text-xs font-bold text-red-500 bg-black uppercase">
                     Out of Stock
                   </span>
                 </div>

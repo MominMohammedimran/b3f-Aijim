@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,Link} from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/lib/types";
 import Layout from "@/components/layout/Layout";
@@ -97,7 +97,7 @@ const Products = () => {
         variant="outline"
         size="sm"
         onClick={() => setOpenMenu(openMenu === section ? null : section)}
-        className="flex items-center gap-1 py-0.5 bg-white font-bold z-10 text-black text-xs rounded-none"
+        className="flex items-center gap-1 py-0.5 bg-white font-bold z-10 text-black text-xs rounded-none hover:bg-red-500"
       >
         Sort <ChevronDown size={15} />
       </Button>
@@ -110,7 +110,7 @@ const Products = () => {
           {["default", "low", "newest"].map((opt) => (
             <li key={opt}>
               <button
-                className={`block w-full text-left px-4 py-2 z-10 hover:bg-gray-100 ${
+                className={`block w-full text-left px-4 py-2 z-10 hover:bg-red-500 hover:text-white ${
                   sort === opt ? "font-bold" : ""
                 }`}
                 onClick={() => {
@@ -255,11 +255,26 @@ const Products = () => {
           description: "Browse AIJIM streetwear.",
         }}
       />
-      <div className="bg-black text-white py-16 mt-4 min-h-screen">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-xl font-semibold mb-3 pt-4 px-4">
-            AIJIM Collections
-          </h1>
+      <div className="bg-black text-white py-16 mt-4  mb-6 min-h-screen">
+          <nav className="flex items-center gap-2 text-white  ml-4 text-sm sm:text-base">
+            <Link to="/" className="opacity-70 hover:opacity-100 transition">
+              Home
+            </Link>
+        
+            <span className="opacity-60">/</span>
+        
+            <Link to="/products" className="opacity-70 hover:opacity-100 transition">
+              Products
+            </Link>
+        
+            <span className="opacity-60">/</span>
+        
+            <span className="font-semibold line-clamp-1">
+               AIJIM Collections
+            </span>
+          </nav>
+        <div className="max-w-7xl mx-auto mt-6">
+         
 
           {loading ? (
             <div className="flex justify-center py-24">

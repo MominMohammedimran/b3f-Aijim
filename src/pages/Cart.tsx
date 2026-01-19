@@ -153,7 +153,7 @@ const Cart = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-8 mt-10 text-center">
+        <div className="container mx-auto px-4 py-10 mt-12 text-center">
           <div className="flex justify-center items-center h-64 mt-6">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
           </div>
@@ -177,7 +177,7 @@ const Cart = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8 mt-10">
+      <div className="container mx-auto px-4 py-12 mt-10">
         <CheckoutStepper currentStep={1} />
         <div className="flex justify-between items-center mt-5 mb-6">
           <h1 className="text-lg font-bold leading-relaxed">
@@ -186,7 +186,7 @@ const Cart = () => {
           <Button
             variant="outline"
             size="sm"
-            className="px-2"
+            className="px-2 hover:bg-red-500 hover:text-white"
             onClick={clearCart}
           >
             Clear Cart

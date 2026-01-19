@@ -76,33 +76,12 @@ const Payment = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8 mt-10">
+      <div className="container mx-auto px-4 py-12 mt-10">
 <CheckoutStepper currentStep={3}/>
-        <div className="flex items-center justify-between mt-3 mb-6">
-          
-          <nav className="flex items-center gap-2 mt-2  text-white text-md sm:text-base">
-                 
-                                                        <Link to="/cart" className="opacity-70 hover:opacity-100 transition">
-                                                          Cart
-                                                        </Link>
-                                                    
-                                                       <span className="opacity-60">/</span>
-                                                       <Link to="/checkout" className="opacity-70 hover:opacity-100 transition">
-                                                          Checkout
-                                                        </Link>
-                                                    
-                                                       <span className="opacity-60">/</span>
-                                                     
-                                                    
-                                                        <span className="font-semibold line-clamp-1">
-                                                       
-                                                        Payment
-                                                        </span>
-                                                      </nav>
-          
-          <AlertDialog>
+        <div className="flex items-center justify-center mt-3 mb-3">
+         <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm" className="items-center justify-center px-1 py-1 rounded-none font-semibold text-black bg-white hover:text-red-500 hover:bg-white">
+              <Button variant="outline" size="sm" className="w-1/2 items-center justify-center px-1 py-2 rounded-none font-semibold text-black bg-white hover:text-white hover:bg-red-500">
                
                 Cancel Order
               </Button>

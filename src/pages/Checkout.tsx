@@ -294,22 +294,9 @@ const finalTotal = Math.max(0, (totalPrice+totalPricePrinting) - totalDiscount +
       <SEOHelmet {...{ ...seo, keywords: seo.keywords?.join(', ') }} />
       <div className="container mx-auto px-4 py-4 sm:py-6 mt-20 rounded-none">
         <CheckoutStepper currentStep={2} />
-        <nav className="flex items-center gap-2 mt-8 mb-5 text-white text-md sm:text-base">
         
-                                               <Link to="/cart" className="opacity-70 hover:opacity-100 transition">
-                                                 Cart
-                                               </Link>
-                                           
-                                              <span className="opacity-60">/</span>
-                                            
-                                           
-                                               <span className="font-semibold line-clamp-1">
-                                              
-                                               Checkout
-                                               </span>
-                                             </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 rounded-none gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 rounded-none gap-6 mt-8 ">
           {/* Left Section */}
           <div className="lg:col-span-2 rounded-none" ref={savedAddressesRef}>
             <CollapsibleSection title="Shipping Details" defaultOpen>

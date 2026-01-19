@@ -176,7 +176,7 @@ const ProductVideoSection: React.FC = () => {
           disabled={activeVideoIndex === 0}
           className="absolute left-1 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-gray-600 p-2 z-10 rounded-full shadow-lg disabled:opacity-50"
         >
-          <ChevronLeft className="w-6 h-6 text-gray-800 hover:text-white" />
+          <ChevronLeft className="w-6 h-6 text-gray-500 hover:text-white" />
         </button>
 
         {/* Next Button */}
@@ -185,7 +185,7 @@ const ProductVideoSection: React.FC = () => {
           disabled={activeVideoIndex === videos.length - 1}
           className="absolute right-1 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-gray-600 p-2 z-10 rounded-full  shadow-lg disabled:opacity-50"
         >
-          <ChevronRight className="w-6 h-6 text-gray-800 hover:text-white" />
+          <ChevronRight className="w-6 h-6 text-gray-500 hover:text-white" />
         </button>
 
         {/* Carousel */}
