@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -136,7 +137,7 @@ const OTPLoginForm: React.FC<OTPLoginFormProps> = ({ onSuccess }) => {
             id="email"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(DOMPurify.sanitize(e.target.value))}
             placeholder="Enter your email"
             required
             disabled={loading}
@@ -160,7 +161,7 @@ const OTPLoginForm: React.FC<OTPLoginFormProps> = ({ onSuccess }) => {
       </div>
       
       <div className="flex justify-center">
-        <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+        <InputOTP maxLength={6} value={otp} onChange={(value) => setOtp(DOMPurify.sanitize(value))}>
           <InputOTPGroup>
             <InputOTPSlot index={0} />
             <InputOTPSlot index={1} />

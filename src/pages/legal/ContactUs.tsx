@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import DOMPurify from 'dompurify';
 import Layout from "@/components/layout/Layout";
 import { Link } from "react-router-dom";
 import {
@@ -284,7 +285,7 @@ const ContactUs = () => {
                     placeholder="Enter your full name"
                     value={formData.name}
                     onChange={(e) =>
-                      setFormData((p) => ({ ...p, name: e.target.value }))
+                      setFormData((p) => ({ ...p, name: DOMPurify.sanitize(e.target.value) }))
                     }
                     required
                     className="bg-black border-gray-700 text-white focus:border-yellow-400 h-12 placeholder:text-gray-600"
@@ -299,7 +300,7 @@ const ContactUs = () => {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={(e) =>
-                      setFormData((p) => ({ ...p, email: e.target.value }))
+                      setFormData((p) => ({ ...p, email: DOMPurify.sanitize(e.target.value) }))
                     }
                     required
                     className="bg-black border-gray-700 text-white focus:border-yellow-400 h-12 placeholder:text-gray-600"
@@ -313,7 +314,7 @@ const ContactUs = () => {
                     placeholder="How can we help you?"
                     value={formData.message}
                     onChange={(e) =>
-                      setFormData((p) => ({ ...p, message: e.target.value }))
+                      setFormData((p) => ({ ...p, message: DOMPurify.sanitize(e.target.value) }))
                     }
                     required
                     className="bg-black border-gray-700 text-white focus:border-yellow-400 min-h-32 resize-none placeholder:text-gray-600"

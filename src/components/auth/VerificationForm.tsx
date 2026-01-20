@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import DOMPurify from 'dompurify';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -83,7 +84,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
       </p>
       
       <div className="flex justify-center py-4">
-        <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+        <InputOTP maxLength={6} value={otp} onChange={(value) => setOtp(DOMPurify.sanitize(value))}>
           <InputOTPGroup>
             <InputOTPSlot index={0} />
             <InputOTPSlot index={1} />

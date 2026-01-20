@@ -33,7 +33,7 @@ import ResetPassword from "./pages/ResetPassword";
 import AuthCallback from "./pages/AuthCallback";
 import Wishlist from "./pages/Wishlist";
 import ThankYou from "./pages/ThankYou";
-import TrackPackage from "./pages/TrackPackage";
+import TrackPackage from "./pages/legal/TrackPackage";
 import OrderRelatedIssue from "./components/orders/OrderRelatedIssue";
 import Feedback from "./pages/legal/Feedback";
 import Customization from "./pages/Designtool";

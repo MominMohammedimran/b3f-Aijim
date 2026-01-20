@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -258,7 +259,7 @@ const ProductReviewSection: React.FC<ProductReviewSectionProps> = ({
                   id="comment"
                   value={newReview.comment}
                   onChange={(e) =>
-                    setNewReview({ ...newReview, comment: e.target.value })
+                    setNewReview({ ...newReview, comment: DOMPurify.sanitize(e.target.value) })
                   }
                   placeholder="Share your honest experience..."
                   className="mt-2 bg-zinc-950/70 border-zinc-800 text-white focus:ring-yellow-400"

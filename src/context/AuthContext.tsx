@@ -16,7 +16,7 @@ export const cleanupAuthState = () => {
   Object.keys(localStorage).forEach((key) => {
     if (
       key.startsWith("supabase.auth.") ||
-      key.includes("sb-") ||
+      key.includes("sb-") ||+-
       key.includes("supabase-auth")
     ) {
       localStorage.removeItem(key);
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (error) throw error;
 
-      toast.success("Signed in successfully");
+      
       return { data, error: null };
     } catch (error: any) {
       console.error("Sign in error:", error);
@@ -197,7 +197,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setSession(null);
       setUserProfile(null);
 
-      toast.success("Signed out successfully");
 
       // Determine redirect path
       const currentPath = window.location.pathname;

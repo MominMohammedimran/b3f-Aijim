@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import DOMPurify from "dompurify";
 import { ArrowLeft, X } from "lucide-react";
 import Layout from "../components/layout/Layout";
 import { Product } from "../lib/types";
@@ -241,7 +242,7 @@ const Search = () => {
 
         <SearchBox
           searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+          setSearchQuery={(q) => setSearchQuery(DOMPurify.sanitize(q))}
           handleSearch={handleSearch}
           clearSearch={clearSearch}
         />

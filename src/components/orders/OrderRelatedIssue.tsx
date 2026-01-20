@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
@@ -211,7 +212,7 @@ export default function OrderRelatedIssue() {
                   placeholder="Full Name *"
                   required
                   value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, full_name: DOMPurify.sanitize(e.target.value) })}
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
                 <Input
@@ -219,7 +220,7 @@ export default function OrderRelatedIssue() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, email: DOMPurify.sanitize(e.target.value) })}
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
               </div>
@@ -228,13 +229,13 @@ export default function OrderRelatedIssue() {
                   placeholder="Phone *"
                   required
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, phone: DOMPurify.sanitize(e.target.value) })}
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
                 <Input
                   placeholder="Transaction ID (optional)"
                   value={formData.transaction_id}
-                  onChange={(e) => setFormData({ ...formData, transaction_id: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, transaction_id: DOMPurify.sanitize(e.target.value) })}
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
               </div>
@@ -242,7 +243,7 @@ export default function OrderRelatedIssue() {
                 required
                 className="w-full bg-gray-800 border border-gray-700 text-gray-200 px-3 py-2"
                 value={formData.selected_reason}
-                onChange={(e) => setFormData({ ...formData, selected_reason: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, selected_reason: DOMPurify.sanitize(e.target.value) })}
               >
                 <option value="">Select Issue Type</option>
                 {reasonOptions.map((r) => (
@@ -256,7 +257,7 @@ export default function OrderRelatedIssue() {
                 required
                 rows={4}
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, description: DOMPurify.sanitize(e.target.value) })}
                 className="bg-gray-800 text-gray-200 border-gray-700"
               />
               <Button

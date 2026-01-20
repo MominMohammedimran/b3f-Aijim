@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 import { Button } from '@/components/ui/button';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { toast } from 'sonner';
@@ -92,7 +93,7 @@ const OTPValidation: React.FC<OTPValidationProps> = ({
         <InputOTP 
           maxLength={6} 
           value={otp} 
-          onChange={setOtp}
+          onChange={(value) => setOtp(DOMPurify.sanitize(value))}
           containerClassName="gap-2"
         >
           <InputOTPGroup>

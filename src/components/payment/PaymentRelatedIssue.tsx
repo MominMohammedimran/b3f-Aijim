@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams, Link } from "react-router-dom";
+import DOMPurify from "dompurify";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -254,7 +255,7 @@ export default function PaymentRelatedIssue() {
                   required
                   value={formData.full_name}
                   onChange={(e) =>
-                    setFormData({ ...formData, full_name: e.target.value })
+                    setFormData({ ...formData, full_name: DOMPurify.sanitize(e.target.value) })
                   }
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
@@ -264,7 +265,7 @@ export default function PaymentRelatedIssue() {
                   required
                   value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
+                    setFormData({ ...formData, email: DOMPurify.sanitize(e.target.value) })
                   }
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
@@ -275,7 +276,7 @@ export default function PaymentRelatedIssue() {
                   required
                   value={formData.phone}
                   onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
+                    setFormData({ ...formData, phone: DOMPurify.sanitize(e.target.value) })
                   }
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
@@ -284,7 +285,7 @@ export default function PaymentRelatedIssue() {
                   required
                   value={formData.transaction_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, transaction_id: e.target.value })
+                    setFormData({ ...formData, transaction_id: DOMPurify.sanitize(e.target.value) })
                   }
                   className="bg-gray-800 text-gray-200 border-gray-700"
                 />
@@ -294,7 +295,7 @@ export default function PaymentRelatedIssue() {
                 className="w-full bg-gray-800 border border-gray-700 text-gray-200 px-3 py-2"
                 value={formData.selected_reason}
                 onChange={(e) =>
-                  setFormData({ ...formData, selected_reason: e.target.value })
+                  setFormData({ ...formData, selected_reason: DOMPurify.sanitize(e.target.value) })
                 }
               >
                 <option value="">Select Issue Type</option>
@@ -316,7 +317,7 @@ export default function PaymentRelatedIssue() {
                 rows={4}
                 value={formData.description}
                 onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
+                  setFormData({ ...formData, description: DOMPurify.sanitize(e.target.value) })
                 }
                 className="bg-gray-800 text-gray-200 border-gray-700"
               />

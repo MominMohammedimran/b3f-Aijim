@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -27,10 +26,14 @@ const AdminAuthGuard: React.FC<AdminAuthGuardProps> = ({ children }) => {
           return;
         }
 
-        // TODO: Implement admin check once database tables are created
-        // For now, allow all authenticated users to access admin
-    
-        setIsAdmin(true);
+        // Check if the user is the designated admin
+        if (currentUser.email === 'aijim.official@gmail.com') {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+          toast.error('You are not authorized to access this page.');
+          navigate('/admin/login');
+        }
         
       } catch (error: any) {
        // console.error('Admin auth check error:', error);

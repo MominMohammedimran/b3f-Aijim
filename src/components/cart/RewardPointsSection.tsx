@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DOMPurify from 'dompurify';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Gift, Minus, Plus } from "lucide-react";
@@ -147,7 +148,7 @@ const RewardPointsSection: React.FC<RewardPointsSectionProps> = ({
                 onChange={(e) =>
                   setPointsToUse(
                     Math.min(
-                      Math.max(0, parseInt(e.target.value) || 0),
+                      Math.max(0, parseInt(DOMPurify.sanitize(e.target.value)) || 0),
                       Math.min(availablePoints, cartTotal)
                     )
                   )

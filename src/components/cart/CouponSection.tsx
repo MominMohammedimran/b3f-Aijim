@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import DOMPurify from 'dompurify';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -205,7 +206,7 @@ const CouponSection: React.FC<CouponSectionProps> = ({
               type="text"
               placeholder="Enter coupon code"
               value={couponCode}
-              onChange={(e) => setCouponCode(e.target.value)}
+              onChange={(e) => setCouponCode(DOMPurify.sanitize(e.target.value))}
               className="flex-1 text-xs tracking-[1px] shadow-sm rounded-none"
               disabled={loading}
             />

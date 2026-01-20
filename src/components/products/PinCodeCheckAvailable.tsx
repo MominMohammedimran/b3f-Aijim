@@ -3,6 +3,8 @@ import { ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { validatePincode } from "@/utils/pincodeService";
+import DOMPurify from 'dompurify';
+
 
 const PinCodeCheckAvailable = () => {
   const [pincode, setPincode] = useState("");
@@ -52,7 +54,7 @@ const PinCodeCheckAvailable = () => {
             inputMode="numeric"
             placeholder="Enter PIN Code"
             value={pincode}
-            onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => setPincode(DOMPurify.sanitize((e.target.value.replace(/\D/g, ""))))}
             className="w-80 flex-1 text-xs px-1 py-1.5 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 font-semibold focus:ring-1 focus:ring-yellow-400 outline-none"
           />
 

@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import DOMPurify from 'dompurify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,9 +28,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, loading, onOTPSuccess }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const sanitizedValue = DOMPurify.sanitize(value);
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: sanitizedValue
     });
   };
 

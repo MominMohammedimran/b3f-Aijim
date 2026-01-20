@@ -1,9 +1,12 @@
 import * as React from "react"
+import DOMPurify from "dompurify";
 
 import { cn } from "@/lib/utils"
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
   ({ className, type, ...props }, ref) => {
+    const { value, ...rest } = props;
+    const sanitizedValue = DOMPurify.sanitize(value ? value.toString() : '');
     return (
       <input
         type={type}
@@ -12,7 +15,8 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
           className
         )}
         ref={ref}
-        {...props}
+        {...rest}
+        value={sanitizedValue}
       />
     )
   }

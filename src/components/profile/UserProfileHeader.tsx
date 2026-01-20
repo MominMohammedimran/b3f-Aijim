@@ -56,7 +56,7 @@ const UserProfileHeader: React.FC<UserProfileHeaderProps> = ({
       if (signOut) await signOut();
 
       toast.success('Signed out successfully');
-      window.location.href = '/';
+      window.location.href = '/signin';
     } catch (error) {
       console.error('Sign out error:', error);
       toast.error('Failed to sign out');

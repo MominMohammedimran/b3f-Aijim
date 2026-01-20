@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Layout from "../components/layout/Layout";
+import DOMPurify from 'dompurify';
+import Layout from "../../components/layout/Layout";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, Truck } from "lucide-react";
@@ -77,7 +78,7 @@ const TrackPackage = () => {
 
       <input
         value={awb}
-        onChange={(e) => setAwb(e.target.value)}
+        onChange={(e) => setAwb(DOMPurify.sanitize(e.target.value))}
         placeholder="Enter AWB / Tracking Number"
         className="flex-1 bg-black text-yellow-300 border border-gray-600 rounded-none px-3 py-2 text-sm focus:border-red-500 outline-none"
       />

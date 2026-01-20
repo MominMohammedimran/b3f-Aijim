@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import DOMPurify from 'dompurify';
 import { useAuth } from "@/context/AuthContext";
 import { useAddresses } from "@/hooks/useAddresses";
 import { Button } from "@/components/ui/button";
@@ -203,7 +204,7 @@ const AddressManagement = () => {
                 value={formData.firstName}
                 placeholder="first name"
                 onChange={(e) =>
-                  setFormData((p) => ({ ...p, firstName: e.target.value }))
+                  setFormData((p) => ({ ...p, firstName: DOMPurify.sanitize(e.target.value) }))
                 }
                 className="bg-background border border-yellow-500/30 text-white"
                 required
@@ -215,7 +216,7 @@ const AddressManagement = () => {
                 value={formData.lastName}
                 placeholder="last name"
                 onChange={(e) =>
-                  setFormData((p) => ({ ...p, lastName: e.target.value }))
+                  setFormData((p) => ({ ...p, lastName: DOMPurify.sanitize(e.target.value) }))
                 }
                 className="bg-background border border-yellow-500/30 text-white"
                 required
@@ -229,7 +230,7 @@ const AddressManagement = () => {
               value={formData.phone}
               placeholder="+91 -----------"
               onChange={(e) =>
-                setFormData((p) => ({ ...p, phone: e.target.value }))
+                setFormData((p) => ({ ...p, phone: DOMPurify.sanitize(e.target.value) }))
               }
               className="bg-background border border-yellow-500/30 text-white"
               required
@@ -242,7 +243,7 @@ const AddressManagement = () => {
               value={formData.address}
               placeholder="door no, street..."
               onChange={(e) =>
-                setFormData((p) => ({ ...p, address: e.target.value }))
+                setFormData((p) => ({ ...p, address: DOMPurify.sanitize(e.target.value) }))
               }
               className="bg-background border border-yellow-500/30 text-white"
               required
@@ -257,7 +258,7 @@ const AddressManagement = () => {
                   placeholder="city."
                 value={formData.city}
                 onChange={(e) =>
-                  setFormData((p) => ({ ...p, city: e.target.value }))
+                  setFormData((p) => ({ ...p, city: DOMPurify.sanitize(e.target.value) }))
                 }
                 className="bg-background border border-yellow-500/30 text-white"
                 required
@@ -269,7 +270,7 @@ const AddressManagement = () => {
               
                 value={formData.state}
                 onChange={(e) =>
-                  setFormData((p) => ({ ...p, state: e.target.value }))
+                  setFormData((p) => ({ ...p, state: DOMPurify.sanitize(e.target.value) }))
                 }
                 
                 className="w-full bg-background border border-yellow-500/30 text-white rounded-none py-2"
@@ -288,7 +289,7 @@ const AddressManagement = () => {
               <Input
                 value={formData.zipcode}
                 onChange={(e) =>
-                  setFormData((p) => ({ ...p, zipcode: e.target.value }))
+                  setFormData((p) => ({ ...p, zipcode: DOMPurify.sanitize(e.target.value) }))
                 }
                 className="bg-background border border-yellow-500/30 text-white"
                 required

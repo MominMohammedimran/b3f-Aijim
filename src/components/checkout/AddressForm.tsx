@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DOMPurify from 'dompurify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -60,7 +61,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
   const [checkingPincode, setCheckingPincode] = useState(false);
 
   const handleChange = (field: keyof AddressFormData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    const sanitizedValue = typeof value === 'string' ? DOMPurify.sanitize(value) : value;
+    setFormData(prev => ({ ...prev, [field]: sanitizedValue }));
   };
 
   const checkPincodeServiceability = async (zipCode: string) => {

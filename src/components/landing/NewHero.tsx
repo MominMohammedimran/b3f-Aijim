@@ -70,21 +70,16 @@ const NewHero = () => {
   alt={`Banner ${index + 1}`}
   loading="eager"
   onClick={() => {
-    if (activeIndex === 1) return;
+    if (activeIndex === 0) return;
 
-    const path = bannerPaths[activeIndex] || "/shop";
+    const path = bannerPaths[activeIndex] || "/";
     navigate(path);
   }}
   className={`w-full object-cover transition-transform duration-[4200ms] scale-110 
     ${activeIndex === 0 ? "cursor-default pointer-events-none" : "cursor-pointer"}
   `}
 />
-
-
-              {/* Overlay */}
-            
-
-              {/* Content */}
+ {/* Content */}
               <div className="absolute inset-0 flex items-center justify-center text-center px-6 mt-20 pt-18 hidden">
                 <div className="max-w-2xl animate-fadeUp">
                   

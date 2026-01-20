@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import DOMPurify from 'dompurify';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -106,7 +107,7 @@ const ProfileSettings = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: DOMPurify.sanitize(e.target.value),
     });
   };
 

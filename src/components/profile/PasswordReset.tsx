@@ -1,5 +1,6 @@
 // PasswordReset.tsx (combined logic: magiclink OTP + reset password)
 import React, { useState } from 'react';
+import DOMPurify from 'dompurify';
 import { Mail, Lock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -94,7 +95,7 @@ export default function PasswordReset() {
             id="otp"
             type="text"
             value={otp}
-            onChange={(e) => setOtp(e.target.value)}
+            onChange={(e) => setOtp(DOMPurify.sanitize(e.target.value))}
             placeholder="Enter the OTP sent to your email"
             className="bg-gray-700 text-xs font-medium text-white border-gray-600"
             required
@@ -107,7 +108,7 @@ export default function PasswordReset() {
               id="newPassword"
               type="password"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) => setNewPassword(DOMPurify.sanitize(e.target.value))}
               placeholder="New Password"
               className="pl-10 bg-gray-700 text-white border-gray-600"
               required

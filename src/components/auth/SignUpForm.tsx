@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import DOMPurify from "dompurify";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -115,7 +116,7 @@ const supabase=useSupabaseClient();
 
         <Input
           value={otp}
-          onChange={(e) => setOtp(e.target.value)}
+          onChange={(e) => setOtp(DOMPurify.sanitize(e.target.value))}
           maxLength={6}
           placeholder="Enter OTP"
           className="bg-gray-800 text-white"
@@ -144,13 +145,13 @@ const supabase=useSupabaseClient();
       <div>
         <Label>Full Name</Label>
         <Input
-         placeholder="Name" value={fullName} onChange={(e) => setFullName(e.target.value)} className="bg-gray-800" />
+         placeholder="Name" value={fullName} onChange={(e) => setFullName(DOMPurify.sanitize(e.target.value))} className="bg-gray-800" />
       </div>
 
       <div>
         <Label>Email</Label>
         <Input 
-         placeholder="your-name@gmail.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-gray-800" />
+         placeholder="your-name@gmail.com" type="email" value={email} onChange={(e) => setEmail(DOMPurify.sanitize(e.target.value))} className="bg-gray-800" />
       </div>
 
       <div>
@@ -160,7 +161,7 @@ const supabase=useSupabaseClient();
            placeholder="password"
             type={showPassword ? "text" : "password"}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(DOMPurify.sanitize(e.target.value))}
             className="bg-gray-800 pr-10"
           />
           <span className="absolute right-2 top-2 cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
@@ -176,7 +177,7 @@ const supabase=useSupabaseClient();
            placeholder="confirm password"
             type={showConfirmPassword ? "text" : "password"}
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(DOMPurify.sanitize(e.target.value))}
             className="bg-gray-800 pr-10"
           />
           <span className="absolute right-2 top-2 cursor-pointer" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>

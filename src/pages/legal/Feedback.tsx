@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import DOMPurify from 'dompurify';
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Layout from "@/components/layout/Layout"; // adjust based on folder
 import { Link } from "react-router-dom";
@@ -66,7 +67,7 @@ export default function Feedback({ mode = "inline" }: FeedbackProps) {
             placeholder="Name"
             className="bg-black text-white border border-gray-600 px-3 py-2 text-sm focus:border-red-500 outline-none"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, name: DOMPurify.sanitize(e.target.value) })}
           />
 
           <input
@@ -74,7 +75,7 @@ export default function Feedback({ mode = "inline" }: FeedbackProps) {
             placeholder="Email"
             className="bg-black text-white border border-gray-600 px-3 py-2 text-sm focus:border-red-500 outline-none"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, email: DOMPurify.sanitize(e.target.value) })}
           />
 
           <textarea
@@ -83,7 +84,7 @@ export default function Feedback({ mode = "inline" }: FeedbackProps) {
             placeholder="Share your thoughts..."
             className="bg-black text-white border border-gray-600 px-3 py-2 text-sm focus:border-red-500 outline-none md:col-span-2"
             value={formData.message}
-            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+            onChange={(e) => setFormData({ ...formData, message: DOMPurify.sanitize(e.target.value) })}
           ></textarea>
 
           <button
