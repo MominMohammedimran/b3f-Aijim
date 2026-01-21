@@ -125,15 +125,15 @@ const ProductImage: React.FC<ProductImageProps> = ({
             <>
               <button
                 onClick={prev}
-                className="absolute left-1 top-1/2 -translate-y-1/2  p-2 rounded-none text-gray-400 hover:text-white"
+                className="absolute left-0 top-1/2 -translate-y-1/2  p-1 rounded-none  text-gray-400 hover:bg-red-600 hover:text-white"
               >
-                <ChevronLeft size={24} />
+                <ChevronLeft size={23} />
               </button>
               <button
                 onClick={next}
-                className="absolute right-1 top-1/2 -translate-y-1/2  p-2 rounded-none text-gray-400 hover:text-white"
+                className="absolute right-0 top-1/2 -translate-y-1/2  p-1 rounded-none text-gray-400 hover:bg-red-600 hover:text-white"
               >
-                <ChevronRight size={24} />
+                <ChevronRight size={23} />
               </button>
             </>
           )}
@@ -153,66 +153,80 @@ const ProductImage: React.FC<ProductImageProps> = ({
         </div>
 
         {/* THUMBNAILS WITH SWIPE + ARROWS */}
-      {media.length > 1 && (
+        {media.length > 1 && (
   <div className="w-full mt-3 relative">
-    {/* Scroll wrapper with black background */}
-    <div className="bg-black rounded-xl relative overflow-hidden">
-      {/* Left Scroll Arrow */}
+    <div className="bg-black/90 rounded-xl relative overflow-hidden border border-white/10">
+
+      {/* Left Arrow */}
       <button
-        className="absolute left-1 top-1/2 -translate-y-1/2 bg-black p-1 rounded-full z-10"
+        aria-label="Scroll thumbnails left"
+        className="absolute left-0 top-1/2 -translate-y-1/2 p-2 bg-black/70 hover:bg-red-600 backdrop-blur rounded-none z-10 transition"
         onClick={() =>
-          thumbRef.current?.scrollBy({ left: -120, behavior: "smooth" })
+          thumbRef.current?.scrollBy({ left: -140, behavior: "smooth" })
         }
       >
         <ChevronLeft className="text-white" size={18} />
       </button>
 
-      {/* Scrollable thumbnails */}
+      {/* Thumbnails */}
       <div
         ref={thumbRef}
-        className="flex gap-2 justify-center items-center overflow-x-scroll overflow-y-hidden px-8 py-2 scrollbar-hide"
+        className="flex gap-3 justify-start items-center overflow-x-auto overflow-y-hidden px-10 py-2 scrollbar-hide scroll-smooth"
         onTouchStart={onThumbTouchStart}
         onTouchEnd={onThumbTouchEnd}
       >
         {media.map((m, i) => (
-          <div key={i} className="flex-shrink-0">
+          <motion.div
+            key={i}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative flex-shrink-0"
+          >
             {isVideo(m) ? (
               <video
                 src={m}
-                className={`h-14 w-14 rounded-xl border object-cover ${
+                className={`h-14 w-14 rounded-lg border object-cover transition ${
                   idx === i
-                    ? "border-yellow-400 scale-110"
-                    : "border-gray-600"
+                    ? "border-yellow-400 ring-2 ring-yellow-400/40"
+                    : "border-gray-700"
                 }`}
                 muted
               />
             ) : (
               <img
                 src={m}
+                loading="lazy"
                 onClick={() => setIdx(i)}
-                className={`h-16 w-16 rounded object-cover cursor-pointer border ${
+                className={`h-16 w-16 rounded-lg object-cover cursor-pointer border transition ${
                   idx === i
-                    ? "border-yellow-400 scale-105"
-                    : "border-gray-600"
+                    ? "border-yellow-400 ring-2 ring-yellow-400/40"
+                    : "border-gray-700 hover:border-yellow-300"
                 }`}
               />
             )}
-          </div>
+
+            {/* Active dot */}
+            {idx === i && (
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-yellow-400 rounded-full" />
+            )}
+          </motion.div>
         ))}
       </div>
 
-      {/* Right Scroll Arrow */}
+      {/* Right Arrow */}
       <button
-        className="absolute right-1 top-1/2 -translate-y-1/2 bg-black p-1 rounded-full z-10"
+        aria-label="Scroll thumbnails right"
+        className="absolute right-0 top-1/2 -translate-y-1/2 p-2 bg-black/70 hover:bg-red-600 backdrop-blur rounded-none z-10 transition"
         onClick={() =>
-          thumbRef.current?.scrollBy({ left: 120, behavior: "smooth" })
+          thumbRef.current?.scrollBy({ left: 140, behavior: "smooth" })
         }
       >
-        <ChevronRight className="text-white " size={18} />
+        <ChevronRight className="text-white" size={18} />
       </button>
     </div>
   </div>
 )}
+
 
 
 
@@ -254,15 +268,15 @@ const ProductImage: React.FC<ProductImageProps> = ({
             <>
               <button
                 onClick={prev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-gray-600/20 rounded-full p-2 hover:bg-gray-600/60 hover:text-yellow-400"
+                className="absolute left-1 top-1/2 -translate-y-1/2 text-white bg-gray-600/20 rounded-none p-1 hover:bg-red-600 hover:text-white"
               >
-                <ChevronLeft size={32} />
+                <ChevronLeft size={22} />
               </button>
               <button
                 onClick={next}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-gray-600/20 rounded-full p-2 hover:bg-gray-600/60 hover:text-yellow-400"
+                className="absolute right-1 top-1/2 -translate-y-1/2 text-white bg-gray-600/20 rounded-none p-1 hover:bg-red-600 hover:text-white"
               >
-                <ChevronRight size={32} />
+                <ChevronRight size={22} />
               </button>
             </>
           </motion.div>

@@ -27,11 +27,14 @@ const SearchBox: React.FC<SearchBoxProps> = ({
   };
 
   return (
-    <div>
-      <form onSubmit={onSubmit} className="relative mb-4 animate-fade-in">
+    <div className="w-full">
+      <form
+        onSubmit={onSubmit}
+        className="relative mb-4 animate-fade-in"
+      >
         <Search
           size={18}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
         />
 
         <input
@@ -39,26 +42,53 @@ const SearchBox: React.FC<SearchBoxProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search for products..."
-          className="w-full pl-10 pr-8 py-2 border rounded-lg text-lg font-semibold text-gray-800"
+          className="
+            w-full pl-11 pr-10 py-3 
+            rounded-xl 
+            border border-gray-300 
+            text-[18px] font-semibold text-gray-800
+            shadow-sm
+            transition-all duration-300
+            focus:outline-none 
+            focus:ring-2 focus:ring-yellow-400 
+            focus:border-yellow-400
+            hover:shadow-md
+          "
         />
 
         {searchQuery && !showChip && (
           <button
             type="button"
             onClick={clearSearch}
-            className="absolute right-3 top-1/2 -translate-y-1/2"
+            className="
+              absolute right-3 top-1/2 -translate-y-1/2 
+              p-1 rounded-full
+              hover:bg-gray-200 transition
+            "
           >
-            <X size={18} className="text-gray-600 hover:text-black" />
+            <X size={18} className="text-gray-500 hover:text-black" />
           </button>
         )}
       </form>
 
       {showChip && (
-        <div className="mt-2">
-          <span className="inline-flex items-center gap-2 bg-gray-200 text-black px-3 py-1 rounded-none text-md font-semibold">
+        <div className="mt-2 flex gap-2 flex-wrap animate-fade-in">
+          <span
+            className="
+              inline-flex items-center gap-2 
+              bg-red-600 text-white 
+              px-4 py-1.5 
+              rounded-none 
+              text-sm font-semibold
+              shadow-sm
+            "
+          >
             {searchQuery}
-            <button onClick={removeChip}>
-              <X size={14} className="hover:text-red-500" />
+            <button
+              onClick={removeChip}
+              className="hover:text-red-500 transition"
+            >
+              <X size={14} />
             </button>
           </span>
         </div>

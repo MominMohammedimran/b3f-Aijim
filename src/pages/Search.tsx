@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import DOMPurify from "dompurify";
-import { ArrowLeft, X } from "lucide-react";
+import { SlidersHorizontal, ArrowUpDown } from "lucide-react";
 import Layout from "../components/layout/Layout";
 import { Product } from "../lib/types";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,9 @@ import Pagination from "../components/search/Pagination";
 import { supabase } from "@/integrations/supabase/client";
 import ProductCard from "@/components/ui/ProductCard";
 import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
+import FilterPopup from "../components/search/FilterPopup";
+import SortPopup from "../components/search/SortPopup";
+
 type SortOption = "default" | "price-low-high" | "price-high-low";
 const allAvailableSizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
@@ -272,7 +275,6 @@ const Search = () => {
           onPrevPage={prevPage}
         />
 
-        {/* Overlay */}
         {(isFilterPopupOpen || isSortPopupOpen) && (
           <div
             className="fixed inset-0 bg-black/70 z-40"
@@ -283,209 +285,80 @@ const Search = () => {
           />
         )}
 
-        {/* Filter Popup */}
-       {isFilterPopupOpen && !isSortPopupOpen && (
-  <div className="fixed w-full bottom-16 mb-5 left-1/2 -translate-x-1/2 z-50 bg-black p-5 rounded shadow-lg w-[90%] max-w-md text-yellow-400">
-    
-    {/* Header */}
-    <div className="flex justify-between items-center mb-3">
-      <h2 className="font-bold text-lg">Filter By</h2>
-      <X
-        className="cursor-pointer"
-        size={20}
-        onClick={() => setIsFilterPopupOpen(false)}
-      />
-    </div>
+        <FilterPopup
+          isOpen={isFilterPopupOpen}
+          onClose={() => setIsFilterPopupOpen(false)}
+          tempSelectedSizes={tempSelectedSizes}
+          toggleTempSize={toggleTempSize}
+          uniqueCategories={uniqueCategories}
+          tempSelectedCategories={tempSelectedCategories}
+          toggleTempCategory={toggleTempCategory}
+          applyFilter={applyFilter}
+          clearFilter={clearFilter}
+          allAvailableSizes={allAvailableSizes}
+        />
 
-    {/* Category Section */}
-    <div className="mb-4">
-      <h3 className="font-medium mb-1">Category</h3>
-      <div className="flex flex-wrap gap-2 mb-2">
-        {uniqueCategories.map((cat) => (
-          <Button
-            key={cat}
-            variant={tempSelectedCategories.includes(cat) ? "default" : "outline"}
-            size="sm"
-            className={
-              tempSelectedCategories.includes(cat)
-                ? "bg-red-500 text-white"
-                : "text-yellow-400 border-yellow-400"
-            }
-            onClick={() => toggleTempCategory(cat)}
-          >
-            {cat}
-          </Button>
-        ))}
-      </div>
+        <SortPopup
+          isOpen={isSortPopupOpen}
+          onClose={() => setIsSortPopupOpen(false)}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+        />
 
-      {/* Selected Category Chips */}
-      {tempSelectedCategories.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-2">
-          {tempSelectedCategories.map((cat) => (
-            <div
-              key={"sel-cat-" + cat}
-              className="flex items-center bg-yellow-400 text-black px-2 py-1 rounded-full text-xs"
-            >
-              {cat}
-              <X
-                size={14}
-                className="ml-1 cursor-pointer"
-                onClick={() => toggleTempCategory(cat)}
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+<div
+  className="
+    fixed bottom-14 left-0 w-full z-50 
+    bg-black/95 backdrop-blur 
+    flex justify-around 
+    border border-yellow-400/40
+ 
+    safe-area-inset-bottom
+  "
+>
+  <Button
+    className="
+      text-yellow-400 w-full rounded-none bg-transparent 
+      border-r border-yellow-400/30
+      flex items-center justify-center gap-2
+      py-3
+      text-sm font-semibold tracking-wide
+      transition-all duration-200
+      hover:bg-red-600
+       hover:text-white
+      active:scale-95
+    "
+    onClick={() => {
+      setTempSelectedSizes(selectedSizes);
+      setTempSelectedCategories(selectedCategories);
+      setIsFilterPopupOpen(true);
+      setIsSortPopupOpen(false);
+    }}
+  >
+    <SlidersHorizontal size={16} />
+    Filter
+  </Button>
 
-    {/* Sizes Section */}
-    <div className="mb-4">
-      <h3 className="font-medium mb-1">Sizes</h3>
-      <div className="flex flex-wrap gap-2 mb-2">
-        {allAvailableSizes.map((size) => (
-          <Button
-            key={size}
-            variant={tempSelectedSizes.includes(size) ? "default" : "outline"}
-            size="sm"
-            className={
-              tempSelectedSizes.includes(size)
-                ? "bg-red-500 text-white hover:bg-red-600"
-                : "text-yellow-400 border-yellow-400"
-            }
-            onClick={() => toggleTempSize(size)}
-          >
-            {size}
-          </Button>
-        ))}
-      </div>
-
-      {/* Selected Size Chips */}
-      {tempSelectedSizes.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-2">
-          {tempSelectedSizes.map((size) => (
-            <div
-              key={"sel-size-" + size}
-              className="flex items-center bg-red-500 text-white px-2 py-1 gap-3 rounded-none text-xs"
-            >
-              {size}
-              <X
-                size={14}
-                className="ml-1 cursor-pointer"
-                onClick={() => toggleTempSize(size)}
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-
-    {/* Footer Buttons */}
-    <div className="flex justify-between mt-4">
-      <Button
-        className="text-black bg-yellow-400 hover:bg-yellow-500"
-        onClick={applyFilter}
-      >
-        Apply
-      </Button>
-      <Button
-        className="text-black bg-yellow-400 hover:bg-yellow-500"
-        onClick={clearFilter}
-      >
-        Clear
-      </Button>
-    </div>
-  </div>
-)}
-
-
-        {/* Sort Popup */}
-        {isSortPopupOpen && !isFilterPopupOpen && (
-          <div className="w-full fixed bottom-16 mb-5 left-1/2 -translate-x-1/2 z-50 bg-black p-5 rounded shadow-lg w-[90%] max-w-xs text-yellow-400">
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="font-bold text-lg">Sort By</h2>
-              <X
-                className="cursor-pointer"
-                size={20}
-                onClick={() => setIsSortPopupOpen(false)}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Button
-                variant={sortOption === "default" ? "default" : "outline"}
-                size="sm"
-                className={
-                  sortOption === "default"
-                    ? "bg-red-500 text-white"
-                    : "text-yellow-400 border-yellow-400"
-                }
-                onClick={() => {
-                  setSortOption("default");
-                  setIsSortPopupOpen(false);
-                }}
-              >
-                Default
-              </Button>
-              <Button
-                variant={
-                  sortOption === "price-low-high" ? "default" : "outline"
-                }
-                size="sm"
-                className={
-                  sortOption === "price-low-high"
-                    ? "bg-red-500 text-white"
-                    : "text-yellow-400 border-yellow-400"
-                }
-                onClick={() => {
-                  setSortOption("price-low-high");
-                  setIsSortPopupOpen(false);
-                }}
-              >
-                Price: Low to High
-              </Button>
-              <Button
-                variant={
-                  sortOption === "price-high-low" ? "default" : "outline"
-                }
-                size="sm"
-                className={
-                  sortOption === "price-high-low"
-                    ? "bg-red-500 text-white"
-                    : "text-yellow-400 border-yellow-400"
-                }
-                onClick={() => {
-                  setSortOption("price-high-low");
-                  setIsSortPopupOpen(false);
-                }}
-              >
-                Price: High to Low
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Bottom Sticky Filter & Sort Bar */}
-        <div className="fixed bottom-12 left-0 w-full bg-black z-50 flex justify-around border-t border-yellow-400">
-          <Button
-            className="text-yellow-400 w-full rounded-none bg-black border-r border-yellow-400 hover:bg-black/60"
-            onClick={() => {
-              setTempSelectedSizes(selectedSizes);
-              setTempSelectedCategories(selectedCategories);
-              setIsFilterPopupOpen(true);
-              setIsSortPopupOpen(false);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            className="text-yellow-400 w-full bg-black rounded-none border-yellow-400 hover:bg-black/60"
-            onClick={() => {
-              setIsSortPopupOpen(true);
-              setIsFilterPopupOpen(false);
-            }}
-          >
-            Sort
-          </Button>
-        </div>
+  <Button
+    className="
+      text-yellow-400 w-full rounded-none bg-transparent 
+      border-l border-yellow-400/30
+      flex items-center justify-center gap-2
+      py-3
+      text-sm font-semibold tracking-wide
+      transition-all duration-200
+      hover:bg-red-600
+       hover:text-white
+      active:scale-95
+    "
+    onClick={() => {
+      setIsSortPopupOpen(true);
+      setIsFilterPopupOpen(false);
+    }}
+  >
+    <ArrowUpDown size={16} />
+    Sort
+  </Button>
+</div>
       </div>
     </Layout>
   );
