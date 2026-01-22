@@ -92,7 +92,7 @@ const Navbar = () => {
       >
         {/* Brand Logo - aligned left */}
         <div 
-        className="flex items-center pl-2 mb-2">
+        className="flex items-center group   pl-0 mb-2">
           <Link
             onClick={() => {
               window.scrollTo(0, 0);
@@ -103,14 +103,15 @@ const Navbar = () => {
           ><img
           src="/aijim-uploads/aijim.svg"
           alt="AIJIM Logo"
-          className="w-28 sm:w-36 md:w-40 object-contain"
+          className="w-28 sm:w-36 md:w-40 object-contain  group-hover:scale-110
+      active:scale-95"
           loading="lazy"
         /></Link>
           
         </div>
 
         {/* Right Icons */}
-        <div className="flex items-center gap-4 mr-4 pb-2">
+        <div className="flex items-center gap-4 mr-2 pb-2">
           {/* Notifications */}
           <div
   onClick={() => window.scrollTo(0, 0)}

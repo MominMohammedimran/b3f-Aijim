@@ -179,7 +179,6 @@ const OrderHistory = () => {
               {orders.map((order,index) => {
                 const { expired, text: timer } = getCountdown(order.created_at);
 
-                if (expired && order.payment_status === "pending") return null;
 
                 return (
                   <div
@@ -193,10 +192,10 @@ const OrderHistory = () => {
                        {index+1}{' )'}&nbsp;&nbsp; {order.order_number}
                       </h4>
                        <div className="flex gap-3">
-                            {["pending", "processing", "confirmed"].includes(
+                            {["pending", "processing"].includes(
                               order.status
                             ) &&
-                              !expired && (
+                            order.payment_status==="failed" && (
                                 <Button
                                   onClick={() => confirmCancelOrder(order.id)}
                                   className="bg-red-600 hover:bg-red-700 text-white text-sm rounded-none h-6 px-2 "
@@ -312,34 +311,57 @@ const OrderHistory = () => {
     </div>
 )}
 
-    {/* ACTION BUTTONS CONTAINER (Flex layout for horizontal/vertical arrangement) */}
-    <div className="flex flex-col space-y-3">
-        {/* PAYMENT BUTTON (Primary action, high visibility) */}
-        
-        {order.payment_status === "pending" &&
-        order.status !== "cancelled" && (
-            <Button
-                onClick={() => handleRetryPayment(order)}
-                className="bg-green-600 hover:bg-green-700 w-full h-11 text-white text-sm font-medium rounded-none shadow-md transition duration-150 ease-in-out transform hover:scale-[1.01]"
-            >
-                 Complete Payment Now
-            </Button>
-        )}
-          
+  {/* ACTION BUTTONS CONTAINER */}
+<div className="flex flex-col gap-3 mt-3">
 
-        {/* VIEW DETAILS BUTTON (Secondary action, clear contrast) */}
-        <Link
-            to={`/order-preview/${order.order_number}`}
-            className="w-full"
-        >
-            <Button 
-             onClick={() =>  window.scrollTo(0, 0) }
-            
-            className="bg-gray-100 hover:bg-gray-200 w-full h-11 text-gray-800 text-sm font-semibold rounded-none border border-gray-300 transition duration-150 ease-in-out">
-                View Order Details
-            </Button>
-        </Link>
-    </div>
+{/* PAYMENT BUTTON */}
+{order.payment_status === "failed" &&
+  order.status !== "cancelled" && (
+    <Button
+      onClick={() => handleRetryPayment(order)}
+      className="
+        relative w-full h-12 
+        bg-gradient-to-r from-green-600 to-green-500
+        hover:from-green-700 hover:to-green-600
+        text-white text-sm font-bold uppercase tracking-wide
+        rounded-none
+        shadow-lg shadow-green-500/30
+        transition-all duration-200
+        hover:scale-[1.02] active:scale-[0.98]
+        hover:bg-red-600
+        hover:text-white
+        before:absolute before:inset-0 before:bg-white/10 before:opacity-0
+        hover:before:opacity-100
+      "
+    >
+       Complete Payment Now
+    </Button>
+  )}
+
+{/* VIEW DETAILS BUTTON */}
+<Link to={`/order-preview/${order.order_number}`} className="w-full">
+  <Button
+    onClick={() => window.scrollTo(0, 0)}
+    className="
+      w-full h-11 
+      bg-white
+      hover:bg-gray-100
+      text-gray-900 text-sm font-semibold
+      rounded-none
+      border border-gray-300
+      shadow-sm
+       hover:bg-red-600
+        hover:text-white
+      transition-all duration-200
+      hover:scale-[1.01] active:scale-[0.98]
+    "
+  >
+    📄 View Order Details
+  </Button>
+</Link>
+
+</div>
+
 </div>
 
                     {/* DROPDOWN */}

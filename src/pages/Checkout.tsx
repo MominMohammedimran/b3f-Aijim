@@ -425,15 +425,51 @@ const finalTotal = Math.max(0, (totalPrice+totalPricePrinting) - totalDiscount +
                 </div>
               )}
 
-              {isAddressSaved && (
-                <Button
-                  onClick={() => handleFormSubmit(formData)}
-                  disabled={isLoading}
-                  className="w-full relative rounded-none font-bold uppercase tracking-wider text-lg py-4 bg-primary hover:bg-primary/90 text-primary-foreground"
-                >
-                  {isLoading ? 'PROCESSING...' : 'CONTINUE TO PAYMENT'}
-                </Button>
-              )}
+{isAddressSaved && (
+  <Button
+    onClick={() => handleFormSubmit(formData)}
+    disabled={isLoading}
+    className="
+      w-full relative overflow-hidden
+      rounded-none
+      font-bold uppercase tracking-wider text-lg py-4
+      bg-primary text-primary-foreground
+      transition-all duration-300
+      hover:scale-[1.02]
+      hover:bg-red-600
+      hover:text-white
+    
+      active:scale-[0.98]
+      disabled:opacity-60
+      disabled:cursor-not-allowed
+      group
+    "
+  >
+    <span
+      className={`
+        relative z-10 flex items-center justify-center gap-2
+        ${isLoading ? "animate-pulse" : ""}
+      `}
+    >
+      {isLoading ? "PROCESSING..." : "CONTINUE TO PAYMENT"}
+    </span>
+
+    {/* Shine layer */}
+    {!isLoading && (
+      <span
+        className="
+          absolute inset-0
+          -translate-x-full
+          bg-gradient-to-r
+          from-transparent via-white/20 to-transparent
+          group-hover:translate-x-full
+          transition-transform duration-700
+        "
+      />
+    )}
+  </Button>
+)}
+
             </CollapsibleSection>
           </div>
         </div>

@@ -14,7 +14,7 @@ import { useWishlist } from "../context/WishlistContext";
 import useSEO from "@/hooks/useSEO"; // ✅ using this
 import NewSEOHelmet from "@/components/seo/NewSEOHelmet";
 
-import NewHero from "@/components/landing/NewHero";
+import NewHero from "@/components/layout/NewHero";
 
 import { supabase } from "@/integrations/supabase/client";
 

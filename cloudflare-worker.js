@@ -149,11 +149,49 @@ export default {
         statusText: response.statusText,
         headers: {
           ...corsHeaders,
-          "Content-Type":
-            response.headers.get("Content-Type") || "application/json",
+          "Content-Type": response.headers.get("Content-Type") || "application/json",
           "Cache-Control": response.headers.get("Cache-Control") || "no-cache",
-         "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com https://sdk.cashfree.com https://api.cashfree.com https://payments.cashfree.com https://cdn.gpteng.co https://cdn.imagekit.io https://www.googletagmanager.com https://static.cloudflareinsights.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ik.imagekit.io https:; connect-src 'self' https: wss: https://api.razorpay.com https://sdk.cashfree.com https://api.cashfree.com https://payments.cashfree.com https://zfdsrtwjxwzwbrtfgypm.supabase.co https://cmpggiyuiattqjmddcac.supabase.co https://upload.imagekit.io https://www.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com https://payments.razorpay.com https://sdk.cashfree.com https://payments.cashfree.com https://api.cashfree.com https://www.googletagmanager.com; worker-src 'self'; child-src 'self'; manifest-src 'self'; media-src 'self' https://ik.imagekit.io https://zfdsrtwjxwzwbrtfgypm.supabase.co;"
- },
+          "Vary": "Origin",
+        
+          "X-Frame-Options": "DENY",
+          "X-Content-Type-Options": "nosniff",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+          "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+        
+          "Content-Security-Policy": `
+            default-src 'self';
+            base-uri 'self';
+            form-action 'self' https://checkout.razorpay.com https://payments.razorpay.com;
+            script-src 'self' 'unsafe-inline' 'unsafe-eval'
+              https://checkout.razorpay.com
+              https://payments.razorpay.com
+              https://sdk.cashfree.com
+              https://cdn.gpteng.co
+              https://cdn.imagekit.io
+              https://www.googletagmanager.com
+              https://static.cloudflareinsights.com
+              https://www.google-analytics.com;
+            style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+            font-src 'self' https://fonts.gstatic.com;
+            img-src 'self' data: blob: https://ik.imagekit.io https:;
+            connect-src 'self' https: wss:
+              https://zfdsrtwjxwzwbrtfgypm.supabase.co
+              https://cmpggiyuiattqjmddcac.supabase.co
+              https://upload.imagekit.io
+              https://www.google-analytics.com
+              https://www.googletagmanager.com;
+            frame-src
+              https://checkout.razorpay.com
+              https://payments.razorpay.com
+              https://sdk.cashfree.com
+              https://payments.cashfree.com
+              https://www.googletagmanager.com;
+            manifest-src 'self';
+            media-src 'self' https://ik.imagekit.io https://zfdsrtwjxwzwbrtfgypm.supabase.co;
+          `.replace(/\s+/g, " ").trim()
+        }
+        
       });
 
       // Log successful request

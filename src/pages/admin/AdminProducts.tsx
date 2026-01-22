@@ -178,7 +178,7 @@ const AdminProducts = () => {
 
                   {product.description && (
                     <div className="mt-4">
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 line-clamp-4">
                         {product.description}
                       </p>
                     </div>
@@ -186,17 +186,27 @@ const AdminProducts = () => {
 
                   {/* ⭐ ADDING SEO KEYWORDS DISPLAY */}
                   {product.seo_keywords && product.seo_keywords.length > 0 && (
-                    <div className="mt-3">
-                      <p className="font-medium text-sm mb-1">SEO Keywords:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {product.seo_keywords.map((kw: string, idx: number) => (
-                          <Badge key={idx} variant="outline">
-                            {kw}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+  <div className="mt-3">
+    <p className="font-medium text-sm mb-1">SEO Keywords:</p>
+
+    <div className="flex flex-wrap gap-2 line-clamp-3">
+      {product.seo_keywords
+        .slice(0, 5) // 👈 CHANGE LIMIT HERE (5 / 8 / 10)
+        .map((kw: string, idx: number) => (
+          <Badge key={idx} variant="outline">
+            {kw}
+          </Badge>
+        ))}
+    </div>
+
+    {product.seo_keywords.length > 6 && (
+      <p className="text-xs text-muted-foreground mt-1">
+        +{product.seo_keywords.length - 6} more keywords
+      </p>
+    )}
+  </div>
+)}
+
 
                   {product.images && product.images.length > 0 && (
                     <div className="mt-4">

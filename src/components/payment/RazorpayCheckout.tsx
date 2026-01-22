@@ -507,15 +507,51 @@ window.location.href = `/order-complete`;
 
       {/* Payment Button */}
       <div className="mt-5">
-        <Button 
-         ref={payNowRef}
-          className="w-full uppercase bg-green-600 hover:bg-green-700 text-white font-bold text-md py-1 rounded-none disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={handlePayment}
-          disabled={isProcessing || finalTotal <= 0}
-        >
-          {isProcessing ? 'Processing...' : 'Pay Now'}
-        </Button>
-      </div>
+  <Button
+    ref={payNowRef}
+    onClick={handlePayment}
+    disabled={isProcessing || finalTotal <= 0}
+    className="
+      w-full relative overflow-hidden
+      uppercase font-bold tracking-wider
+      text-md py-2 rounded-none
+      bg-green-600 text-white
+      transition-all duration-300
+      hover:bg-red-600
+      hover:text-white
+      hover:scale-[1.03]
+      hover:shadow-[0_0_20px_rgba(0,0,0,0.55)]
+      active:scale-[0.97]
+      disabled:opacity-50
+      disabled:cursor-not-allowed
+      group
+    "
+  >
+    <span
+      className={`
+        relative z-10 flex items-center justify-center gap-2
+        ${isProcessing ? "animate-pulse" : ""}
+      `}
+    >
+      {isProcessing ? "Processing..." : "Pay Now"}
+    </span>
+
+    {/* Shine sweep */}
+    {!isProcessing && (
+      <span
+        className="
+          absolute inset-0
+          -translate-x-full
+          bg-gradient-to-r
+          from-transparent via-white/20 to-transparent
+          group-hover:translate-x-full
+          transition-transform duration-700
+        "
+      />
+    )}
+  </Button>
+</div>
+
     </div>
   );
 };

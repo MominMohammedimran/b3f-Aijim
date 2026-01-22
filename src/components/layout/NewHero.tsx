@@ -45,7 +45,7 @@ const NewHero = () => {
   }, [banners, loading]);
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       <Swiper
         modules={[Autoplay, EffectFade]}
         autoplay={{ delay: 3800, disableOnInteraction: false }}
@@ -105,6 +105,8 @@ const NewHero = () => {
             <div className="w-full md:h-[70vh] lg:h-[75vh] bg-gray-800 flex items-center justify-center">
               <p className="text-3xl font-bold text-white">
                 Buy any 2 T-shirt for ₹1000 only!
+
+
               </p>
             </div>
           </SwiperSlide>
@@ -112,54 +114,105 @@ const NewHero = () => {
       </Swiper>
 
       {/* Marquee */}
-      <div className="bg-white absolute bottom-0 left-0 right-0 h-6 z-10 flex items-center">
-        <Marquee gradient={false} speed={35} pauseOnHover className="w-full">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <span
-              key={i}
-              className="flex items-center uppercase text-black font-semibold text-[11px] sm:text-[13px] px-4 whitespace-nowrap"
-            >
-              <Truck size={16} className="mr-1" /> FREE SHIPPING
-              &nbsp;&nbsp;&nbsp;
-              <RotateCcw size={16} className="mr-1" /> EASY RETURNS
-              &nbsp;&nbsp;&nbsp;
-              <Shield size={16} className="mr-1" /> SECURE PAYMENTS
-            </span>
-          ))}
-        </Marquee>
-      </div>
-      <div className="absolute bottom-6 left-0 right-0 h-6 z-10 bg-red-600 py-1 flex items-center border-b border-gray-600">
-        <Marquee gradient={false} speed={80} pauseOnHover className="w-full">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <span
-              key={i}
-              className="flex items-center uppercase text-white font-semibold text-[12px] sm:text-[14px] px-4 whitespace-nowrap"
-            >
-              "Every T-shirt tells a story — built from hustle. #
-              <span className="font-bold ">AIJIM</span>”
-            </span>
-          ))}
-        </Marquee>
-      </div>
+      
+<div className="absolute bottom-6 left-0 right-0 z-20">
+  <div className="bg-white/95 backdrop-blur-sm h-6 flex items-center shadow-sm border-t border-gray-200">
+    <Marquee gradient={false} speed={32} pauseOnHover className="w-full">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <span
+          key={i}
+          className="
+            flex items-center gap-2 
+            uppercase tracking-wide 
+            text-black font-semibold 
+            text-[11px] sm:text-[13px] 
+            px-6 whitespace-nowrap
+          "
+        >
+          <Truck size={15} /> Free Shipping
+          <span className="opacity-40">•</span>
+          <RotateCcw size={15} /> Easy Returns
+          <span className="opacity-40">•</span>
+          <Shield size={15} /> Secure Payments
+        </span>
+      ))}
+    </Marquee>
+  </div>
+</div>
 
-      {/* Animation */}
-      <style>
-        {`
-          .animate-fadeUp {
-            animation: fadeUp 1s ease forwards;
-          }
-          @keyframes fadeUp {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}
-      </style>
+{/* Brand Story Marquee */}
+<div className="absolute bottom-0 left-0 right-0 z-20">
+  <div className="h-6 bg-gradient-to-r from-red-700 via-red-600 to-red-700 flex items-center shadow-lg">
+    <Marquee gradient={false} speed={70} pauseOnHover className="w-full">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <span
+          key={i}
+          className="
+            flex items-center 
+            uppercase tracking-widest 
+            text-white font-semibold 
+            text-[12px] sm:text-[14px] 
+            px-8 whitespace-nowrap
+          "
+        >
+          Every T-Shirt Tells A Story — Built From Hustle
+          <span className="mx-2 opacity-70">•</span>
+          <span
+  className="
+    font-bold text-white 
+    inline-block
+    animate-aijim-float
+    drop-shadow-[0_0_8px_rgba(0,0,0,0.7)]
+  "
+>
+  AIJIM
+</span>
+
+
+        </span>
+      ))}
+    </Marquee>
+  </div>
+</div>
+
+  {/* Animations */}
+<style>
+  {`
+    .animate-fadeUp {
+      animation: fadeUp 1s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* AIJIM floating animation */
+    .animate-aijim-float {
+      display: inline-block;
+      animation: aijimFloat 1.2s ease-in-out infinite;
+    }
+
+    @keyframes aijimFloat {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-2px);
+      }
+      100% {
+        transform: translateY(2px);
+      }
+    }
+  `}
+</style>
+
     </div>
   );
 };
