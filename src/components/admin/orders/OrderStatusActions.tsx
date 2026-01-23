@@ -54,7 +54,9 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
   const handleStatusChange = (newStatus: string) => {
     setSelectedStatus(newStatus);
     setShowCourierFields(newStatus === "shipped");
-    setShowCancellationReason(newStatus === "cancelled");
+    const shouldShow = ["cancelled", "admin cancelled"].includes(newStatus);
+    setShowCancellationReason(shouldShow);
+    
   };
 
   const handleUpdateStatus = async () => {
@@ -64,6 +66,10 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
     }
 
     if (selectedStatus === "cancelled" && !cancellationReason.trim()) {
+      toast.error("Please provide a reason for cancellation");
+      return;
+    }
+    if (selectedStatus === "admin cancelled" && !cancellationReason.trim()) {
       toast.error("Please provide a reason for cancellation");
       return;
     }
@@ -156,6 +162,7 @@ const OrderStatusActions: React.FC<OrderStatusActionsProps> = ({
               <SelectItem value="shipped">Shipped</SelectItem>
               <SelectItem value="delivered">Delivered</SelectItem>
               <SelectItem value="cancelled">Cancelled</SelectItem>
+              <SelectItem value="admin cancelled">Admin Cancelled</SelectItem>
               <SelectItem value="return-acpt">Return Accepted</SelectItem>
               <SelectItem value="return-pcs">Return Processing</SelectItem>
               <SelectItem value="return-pkd">Return Picked</SelectItem>

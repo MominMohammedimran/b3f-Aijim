@@ -26,6 +26,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, open, onOp
         return 'bg-green-500';
       case 'cancelled':
         return 'bg-red-500';
+        case 'admin cancelled':
+          return 'bg-red-500';
       default:
         return 'bg-gray-500';
     }

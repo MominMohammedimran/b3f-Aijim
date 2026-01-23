@@ -154,7 +154,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
 
         {/* THUMBNAILS WITH SWIPE + ARROWS */}
         {media.length > 1 && (
-  <div className="w-full mt-3 relative">
+  <div className="w-full mt-3 relative ">
     <div className="bg-black/90 rounded-xl relative overflow-hidden border border-white/10">
 
       {/* Left Arrow */}
@@ -171,7 +171,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
       {/* Thumbnails */}
       <div
         ref={thumbRef}
-        className="flex gap-3 justify-start items-center overflow-x-auto overflow-y-hidden px-10 py-2 scrollbar-hide scroll-smooth"
+        className="flex gap-3 justify-center items-center overflow-x-auto overflow-y-hidden px-10 py-2 scrollbar-hide scroll-smooth"
         onTouchStart={onThumbTouchStart}
         onTouchEnd={onThumbTouchEnd}
       >

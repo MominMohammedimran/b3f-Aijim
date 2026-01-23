@@ -143,6 +143,12 @@ const OrderDetailsDialog: React.FC<OrderDetailsDialogProps> = ({
                   <p className="text-sm text-red-700">{order.cancellation_reason}</p>
                 </div>
               )}
+              {order.status === 'admin cancelled' && order.cancellation_reason && (
+                <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded">
+                  <p className="text-sm font-medium text-red-800">Cancellation Reason:</p>
+                  <p className="text-sm text-red-700">{order.cancellation_reason}</p>
+                </div>
+              )}
             </div>
             
             <div className="space-y-2">

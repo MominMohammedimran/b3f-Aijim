@@ -59,7 +59,7 @@ const ProductActionButtons: React.FC<ProductActionButtonsProps> = ({
       };
 
       await addToCart(cartItem);
-      toast.success('Added to cart!');
+      
     } catch (error) {
       console.error('Error adding to cart:', error);
       toast.error('Failed to add to cart');

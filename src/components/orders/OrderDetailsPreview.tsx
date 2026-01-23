@@ -222,7 +222,7 @@ const OrderDetailsPreview: React.FC<OrderDetailsPreviewProps> = ({
     </p>
 
     {!["cancelled", "paid", "refunded", "refund-ss"].includes(order.payment_status) &&
-      !["cancelled"].includes(order.status) && (
+      !["cancelled","admin cancelled"].includes(order.status) && (
         <Button
           onClick={() => handleRetryPayment(order)}
           className="bg-green-600 hover:bg-green-700 text-white w-full mt-2 mb-2 text-sm font-semibold rounded-none"
